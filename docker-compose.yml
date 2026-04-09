@@ -1,0 +1,55 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      STRAPI_URL: http://backend:1337
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 1337
+      APP_KEYS: "app-key-1,app-key-2,app-key-3,app-key-4"
+      ADMIN_JWT_SECRET: "change-admin-jwt-secret"
+      API_TOKEN_SALT: "change-api-token-salt"
+      TRANSFER_TOKEN_SALT: "change-transfer-token-salt"
+      ENCRYPTION_KEY: "change-encryption-key"
+      JWT_SECRET: "change-jwt-secret"
+      DATABASE_CLIENT: sqlite
+      DATABASE_FILENAME: .tmp/data.db
+      EMAIL_PROVIDER: sendmail
+      EMAIL_DEFAULT_FROM: "Netas Academy <no-reply@example.local>"
+      EMAIL_DEFAULT_REPLY_TO: "support@example.local"
+      EMAIL_TEST_ADDRESS: "test@example.local"
+    volumes:
+      - ./.docker-data/strapi:/app/.tmp
+      - ./.docker-data/uploads:/app/public/uploads
+    ports:
+      - "1337:1337"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:1337/api/events?pagination[pageSize]=1').then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro

@@ -1,0 +1,15 @@
+/node_modules
+/.DS_Store
+/.docker-data
+frontend/node_modules
+frontend/.next
+backend/node_modules
+backend/dist
+backend/.cache
+backend/.tmp
+*.log
+frontend/npm-debug.log*
+backend/npm-debug.log*
+.env
+.env.*
+.vercel
