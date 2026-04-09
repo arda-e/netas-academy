@@ -18,7 +18,7 @@ type CourseListProps = {
 };
 
 type CourseDetailProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   summary?: string | null;
   children: ReactNode;

@@ -42,7 +42,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
   return (
     <CourseDetail
-      eyebrow={course.teacher?.fullName ?? undefined}
+      eyebrow={course.teacher?.fullName}
       title={course.title}
       summary={course.summary}
       afterContent={<VisualStorySection {...courseDetailVisualSection} />}
