@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { TeacherCarousel } from "@/components/teacher-carousel";
 import { getTeachers, toStrapiAssetUrl } from "@/lib/strapi";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Hakkımızda | Netas Academy",
   description:
@@ -35,9 +37,6 @@ export default async function HakkimizdaPage() {
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
         <div className="mx-auto flex min-h-[400px] w-full max-w-7xl items-end px-6 py-12 md:px-10 lg:px-12">
           <div className="max-w-4xl space-y-5">
-            <p className="text-sm font-medium uppercase tracking-[0.34em] text-white/88">
-              NETAŞ Academy
-            </p>
             <h1 className="text-balance text-4xl font-semibold tracking-tight text-white md:text-6xl">
               Bir Netaş markası olan Netaş Academy, ilham verici yolculuğuna başladı!
             </h1>

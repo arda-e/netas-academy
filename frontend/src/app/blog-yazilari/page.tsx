@@ -8,7 +8,6 @@ export default async function BlogYazilariPage() {
 
   return (
     <ContentPageShell
-      eyebrow="Netas Academy"
       title="Blog Yazilari"
       description="Sektorel bakis acilari, uygulama notlari ve egitim odakli icgorulerle hazirlanan yazi arsivini kesfedin."
     >

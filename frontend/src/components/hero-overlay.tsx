@@ -18,7 +18,7 @@ type HeroOverlayProps = {
 };
 
 export function HeroOverlay({
-  eyebrow = "Netas Academy",
+  eyebrow,
   title,
   description,
   imageUrl = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80",
@@ -37,9 +37,11 @@ export function HeroOverlay({
 
       <div className="relative mx-auto flex min-h-[calc(100vh-81px)] w-full max-w-7xl items-center px-6 py-16 md:px-10 md:py-20 lg:px-12">
         <div className="max-w-3xl space-y-6 rounded-sm border border-white/60 bg-white/82 px-8 py-10 text-left text-slate-950 shadow-[0_24px_80px_rgba(255,255,255,0.16)] backdrop-blur-md md:px-12 md:py-14">
-          <p className="text-sm font-medium uppercase tracking-[0.34em] text-slate-700">
-            {eyebrow}
-          </p>
+          {eyebrow ? (
+            <p className="text-sm font-medium uppercase tracking-[0.34em] text-slate-700">
+              {eyebrow}
+            </p>
+          ) : null}
           <h1 className="text-balance text-5xl font-semibold tracking-tight md:text-7xl">
             {title}
           </h1>

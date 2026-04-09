@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 type ContentDetailShellProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   summary?: string;
   meta?: ReactNode;
@@ -19,11 +19,13 @@ export function ContentDetailShell({
 }: ContentDetailShellProps) {
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
-      <article className="mx-auto w-full max-w-4xl px-6 py-18 md:px-10 lg:px-12">
+      <article className="mx-auto w-full max-w-7xl px-6 py-18 md:px-10 lg:px-12">
         <div className="max-w-3xl space-y-5">
-          <p className="text-sm font-medium uppercase tracking-[0.34em] text-primary/76">
-            {eyebrow}
-          </p>
+          {eyebrow ? (
+            <p className="text-sm font-medium uppercase tracking-[0.34em] text-primary/76">
+              {eyebrow}
+            </p>
+          ) : null}
           <h1 className="text-balance text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
             {title}
           </h1>
@@ -34,7 +36,7 @@ export function ContentDetailShell({
           ) : null}
         </div>
 
-        <div className="panel-surface mt-10 rounded-sm p-8 md:p-12">
+        <div className="panel-surface mt-10 max-w-4xl rounded-sm p-8 md:p-12">
           {meta ? (
             <div className="mb-8 space-y-2 border-b border-white/8 pb-8 text-base text-foreground/68">
               {meta}

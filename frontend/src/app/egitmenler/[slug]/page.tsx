@@ -53,7 +53,6 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
 
   return (
     <ContentDetailShell
-      eyebrow="Netas Academy"
       title={teacher.fullName}
       summary={teacher.headline ?? undefined}
       afterContent={<VisualStorySection {...teacherDetailVisualSection} />}

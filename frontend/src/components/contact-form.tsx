@@ -14,10 +14,32 @@ const labelClassName =
   "text-lg font-semibold tracking-tight text-foreground md:text-xl";
 
 export function ContactForm() {
-  const { values, isSubmitting, handleChange, handleSubmit } = useContactForm();
+  const {
+    values,
+    isSubmitting,
+    submitMessage,
+    contactRecipients,
+    handleChange,
+    handleSubmit,
+  } = useContactForm();
 
   return (
     <form className="space-y-8" onSubmit={handleSubmit}>
+      <div className="rounded-sm border border-border/70 bg-card/45 p-5 text-sm leading-7 text-muted-foreground md:p-6 md:text-base">
+        Form gönderimi varsayılan e-posta uygulamanızda hazırlanır ve şu adreslere yönlendirilir:{" "}
+        {contactRecipients.map((email, index) => (
+          <span key={email}>
+            <Link
+              href={`mailto:${email}`}
+              className="font-medium text-primary transition-colors hover:text-primary/80"
+            >
+              {email}
+            </Link>
+            {index < contactRecipients.length - 1 ? ", " : "."}
+          </span>
+        ))}
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-3">
           <label
@@ -32,6 +54,7 @@ export function ContactForm() {
             value={values.firstName}
             onChange={handleChange}
             className={fieldClassName}
+            required
           />
         </div>
 
@@ -48,6 +71,7 @@ export function ContactForm() {
             value={values.lastName}
             onChange={handleChange}
             className={fieldClassName}
+            required
           />
         </div>
 
@@ -65,6 +89,7 @@ export function ContactForm() {
             value={values.email}
             onChange={handleChange}
             className={fieldClassName}
+            required
           />
         </div>
 
@@ -82,6 +107,7 @@ export function ContactForm() {
             value={values.phone}
             onChange={handleChange}
             className={fieldClassName}
+            required
           />
         </div>
       </div>
@@ -115,6 +141,7 @@ export function ContactForm() {
           value={values.subject}
           onChange={handleChange}
           className={fieldClassName}
+          required
         />
       </div>
 
@@ -131,6 +158,7 @@ export function ContactForm() {
           value={values.message}
           onChange={handleChange}
           className="min-h-[12rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[14rem] md:px-5 md:text-base"
+          required
         />
       </div>
 
@@ -150,6 +178,12 @@ export function ContactForm() {
       >
         {isSubmitting ? "Gönderiliyor..." : "Gönder"}
       </Button>
+
+      {submitMessage ? (
+        <p className="text-sm leading-7 text-muted-foreground md:text-base">
+          {submitMessage}
+        </p>
+      ) : null}
     </form>
   );
 }

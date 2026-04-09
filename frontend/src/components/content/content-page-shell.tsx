@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 type ContentPageShellProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description?: string;
   children: ReactNode;
@@ -18,9 +18,11 @@ export function ContentPageShell({
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
         <div className="mx-auto flex min-h-[400px] w-full max-w-7xl items-end px-6 py-12 md:px-10 lg:px-12">
           <div className="max-w-3xl space-y-5">
-            <p className="text-sm font-medium uppercase tracking-[0.34em] text-white/88">
-              {eyebrow}
-            </p>
+            {eyebrow ? (
+              <p className="text-sm font-medium uppercase tracking-[0.34em] text-white/88">
+                {eyebrow}
+              </p>
+            ) : null}
             <h1 className="text-balance text-4xl font-semibold tracking-tight text-white md:text-6xl">
               {title}
             </h1>

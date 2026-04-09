@@ -8,7 +8,6 @@ export default async function EtkinliklerPage() {
 
   return (
     <ContentPageShell
-      eyebrow="Netas Academy"
       title="Etkinlikler"
       description="Yaklasan bulusmalari, webinarlari ve ozel oturumlari takip edin; katilim icin gerekli detaylara tek ekrandan ulasin."
     >
