@@ -1,0 +1,34 @@
+services:
+  app:
+    image: ${APP_IMAGE}
+    environment:
+      NODE_ENV: production
+      FRONTEND_PORT: 3000
+      STRAPI_URL: ${STRAPI_URL:-http://127.0.0.1:1337}
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL}
+      HOST: 0.0.0.0
+      PORT: 1337
+      APP_KEYS: "app-key-1,app-key-2,app-key-3,app-key-4"
+      ADMIN_JWT_SECRET: "change-admin-jwt-secret"
+      API_TOKEN_SALT: "change-api-token-salt"
+      TRANSFER_TOKEN_SALT: "change-transfer-token-salt"
+      ENCRYPTION_KEY: "change-encryption-key"
+      JWT_SECRET: "change-jwt-secret"
+      DATABASE_CLIENT: sqlite
+      DATABASE_FILENAME: .tmp/data.db
+      EMAIL_PROVIDER: sendmail
+      EMAIL_DEFAULT_FROM: "Netas Academy <no-reply@example.local>"
+      EMAIL_DEFAULT_REPLY_TO: "support@example.local"
+      EMAIL_TEST_ADDRESS: "test@example.local"
+    volumes:
+      - ./.docker-data/strapi:/app/backend/.tmp
+      - ./.docker-data/uploads:/app/backend/public/uploads
+    ports:
+      - "3000:3000"
+      - "1337:1337"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --globoff --fail --silent http://127.0.0.1:3000/ >/dev/null && curl --globoff --fail --silent 'http://127.0.0.1:1337/api/events?pagination[pageSize]=1' >/dev/null"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 45s

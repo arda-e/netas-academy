@@ -17,6 +17,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare deploy directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p ${{ secrets.EC2_APP_DIR }}/.docker-data/strapi
+            mkdir -p ${{ secrets.EC2_APP_DIR }}/.docker-data/uploads
+
+      - name: Upload deploy compose
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: docker-compose.deploy.yml
+          target: ${{ secrets.EC2_APP_DIR }}
+          strip_components: 0
+
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -26,8 +49,10 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.EC2_APP_DIR }}
-            export GHCR_OWNER=${{ secrets.GHCR_OWNER }}
             export APP_IMAGE=ghcr.io/${{ secrets.GHCR_OWNER }}/netas-academy:latest
+            export STRAPI_PUBLIC_URL=http://${{ secrets.EC2_HOST }}:1337
+            printf "APP_IMAGE=%s\nSTRAPI_PUBLIC_URL=%s\n" "$APP_IMAGE" "$STRAPI_PUBLIC_URL" > .env
+            mv docker-compose.deploy.yml docker-compose.yml
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
             docker compose pull
             docker compose down
