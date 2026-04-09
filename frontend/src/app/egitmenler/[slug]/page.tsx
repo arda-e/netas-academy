@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { VisualStorySection } from "@/components/content";
-import { getTeacherBySlug, getTeacherSlugs, toStrapiAssetUrl } from "@/lib/strapi";
+import { getTeacherBySlug, toStrapiAssetUrl } from "@/lib/strapi";
 import { teacherDetailVisualSection } from "@/lib/page-visual-sections";
 
 type TeacherDetailPageProps = {
@@ -23,13 +23,7 @@ function getInitials(name: string) {
     .join("");
 }
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const slugs = await getTeacherSlugs();
-
-  return slugs.map((slug) => ({ slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { EventDetail, VisualStorySection } from "@/components/content";
 import { Button } from "@/components/ui/button";
 import { eventDetailVisualSection } from "@/lib/page-visual-sections";
-import { getEventBySlug, getEventSlugs } from "@/lib/strapi";
+import { getEventBySlug } from "@/lib/strapi";
 
 type EventDetailPageProps = {
   params: Promise<{
@@ -13,13 +13,7 @@ type EventDetailPageProps = {
   }>;
 };
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const slugs = await getEventSlugs();
-
-  return slugs.map((slug) => ({ slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

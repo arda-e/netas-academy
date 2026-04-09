@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { CourseDetail, VisualStorySection } from "@/components/content";
 import { courseDetailVisualSection } from "@/lib/page-visual-sections";
-import { getCourseBySlug, getCourseSlugs } from "@/lib/strapi";
+import { getCourseBySlug } from "@/lib/strapi";
 
 type CourseDetailPageProps = {
   params: Promise<{
@@ -12,13 +12,7 @@ type CourseDetailPageProps = {
   }>;
 };
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const slugs = await getCourseSlugs();
-
-  return slugs.map((slug) => ({ slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

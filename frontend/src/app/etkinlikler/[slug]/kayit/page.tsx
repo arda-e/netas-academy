@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { EventRegistrationForm } from "@/components/event-registration-form";
 import { Button } from "@/components/ui/button";
-import { getEventBySlug, getEventSlugs } from "@/lib/strapi";
+import { getEventBySlug } from "@/lib/strapi";
 
 type EventRegistrationPageProps = {
   params: Promise<{
@@ -21,13 +21,7 @@ const formatEventDate = (value: string) =>
     minute: "2-digit",
   }).format(new Date(value));
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const slugs = await getEventSlugs();
-
-  return slugs.map((slug) => ({ slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

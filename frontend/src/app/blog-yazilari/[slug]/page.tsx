@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { BlogDetail, VisualStorySection } from "@/components/content";
 import { blogDetailVisualSection } from "@/lib/page-visual-sections";
-import { getBlogPostBySlug, getBlogPostSlugs } from "@/lib/strapi";
+import { getBlogPostBySlug } from "@/lib/strapi";
 
 type BlogDetailPageProps = {
   params: Promise<{
@@ -11,13 +11,7 @@ type BlogDetailPageProps = {
   }>;
 };
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const slugs = await getBlogPostSlugs();
-
-  return slugs.map((slug) => ({ slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
