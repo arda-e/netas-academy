@@ -4,3 +4,9 @@ GitHub Actions deploy secrets expected by `deploy-ec2.yml`:
 - `EC2_USERNAME`: SSH user, for example `ubuntu`
 - `EC2_SSH_KEY`: private key content for SSH access
 - `EC2_APP_DIR`: absolute path of the repo on the EC2 instance
+
+Additional secrets for GHCR deploy:
+
+- `GHCR_OWNER`: GitHub owner or org name used in image paths
+- `GHCR_USERNAME`: GitHub username used to log in on EC2
+- `GHCR_TOKEN`: a GitHub token or PAT with package read access on EC2

@@ -1,12 +1,19 @@
 name: Deploy EC2
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Build and Publish Images"]
+    types:
+      - completed
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-ec2-main
+  cancel-in-progress: true
 
 jobs:
   deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +26,9 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.EC2_APP_DIR }}
-            git pull origin main
+            export GHCR_OWNER=${{ secrets.GHCR_OWNER }}
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+            docker compose pull
             docker compose down
-            docker compose up --build -d
+            docker compose up -d --remove-orphans
             docker image prune -f
