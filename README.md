@@ -55,9 +55,8 @@ Strapi admin default URL: `http://localhost:1337/admin`
 
 The repo includes:
 
-- `Dockerfile.frontend`: Next.js standalone production image
-- `Dockerfile.backend`: Strapi production image
-- `docker-compose.yml`: runs frontend, backend, and nginx together
+- `Dockerfile`: a single production image that runs both Next.js and Strapi
+- `docker-compose.yml`: runs the combined app container
 
 Start the stack from the repo root:
 
@@ -67,11 +66,14 @@ docker compose up --build
 
 Default URLs:
 
-- Frontend via nginx: `http://localhost`
+- Frontend: `http://localhost:3000`
 - Strapi backend/admin: `http://localhost:1337/admin`
 
 Notes:
 
 - The compose file keeps Strapi SQLite data in `./.docker-data/strapi`
 - Uploaded files persist in `./.docker-data/uploads`
+- The single container starts Strapi first, then boots Next.js on port `3000`
+- Local compose defaults to `netas-academy:local`; EC2 deploy overrides this with the GHCR image
+- Server-to-server calls use `STRAPI_URL`; browser-facing asset URLs use `STRAPI_PUBLIC_URL`
 - Replace the placeholder secrets in `docker-compose.yml` before using this anywhere beyond local testing

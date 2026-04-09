@@ -1,20 +1,14 @@
 services:
-  frontend:
-    image: ghcr.io/${GHCR_OWNER}/netas-academy-frontend:latest
+  app:
+    image: ${APP_IMAGE:-netas-academy:local}
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       NODE_ENV: production
-      PORT: 3000
-      STRAPI_URL: http://backend:1337
-    depends_on:
-      backend:
-        condition: service_healthy
-    ports:
-      - "3000:3000"
-
-  backend:
-    image: ghcr.io/${GHCR_OWNER}/netas-academy-backend:latest
-    environment:
-      NODE_ENV: production
+      FRONTEND_PORT: 3000
+      STRAPI_URL: ${STRAPI_URL:-http://127.0.0.1:1337}
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-http://localhost:1337}
       HOST: 0.0.0.0
       PORT: 1337
       APP_KEYS: "app-key-1,app-key-2,app-key-3,app-key-4"
@@ -30,22 +24,14 @@ services:
       EMAIL_DEFAULT_REPLY_TO: "support@example.local"
       EMAIL_TEST_ADDRESS: "test@example.local"
     volumes:
-      - ./.docker-data/strapi:/app/.tmp
-      - ./.docker-data/uploads:/app/public/uploads
+      - ./.docker-data/strapi:/app/backend/.tmp
+      - ./.docker-data/uploads:/app/backend/public/uploads
     ports:
+      - "3000:3000"
       - "1337:1337"
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:1337/api/events?pagination[pageSize]=1').then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))"]
-      interval: 10s
+      test: ["CMD-SHELL", "curl --globoff --fail --silent http://127.0.0.1:3000/ >/dev/null && curl --globoff --fail --silent 'http://127.0.0.1:1337/api/events?pagination[pageSize]=1' >/dev/null"]
+      interval: 15s
       timeout: 5s
-      retries: 12
-      start_period: 30s
-
-  nginx:
-    image: nginx:1.27-alpine
-    depends_on:
-      - frontend
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      retries: 6
+      start_period: 45s

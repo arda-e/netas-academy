@@ -10,3 +10,7 @@ Additional secrets for GHCR deploy:
 - `GHCR_OWNER`: GitHub owner or org name used in image paths
 - `GHCR_USERNAME`: GitHub username used to log in on EC2
 - `GHCR_TOKEN`: a GitHub token or PAT with package read access on EC2
+
+The current pipeline publishes a single image:
+
+- `ghcr.io/<owner>/netas-academy:latest`

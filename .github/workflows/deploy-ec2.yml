@@ -27,6 +27,7 @@ jobs:
             set -e
             cd ${{ secrets.EC2_APP_DIR }}
             export GHCR_OWNER=${{ secrets.GHCR_OWNER }}
+            export APP_IMAGE=ghcr.io/${{ secrets.GHCR_OWNER }}/netas-academy:latest
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
             docker compose pull
             docker compose down

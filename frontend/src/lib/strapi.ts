@@ -1,4 +1,5 @@
-const STRAPI_URL = process.env.STRAPI_URL ?? 'http://localhost:1337';
+const STRAPI_URL = process.env.STRAPI_URL ?? 'http://127.0.0.1:1337';
+const STRAPI_PUBLIC_URL = process.env.STRAPI_PUBLIC_URL ?? process.env.STRAPI_URL ?? 'http://localhost:1337';
 
 type StrapiListResponse<T> = {
   data: T[];
@@ -105,7 +106,7 @@ export function toStrapiAssetUrl(path: string | null | undefined) {
     return path;
   }
 
-  return `${STRAPI_URL}${path}`;
+  return `${STRAPI_PUBLIC_URL}${path}`;
 }
 
 export async function getCourses() {
@@ -121,21 +122,29 @@ export async function getCourses() {
 }
 
 export async function getCourseSlugs() {
-  const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
-    '/api/courses?pagination[pageSize]=100&sort[0]=title:asc&fields[0]=slug',
-    { cache: 'force-cache' }
-  );
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
+      '/api/courses?pagination[pageSize]=100&sort[0]=title:asc&fields[0]=slug',
+      { cache: 'force-cache' }
+    );
 
-  return response.data.map((course) => course.slug);
+    return response.data.map((course) => course.slug);
+  } catch {
+    return [];
+  }
 }
 
 export async function getCourseBySlug(slug: string) {
-  const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
-    `/api/courses?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=description&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug`,
-    { cache: 'force-cache' }
-  );
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
+      `/api/courses?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=description&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug`,
+      { cache: 'force-cache' }
+    );
 
-  return response.data[0] ?? null;
+    return response.data[0] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getEvents() {
@@ -151,21 +160,29 @@ export async function getEvents() {
 }
 
 export async function getEventSlugs() {
-  const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-    '/api/events?pagination[pageSize]=100&sort[0]=startsAt:asc&fields[0]=slug',
-    { cache: 'force-cache' }
-  );
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
+      '/api/events?pagination[pageSize]=100&sort[0]=startsAt:asc&fields[0]=slug',
+      { cache: 'force-cache' }
+    );
 
-  return response.data.map((event) => event.slug);
+    return response.data.map((event) => event.slug);
+  } catch {
+    return [];
+  }
 }
 
 export async function getEventBySlug(slug: string) {
-  const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-    `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=endsAt&fields[5]=location&fields[6]=details&populate[course][fields][0]=title&populate[course][fields][1]=slug`,
-    { cache: 'force-cache' }
-  );
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
+      `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=endsAt&fields[5]=location&fields[6]=details&populate[course][fields][0]=title&populate[course][fields][1]=slug`,
+      { cache: 'force-cache' }
+    );
 
-  return response.data[0] ?? null;
+    return response.data[0] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getBlogPosts() {
@@ -181,21 +198,29 @@ export async function getBlogPosts() {
 }
 
 export async function getBlogPostSlugs() {
-  const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(
-    '/api/blog-posts?pagination[pageSize]=100&sort[0]=title:asc&fields[0]=slug',
-    { cache: 'force-cache' }
-  );
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(
+      '/api/blog-posts?pagination[pageSize]=100&sort[0]=title:asc&fields[0]=slug',
+      { cache: 'force-cache' }
+    );
 
-  return response.data.map((post) => post.slug);
+    return response.data.map((post) => post.slug);
+  } catch {
+    return [];
+  }
 }
 
 export async function getBlogPostBySlug(slug: string) {
-  const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(
-    `/api/blog-posts?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=excerpt&fields[3]=content`,
-    { cache: 'force-cache' }
-  );
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(
+      `/api/blog-posts?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=excerpt&fields[3]=content`,
+      { cache: 'force-cache' }
+    );
 
-  return response.data[0] ?? null;
+    return response.data[0] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getTeachers() {
@@ -212,19 +237,27 @@ export async function getTeachers() {
 }
 
 export async function getTeacherSlugs() {
-  const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(
-    "/api/teachers?pagination[pageSize]=100&sort[0]=fullName:asc&fields[0]=slug",
-    { cache: "force-cache" }
-  );
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(
+      "/api/teachers?pagination[pageSize]=100&sort[0]=fullName:asc&fields[0]=slug",
+      { cache: "force-cache" }
+    );
 
-  return response.data.map((teacher) => teacher.slug);
+    return response.data.map((teacher) => teacher.slug);
+  } catch {
+    return [];
+  }
 }
 
 export async function getTeacherBySlug(slug: string) {
-  const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(
-    `/api/teachers?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=fullName&fields[1]=slug&fields[2]=headline&fields[3]=bio&fields[4]=email&populate[profilePhoto][fields][0]=url&populate[profilePhoto][fields][1]=alternativeText&populate[courses][fields][0]=title&populate[courses][fields][1]=slug&sort[0]=fullName:asc`,
-    { cache: "force-cache" }
-  );
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(
+      `/api/teachers?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=fullName&fields[1]=slug&fields[2]=headline&fields[3]=bio&fields[4]=email&populate[profilePhoto][fields][0]=url&populate[profilePhoto][fields][1]=alternativeText&populate[courses][fields][0]=title&populate[courses][fields][1]=slug&sort[0]=fullName:asc`,
+      { cache: "force-cache" }
+    );
 
-  return response.data[0] ?? null;
+    return response.data[0] ?? null;
+  } catch {
+    return null;
+  }
 }
