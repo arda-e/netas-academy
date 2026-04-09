@@ -17,7 +17,8 @@ export function ContactForm() {
   const {
     values,
     isSubmitting,
-    submitMessage,
+    errorMessage,
+    successMessage,
     contactRecipients,
     handleChange,
     handleSubmit,
@@ -25,8 +26,20 @@ export function ContactForm() {
 
   return (
     <form className="space-y-8" onSubmit={handleSubmit}>
+      {successMessage ? (
+        <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100">
+          {successMessage}
+        </div>
+      ) : null}
+
+      {errorMessage ? (
+        <div className="rounded-sm border border-destructive/40 bg-destructive/10 px-5 py-4 text-base text-destructive">
+          {errorMessage}
+        </div>
+      ) : null}
+
       <div className="rounded-sm border border-border/70 bg-card/45 p-5 text-sm leading-7 text-muted-foreground md:p-6 md:text-base">
-        Form gönderimi varsayılan e-posta uygulamanızda hazırlanır ve şu adreslere yönlendirilir:{" "}
+        Form kayıtları backend üzerinde saklanır. Dilerseniz şu adreslere doğrudan da ulaşabilirsiniz:{" "}
         {contactRecipients.map((email, index) => (
           <span key={email}>
             <Link
@@ -178,12 +191,6 @@ export function ContactForm() {
       >
         {isSubmitting ? "Gönderiliyor..." : "Gönder"}
       </Button>
-
-      {submitMessage ? (
-        <p className="text-sm leading-7 text-muted-foreground md:text-base">
-          {submitMessage}
-        </p>
-      ) : null}
     </form>
   );
 }
