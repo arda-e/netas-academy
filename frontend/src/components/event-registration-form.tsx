@@ -99,6 +99,25 @@ export function EventRegistrationForm({
             className={fieldClassName}
           />
         </div>
+
+        <div className="space-y-3 md:col-span-2">
+          <label htmlFor="tckn" className={labelClassName}>
+            TCKN*
+          </label>
+          <Input
+            id="tckn"
+            name="tckn"
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={11}
+            value={values.tckn}
+            onChange={handleChange}
+            className={fieldClassName}
+            required
+            placeholder="11 haneli kimlik numarası"
+          />
+        </div>
       </div>
 
       <div className="space-y-3">

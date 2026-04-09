@@ -16,7 +16,7 @@ export default function IletisimPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-6 py-18 md:px-10 lg:px-12">
+      <section className="mx-auto w-full max-w-7xl px-4 py-18 md:px-10 lg:px-12">
         <div className="panel-surface max-w-5xl rounded-sm p-8 md:p-10">
           <ContactForm />
         </div>

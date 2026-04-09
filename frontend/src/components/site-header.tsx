@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -17,9 +18,17 @@ export function SiteHeader() {
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-6 py-4 md:px-10 lg:px-12">
         <Link
           href="/"
-          className="text-sm font-semibold uppercase tracking-[0.32em] text-foreground"
+          className="flex items-center"
+          aria-label="Netas Academy ana sayfası"
         >
-          Netas Academy
+          <Image
+            src="/netas-academy.svg"
+            alt="Netas Academy"
+            width={388}
+            height={98}
+            priority
+            className="h-8 w-auto"
+          />
         </Link>
 
         <nav className="flex flex-wrap items-center justify-end gap-2 md:gap-3">

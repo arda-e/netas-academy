@@ -9,6 +9,8 @@ const PUBLIC_READ_ACTIONS = [
   'api::event.event.findOne',
   'api::blog-post.blog-post.find',
   'api::blog-post.blog-post.findOne',
+  'plugin::upload.content-api.find',
+  'plugin::upload.content-api.findOne',
 ];
 
 const ensurePublicReadPermissions = async (strapi: Core.Strapi) => {

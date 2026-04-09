@@ -10,6 +10,7 @@ type RegisterStudentInput = {
     lastName?: string;
     email: string;
     phone?: string;
+    tckn: string;
   };
   status?: 'pending' | 'confirmed' | 'cancelled' | 'waitlisted' | 'attended';
   notes?: string;

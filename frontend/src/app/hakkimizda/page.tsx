@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { TeacherCarousel } from "@/components/teacher-carousel";
-import { getTeachers, toStrapiAssetUrl } from "@/lib/strapi";
+import { getStrapiMediaAltText, getStrapiMediaUrl, getTeachers } from "@/lib/strapi";
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +49,7 @@ export default async function HakkimizdaPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-6 py-18 md:px-10 lg:px-12">
+      <section className="mx-auto w-full max-w-7xl px-4 py-18 md:px-10 lg:px-12">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.65fr)] lg:items-start">
           <aside className="panel-surface rounded-sm p-6">
             <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
@@ -92,8 +92,8 @@ export default async function HakkimizdaPage() {
               id: teacher.documentId,
               slug: teacher.slug,
               name: teacher.fullName,
-              imageUrl: toStrapiAssetUrl(teacher.profilePhoto?.url),
-              imageAlt: teacher.profilePhoto?.alternativeText ?? teacher.fullName,
+              imageUrl: getStrapiMediaUrl(teacher.profilePhoto),
+              imageAlt: getStrapiMediaAltText(teacher.profilePhoto) ?? teacher.fullName,
             }))}
           />
         </div>

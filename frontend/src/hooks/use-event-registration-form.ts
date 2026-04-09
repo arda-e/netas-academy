@@ -2,11 +2,14 @@
 
 import { ChangeEvent, FormEvent, useState } from "react";
 
+import { isValidTckn, normalizeTcknValue } from "@/lib/tckn";
+
 type EventRegistrationValues = {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
+  tckn: string;
   notes: string;
 };
 
@@ -20,6 +23,7 @@ const initialValues: EventRegistrationValues = {
   lastName: "",
   email: "",
   phone: "",
+  tckn: "",
   notes: "",
 };
 
@@ -41,6 +45,10 @@ function getErrorMessage(payload: unknown) {
 
     if (message === "Event not found") {
       return "Etkinlik bulunamadi.";
+    }
+
+    if (message === "Invalid TCKN") {
+      return "Gecerli bir TCKN girin.";
     }
 
     return message;
@@ -75,6 +83,14 @@ export function useEventRegistrationForm({
     setErrorMessage(null);
     setSuccessMessage(null);
 
+    const normalizedTckn = normalizeTcknValue(values.tckn);
+
+    if (!isValidTckn(normalizedTckn)) {
+      setErrorMessage("Gecerli bir TCKN girin.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const response = await fetch("/api/registrations/register", {
         method: "POST",
@@ -88,6 +104,7 @@ export function useEventRegistrationForm({
             lastName: values.lastName.trim(),
             email: values.email.trim(),
             phone: values.phone.trim(),
+            tckn: normalizedTckn,
           },
           notes: values.notes.trim() || undefined,
         }),

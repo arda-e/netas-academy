@@ -70,7 +70,7 @@ export default async function EventRegistrationPage({
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-6 py-18 md:px-10 lg:px-12">
+      <section className="mx-auto w-full max-w-7xl px-4 py-18 md:px-10 lg:px-12">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.46fr)]">
           <div className="panel-surface rounded-sm p-8 md:p-10">
             <EventRegistrationForm

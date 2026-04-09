@@ -65,6 +65,9 @@ type StrapiMedia = {
   documentId: string;
   url?: string | null;
   alternativeText?: string | null;
+  data?: unknown;
+  attributes?: unknown;
+  formats?: Record<string, { url?: string | null }> | null;
 };
 
 export type StrapiTeacher = {
@@ -107,6 +110,53 @@ export function toStrapiAssetUrl(path: string | null | undefined) {
   }
 
   return `${STRAPI_PUBLIC_URL}${path}`;
+}
+
+export function getStrapiMediaUrl(media?: StrapiMedia | null) {
+  if (!media) {
+    return null;
+  }
+
+  const candidates = [
+    media.url,
+    getNestedString(media, ["data", "attributes", "url"]),
+    getNestedString(media, ["data", "url"]),
+    getNestedString(media, ["attributes", "url"]),
+    getNestedString(media, ["formats", "large", "url"]),
+    getNestedString(media, ["formats", "medium", "url"]),
+    getNestedString(media, ["formats", "small", "url"]),
+    getNestedString(media, ["formats", "thumbnail", "url"]),
+  ];
+
+  return toStrapiAssetUrl(candidates.find((value) => typeof value === "string" && value.length > 0) ?? null);
+}
+
+export function getStrapiMediaAltText(media?: StrapiMedia | null) {
+  if (!media) {
+    return null;
+  }
+
+  return (
+    media.alternativeText ??
+    getNestedString(media, ["data", "attributes", "alternativeText"]) ??
+    getNestedString(media, ["data", "alternativeText"]) ??
+    getNestedString(media, ["attributes", "alternativeText"]) ??
+    null
+  );
+}
+
+function getNestedString(value: unknown, path: string[]) {
+  let current: unknown = value;
+
+  for (const key of path) {
+    if (!current || typeof current !== "object" || !(key in current)) {
+      return null;
+    }
+
+    current = (current as Record<string, unknown>)[key];
+  }
+
+  return typeof current === "string" ? current : null;
 }
 
 export async function getCourses() {
@@ -227,7 +277,7 @@ export async function getTeachers() {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(
       "/api/teachers?pagination[pageSize]=100&sort[0]=fullName:asc&fields[0]=fullName&fields[1]=slug&fields[2]=headline&populate[profilePhoto][fields][0]=url&populate[profilePhoto][fields][1]=alternativeText",
-      { cache: "force-cache" }
+      { cache: "no-store" }
     );
 
     return response.data;
@@ -251,10 +301,17 @@ export async function getTeacherSlugs() {
 
 export async function getTeacherBySlug(slug: string) {
   try {
-    const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(
-      `/api/teachers?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=fullName&fields[1]=slug&fields[2]=headline&fields[3]=bio&fields[4]=email&populate[profilePhoto][fields][0]=url&populate[profilePhoto][fields][1]=alternativeText&populate[courses][fields][0]=title&populate[courses][fields][1]=slug&sort[0]=fullName:asc`,
-      { cache: "force-cache" }
-    );
+    const path = `/api/teachers?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=fullName&fields[1]=slug&fields[2]=headline&fields[3]=bio&fields[4]=email&populate[profilePhoto][fields][0]=url&populate[profilePhoto][fields][1]=alternativeText&populate[courses][fields][0]=title&populate[courses][fields][1]=slug&sort[0]=fullName:asc`;
+    console.log("[getTeacherBySlug] request", { slug, path });
+
+    const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(path, {
+      cache: "no-store",
+    });
+    console.log("[getTeacherBySlug] response", {
+      slug,
+      teacher: response.data[0] ?? null,
+      profilePhoto: response.data[0]?.profilePhoto ?? null,
+    });
 
     return response.data[0] ?? null;
   } catch {

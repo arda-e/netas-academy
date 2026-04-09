@@ -35,9 +35,10 @@ export function ContentPageShell({
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-6 py-18 md:px-10 lg:px-12">
-        <div className="mt-12">{children}</div>
+      <section className="mx-auto w-full max-w-7xl px-4 py-18 md:px-10 lg:px-12">
+        <div>{children}</div>
       </section>
     </main>
+
   );
 }

@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { VisualStorySection } from "@/components/content";
-import { getTeacherBySlug, toStrapiAssetUrl } from "@/lib/strapi";
+import {
+  getStrapiMediaAltText,
+  getStrapiMediaUrl,
+  getTeacherBySlug,
+} from "@/lib/strapi";
 import { teacherDetailVisualSection } from "@/lib/page-visual-sections";
 
 type TeacherDetailPageProps = {
@@ -51,31 +55,45 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
     notFound();
   }
 
+  const photoUrl = getStrapiMediaUrl(teacher.profilePhoto);
+  const photoAlt = getStrapiMediaAltText(teacher.profilePhoto) ?? teacher.fullName;
+
   return (
     <ContentDetailShell
+      leadMedia={
+        <div className="relative h-[115px] w-[115px] overflow-hidden rounded-full border border-white/8 bg-card/50 shadow-[0_24px_64px_rgba(0,0,0,0.26)] md:h-[162px] md:w-[162px]">
+          <div className="relative h-full w-full">
+            {photoUrl ? (
+              <Image
+                src={photoUrl}
+                alt={photoAlt}
+                fill
+                priority
+                sizes="(min-width: 768px) 224px, 160px"
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,oklch(0.72_0.11_196_/_0.22)_0%,transparent_58%),linear-gradient(135deg,oklch(0.22_0.015_244)_0%,oklch(0.15_0.014_244)_100%)]">
+                <span className="text-6xl font-semibold tracking-tight text-foreground/70 md:text-8xl">
+                  {getInitials(teacher.fullName)}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      }
       title={teacher.fullName}
       summary={teacher.headline ?? undefined}
       afterContent={<VisualStorySection {...teacherDetailVisualSection} />}
       meta={
-        <div className="space-y-4">
-          <Avatar className="size-24 ring-1 ring-border/70">
-            <AvatarImage
-              src={toStrapiAssetUrl(teacher.profilePhoto?.url) ?? undefined}
-              alt={teacher.profilePhoto?.alternativeText ?? teacher.fullName}
-            />
-            <AvatarFallback className="bg-muted text-xl font-semibold text-foreground">
-              {getInitials(teacher.fullName)}
-            </AvatarFallback>
-          </Avatar>
-          {teacher.email ? (
-            <p>
-              E-posta:{" "}
-              <a className="text-primary hover:underline" href={`mailto:${teacher.email}`}>
-                {teacher.email}
-              </a>
-            </p>
-          ) : null}
-        </div>
+        teacher.email ? (
+          <p>
+            E-posta:{" "}
+            <a className="text-primary hover:underline" href={`mailto:${teacher.email}`}>
+              {teacher.email}
+            </a>
+          </p>
+        ) : null
       }
     >
       <div className="space-y-8">
