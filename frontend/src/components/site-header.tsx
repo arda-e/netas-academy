@@ -13,7 +13,7 @@ const navigationItems = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/8 bg-background/72 shadow-[0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl">
+    <header className="sticky top-0 z-50 border-b border-white/8 bg-background/72 shadow-[0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-6 py-4 md:px-10 lg:px-12">
         <Link
           href="/"

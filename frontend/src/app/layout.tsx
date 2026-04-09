@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -37,10 +38,11 @@ export default function RootLayout({
         geistMono.variable
       )}
     >
-      <body className="min-h-full bg-background font-sans text-foreground">
-        <div className="min-h-screen overflow-x-hidden">
+      <body className="min-h-full overflow-x-hidden bg-background font-sans text-foreground">
+        <div className="flex min-h-screen flex-col">
           <SiteHeader />
-          {children}
+          <div className="flex-1">{children}</div>
+          <SiteFooter />
         </div>
       </body>
     </html>
