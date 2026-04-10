@@ -1,13 +1,17 @@
 "use client";
 
+import Link from "next/link";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useEventRegistrationForm } from "@/hooks/use-event-registration-form";
+import type { StrapiEventType } from "@/lib/strapi";
 
 type EventRegistrationFormProps = {
   eventDocumentId: string;
   eventTitle: string;
+  eventType: StrapiEventType;
 };
 
 const fieldClassName =
@@ -19,6 +23,7 @@ const labelClassName =
 export function EventRegistrationForm({
   eventDocumentId,
   eventTitle,
+  eventType,
 }: EventRegistrationFormProps) {
   const {
     values,
@@ -27,7 +32,8 @@ export function EventRegistrationForm({
     successMessage,
     handleChange,
     handleSubmit,
-  } = useEventRegistrationForm({ eventDocumentId, eventTitle });
+    requiresKvkkConsent,
+  } = useEventRegistrationForm({ eventDocumentId, eventTitle, eventType });
 
   return (
     <form className="space-y-8" onSubmit={handleSubmit}>
@@ -133,6 +139,28 @@ export function EventRegistrationForm({
           placeholder="Katılım beklentiniz, kurumunuz veya iletmek istediginiz notlar..."
         />
       </div>
+
+      {requiresKvkkConsent ? (
+        <label className="flex gap-4 rounded-sm border border-border/70 bg-card/55 p-4 text-base leading-7 text-foreground/78 md:p-5 md:text-[1.02rem]">
+          <input
+            id="kvkkConsent"
+            name="kvkkConsent"
+            type="checkbox"
+            checked={values.kvkkConsent}
+            onChange={handleChange}
+            className="mt-1 size-6 shrink-0 rounded-sm border-2 border-gray-300 text-primary focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30"
+          />
+          <span className="space-y-1">
+            <span className="block font-medium text-foreground">
+              Bu eğitim programına katılımım sebebiyle işlenecek olan kişisel verilerime ilişkin detaylı bilgilerin yer aldığı{" "}
+              <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80">
+                6698 Sayılı Kişisel Verileri Koruma Kanunu Uyarınca Eğitim Programı Aydınlatma Metni&apos;ni
+              </Link>{" "}
+              okudum ve anladım.
+            </span>
+          </span>
+        </label>
+      ) : null}
 
       <Button type="submit" disabled={isSubmitting} className="h-12 rounded-sm px-7 text-base font-semibold md:h-14 md:text-lg">
         {isSubmitting ? "Kayit Gonderiliyor..." : "Kaydi Tamamla"}

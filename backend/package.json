@@ -23,6 +23,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "strapi-plugin-csv-exporter": "^5.5.2",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {
@@ -32,7 +33,7 @@
     "typescript": "^5"
   },
   "engines": {
-    "node": ">=20.0.0 <=24.x.x",
+    "node": ">=22.0.0 <23.0.0",
     "npm": ">=6.0.0"
   },
   "strapi": {

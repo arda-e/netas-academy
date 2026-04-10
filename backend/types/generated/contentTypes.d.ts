@@ -560,6 +560,11 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     details: Schema.Attribute.RichText;
     endsAt: Schema.Attribute.DateTime;
+    eventType: Schema.Attribute.Enumeration<['etkinlik', 'egitim', 'kurs']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'etkinlik'>;
+    keepRegistrationsOpen: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;

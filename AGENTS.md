@@ -21,9 +21,9 @@ Before changing code, read the files that define the local rules and entry point
 
 ## Environment
 
-- Use Node `24.x`.
+- Use Node `22.x`.
 - Use `npm`, not `pnpm` or `yarn`.
-- Root scripts already wrap commands with `fnm exec --using 24`.
+- Root scripts already wrap commands with `fnm exec --using 22`.
 - Backend defaults to SQLite at [`backend/.tmp/data.db`](/Users/arda/Desktop/development/netas_academy/backend/.tmp/data.db).
 
 Common commands from the repo root:

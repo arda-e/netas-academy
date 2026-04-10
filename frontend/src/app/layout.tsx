@@ -33,12 +33,12 @@ export default function RootLayout({
     <html
       lang="tr"
       className={cn(
-        "dark h-full bg-background antialiased font-sans",
+        "h-full bg-slate-50 antialiased font-sans",
         geistSans.variable,
         geistMono.variable
       )}
     >
-      <body className="min-h-full overflow-x-hidden bg-background font-sans text-foreground">
+      <body className="min-h-full overflow-x-hidden bg-slate-50 font-sans text-foreground">
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <div className="flex-1">{children}</div>

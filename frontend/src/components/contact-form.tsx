@@ -11,7 +11,7 @@ const fieldClassName =
   "h-12 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-14 md:px-5 md:text-base";
 
 const labelClassName =
-  "text-lg font-semibold tracking-tight text-foreground md:text-xl";
+  "text-md font-medium text-foreground";
 
 export function ContactForm() {
   const {
@@ -38,23 +38,8 @@ export function ContactForm() {
         </div>
       ) : null}
 
-      <div className="rounded-sm border border-border/70 bg-card/45 p-5 text-sm leading-7 text-muted-foreground md:p-6 md:text-base">
-        Form kayıtları backend üzerinde saklanır. Dilerseniz şu adreslere doğrudan da ulaşabilirsiniz:{" "}
-        {contactRecipients.map((email, index) => (
-          <span key={email}>
-            <Link
-              href={`mailto:${email}`}
-              className="font-medium text-primary transition-colors hover:text-primary/80"
-            >
-              {email}
-            </Link>
-            {index < contactRecipients.length - 1 ? ", " : "."}
-          </span>
-        ))}
-      </div>
-
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-3">
+        <div className="flex gap-1 flex-col">
           <label
             htmlFor="firstName"
             className={labelClassName}
@@ -66,7 +51,6 @@ export function ContactForm() {
             name="firstName"
             value={values.firstName}
             onChange={handleChange}
-            className={fieldClassName}
             required
           />
         </div>
@@ -176,21 +160,24 @@ export function ContactForm() {
       </div>
 
       <div className="max-w-5xl text-base leading-8 text-muted-foreground md:text-lg">
-        Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır.
+        Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır. <br />
         Kişisel verilerinizin işlenmesi ile ilgili Aydınlatma Metnine{" "}
-        <Link href="#" className="text-primary transition-colors hover:text-primary/80">
+        <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80">
           buradan
-        </Link>{" "}
-        erişebilirsiniz
+        </Link>{" "}erişebilirsiniz
       </div>
-
+      <div
+        className="flex justify-end"
+      >
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="h-12 rounded-sm px-7 text-base font-semibold md:h-14 md:text-lg"
+        className="h-12 rounded-md px-7 text-base font-semibold md:text-lg"
       >
         {isSubmitting ? "Gönderiliyor..." : "Gönder"}
       </Button>
+      </div>
+
     </form>
   );
 }

@@ -1,6 +1,8 @@
 import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
+import { isEventRegistrationOpen } from '../../../utils/event-registration';
+
 const { NotFoundError, ValidationError } = errors;
 
 type RegisterStudentInput = {
@@ -20,11 +22,15 @@ export default factories.createCoreService('api::registration.registration' as a
   async registerStudentForEvent(input: RegisterStudentInput) {
     const event = await strapi.db.query('api::event.event').findOne({
       where: { documentId: input.eventDocumentId },
-      select: ['id', 'documentId', 'title', 'slug'],
+      select: ['id', 'documentId', 'title', 'slug', 'startsAt', 'keepRegistrationsOpen'],
     });
 
     if (!event) {
       throw new NotFoundError('Event not found');
+    }
+
+    if (!isEventRegistrationOpen(event)) {
+      throw new ValidationError('Event registration is closed');
     }
 
     const student = await strapi.service('api::student.student').upsertByEmail(input.student);

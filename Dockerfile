@@ -1,4 +1,4 @@
-FROM node:24-bookworm AS deps
+FROM node:22-bookworm AS deps
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ ENV STRAPI_URL=http://127.0.0.1:1337
 RUN npm run build --prefix backend
 RUN npm run build --prefix frontend
 
-FROM node:24-bookworm-slim AS runner
+FROM node:22-bookworm-slim AS runner
 
 WORKDIR /app
 

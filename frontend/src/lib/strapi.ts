@@ -33,6 +33,9 @@ export type StrapiCourse = {
   } | null;
 };
 
+export type StrapiEventType = "etkinlik" | "egitim" | "kurs";
+export type StrapiEventSortOrder = "asc" | "desc";
+
 export type StrapiEvent = {
   id: number;
   documentId: string;
@@ -41,7 +44,9 @@ export type StrapiEvent = {
   summary?: string | null;
   details?: string | null;
   startsAt: string;
+  eventType: StrapiEventType;
   endsAt?: string | null;
+  keepRegistrationsOpen?: boolean | null;
   location?: string | null;
   course?: {
     id: number;
@@ -197,10 +202,18 @@ export async function getCourseBySlug(slug: string) {
   }
 }
 
-export async function getEvents() {
+export async function getEvents(
+  eventType?: StrapiEventType | null,
+  sortOrder: StrapiEventSortOrder = "asc"
+) {
   try {
+    const eventTypeFilter = eventType
+      ? `&filters[eventType][$eq]=${encodeURIComponent(eventType)}`
+      : "";
+    const eventSort = sortOrder === "desc" ? "startsAt:desc" : "startsAt:asc";
+
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-      '/api/events?pagination[pageSize]=100&sort[0]=startsAt:asc&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=endsAt&fields[5]=location&populate[course][fields][0]=title&populate[course][fields][1]=slug'
+      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&populate[course][fields][0]=title&populate[course][fields][1]=slug${eventTypeFilter}`
     );
 
     return response.data;
@@ -225,7 +238,7 @@ export async function getEventSlugs() {
 export async function getEventBySlug(slug: string) {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-      `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=endsAt&fields[5]=location&fields[6]=details&populate[course][fields][0]=title&populate[course][fields][1]=slug`,
+      `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=details&populate[course][fields][0]=title&populate[course][fields][1]=slug`,
       { cache: 'force-cache' }
     );
 

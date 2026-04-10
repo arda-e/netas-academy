@@ -1,6 +1,7 @@
 export { ContentPageShell } from "./content-page-shell";
 export { ContentGrid } from "./content-grid";
 export { ContentCardShell } from "./content-card-shell";
+export { ContentSuperheading } from "./content-superheading";
 export { ContentDetailShell } from "./content-detail-shell";
 export { CourseList, CourseDetail } from "./courses";
 export { EventList, EventDetail } from "./events";

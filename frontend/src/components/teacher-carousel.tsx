@@ -91,7 +91,7 @@ export function TeacherCarousel({
           <Link
             key={teacher.id}
             href={`/egitmenler/${teacher.slug}`}
-            className="panel-surface group min-w-[220px] snap-start rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[0_24px_58px_rgba(0,0,0,0.32)] sm:min-w-[250px]"
+            className="panel-surface group/card-link min-w-[220px] snap-start cursor-pointer rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[250px]"
           >
             <Avatar className="size-24 ring-1 ring-border/60">
               <AvatarImage
@@ -102,10 +102,10 @@ export function TeacherCarousel({
                 {getInitials(teacher.name)}
               </AvatarFallback>
             </Avatar>
-            <p className="mt-4 line-clamp-2 text-lg font-semibold tracking-tight text-foreground">
+            <p className="mt-4 line-clamp-2 text-lg font-semibold tracking-tight text-foreground transition-colors group-hover/card-link:text-[#009ca6]">
               {teacher.name}
             </p>
-            <p className="mt-1 text-sm text-foreground/62">
+            <p className="mt-1 text-sm text-foreground/62 transition-colors group-hover/card-link:text-[#009ca6]">
               Profili goruntule
             </p>
           </Link>

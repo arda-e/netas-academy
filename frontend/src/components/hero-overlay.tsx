@@ -26,19 +26,19 @@ export function HeroOverlay({
   secondaryCta,
 }: HeroOverlayProps) {
   return (
-    <section className="relative isolate overflow-hidden bg-background">
+    <section className="relative isolate overflow-hidden bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]">
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center opacity-60"
         style={{ backgroundImage: `url(${imageUrl})` }}
       />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,31,57,0.3)_0%,rgba(14,31,57,0.62)_52%,rgba(10,24,46,0.82)_100%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(89,210,220,0.18),transparent_34%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.18),transparent_26%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,156,166,0.24)_0%,rgba(15,76,129,0.72)_52%,rgba(8,27,56,0.88)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,156,166,0.24),transparent_34%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.14),transparent_26%)]" />
 
       <div className="relative mx-auto flex min-h-[calc(100vh-81px)] w-full max-w-7xl items-center px-6 py-16 md:px-10 md:py-20 lg:px-12">
-        <div className="max-w-3xl space-y-6 rounded-sm border border-white/60 bg-white/82 px-8 py-10 text-left text-slate-950 shadow-[0_24px_80px_rgba(255,255,255,0.16)] backdrop-blur-md md:px-12 md:py-14">
+        <div className="max-w-3xl space-y-4 rounded-sm border border-white/60 bg-white/82 px-8 py-10 text-left text-slate-950 shadow-sm backdrop-blur-md md:px-12 md:py-14">
           {eyebrow ? (
-            <p className="text-sm font-medium uppercase tracking-[0.34em] text-slate-700">
+            <p className="text-sm font-semibold uppercase tracking-[0.34em] text-slate-700">
               {eyebrow}
             </p>
           ) : null}

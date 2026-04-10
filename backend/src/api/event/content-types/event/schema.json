@@ -30,8 +30,19 @@
       "type": "datetime",
       "required": true
     },
+    "eventType": {
+      "type": "enumeration",
+      "enum": ["etkinlik", "egitim", "kurs"],
+      "default": "etkinlik",
+      "required": true
+    },
     "endsAt": {
       "type": "datetime"
+    },
+    "keepRegistrationsOpen": {
+      "type": "boolean",
+      "default": false,
+      "description": "Açık olduğunda etkinliğin kayıtları, startsAt'ten 24 saat önce otomatik kapanmaz."
     },
     "location": {
       "type": "string"

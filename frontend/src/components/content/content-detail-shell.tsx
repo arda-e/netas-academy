@@ -21,7 +21,7 @@ export function ContentDetailShell({
 }: ContentDetailShellProps) {
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
-      <article className="mx-auto w-full max-w-7xl px-6 py-18 md:px-10 lg:px-12">
+      <article className="mx-auto w-full max-w-7xl px-6 pt-10 pb-18 md:px-10 md:pt-12 lg:px-12">
         <div
           className={
             leadMedia
@@ -30,21 +30,21 @@ export function ContentDetailShell({
           }
         >
           {leadMedia ? <div className="shrink-0">{leadMedia}</div> : null}
-          <div className="max-w-3xl space-y-5">
-          {eyebrow ? (
-            <p className="text-sm font-medium uppercase tracking-[0.34em] text-primary/76">
-              {eyebrow}
-            </p>
-          ) : null}
-          <h1 className="text-balance text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
-            {title}
-          </h1>
-          {summary ? (
-            <p className="max-w-2xl text-lg leading-8 text-foreground/72">
-              {summary}
-            </p>
-          ) : null}
-        </div>
+          <div className="max-w-3xl space-y-3">
+            {eyebrow ? (
+              <p className="text-sm font-semibold uppercase tracking-[0.34em] text-primary/76">
+                {eyebrow}
+              </p>
+            ) : null}
+            <h1 className="text-balance text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
+              {title}
+            </h1>
+            {summary ? (
+              <p className="max-w-2xl text-lg leading-8 text-foreground/72">
+                {summary}
+              </p>
+            ) : null}
+          </div>
         </div>
 
         <div className="panel-surface mt-10 w-full rounded-sm p-8 md:p-12">

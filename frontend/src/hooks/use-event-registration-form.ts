@@ -2,6 +2,7 @@
 
 import { ChangeEvent, FormEvent, useState } from "react";
 
+import type { StrapiEventType } from "@/lib/strapi";
 import { isValidTckn, normalizeTcknValue } from "@/lib/tckn";
 
 type EventRegistrationValues = {
@@ -11,11 +12,13 @@ type EventRegistrationValues = {
   phone: string;
   tckn: string;
   notes: string;
+  kvkkConsent: boolean;
 };
 
 type UseEventRegistrationFormOptions = {
   eventDocumentId: string;
   eventTitle: string;
+  eventType: StrapiEventType;
 };
 
 const initialValues: EventRegistrationValues = {
@@ -25,6 +28,7 @@ const initialValues: EventRegistrationValues = {
   phone: "",
   tckn: "",
   notes: "",
+  kvkkConsent: false,
 };
 
 function getErrorMessage(payload: unknown) {
@@ -41,6 +45,10 @@ function getErrorMessage(payload: unknown) {
 
     if (message === "Student is already registered for this event") {
       return "Bu etkinlik icin daha once kayit oldunuz.";
+    }
+
+    if (message === "Event registration is closed") {
+      return "Bu etkinlik icin kayitlar kapandi. Kayitlar etkinlik baslangicindan 24 saat once otomatik olarak kapanir.";
     }
 
     if (message === "Event not found") {
@@ -60,7 +68,9 @@ function getErrorMessage(payload: unknown) {
 export function useEventRegistrationForm({
   eventDocumentId,
   eventTitle,
+  eventType,
 }: UseEventRegistrationFormOptions) {
+  const requiresKvkkConsent = eventType === "egitim" || eventType === "kurs";
   const [values, setValues] = useState<EventRegistrationValues>(initialValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -69,11 +79,19 @@ export function useEventRegistrationForm({
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = event.target;
+    const { currentTarget } = event;
+    const { name } = event.target;
+    if (name === "kvkkConsent" && currentTarget instanceof HTMLInputElement) {
+      setValues((currentValues) => ({
+        ...currentValues,
+        kvkkConsent: currentTarget.checked,
+      }));
+      return;
+    }
 
     setValues((currentValues) => ({
       ...currentValues,
-      [name]: value,
+      [name]: currentTarget.value,
     }));
   };
 
@@ -87,6 +105,12 @@ export function useEventRegistrationForm({
 
     if (!isValidTckn(normalizedTckn)) {
       setErrorMessage("Gecerli bir TCKN girin.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (requiresKvkkConsent && !values.kvkkConsent) {
+      setErrorMessage("Lutfen KVKK aydinlatma metnini okudugunuzu onaylayin.");
       setIsSubmitting(false);
       return;
     }
@@ -135,5 +159,6 @@ export function useEventRegistrationForm({
     successMessage,
     handleChange,
     handleSubmit,
+    requiresKvkkConsent,
   };
 }

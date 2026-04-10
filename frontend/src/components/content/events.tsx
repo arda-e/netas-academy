@@ -9,7 +9,7 @@ type EventListItem = {
   slug: string;
   title: string;
   summary?: string | null;
-  courseTitle?: string | null;
+  eventType: string;
   startsAt: string;
   endsAt?: string | null;
   location?: string | null;
@@ -29,6 +29,18 @@ type EventDetailProps = {
   location?: string | null;
   children: ReactNode;
   afterContent?: ReactNode;
+};
+
+const formatEventType = (eventType: string) => {
+  switch (eventType) {
+    case "egitim":
+      return "Eğitim";
+    case "kurs":
+      return "Kurs";
+    case "etkinlik":
+    default:
+      return "Etkinlik";
+  }
 };
 
 const formatEventDate = (value: string) =>
@@ -51,12 +63,15 @@ export function EventList({
           key={event.id}
           href={`/etkinlikler/${event.slug}`}
           title={event.title}
-          kicker={event.courseTitle ?? "Kurs bilgisi yok"}
+          kicker={formatEventType(event.eventType)}
           summary={event.summary ?? "Bu etkinlik icin aciklama yakinda eklenecek."}
+          className="border-[3px]"
           meta={
             <>
-              <p>{formatEventDate(event.startsAt)}</p>
-              {event.endsAt ? <p>{formatEventDate(event.endsAt)}</p> : null}
+              <p className="font-bold text-gray-700">{formatEventDate(event.startsAt)}</p>
+              {event.endsAt ? (
+                <p className="font-bold text-gray-700">{formatEventDate(event.endsAt)}</p>
+              ) : null}
               {event.location ? <p>{event.location}</p> : null}
             </>
           }
@@ -83,8 +98,8 @@ export function EventDetail({
       summary={summary ?? undefined}
       meta={
         <>
-          <p>{formatEventDate(startsAt)}</p>
-          {endsAt ? <p>{formatEventDate(endsAt)}</p> : null}
+          <p className="font-bold text-gray-700">{formatEventDate(startsAt)}</p>
+          {endsAt ? <p className="font-bold text-gray-700">{formatEventDate(endsAt)}</p> : null}
           {location ? <p>{location}</p> : null}
         </>
       }

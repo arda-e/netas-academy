@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { EventDetail, VisualStorySection } from "@/components/content";
+import { EventDetail } from "@/components/content";
 import { Button } from "@/components/ui/button";
-import { eventDetailVisualSection } from "@/lib/page-visual-sections";
 import { getEventBySlug } from "@/lib/strapi";
 
 type EventDetailPageProps = {
@@ -49,7 +48,6 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
       startsAt={event.startsAt}
       endsAt={event.endsAt}
       location={event.location}
-      afterContent={<VisualStorySection {...eventDetailVisualSection} />}
     >
       <div className="space-y-8">
         <p>{event.details ?? "Bu etkinlik icin detayli icerik yakinda eklenecek."}</p>

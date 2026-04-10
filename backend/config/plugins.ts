@@ -12,6 +12,10 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
       },
     },
   },
+  'csv-exporter': {
+    enabled: true,
+    config: {},
+  },
 });
 
 export default config;
