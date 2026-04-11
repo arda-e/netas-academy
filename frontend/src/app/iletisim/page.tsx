@@ -16,9 +16,30 @@ export default function IletisimPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-18 md:px-10 lg:px-12">
-        <div className="panel-surface max-w-5xl rounded-sm p-8 md:p-10">
-          <ContactForm />
+      <section className="mx-auto w-full max-w-7xl px-4 py-14 md:px-10 md:py-18 lg:px-12">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(280px,0.46fr)]">
+          <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
+            <ContactForm />
+          </div>
+
+          <aside className="panel-surface rounded-sm p-6 md:p-8">
+            <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
+              İletişim Süreci
+            </p>
+            <div className="mt-5 space-y-4 text-sm leading-7 text-foreground/78 md:text-base">
+              <p>
+                Eğitimler, etkinlikler ve kurumsal iş birlikleri için gönderdiğiniz mesajlar ilgili ekiplerle
+                paylaşılır.
+              </p>
+              <p>
+                Talebinizi hızlandırmak için konu başlığında eğitim adı, etkinlik başlığı veya iş birliği detayını
+                belirtmeniz yeterlidir.
+              </p>
+              <p>
+                Formu gönderdikten sonra gerektiğinde sizinle e-posta veya telefon üzerinden iletişime geçebiliriz.
+              </p>
+            </div>
+          </aside>
         </div>
       </section>
     </main>

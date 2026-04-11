@@ -20,6 +20,8 @@ const fieldClassName =
 const labelClassName =
   "text-lg font-semibold tracking-tight text-foreground md:text-xl";
 
+const fieldWrapperClassName = "space-y-2 md:space-y-3";
+
 export function EventRegistrationForm({
   eventDocumentId,
   eventTitle,
@@ -36,7 +38,7 @@ export function EventRegistrationForm({
   } = useEventRegistrationForm({ eventDocumentId, eventTitle, eventType });
 
   return (
-    <form className="space-y-8" onSubmit={handleSubmit}>
+    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit}>
       {successMessage ? (
         <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100">
           {successMessage}
@@ -49,8 +51,8 @@ export function EventRegistrationForm({
         </div>
       ) : null}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-3">
+      <div className="grid gap-4 md:gap-6 md:grid-cols-2">
+        <div className={fieldWrapperClassName}>
           <label htmlFor="firstName" className={labelClassName}>
             Adınız*
           </label>
@@ -64,7 +66,7 @@ export function EventRegistrationForm({
           />
         </div>
 
-        <div className="space-y-3">
+        <div className={fieldWrapperClassName}>
           <label htmlFor="lastName" className={labelClassName}>
             Soyadınız
           </label>
@@ -77,7 +79,7 @@ export function EventRegistrationForm({
           />
         </div>
 
-        <div className="space-y-3">
+        <div className={fieldWrapperClassName}>
           <label htmlFor="email" className={labelClassName}>
             E-Posta*
           </label>
@@ -92,7 +94,7 @@ export function EventRegistrationForm({
           />
         </div>
 
-        <div className="space-y-3">
+        <div className={fieldWrapperClassName}>
           <label htmlFor="phone" className={labelClassName}>
             Telefon
           </label>
@@ -106,7 +108,7 @@ export function EventRegistrationForm({
           />
         </div>
 
-        <div className="space-y-3 md:col-span-2">
+        <div className={`${fieldWrapperClassName} md:col-span-2`}>
           <label htmlFor="tckn" className={labelClassName}>
             TCKN*
           </label>
@@ -126,7 +128,7 @@ export function EventRegistrationForm({
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className={fieldWrapperClassName}>
         <label htmlFor="notes" className={labelClassName}>
           Ek Notlar
         </label>
@@ -141,30 +143,43 @@ export function EventRegistrationForm({
       </div>
 
       {requiresKvkkConsent ? (
-        <label className="flex gap-4 rounded-sm border border-border/70 bg-card/55 p-4 text-base leading-7 text-foreground/78 md:p-5 md:text-[1.02rem]">
-          <input
-            id="kvkkConsent"
-            name="kvkkConsent"
-            type="checkbox"
-            checked={values.kvkkConsent}
-            onChange={handleChange}
-            className="mt-1 size-6 shrink-0 rounded-sm border-2 border-gray-300 text-primary focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30"
-          />
-          <span className="space-y-1">
-            <span className="block font-medium text-foreground">
-              Bu eğitim programına katılımım sebebiyle işlenecek olan kişisel verilerime ilişkin detaylı bilgilerin yer aldığı{" "}
-              <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80">
-                6698 Sayılı Kişisel Verileri Koruma Kanunu Uyarınca Eğitim Programı Aydınlatma Metni&apos;ni
-              </Link>{" "}
-              okudum ve anladım.
+        <label className="rounded-sm border border-border/70 bg-card/55 p-4 text-sm leading-7 text-foreground/78 md:p-5 md:text-base">
+          <span className="flex items-start gap-3 md:gap-4">
+            <input
+              id="kvkkConsent"
+              name="kvkkConsent"
+              type="checkbox"
+              checked={values.kvkkConsent}
+              onChange={handleChange}
+              className="mt-1 size-5 shrink-0 rounded-sm border-2 border-gray-300 text-primary focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 md:size-6"
+            />
+            <span className="space-y-1">
+              <span className="block font-medium text-foreground">
+                Bu eğitim programına katılımım sebebiyle işlenecek olan kişisel verilerime ilişkin detaylı bilgilerin yer aldığı{" "}
+                <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80">
+                  6698 Sayılı Kişisel Verileri Koruma Kanunu Uyarınca Eğitim Programı Aydınlatma Metni&apos;ni
+                </Link>{" "}
+                okudum ve anladım.
+              </span>
             </span>
           </span>
         </label>
       ) : null}
 
-      <Button type="submit" disabled={isSubmitting} className="h-12 rounded-sm px-7 text-base font-semibold md:h-14 md:text-lg">
-        {isSubmitting ? "Kayit Gonderiliyor..." : "Kaydi Tamamla"}
-      </Button>
+      <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-center md:justify-between">
+        <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+          Kaydınız tamamlandığında durum bilgisi bu form üzerinde gösterilir. Gerekli durumlarda sizinle
+          paylaştığınız iletişim bilgileri üzerinden iletişime geçilebilir.
+        </p>
+
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="h-12 w-full rounded-sm px-7 text-base font-semibold sm:w-auto md:h-14 md:text-lg"
+        >
+          {isSubmitting ? "Kayit Gonderiliyor..." : "Kaydi Tamamla"}
+        </Button>
+      </div>
     </form>
   );
 }
