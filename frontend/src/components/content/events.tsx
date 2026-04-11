@@ -57,7 +57,7 @@ export function EventList({
   emptyMessage = "Gosterilecek etkinlik verisi su an kullanilabilir degil.",
 }: EventListProps) {
   return (
-    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-6 lg:grid-cols-2">
+    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-4 sm:gap-6 lg:grid-cols-2">
       {items.map((event) => (
         <ContentCardShell
           key={event.id}

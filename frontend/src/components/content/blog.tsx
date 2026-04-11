@@ -28,7 +28,7 @@ export function BlogList({
   emptyMessage = "Gosterilecek blog verisi su an kullanilabilir degil.",
 }: BlogListProps) {
   return (
-    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-6 lg:grid-cols-2">
+    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-4 sm:gap-6 lg:grid-cols-2">
       {items.map((post) => (
         <ContentCardShell
           key={post.id}

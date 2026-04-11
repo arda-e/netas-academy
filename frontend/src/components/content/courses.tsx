@@ -30,7 +30,7 @@ export function CourseList({
   emptyMessage = "Gosterilecek egitim verisi su an kullanilabilir degil.",
 }: CourseListProps) {
   return (
-    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
       {items.map((course) => (
         <ContentCardShell
           key={course.id}
