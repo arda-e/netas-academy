@@ -13,3 +13,4 @@ backend/npm-debug.log*
 .env
 .env.*
 .vercel
+.worktrees
