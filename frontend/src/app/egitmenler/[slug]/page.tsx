@@ -61,7 +61,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
   return (
     <ContentDetailShell
       leadMedia={
-        <div className="relative h-[115px] w-[115px] overflow-hidden rounded-full border border-white/8 bg-card/50 shadow-[0_24px_64px_rgba(0,0,0,0.26)] md:h-[162px] md:w-[162px]">
+        <div className="relative h-24 w-24 overflow-hidden rounded-full border border-white/8 bg-card/50 shadow-[0_24px_64px_rgba(0,0,0,0.26)] sm:h-[112px] sm:w-[112px] md:h-[162px] md:w-[162px]">
           <div className="relative h-full w-full">
             {photoUrl ? (
               <Image
@@ -69,7 +69,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
                 alt={photoAlt}
                 fill
                 priority
-                sizes="(min-width: 768px) 224px, 160px"
+                sizes="(min-width: 1024px) 224px, (min-width: 768px) 180px, 128px"
                 className="object-cover"
               />
             ) : (
@@ -87,24 +87,24 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
       afterContent={<VisualStorySection {...teacherDetailVisualSection} />}
       meta={
         teacher.email ? (
-          <p>
+          <p className="max-w-full">
             E-posta:{" "}
-            <a className="text-primary hover:underline" href={`mailto:${teacher.email}`}>
+            <a className="break-all text-primary hover:underline" href={`mailto:${teacher.email}`}>
               {teacher.email}
             </a>
           </p>
         ) : null
       }
     >
-      <div className="space-y-8">
-        <p>
+      <div className="max-w-3xl space-y-5 sm:space-y-6">
+        <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
           {teacher.bio ?? "Bu egitmen icin detayli profil icerigi yakinda eklenecek."}
         </p>
 
         {teacher.courses && teacher.courses.length > 0 ? (
-          <section className="space-y-3">
+          <section className="space-y-3 sm:space-y-4">
             <h2 className="text-xl font-semibold text-foreground">Egitimleri</h2>
-            <ul className="space-y-2">
+            <ul className="grid gap-2 sm:grid-cols-2 sm:gap-3">
               {teacher.courses.map((course) => (
                 <li key={course.documentId}>
                   <Link className="text-primary hover:underline" href={`/egitimler/${course.slug}`}>

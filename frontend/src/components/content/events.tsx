@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
+import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 
 type EventListItem = {
   id: number | string;
@@ -57,7 +58,11 @@ export function EventList({
   emptyMessage = "Gosterilecek etkinlik verisi su an kullanilabilir degil.",
 }: EventListProps) {
   return (
-    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-4 sm:gap-6 lg:grid-cols-2">
+    <ContentGrid
+      itemsCount={items.length}
+      emptyMessage={emptyMessage}
+      columnsClassName={responsiveLayoutClasses.eventListGrid}
+    >
       {items.map((event) => (
         <ContentCardShell
           key={event.id}
@@ -67,13 +72,13 @@ export function EventList({
           summary={event.summary ?? "Bu etkinlik icin aciklama yakinda eklenecek."}
           className="border-[3px]"
           meta={
-            <>
+            <div className="space-y-1.5 break-words">
               <p className="font-bold text-gray-700">{formatEventDate(event.startsAt)}</p>
               {event.endsAt ? (
                 <p className="font-bold text-gray-700">{formatEventDate(event.endsAt)}</p>
               ) : null}
               {event.location ? <p>{event.location}</p> : null}
-            </>
+            </div>
           }
         />
       ))}
@@ -97,11 +102,11 @@ export function EventDetail({
       title={title}
       summary={summary ?? undefined}
       meta={
-        <>
+        <div className={responsiveLayoutClasses.eventMeta}>
           <p className="font-bold text-gray-700">{formatEventDate(startsAt)}</p>
           {endsAt ? <p className="font-bold text-gray-700">{formatEventDate(endsAt)}</p> : null}
           {location ? <p>{location}</p> : null}
-        </>
+        </div>
       }
       afterContent={afterContent}
     >

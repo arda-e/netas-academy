@@ -97,12 +97,13 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
             <strong className="text-white">
               Yaklasan bulusmalari, webinarlari ve ozel oturumlari
             </strong>{" "}
-            takip edin; <br /> katilim icin gerekli detaylara tek ekrandan ulasin.
+            takip edin; <span className="hidden sm:inline"><br /></span>
+            katilim icin gerekli detaylara tek ekrandan ulasin.
           </p>
         </>
       }
     >
-      <div className="-mt-10 mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="-mt-6 mb-6 flex flex-col gap-3 rounded-sm border border-border/70 bg-white/80 p-3 shadow-sm sm:-mt-8 sm:mb-8 sm:gap-4 sm:p-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
           <Filter className="size-4 text-gray-800" aria-hidden="true" />
           {eventTypeFilters.map((filter) => {
@@ -138,7 +139,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
             type: selectedType,
             sort: getToggledSortOrder(selectedSort),
           })}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-white/80 text-gray-800 transition-colors hover:bg-white hover:text-[#009ca6]"
+          className="inline-flex h-10 min-w-10 self-start items-center justify-center gap-2 rounded-full border border-border/70 bg-white text-gray-800 transition-colors hover:text-[#009ca6] md:self-auto"
           title={
             selectedSort === "asc"
               ? "Sırala: önce yeni"
@@ -150,6 +151,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
           ) : (
             <SortDescending className="size-4" aria-hidden="true" />
           )}
+          <span className="hidden text-sm font-medium sm:inline">Sırala</span>
           <span className="sr-only">Sırala</span>
         </Link>
       </div>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { EventDetail } from "@/components/content";
+import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import { Button } from "@/components/ui/button";
 import { getEventBySlug } from "@/lib/strapi";
 
@@ -49,9 +50,11 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
       endsAt={event.endsAt}
       location={event.location}
     >
-      <div className="space-y-8">
-        <p>{event.details ?? "Bu etkinlik icin detayli icerik yakinda eklenecek."}</p>
-        <Button asChild className="rounded-sm">
+      <div className="max-w-3xl space-y-5 sm:space-y-6">
+        <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
+          {event.details ?? "Bu etkinlik icin detayli icerik yakinda eklenecek."}
+        </p>
+        <Button asChild className={responsiveLayoutClasses.eventCta}>
           <Link href={`/etkinlikler/${event.slug}/kayit`}>Etkinlige Kayit Ol</Link>
         </Button>
       </div>

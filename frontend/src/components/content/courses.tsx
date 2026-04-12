@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { ContentGrid } from "@/components/content/content-grid";
+import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 
 type CourseListItem = {
   id: number | string;
@@ -30,7 +31,11 @@ export function CourseList({
   emptyMessage = "Gosterilecek egitim verisi su an kullanilabilir degil.",
 }: CourseListProps) {
   return (
-    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <ContentGrid
+      itemsCount={items.length}
+      emptyMessage={emptyMessage}
+      columnsClassName={responsiveLayoutClasses.courseListGrid}
+    >
       {items.map((course) => (
         <ContentCardShell
           key={course.id}

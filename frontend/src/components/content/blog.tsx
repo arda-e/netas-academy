@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
+import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 
 type BlogListItem = {
   id: number | string;
@@ -28,7 +29,11 @@ export function BlogList({
   emptyMessage = "Gosterilecek blog verisi su an kullanilabilir degil.",
 }: BlogListProps) {
   return (
-    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-4 sm:gap-6 lg:grid-cols-2">
+    <ContentGrid
+      itemsCount={items.length}
+      emptyMessage={emptyMessage}
+      columnsClassName={responsiveLayoutClasses.blogListGrid}
+    >
       {items.map((post) => (
         <ContentCardShell
           key={post.id}

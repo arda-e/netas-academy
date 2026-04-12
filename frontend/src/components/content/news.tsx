@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
+import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 
 export type NewsListItem = {
   id: number | string;
@@ -26,10 +27,10 @@ const formatNewsDate = (value: string) =>
 
 function NewsCard({ item }: { item: NewsListItem }) {
   const meta: ReactNode = (
-    <>
+    <div className="space-y-1.5 break-words">
       {item.tag ? <p>{item.tag}</p> : null}
       {item.publishedAt ? <p>{formatNewsDate(item.publishedAt)}</p> : null}
-    </>
+    </div>
   );
 
   return (
@@ -47,7 +48,11 @@ export function NewsList({
   emptyMessage = "Gosterilecek haber verisi su an kullanilabilir degil.",
 }: NewsListProps) {
   return (
-    <ContentGrid itemsCount={items.length} emptyMessage={emptyMessage} columnsClassName="grid gap-4 sm:gap-6 lg:grid-cols-2">
+    <ContentGrid
+      itemsCount={items.length}
+      emptyMessage={emptyMessage}
+      columnsClassName={responsiveLayoutClasses.newsListGrid}
+    >
       {items.map((item) => (
         <NewsCard key={item.id} item={item} />
       ))}

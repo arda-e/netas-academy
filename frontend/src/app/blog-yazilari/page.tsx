@@ -9,7 +9,12 @@ export default async function BlogYazilariPage() {
   return (
     <ContentPageShell
       title="Blog Yazilari"
-      description="Sektorel bakis acilari, uygulama notlari ve egitim odakli icgorulerle hazirlanan yazi arsivini kesfedin."
+      description={
+        <p>
+          Sektorel bakis acilari, uygulama notlari ve egitim odakli
+          icgorulerle hazirlanan yazi arsivini kesfedin.
+        </p>
+      }
     >
       <BlogList
         items={posts.map((post) => ({

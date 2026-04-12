@@ -25,22 +25,22 @@ export function ContentDetailShell({
         <div
           className={
             leadMedia
-              ? "flex flex-col gap-6 sm:gap-8 md:flex-row md:items-start md:gap-10"
+              ? "flex flex-col gap-5 sm:gap-8 md:flex-row md:items-start md:gap-10"
               : ""
           }
         >
           {leadMedia ? <div className="shrink-0">{leadMedia}</div> : null}
-          <div className="max-w-3xl space-y-3">
+          <div className="max-w-3xl space-y-3 sm:space-y-4">
             {eyebrow ? (
               <p className="text-sm font-semibold uppercase tracking-[0.34em] text-primary/76">
                 {eyebrow}
               </p>
             ) : null}
-            <h1 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-6xl">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
               {title}
             </h1>
             {summary ? (
-              <p className="max-w-2xl text-base leading-7 text-foreground/72 sm:text-lg sm:leading-8">
+              <p className="max-w-2xl text-[15px] leading-7 text-foreground/72 sm:text-lg sm:leading-8">
                 {summary}
               </p>
             ) : null}
