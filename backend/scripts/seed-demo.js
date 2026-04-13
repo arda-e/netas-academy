@@ -1,8 +1,10 @@
 'use strict';
 
 const { compileStrapi, createStrapi } = require('@strapi/strapi');
+const { ensureNotificationRoutingSeedDefaults } = require('./notification-routing-seed');
 
 const createSummary = () => ({
+  notificationRoutings: { created: 0, updated: 0 },
   teachers: { created: 0, updated: 0 },
   courses: { created: 0, updated: 0 },
   events: { created: 0, updated: 0 },
@@ -10,6 +12,21 @@ const createSummary = () => ({
   students: { created: 0, updated: 0 },
   registrations: { created: 0, updated: 0 },
 });
+
+const demoNotificationRoutings = [
+  {
+    key: 'contact_submission',
+    label: 'Iletisim Formu Bildirimi',
+    enabled: true,
+    customEmails: ['demo.notifications@netas-academy.local'],
+  },
+  {
+    key: 'event_registration',
+    label: 'Etkinlik Kayit Bildirimi',
+    enabled: true,
+    customEmails: ['demo.events@netas-academy.local'],
+  },
+];
 
 const demoTeachers = [
   {
@@ -387,6 +404,8 @@ async function main() {
   const app = await createStrapi(appContext).load();
 
   try {
+    await ensureNotificationRoutingSeedDefaults(app, demoNotificationRoutings, result);
+
     const teacherDocumentIds = new Map();
     const courseDocumentIds = new Map();
 

@@ -13,6 +13,21 @@ const PUBLIC_READ_ACTIONS = [
   'plugin::upload.content-api.findOne',
 ];
 
+const DEFAULT_NOTIFICATION_ROUTINGS = [
+  {
+    key: 'contact_submission',
+    label: 'Iletisim Formu Bildirimi',
+    enabled: true,
+    customEmails: [],
+  },
+  {
+    key: 'event_registration',
+    label: 'Etkinlik Kayit Bildirimi',
+    enabled: true,
+    customEmails: [],
+  },
+] as const;
+
 const ensurePublicReadPermissions = async (strapi: Core.Strapi) => {
   const publicRole = await strapi.db.query('plugin::users-permissions.role').findOne({
     where: { type: 'public' },
@@ -56,6 +71,23 @@ const ensurePublicReadPermissions = async (strapi: Core.Strapi) => {
   });
 };
 
+const ensureNotificationRoutingDefaults = async (strapi: Core.Strapi) => {
+  for (const entry of DEFAULT_NOTIFICATION_ROUTINGS) {
+    const existing = await strapi.db.query('api::notification-routing.notification-routing').findOne({
+      where: { key: entry.key },
+      select: ['id', 'key'],
+    });
+
+    if (existing?.id) {
+      continue;
+    }
+
+    await strapi.db.query('api::notification-routing.notification-routing').create({
+      data: entry,
+    });
+  }
+};
+
 export default {
   /**
    * An asynchronous register function that runs before
@@ -74,5 +106,6 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await ensurePublicReadPermissions(strapi);
+    await ensureNotificationRoutingDefaults(strapi);
   },
 };
