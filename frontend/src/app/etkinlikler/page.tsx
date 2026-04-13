@@ -5,6 +5,7 @@ import { SortAscending, SortDescending } from "@phosphor-icons/react/dist/ssr";
 import { ContentPageShell, EventList } from "@/components/content";
 import {
   getEvents,
+  normalizeEventType,
   type StrapiEventSortOrder,
   type StrapiEventType,
 } from "@/lib/strapi";
@@ -28,12 +29,7 @@ function resolveEventTypeFilter(
   value: string | string[] | undefined
 ): StrapiEventType | null {
   const rawValue = Array.isArray(value) ? value[0] : value;
-
-  if (rawValue === "etkinlik" || rawValue === "egitim" || rawValue === "kurs") {
-    return rawValue;
-  }
-
-  return null;
+  return normalizeEventType(rawValue);
 }
 
 function resolveEventSortOrder(
@@ -162,7 +158,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
           slug: event.slug,
           title: event.title,
           summary: event.summary,
-          eventType: event.eventType,
+          eventType: normalizeEventType(event.eventType) ?? "etkinlik",
           startsAt: event.startsAt,
           endsAt: event.endsAt,
           location: event.location,

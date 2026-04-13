@@ -36,6 +36,30 @@ export type StrapiCourse = {
 export type StrapiEventType = "etkinlik" | "egitim" | "kurs";
 export type StrapiEventSortOrder = "asc" | "desc";
 
+export function normalizeEventType(
+  value: string | null | undefined
+): StrapiEventType | null {
+  if (!value) {
+    return null;
+  }
+
+  const normalizedValue = value.trim().toLocaleLowerCase("tr-TR");
+
+  if (normalizedValue === "etkinlik") {
+    return "etkinlik";
+  }
+
+  if (normalizedValue === "egitim" || normalizedValue === "eğitim") {
+    return "egitim";
+  }
+
+  if (normalizedValue === "kurs") {
+    return "kurs";
+  }
+
+  return null;
+}
+
 export type StrapiEvent = {
   id: number;
   documentId: string;
@@ -207,16 +231,19 @@ export async function getEvents(
   sortOrder: StrapiEventSortOrder = "asc"
 ) {
   try {
-    const eventTypeFilter = eventType
-      ? `&filters[eventType][$eq]=${encodeURIComponent(eventType)}`
-      : "";
     const eventSort = sortOrder === "desc" ? "startsAt:desc" : "startsAt:asc";
 
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&populate[course][fields][0]=title&populate[course][fields][1]=slug${eventTypeFilter}`
+      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&populate[course][fields][0]=title&populate[course][fields][1]=slug`
     );
 
-    return response.data;
+    if (!eventType) {
+      return response.data;
+    }
+
+    return response.data.filter(
+      (event) => normalizeEventType(event.eventType) === eventType
+    );
   } catch {
     return [];
   }
