@@ -57,8 +57,46 @@ jobs:
             export STRAPI_PUBLIC_URL=http://${{ secrets.EC2_HOST }}:1337
             printf "APP_IMAGE=%s\nSTRAPI_PUBLIC_URL=%s\n" "$APP_IMAGE" "$STRAPI_PUBLIC_URL" > .env
             cp docker-compose.deploy.yml docker-compose.yml
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
-            docker compose pull
+            for attempt in 1 2 3 4 5; do
+              echo "GHCR connectivity probe attempt ${attempt}/5"
+              curl --silent --show-error --fail --location --max-time 15 https://ghcr.io/v2/ >/dev/null && break
+
+              if [ "${attempt}" -eq 5 ]; then
+                echo "Unable to reach ghcr.io after 5 attempts." >&2
+                exit 1
+              fi
+
+              sleep $((attempt * 10))
+            done
+
+            for attempt in 1 2 3 4 5; do
+              echo "GHCR login attempt ${attempt}/5"
+              if echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin; then
+                break
+              fi
+
+              if [ "${attempt}" -eq 5 ]; then
+                echo "docker login to ghcr.io failed after 5 attempts." >&2
+                exit 1
+              fi
+
+              sleep $((attempt * 10))
+            done
+
+            for attempt in 1 2 3 4 5; do
+              echo "docker compose pull attempt ${attempt}/5"
+              if docker compose pull; then
+                break
+              fi
+
+              if [ "${attempt}" -eq 5 ]; then
+                echo "docker compose pull failed after 5 attempts." >&2
+                exit 1
+              fi
+
+              sleep $((attempt * 10))
+            done
+
             docker compose down
             docker compose up -d --remove-orphans --wait --wait-timeout 180
             docker compose ps
