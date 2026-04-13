@@ -15,10 +15,14 @@ jobs:
   deploy:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
 
       - name: Prepare deploy directory
         uses: appleboy/ssh-action@v1.0.3
@@ -49,12 +53,25 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.EC2_APP_DIR }}
-            export APP_IMAGE=ghcr.io/${{ secrets.GHCR_OWNER }}/netas-academy:latest
+            export APP_IMAGE=ghcr.io/${{ secrets.GHCR_OWNER }}/netas-academy:${{ env.DEPLOY_SHA }}
             export STRAPI_PUBLIC_URL=http://${{ secrets.EC2_HOST }}:1337
             printf "APP_IMAGE=%s\nSTRAPI_PUBLIC_URL=%s\n" "$APP_IMAGE" "$STRAPI_PUBLIC_URL" > .env
-            mv docker-compose.deploy.yml docker-compose.yml
+            cp docker-compose.deploy.yml docker-compose.yml
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
             docker compose pull
             docker compose down
-            docker compose up -d --remove-orphans
+            docker compose up -d --remove-orphans --wait --wait-timeout 180
+            docker compose ps
             docker image prune -f
+
+      - name: Collect remote logs on failure
+        if: failure()
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ${{ secrets.EC2_APP_DIR }}
+            docker compose ps || true
+            docker compose logs --tail=200 app || true
