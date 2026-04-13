@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { execSync } from "node:child_process";
 
 export const metadata: Metadata = {
   title: "KVKK | Netas Academy",
@@ -8,15 +7,7 @@ export const metadata: Metadata = {
 };
 
 function getLatestCommitId() {
-  try {
-    return execSync("git rev-parse --short HEAD", {
-      encoding: "utf8",
-      cwd: process.cwd(),
-      stdio: ["ignore", "pipe", "ignore"],
-    }).trim();
-  } catch {
-    return null;
-  }
+  return process.env.GIT_COMMIT_SHA?.slice(0, 7) ?? null;
 }
 
 const purposeItems = [

@@ -55,7 +55,8 @@ jobs:
             cd ${{ secrets.EC2_APP_DIR }}
             export APP_IMAGE=ghcr.io/${{ secrets.GHCR_OWNER }}/netas-academy:${{ env.DEPLOY_SHA }}
             export STRAPI_PUBLIC_URL=http://${{ secrets.EC2_HOST }}:1337
-            printf "APP_IMAGE=%s\nSTRAPI_PUBLIC_URL=%s\n" "$APP_IMAGE" "$STRAPI_PUBLIC_URL" > .env
+            export GIT_COMMIT_SHA=${{ env.DEPLOY_SHA }}
+            printf "APP_IMAGE=%s\nSTRAPI_PUBLIC_URL=%s\nGIT_COMMIT_SHA=%s\n" "$APP_IMAGE" "$STRAPI_PUBLIC_URL" "$GIT_COMMIT_SHA" > .env
             cp docker-compose.deploy.yml docker-compose.yml
             for attempt in 1 2 3 4 5; do
               echo "GHCR connectivity probe attempt ${attempt}/5"
