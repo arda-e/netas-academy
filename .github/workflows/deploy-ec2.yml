@@ -59,10 +59,14 @@ jobs:
             cp docker-compose.deploy.yml docker-compose.yml
             for attempt in 1 2 3 4 5; do
               echo "GHCR connectivity probe attempt ${attempt}/5"
-              curl --silent --show-error --fail --location --max-time 15 https://ghcr.io/v2/ >/dev/null && break
+              status_code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --location --max-time 15 https://ghcr.io/v2/ || true)"
+
+              if [ "${status_code}" = "200" ] || [ "${status_code}" = "401" ]; then
+                break
+              fi
 
               if [ "${attempt}" -eq 5 ]; then
-                echo "Unable to reach ghcr.io after 5 attempts." >&2
+                echo "Unable to reach ghcr.io after 5 attempts. Last status: ${status_code:-unknown}" >&2
                 exit 1
               fi
 
