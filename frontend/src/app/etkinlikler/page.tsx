@@ -82,6 +82,10 @@ function getToggledSortOrder(sortOrder: StrapiEventSortOrder) {
   return sortOrder === "asc" ? "desc" : "asc";
 }
 
+function getSortLabel(sortOrder: StrapiEventSortOrder) {
+  return sortOrder === "asc" ? "Önce yeni" : "Önce eski";
+}
+
 export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageProps) {
   const resolvedSearchParams = await searchParams;
   const selectedType = resolveEventTypeFilter(resolvedSearchParams.type);
@@ -103,7 +107,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
         </>
       }
     >
-      <div className="-mt-6 mb-6 flex flex-col gap-3 rounded-sm border border-border/70 bg-white/80 p-3 shadow-sm sm:-mt-8 sm:mb-8 sm:gap-4 sm:p-4 md:flex-row md:items-center md:justify-between">
+      <div className="-mt-6 mb-6 flex flex-col gap-3 sm:-mt-8 sm:mb-8 sm:gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
           <Filter className="size-4 text-gray-800" aria-hidden="true" />
           {eventTypeFilters.map((filter) => {
@@ -131,28 +135,20 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
         </div>
         <Link
           aria-label={
-            selectedSort === "asc"
-              ? "Sırala: önce yeni"
-              : "Sırala: önce eski"
+            selectedSort === "asc" ? "Sırala: önce yeni" : "Sırala: önce eski"
           }
           href={buildEventHref({
             type: selectedType,
             sort: getToggledSortOrder(selectedSort),
           })}
-          className="inline-flex h-10 min-w-10 self-start items-center justify-center gap-2 rounded-full border border-border/70 bg-white text-gray-800 transition-colors hover:text-[#009ca6] md:self-auto"
-          title={
-            selectedSort === "asc"
-              ? "Sırala: önce yeni"
-              : "Sırala: önce eski"
-          }
+          className="inline-flex h-10 self-start items-center justify-center gap-2 rounded-full border border-border/70 bg-white px-4 text-gray-800 transition-colors hover:text-[#009ca6] md:self-auto"
         >
           {selectedSort === "asc" ? (
             <SortAscending className="size-4" aria-hidden="true" />
           ) : (
             <SortDescending className="size-4" aria-hidden="true" />
           )}
-          <span className="hidden text-sm font-medium sm:inline">Sırala</span>
-          <span className="sr-only">Sırala</span>
+          <span className="text-sm font-medium">Sırala: {getSortLabel(selectedSort)}</span>
         </Link>
       </div>
       <EventList
