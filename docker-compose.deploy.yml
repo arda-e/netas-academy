@@ -6,6 +6,7 @@ services:
       FRONTEND_PORT: 3000
       STRAPI_URL: ${STRAPI_URL:-http://127.0.0.1:1337}
       STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL}
+      GIT_COMMIT_SHA: ${GIT_COMMIT_SHA:-}
       HOST: 0.0.0.0
       PORT: 1337
       APP_KEYS: "app-key-1,app-key-2,app-key-3,app-key-4"

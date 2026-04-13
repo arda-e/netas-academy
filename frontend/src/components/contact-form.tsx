@@ -13,6 +13,8 @@ const fieldClassName =
 const labelClassName =
   "text-md font-medium text-foreground";
 
+const fieldWrapperClassName = "space-y-2 md:space-y-3";
+
 export function ContactForm() {
   const {
     values,
@@ -24,7 +26,7 @@ export function ContactForm() {
   } = useContactForm();
 
   return (
-    <form className="space-y-8" onSubmit={handleSubmit}>
+    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit}>
       {successMessage ? (
         <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100">
           {successMessage}
@@ -37,8 +39,8 @@ export function ContactForm() {
         </div>
       ) : null}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="flex gap-1 flex-col">
+      <div className="grid gap-4 md:gap-6 md:grid-cols-2">
+        <div className={fieldWrapperClassName}>
           <label
             htmlFor="firstName"
             className={labelClassName}
@@ -50,11 +52,12 @@ export function ContactForm() {
             name="firstName"
             value={values.firstName}
             onChange={handleChange}
+            className={fieldClassName}
             required
           />
         </div>
 
-        <div className="space-y-3">
+        <div className={fieldWrapperClassName}>
           <label
             htmlFor="lastName"
             className={labelClassName}
@@ -71,7 +74,7 @@ export function ContactForm() {
           />
         </div>
 
-        <div className="space-y-3">
+        <div className={fieldWrapperClassName}>
           <label
             htmlFor="email"
             className={labelClassName}
@@ -89,7 +92,7 @@ export function ContactForm() {
           />
         </div>
 
-        <div className="space-y-3">
+        <div className={fieldWrapperClassName}>
           <label
             htmlFor="phone"
             className={labelClassName}
@@ -108,7 +111,7 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className={fieldWrapperClassName}>
         <label
           htmlFor="company"
           className={labelClassName}
@@ -124,7 +127,7 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="space-y-3">
+      <div className={fieldWrapperClassName}>
         <label
           htmlFor="subject"
           className={labelClassName}
@@ -141,7 +144,7 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="space-y-3">
+      <div className={fieldWrapperClassName}>
         <label
           htmlFor="message"
           className={labelClassName}
@@ -158,25 +161,24 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="max-w-5xl text-base leading-8 text-muted-foreground md:text-lg">
-        Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır. <br />
-        Kişisel verilerinizin işlenmesi ile ilgili Aydınlatma Metnine{" "}
-        <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80">
-          buradan
-        </Link>{" "}erişebilirsiniz
-      </div>
-      <div
-        className="flex justify-end"
-      >
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="h-12 rounded-md px-7 text-base font-semibold md:text-lg"
-      >
-        {isSubmitting ? "Gönderiliyor..." : "Gönder"}
-      </Button>
-      </div>
+      <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
+        <div className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+          Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır. Kişisel
+          verilerinizin işlenmesi ile ilgili Aydınlatma Metnine{" "}
+          <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80">
+            buradan
+          </Link>{" "}
+          erişebilirsiniz.
+        </div>
 
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="h-12 w-full rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg"
+        >
+          {isSubmitting ? "Gönderiliyor..." : "Gönder"}
+        </Button>
+      </div>
     </form>
   );
 }

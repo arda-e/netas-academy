@@ -49,13 +49,13 @@ export default async function HakkimizdaPage() {
         </>
       }
     >
-      <div className="space-y-16">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.65fr)] lg:items-start">
-          <aside className="panel-surface rounded-sm p-6">
+      <div className="space-y-12 sm:space-y-16">
+        <div className="grid gap-6 sm:gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.65fr)] xl:items-start xl:gap-10">
+          <aside className="panel-surface rounded-sm p-4 sm:p-6">
             <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
               Yaklaşımımız
             </p>
-            <ul className="mt-5 space-y-4 text-sm leading-7 text-foreground/80">
+            <ul className="mt-4 space-y-3 text-[15px] leading-7 text-foreground/80 sm:mt-5 sm:space-y-4 sm:text-base sm:leading-8">
               <li>Bilgiyi profesyonel gelişime dönüştüren içerikler</li>
               <li>Akademik temeli güçlü, sektör deneyimi yüksek eğitmenler</li>
               <li>Vaka ve senaryo tabanlı uygulamalı öğrenme modeli</li>
@@ -63,16 +63,16 @@ export default async function HakkimizdaPage() {
             </ul>
           </aside>
 
-          <div className="grid gap-6">
+          <div className="grid gap-4 sm:gap-6">
             {sections.map((section) => (
               <article
                 key={section.title}
-                className="panel-surface rounded-sm p-8"
+                className="panel-surface rounded-sm p-5 sm:p-8"
               >
-                <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+                <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
                   {section.title}
                 </h2>
-                <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+                <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
                   {section.body}
                 </p>
               </article>
@@ -82,11 +82,11 @@ export default async function HakkimizdaPage() {
 
         <VisualStorySection {...hakkimizdaVisualSection} />
 
-        <div className="space-y-5">
-          <h2 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+        <div className="space-y-4 sm:space-y-5">
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
             Egitmenlerimiz
           </h2>
-          <p className="max-w-3xl text-lg leading-8 text-foreground/72">
+          <p className="max-w-3xl text-[15px] leading-7 text-foreground/72 sm:text-lg sm:leading-8">
             Farkli uzmanlik alanlarindan gelen egitmen kadromuzu yakindan taniyin.
           </p>
           <TeacherCarousel

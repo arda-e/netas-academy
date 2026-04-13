@@ -47,16 +47,18 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
       summary={course.summary}
       afterContent={<VisualStorySection {...courseDetailVisualSection} />}
     >
-      <div className="space-y-6">
+      <div className="max-w-3xl space-y-5 sm:space-y-6">
         {course.teacher ? (
-          <p>
-            Egitmen Profili:{" "}
+          <div className="flex flex-col gap-1 text-[15px] leading-7 text-foreground/80 sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-2 sm:text-base sm:leading-8">
+            <span className="font-medium text-foreground">Egitmen Profili:</span>
             <Link className="text-primary hover:underline" href={`/egitmenler/${course.teacher.slug}`}>
               {course.teacher.fullName}
             </Link>
-          </p>
+          </div>
         ) : null}
-        <p>{course.description ?? "Bu egitim icin detayli icerik yakinda eklenecek."}</p>
+        <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
+          {course.description ?? "Bu egitim icin detayli icerik yakinda eklenecek."}
+        </p>
       </div>
     </CourseDetail>
   );

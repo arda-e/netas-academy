@@ -6,6 +6,10 @@ export const metadata: Metadata = {
     "Netaş Telekomünikasyon A.Ş. kişisel verilerin korunmasına ilişkin aydınlatma metni.",
 };
 
+function getLatestCommitId() {
+  return process.env.GIT_COMMIT_SHA?.slice(0, 7) ?? null;
+}
+
 const purposeItems = [
   "Netaş ürün ve hizmetlerinin sizlere sunulabilmesini teminen, ürünlerin ücretlendirilmesi ve faturalandırılması, ürünlerin ve hizmetlerin satışı, satın alınan ve/veya kullanılan ürün ve hizmetlerle ilgili talep ettiğiniz işlemlerin gerçekleştirilmesi ve takibinin sağlanması, ürünlerin teslimi, kurulum, bakım, onarım vb. satış sonrası servis hizmetlerinin yerine getirilmesi.",
   "Gümrük operasyonları, üretim ve/veya operasyonları süreçlerinin planlanması ve icrası, tedarik zinciri yönetiminin planlanması ve icrası, müşteri ilişkileri yönetim süreçlerinin planlanması ve icrası.",
@@ -36,18 +40,20 @@ const rightsItems = [
 ];
 
 export default function KvkkPage() {
+  const latestCommitId = getLatestCommitId();
+
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
-        <div className="mx-auto flex min-h-[320px] w-full max-w-7xl items-end px-6 py-12 md:px-10 lg:px-12">
-          <div className="max-w-4xl space-y-5">
+        <div className="page-container flex min-h-[260px] w-full items-end py-8 sm:min-h-[320px] sm:py-12">
+          <div className="max-w-4xl space-y-4 sm:space-y-5">
             <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
               KVKK
             </p>
-            <h1 className="text-balance text-4xl font-semibold tracking-tight text-white md:text-6xl">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl">
               Kişisel verilerin korunmasına ilişkin aydınlatma metni
             </h1>
-            <p className="max-w-3xl text-lg leading-8 text-white/78">
+            <p className="max-w-3xl text-[15px] leading-7 text-white/78 sm:text-lg sm:leading-8">
               Netaş Telekomünikasyon A.Ş., kişisel verilerinizin hukuka uygun
               olarak toplanması, saklanması ve paylaşılmasını sağlamak ve
               gizliliğinizi korumak amacıyla mümkün olan en üst seviyede güvenlik
@@ -57,13 +63,13 @@ export default function KvkkPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-6 py-16 md:px-10 lg:px-12">
-        <div className="space-y-6">
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+      <section className="page-section">
+        <div className="space-y-4 sm:space-y-5">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Genel Bilgilendirme
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Amacımız; 6698 sayılı “Kişisel Verilerin Korunması Kanunu”nun 10.
               maddesi gereğince ve sizlerin memnuniyeti doğrultusunda, kişisel
               verilerinizin alınma şekilleri, işlenme amaçları, paylaşılan kişiler,
@@ -72,11 +78,11 @@ export default function KvkkPage() {
             </p>
           </article>
 
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               a) Veri Sorumlusu
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               6698 sayılı Kişisel Verilerin Korunması Kanunu (“6698 sayılı Kanun”)
               uyarınca, kişisel verileriniz; veri sorumlusu olarak Netaş
               Telekomünikasyon A.Ş. (“Netaş”) tarafından aşağıda açıklanan kapsamda
@@ -84,11 +90,11 @@ export default function KvkkPage() {
             </p>
           </article>
 
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               b) Kişisel Verilerin Hangi Amaçla İşleneceği
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Netaş tarafından, müşterileri, çalışanları, potansiyel müşterileri,
               çalışan adayları, iş ortakları ve tedarikçileri gibi taraflardan,
               kimlik bilgisi, iletişim bilgisi, müşteri bilgisi, müşteri işlem
@@ -96,32 +102,32 @@ export default function KvkkPage() {
               pazarlama satış bilgisi gibi kategorilerde kişisel veri
               toplanabilmektedir.
             </p>
-            <div className="mt-6 space-y-4">
+            <div className="mt-5 max-w-5xl space-y-3 sm:mt-6 sm:space-y-4">
               {purposeItems.map((item) => (
                 <p
                   key={item}
-                  className="text-base leading-8 text-foreground/72 md:text-lg"
+                  className="text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg"
                 >
                   {item}
                 </p>
               ))}
             </div>
-            <p className="mt-6 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-5 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
               amaçlarıyla 6698 sayılı Kanun’un 5. ve 6. maddelerinde belirtilen
               kişisel veri işleme şartları ve amaçları dahilinde işlenecektir.
             </p>
           </article>
 
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               c) İşlenen Kişisel Verilerin Kimlere ve Hangi Amaçla Aktarılabileceği
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Toplanan kişisel verileriniz; yukarıda belirtilen amaçların
               gerçekleştirilmesi ile sınırlı olmak üzere aşağıdaki taraflara
               aktarılabilecektir:
             </p>
-            <ul className="mt-6 space-y-3 text-base leading-8 text-foreground/72 md:text-lg">
+            <ul className="mt-5 space-y-3 text-[15px] leading-7 text-foreground/72 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
               <li>Netaş’ın iş ortaklarına, hissedarlarına, iştiraklerine,</li>
               <li>
                 Vergi Usul Kanunu, Sosyal Güvenlik Kurumu mevzuatı, Sayıştay, Suç
@@ -146,11 +152,11 @@ export default function KvkkPage() {
             </ul>
           </article>
 
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               ç) Kişisel Veri Toplamanın Yöntemi ve Hukuki Sebebi
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Kişisel verileriniz Netaş Genel Müdürlük, anlaşmalı internet siteleri
               üzerinden yapılmış olan başvurular, destek hizmeti verdiğimiz / aldığımız
               sair kurumlar ile her türlü mevzuat veya sözleşme dahilinde işlem
@@ -164,11 +170,11 @@ export default function KvkkPage() {
             </p>
           </article>
 
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               d) Kişisel Veri Sahibinin 6698 sayılı Kanun’un 11. Maddesinde Sayılan Hakları
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Kişisel veri sahipleri olarak, haklarınıza ilişkin taleplerinizi
               aşağıda düzenlenen yöntemlerle iletmeniz durumunda Netaş talebin
               niteliğine göre talebi en kısa sürede ve en geç otuz gün içinde
@@ -178,11 +184,11 @@ export default function KvkkPage() {
               kayıt ortamında verilmesi halinde şirketimiz tarafından talep
               edilebilecek ücret, kayıt ortamının maliyetini geçmeyecektir.
             </p>
-            <div className="mt-6 space-y-3">
+            <div className="mt-5 max-w-5xl space-y-3 sm:mt-6">
               {rightsItems.map((item) => (
                 <p
                   key={item}
-                  className="text-base leading-8 text-foreground/72 md:text-lg"
+                  className="text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg"
                 >
                   {item}
                 </p>
@@ -190,11 +196,11 @@ export default function KvkkPage() {
             </div>
           </article>
 
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Başvuru Usulü
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Yukarıda belirtilen haklarınızı kullanma ile ilgili talebinizi,
               6698 sayılı Kanun’un 13. maddesinin 1. fıkrası ve 30356 sayılı ve
               10.03.2018 tarihli Veri Sorumlusuna Başvuru Usul ve Esasları
@@ -203,13 +209,13 @@ export default function KvkkPage() {
               ya da Netaş’a daha önce bildirilen ve sistemimizde kayıtlı bulunan
               elektronik posta adresini kullanmak suretiyle iletebilirsiniz.
             </p>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-4 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
               Başvurularda sadece başvuru sahibi kişi hakkında bilgi verilecek
               olup diğer aile fertleri ve üçüncü kişiler hakkında bilgi alınması
               mümkün olmayacaktır. Netaş’ın cevap vermeden önce kimliğinizi
               doğrulama hakkı saklıdır.
             </p>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-4 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
               Başvurunuzda adınızın, soyadınızın ve başvuru yazılı ise imzanızın;
               Türkiye Cumhuriyeti vatandaşları için T.C. kimlik numaranızın, yabancı
               iseniz uyruğunuzun, pasaport numaranızın veya varsa kimlik
@@ -220,21 +226,21 @@ export default function KvkkPage() {
             </p>
           </article>
 
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               İletişim Bilgileri
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Yazılı olarak yapmak istediğiniz başvurularınızı, gerekli belgeleri
               ekleyerek veri sorumlusu olarak Şirketimizin Yenişehir Mah. Osmanlı
               Bulvarı No:11 34912 adresine verebilirsiniz.
             </p>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-4 max-w-4xl break-words text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
               E-posta yoluyla yapmak istediğiniz başvurularınızı netas@hs02.kep.tr
               KEP adresimize yapabilirsiniz. E-posta yoluyla yapmak istediğiniz
               başvurularınızı kvkk@netas.com.tr e-posta adresine yapabilirsiniz.
             </p>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-4 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
               Talebinizin niteliğine göre kimlik tespitine olanak sağlayacak bilgi
               ve belgelerin eksiksiz ve doğru olarak tarafımıza sağlanması
               gerekmektedir. İstenilen bilgi ve belgelerin gereği gibi sağlanmaması
@@ -244,11 +250,11 @@ export default function KvkkPage() {
             </p>
           </article>
 
-          <article className="panel-surface rounded-sm p-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <article className="panel-surface rounded-sm p-4 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Resmi Netaş Sitesi
             </h2>
-            <p className="mt-4 max-w-4xl text-base leading-8 text-foreground/72 md:text-lg">
+            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Kurumsal ve hukuki detaylar için resmi Netaş web sitesini
               inceleyebilirsiniz.
             </p>
@@ -256,10 +262,16 @@ export default function KvkkPage() {
               href="https://netas.com.tr/"
               target="_blank"
               rel="noreferrer"
-              className="mt-6 inline-flex items-center rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              className="mt-5 inline-flex w-full items-center justify-center rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:mt-6 sm:w-auto sm:self-start"
             >
               Netaş Web Sitesine Git
             </a>
+            <p className="mt-5 text-sm text-foreground/56 sm:mt-6">
+              Güncel commit ID:{" "}
+              <span className="font-mono text-foreground/72">
+                {latestCommitId ?? "Bilinmiyor"}
+              </span>
+            </p>
           </article>
         </div>
       </section>

@@ -45,7 +45,9 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       excerpt={post.excerpt}
       afterContent={<VisualStorySection {...blogDetailVisualSection} />}
     >
-      {post.content ?? "Bu yazi icin icerik yakinda eklenecek."}
+      <div className="max-w-3xl text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
+        {post.content ?? "Bu yazi icin icerik yakinda eklenecek."}
+      </div>
     </BlogDetail>
   );
 }

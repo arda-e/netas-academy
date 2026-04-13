@@ -40,7 +40,7 @@ function EventInformationPanel({
   slug: string;
 }) {
   return (
-    <aside className="panel-surface rounded-sm p-6">
+    <aside className="panel-surface rounded-sm p-6 md:p-8">
       <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
         Etkinlik Bilgileri
       </p>
@@ -116,9 +116,9 @@ export default async function EventRegistrationPage({
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-18 md:px-10 lg:px-12">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.46fr)]">
-          <div className="panel-surface rounded-sm p-8 md:p-10">
+      <section className="mx-auto w-full max-w-7xl px-4 py-14 md:px-10 md:py-18 lg:px-12">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,0.72fr)_minmax(300px,0.42fr)]">
+          <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
             {registrationOpen ? (
               <EventRegistrationForm
                 eventDocumentId={event.documentId}

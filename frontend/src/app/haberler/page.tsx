@@ -4,7 +4,12 @@ export default function HaberlerPage() {
   return (
     <ContentPageShell
       title="Haberler"
-      description="Akademi gundemini, yeni duyurulari ve one cikan gelismeleri takip edebileceginiz kurumsal haber alani."
+      description={
+        <p>
+          Akademi gundemini, yeni duyurulari ve one cikan gelismeleri takip
+          edebileceginiz kurumsal haber alani.
+        </p>
+      }
     >
       <NewsList items={[]} />
     </ContentPageShell>

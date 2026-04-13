@@ -35,18 +35,18 @@ export function HeroOverlay({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,156,166,0.24),transparent_34%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.14),transparent_26%)]" />
 
-      <div className="relative mx-auto flex min-h-[calc(100vh-81px)] w-full max-w-7xl items-center px-6 py-16 md:px-10 md:py-20 lg:px-12">
-        <div className="max-w-3xl space-y-4 rounded-sm border border-white/60 bg-white/82 px-8 py-10 text-left text-slate-950 shadow-sm backdrop-blur-md md:px-12 md:py-14">
+      <div className="page-container relative flex min-h-[calc(72vh-81px)] w-full items-center py-10 sm:min-h-[calc(100vh-81px)] sm:py-14 lg:py-18">
+        <div className="max-w-3xl space-y-4 rounded-sm border border-white/60 bg-white/82 px-5 py-6 text-left text-slate-950 shadow-sm backdrop-blur-md sm:px-8 sm:py-10 md:px-12 md:py-14">
           {eyebrow ? (
             <p className="text-sm font-semibold uppercase tracking-[0.34em] text-slate-700">
               {eyebrow}
             </p>
           ) : null}
-          <h1 className="text-balance text-5xl font-semibold tracking-tight md:text-7xl">
+          <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
             {title}
           </h1>
           {description ? (
-            <p className="max-w-2xl text-lg leading-8 text-slate-700 md:text-xl">
+            <p className="max-w-2xl text-base leading-7 text-slate-700 sm:text-lg sm:leading-8 md:text-xl">
               {description}
             </p>
           ) : null}
@@ -54,7 +54,7 @@ export function HeroOverlay({
           {(primaryCta || secondaryCta) && (
             <div className="flex flex-col items-start gap-3 pt-2 sm:flex-row">
               {primaryCta ? (
-                <Button asChild size="lg" className="rounded-sm px-6 text-base">
+                <Button asChild size="lg" className="w-full rounded-sm px-6 text-base sm:w-auto">
                   <Link href={primaryCta.href}>{primaryCta.label}</Link>
                 </Button>
               ) : null}
@@ -64,7 +64,7 @@ export function HeroOverlay({
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-sm border-slate-300/80 bg-white px-6 text-base text-slate-950 hover:bg-slate-100 hover:text-slate-950"
+                  className="w-full rounded-sm border-slate-300/80 bg-white px-6 text-base text-slate-950 hover:bg-slate-100 hover:text-slate-950 sm:w-auto"
                 >
                   <Link href={secondaryCta.href}>{secondaryCta.label}</Link>
                 </Button>

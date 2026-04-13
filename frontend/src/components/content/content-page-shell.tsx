@@ -16,18 +16,18 @@ export function ContentPageShell({
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
       <section className="border-b border-white/10 bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]">
-        <div className="mx-auto flex min-h-[400px] w-full max-w-7xl items-end px-6 py-12 md:px-10 lg:px-12">
-          <div className="max-w-3xl space-y-3">
+        <div className="page-container flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">
+          <div className="max-w-3xl space-y-3 sm:space-y-4">
             {eyebrow ? (
               <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/82">
                 {eyebrow}
               </p>
             ) : null}
-            <h1 className="text-balance text-4xl font-semibold tracking-tight text-white md:text-6xl">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl">
               {title}
             </h1>
             {description ? (
-              <div className="max-w-2xl space-y-4 text-lg leading-8 text-white/76">
+              <div className="max-w-2xl space-y-3 text-[15px] leading-7 text-white/76 sm:space-y-4 sm:text-lg sm:leading-8">
                 {description}
               </div>
             ) : null}
@@ -35,10 +35,9 @@ export function ContentPageShell({
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-18 md:px-10 lg:px-12">
+      <section className="page-section pt-8 sm:pt-10 lg:pt-12">
         <div>{children}</div>
       </section>
     </main>
-
   );
 }

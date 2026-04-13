@@ -10,7 +10,7 @@ type ContentGridProps = {
 export function ContentGrid({
   itemsCount,
   emptyMessage,
-  columnsClassName = "grid gap-6",
+  columnsClassName = "grid gap-4 sm:gap-6",
   children,
 }: ContentGridProps) {
   if (itemsCount === 0) {
