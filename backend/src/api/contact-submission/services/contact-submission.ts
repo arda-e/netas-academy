@@ -1,9 +1,9 @@
 import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
-const { ValidationError } = errors;
+import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
 
-const CONTACT_RECIPIENTS = ['einanc@netas.com.tr', 'pcaglar@netas.com.tr'];
+const { ValidationError } = errors;
 
 type CreateContactSubmissionInput = {
   firstName: string;
@@ -42,7 +42,7 @@ export default factories.createCoreService(
         );
       }
 
-      return strapi.db.query('api::contact-submission.contact-submission').create({
+      const submission = await strapi.db.query('api::contact-submission.contact-submission').create({
         data: {
           firstName,
           lastName,
@@ -52,11 +52,33 @@ export default factories.createCoreService(
           company: company || null,
           subject,
           message,
-          recipientEmails: CONTACT_RECIPIENTS,
           submittedAt: new Date().toISOString(),
           status: 'new',
         },
       });
+
+      try {
+        await deliverInternalNotificationViaStrapi(strapi, {
+          key: 'contact_submission',
+          payload: {
+            submissionId: submission.id,
+            fullName: submission.fullName,
+            email: submission.email,
+            phone: submission.phone,
+            company: submission.company,
+            subject: submission.subject,
+            message: submission.message,
+            submittedAt: submission.submittedAt,
+          },
+        });
+      } catch (error) {
+        strapi.log.error('Contact submission notification delivery failed', {
+          submissionId: submission.id,
+          error,
+        });
+      }
+
+      return submission;
     },
   })
 );

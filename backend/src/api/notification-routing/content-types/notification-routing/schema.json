@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "notification_routings",
+  "info": {
+    "singularName": "notification-routing",
+    "pluralName": "notification-routings",
+    "displayName": "Notification Routing",
+    "description": "Internal notification recipient routing rules"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "key": {
+      "type": "enumeration",
+      "enum": ["contact_submission", "event_registration"],
+      "required": true,
+      "unique": true
+    },
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "enabled": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "customEmails": {
+      "type": "json"
+    },
+    "adminRoles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "admin::role"
+    }
+  }
+}

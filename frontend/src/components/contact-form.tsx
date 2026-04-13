@@ -21,7 +21,6 @@ export function ContactForm() {
     isSubmitting,
     errorMessage,
     successMessage,
-    contactRecipients,
     handleChange,
     handleSubmit,
   } = useContactForm();

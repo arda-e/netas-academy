@@ -2,8 +2,6 @@
 
 import { ChangeEvent, FormEvent, useState } from "react";
 
-const contactRecipients = ["einanc@netas.com.tr", "pcaglar@netas.com.tr"];
-
 type ContactFormValues = {
   firstName: string;
   lastName: string;
@@ -114,7 +112,6 @@ export function useContactForm() {
     isSubmitting,
     errorMessage,
     successMessage,
-    contactRecipients,
     handleChange,
     handleSubmit,
   };
