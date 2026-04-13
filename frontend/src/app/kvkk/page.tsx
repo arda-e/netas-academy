@@ -1,10 +1,23 @@
 import type { Metadata } from "next";
+import { execSync } from "node:child_process";
 
 export const metadata: Metadata = {
   title: "KVKK | Netas Academy",
   description:
     "Netaş Telekomünikasyon A.Ş. kişisel verilerin korunmasına ilişkin aydınlatma metni.",
 };
+
+function getLatestCommitId() {
+  try {
+    return execSync("git rev-parse --short HEAD", {
+      encoding: "utf8",
+      cwd: process.cwd(),
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+  } catch {
+    return null;
+  }
+}
 
 const purposeItems = [
   "Netaş ürün ve hizmetlerinin sizlere sunulabilmesini teminen, ürünlerin ücretlendirilmesi ve faturalandırılması, ürünlerin ve hizmetlerin satışı, satın alınan ve/veya kullanılan ürün ve hizmetlerle ilgili talep ettiğiniz işlemlerin gerçekleştirilmesi ve takibinin sağlanması, ürünlerin teslimi, kurulum, bakım, onarım vb. satış sonrası servis hizmetlerinin yerine getirilmesi.",
@@ -36,6 +49,8 @@ const rightsItems = [
 ];
 
 export default function KvkkPage() {
+  const latestCommitId = getLatestCommitId();
+
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
@@ -260,6 +275,12 @@ export default function KvkkPage() {
             >
               Netaş Web Sitesine Git
             </a>
+            <p className="mt-5 text-sm text-foreground/56 sm:mt-6">
+              Güncel commit ID:{" "}
+              <span className="font-mono text-foreground/72">
+                {latestCommitId ?? "Bilinmiyor"}
+              </span>
+            </p>
           </article>
         </div>
       </section>
