@@ -3,14 +3,14 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "concurrently -n frontend,backend -c blue,green \"fnm exec --using 22 npm run dev --prefix frontend\" \"fnm exec --using 22 npm run develop --prefix backend\"",
-    "dev:frontend": "fnm exec --using 22 npm run dev --prefix frontend",
-    "dev:backend": "fnm exec --using 22 npm run develop --prefix backend",
-    "build": "fnm exec --using 22 npm run build --prefix frontend && fnm exec --using 22 npm run build --prefix backend",
-    "build:frontend": "fnm exec --using 22 npm run build --prefix frontend",
-    "build:backend": "fnm exec --using 22 npm run build --prefix backend",
-    "lint": "fnm exec --using 22 npm run lint --prefix frontend",
-    "seed:demo": "fnm exec --using 22 npm run seed:demo --prefix backend"
+    "dev": "concurrently -n frontend,backend -c blue,green \"npm run dev --prefix frontend\" \"npm run develop --prefix backend\"",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run develop --prefix backend",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "lint": "npm run lint --prefix frontend",
+    "seed:demo": "npm run seed:demo --prefix backend"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

@@ -6,7 +6,15 @@ export default function Home() {
   return (
     <>
       <HeroOverlay
-        title="Kurumsal egitim, etkinlik ve icerik portalinizi tek yerde yonetin."
+        title={
+          <>
+            Kurumsal egitim, etkinlik ve
+            <br className="hidden sm:block" />
+            icerik portalinizi
+            <br className="hidden sm:block" />
+            <span className="text-[#ffb933]">tek yerde</span> yonetin.
+          </>
+        }
         description="Next.js arayuzu ile akademi deneyimini sunun, Strapi tarafinda ise ogretmenleri, etkinlikleri, blog yazilarini ve basvurulari yonetin."
         primaryCta={{ href: "/egitimler", label: "Egitimleri Incele" }}
         secondaryCta={{ href: "/iletisim", label: "Iletisime Gec" }}

@@ -84,8 +84,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
-      <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
-        <div className="mx-auto flex min-h-[400px] w-full max-w-7xl items-end px-6 py-12 md:px-10 lg:px-12">
+      <section className="sticky top-[81px] border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
+        <div className="mx-auto flex min-h-[320px] w-full max-w-7xl items-end px-6 py-10 md:px-10 lg:px-12">
           <div className="max-w-3xl space-y-5">
             <p className="text-sm font-medium uppercase tracking-[0.34em] text-white/88">
               {event.course?.title ?? "Etkinlik"}
@@ -100,7 +100,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-14 md:px-10 md:py-18 lg:px-12">
+      <section className="relative z-10 mx-auto w-full max-w-7xl bg-background px-4 py-14 md:px-10 md:py-18 lg:px-12">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,0.72fr)_minmax(300px,0.42fr)]">
           <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
             <div className="prose prose-invert max-w-none whitespace-pre-wrap text-base leading-7 prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary prose-li:text-foreground/80 sm:leading-8">

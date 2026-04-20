@@ -12,11 +12,7 @@ Monorepo bootstrap with:
 
 ## Getting started
 
-If your shell is not already using Node 22, switch first:
-
-```bash
-fnm use 22
-```
+Ensure your shell is already using Node 22 before running the app.
 
 Install the root helper dependency:
 
@@ -38,7 +34,7 @@ npm run seed:demo
 
 The demo seed is safe to rerun and populates `teachers`, `courses`, `events`, `blog-posts`, `students`, and `registrations` with published editorial content for local testing.
 
-The root scripts also force Node 22 through `fnm`, which avoids native module mismatches in Strapi's SQLite dependency when your default shell is on a newer Node release.
+The root scripts use the active shell Node runtime. Keep it on Node 22 to avoid native module mismatches in Strapi's SQLite dependency.
 
 Run apps separately:
 

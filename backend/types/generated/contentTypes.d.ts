@@ -584,6 +584,46 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiNotificationRoutingNotificationRouting
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'notification_routings';
+  info: {
+    description: 'Internal notification recipient routing rules';
+    displayName: 'Notification Routing';
+    pluralName: 'notification-routings';
+    singularName: 'notification-routing';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    adminRoles: Schema.Attribute.Relation<'manyToMany', 'admin::role'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customEmails: Schema.Attribute.JSON;
+    enabled: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<true>;
+    key: Schema.Attribute.Enumeration<
+      ['contact_submission', 'event_registration']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::notification-routing.notification-routing'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiRegistrationRegistration
   extends Struct.CollectionTypeSchema {
   collectionName: 'registrations';
@@ -1213,6 +1253,7 @@ declare module '@strapi/strapi' {
       'api::contact-submission.contact-submission': ApiContactSubmissionContactSubmission;
       'api::course.course': ApiCourseCourse;
       'api::event.event': ApiEventEvent;
+      'api::notification-routing.notification-routing': ApiNotificationRoutingNotificationRouting;
       'api::registration.registration': ApiRegistrationRegistration;
       'api::student.student': ApiStudentStudent;
       'api::teacher.teacher': ApiTeacherTeacher;

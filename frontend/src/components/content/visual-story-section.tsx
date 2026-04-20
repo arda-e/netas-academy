@@ -26,7 +26,7 @@ export function VisualStorySection({
   return (
     <section className="mt-14 space-y-6 sm:mt-16 sm:space-y-8">
       <div className="max-w-3xl space-y-3">
-        <p className="text-sm font-semibold uppercase tracking-[0.34em] text-primary/76">
+        <p className="text-sm font-semibold uppercase tracking-[0.34em] text-[#0b6f78]">
           {eyebrow}
         </p>
         <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
