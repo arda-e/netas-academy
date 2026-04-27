@@ -1,5 +1,6 @@
 import { HeroOverlay } from "@/components/hero-overlay";
 import { VisualStorySection } from "@/components/content";
+import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { homeVisualSection } from "@/lib/page-visual-sections";
 
 export default function Home() {
@@ -17,7 +18,7 @@ export default function Home() {
         }
         description="Next.js arayuzu ile akademi deneyimini sunun, Strapi tarafinda ise ogretmenleri, etkinlikleri, blog yazilarini ve basvurulari yonetin."
         primaryCta={{ href: "/egitimler", label: "Egitimleri Incele" }}
-        secondaryCta={{ href: "/iletisim", label: "Iletisime Gec" }}
+        secondaryCta={{ href: buildIntentLeadUrl("corporate_training_request"), label: "Iletisime Gec" }}
       />
       <main className="page-shell">
         <div className="page-section pt-8 sm:pt-10 lg:pt-12">

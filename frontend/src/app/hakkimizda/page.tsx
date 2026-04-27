@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { ContentPageShell, VisualStorySection } from "@/components/content";
 import { TeacherCarousel } from "@/components/teacher-carousel";
+import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { hakkimizdaVisualSection } from "@/lib/page-visual-sections";
 import { getStrapiMediaAltText, getStrapiMediaUrl, getTeachers } from "@/lib/strapi";
 
@@ -98,6 +100,21 @@ export default async function HakkimizdaPage() {
               imageAlt: getStrapiMediaAltText(teacher.profilePhoto) ?? teacher.fullName,
             }))}
           />
+        </div>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+          <Link
+            href={buildIntentLeadUrl("instructor_application")}
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
+          >
+            Egitmen Basvurusu Yap
+          </Link>
+          <Link
+            href={buildIntentLeadUrl("solution_partner_application")}
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
+          >
+            Cozum Ortakligi Basvurusu
+          </Link>
         </div>
       </div>
     </ContentPageShell>

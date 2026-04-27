@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { CourseDetail, VisualStorySection } from "@/components/content";
 import { courseDetailVisualSection } from "@/lib/page-visual-sections";
+import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { getCourseBySlug } from "@/lib/strapi";
 
 type CourseDetailPageProps = {
@@ -59,6 +60,14 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
           {course.description ?? "Bu egitim icin detayli icerik yakinda eklenecek."}
         </p>
+        <div className="pt-2">
+          <Link
+            href={buildIntentLeadUrl("corporate_training_request", { topic: course.title })}
+            className="inline-flex items-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
+          >
+            Bu Egitimi Kurumsal Olarak Talep Et
+          </Link>
+        </div>
       </div>
     </CourseDetail>
   );
