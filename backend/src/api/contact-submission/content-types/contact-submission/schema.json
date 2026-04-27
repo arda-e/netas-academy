@@ -11,12 +11,20 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "firstName": {
-      "type": "string",
+    "leadType": {
+      "type": "enumeration",
+      "enum": [
+        "corporate_training_request",
+        "instructor_application",
+        "solution_partner_application",
+        "general_contact"
+      ],
       "required": true
     },
-    "lastName": {
-      "type": "string",
+    "status": {
+      "type": "enumeration",
+      "enum": ["new", "contacted", "closed"],
+      "default": "new",
       "required": true
     },
     "fullName": {
@@ -34,25 +42,28 @@
     "company": {
       "type": "string"
     },
-    "subject": {
-      "type": "string",
-      "required": true
-    },
     "message": {
       "type": "text",
       "required": true
     },
-    "recipientEmails": {
-      "type": "json"
+    "interestTopic": {
+      "type": "string",
+      "description": "Training or topic of interest for corporate training requests"
+    },
+    "expertiseAreas": {
+      "type": "text",
+      "description": "Areas of expertise for instructor applications"
+    },
+    "companySize": {
+      "type": "string",
+      "description": "Company size for solution partner applications"
+    },
+    "partnershipDetails": {
+      "type": "text",
+      "description": "Partnership motivation and details for solution partner applications"
     },
     "submittedAt": {
       "type": "datetime",
-      "required": true
-    },
-    "status": {
-      "type": "enumeration",
-      "enum": ["new", "reviewed", "replied", "archived"],
-      "default": "new",
       "required": true
     }
   }

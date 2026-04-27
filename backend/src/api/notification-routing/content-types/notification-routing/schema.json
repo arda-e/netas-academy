@@ -13,7 +13,16 @@
   "attributes": {
     "key": {
       "type": "enumeration",
-      "enum": ["contact_submission", "event_registration"],
+      "enum": [
+        "contact_submission",
+        "event_registration",
+        "course_application_submitted",
+        "course_application_manual_review",
+        "course_payment_pending",
+        "lead_corporate_training",
+        "lead_instructor_application",
+        "lead_solution_partner"
+      ],
       "required": true,
       "unique": true
     },

@@ -1,0 +1,102 @@
+{
+  "kind": "collectionType",
+  "collectionName": "course_applications",
+  "info": {
+    "singularName": "course-application",
+    "pluralName": "course-applications",
+    "displayName": "Course Application",
+    "description": "Course application submissions and orchestration snapshots"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "applicationNumber": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "submitted",
+        "integration_pending",
+        "manual_review",
+        "pending_payment",
+        "completed_without_payment",
+        "completed",
+        "cancelled"
+      ],
+      "required": true,
+      "default": "submitted"
+    },
+    "manualReview": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "notes": {
+      "type": "text"
+    },
+    "consents": {
+      "type": "json",
+      "required": true
+    },
+    "applicantSnapshot": {
+      "type": "json",
+      "required": true
+    },
+    "submittedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "completedAt": {
+      "type": "datetime"
+    },
+    "integrationProvider": {
+      "type": "enumeration",
+      "enum": ["sap_soap"],
+      "default": "sap_soap"
+    },
+    "integrationDecision": {
+      "type": "enumeration",
+      "enum": ["pending", "accepted", "manual_review", "rejected"],
+      "required": true,
+      "default": "pending"
+    },
+    "integrationStatusCode": {
+      "type": "string"
+    },
+    "integrationReference": {
+      "type": "string"
+    },
+    "paymentStatus": {
+      "type": "enumeration",
+      "enum": ["not_started", "pending", "paid", "failed", "cancelled"],
+      "required": true,
+      "default": "not_started"
+    },
+    "paymentProvider": {
+      "type": "string"
+    },
+    "paymentUrlSnapshot": {
+      "type": "string"
+    },
+    "lastNotificationSentAt": {
+      "type": "datetime"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course",
+      "inversedBy": "courseApplications"
+    },
+    "student": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::student.student",
+      "inversedBy": "courseApplications"
+    }
+  }
+}
+

@@ -26,6 +26,42 @@ const DEFAULT_NOTIFICATION_ROUTINGS = [
     enabled: true,
     customEmails: [],
   },
+  {
+    key: 'course_application_submitted',
+    label: 'Kurs Basvurusu Onay Bildirimi',
+    enabled: true,
+    customEmails: [],
+  },
+  {
+    key: 'course_application_manual_review',
+    label: 'Kurs Basvurusu Manuel Inceleme Bildirimi',
+    enabled: true,
+    customEmails: [],
+  },
+  {
+    key: 'course_payment_pending',
+    label: 'Kurs Odeme Bekliyor Bildirimi',
+    enabled: true,
+    customEmails: [],
+  },
+  {
+    key: 'lead_corporate_training',
+    label: 'Kurumsal Egitim Talebi Bildirimi',
+    enabled: true,
+    customEmails: [],
+  },
+  {
+    key: 'lead_instructor_application',
+    label: 'Egitmen Basvurusu Bildirimi',
+    enabled: true,
+    customEmails: [],
+  },
+  {
+    key: 'lead_solution_partner',
+    label: 'Cozum Ortakligi Basvurusu Bildirimi',
+    enabled: true,
+    customEmails: [],
+  },
 ] as const;
 
 const ensurePublicReadPermissions = async (strapi: Core.Strapi) => {

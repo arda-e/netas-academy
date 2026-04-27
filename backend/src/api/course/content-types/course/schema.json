@@ -42,6 +42,12 @@
       "relation": "oneToMany",
       "target": "api::event.event",
       "mappedBy": "course"
+    },
+    "courseApplications": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::course-application.course-application",
+      "mappedBy": "course"
     }
   }
 }

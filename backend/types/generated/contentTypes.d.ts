@@ -477,13 +477,23 @@ export interface ApiContactSubmissionContactSubmission
   };
   attributes: {
     company: Schema.Attribute.String;
+    companySize: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email & Schema.Attribute.Required;
-    firstName: Schema.Attribute.String & Schema.Attribute.Required;
+    expertiseAreas: Schema.Attribute.Text;
     fullName: Schema.Attribute.String & Schema.Attribute.Required;
-    lastName: Schema.Attribute.String & Schema.Attribute.Required;
+    interestTopic: Schema.Attribute.String;
+    leadType: Schema.Attribute.Enumeration<
+      [
+        'corporate_training_request',
+        'instructor_application',
+        'solution_partner_application',
+        'general_contact',
+      ]
+    > &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -491,15 +501,84 @@ export interface ApiContactSubmissionContactSubmission
     > &
       Schema.Attribute.Private;
     message: Schema.Attribute.Text & Schema.Attribute.Required;
+    partnershipDetails: Schema.Attribute.Text;
     phone: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    recipientEmails: Schema.Attribute.JSON;
-    status: Schema.Attribute.Enumeration<
-      ['new', 'reviewed', 'replied', 'archived']
-    > &
+    status: Schema.Attribute.Enumeration<['new', 'contacted', 'closed']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'new'>;
-    subject: Schema.Attribute.String & Schema.Attribute.Required;
+    submittedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCourseApplicationCourseApplication
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'course_applications';
+  info: {
+    description: 'Course application submissions and orchestration snapshots';
+    displayName: 'Course Application';
+    pluralName: 'course-applications';
+    singularName: 'course-application';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    applicantSnapshot: Schema.Attribute.JSON & Schema.Attribute.Required;
+    applicationNumber: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    completedAt: Schema.Attribute.DateTime;
+    consents: Schema.Attribute.JSON & Schema.Attribute.Required;
+    course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    integrationDecision: Schema.Attribute.Enumeration<
+      ['pending', 'accepted', 'manual_review', 'rejected']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    integrationProvider: Schema.Attribute.Enumeration<['sap_soap']> &
+      Schema.Attribute.DefaultTo<'sap_soap'>;
+    integrationReference: Schema.Attribute.String;
+    integrationStatusCode: Schema.Attribute.String;
+    lastNotificationSentAt: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::course-application.course-application'
+    > &
+      Schema.Attribute.Private;
+    manualReview: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    notes: Schema.Attribute.Text;
+    paymentProvider: Schema.Attribute.String;
+    paymentStatus: Schema.Attribute.Enumeration<
+      ['not_started', 'pending', 'paid', 'failed', 'cancelled']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'not_started'>;
+    paymentUrlSnapshot: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<
+      [
+        'submitted',
+        'integration_pending',
+        'manual_review',
+        'pending_payment',
+        'completed_without_payment',
+        'completed',
+        'cancelled',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'submitted'>;
+    student: Schema.Attribute.Relation<'manyToOne', 'api::student.student'>;
     submittedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -519,6 +598,10 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    courseApplications: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::course-application.course-application'
+    >;
     coverImage: Schema.Attribute.Media<'images'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -606,7 +689,16 @@ export interface ApiNotificationRoutingNotificationRouting
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<true>;
     key: Schema.Attribute.Enumeration<
-      ['contact_submission', 'event_registration']
+      [
+        'contact_submission',
+        'event_registration',
+        'course_application_submitted',
+        'course_application_manual_review',
+        'course_payment_pending',
+        'lead_corporate_training',
+        'lead_instructor_application',
+        'lead_solution_partner',
+      ]
     > &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
@@ -676,6 +768,10 @@ export interface ApiStudentStudent extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    courseApplications: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::course-application.course-application'
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1251,6 +1347,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::blog-post.blog-post': ApiBlogPostBlogPost;
       'api::contact-submission.contact-submission': ApiContactSubmissionContactSubmission;
+      'api::course-application.course-application': ApiCourseApplicationCourseApplication;
       'api::course.course': ApiCourseCourse;
       'api::event.event': ApiEventEvent;
       'api::notification-routing.notification-routing': ApiNotificationRoutingNotificationRouting;

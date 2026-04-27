@@ -3,22 +3,28 @@ import { errors } from '@strapi/utils';
 
 const { ValidationError } = errors;
 
+const VALID_LEAD_TYPES = [
+  'corporate_training_request',
+  'instructor_application',
+  'solution_partner_application',
+  'general_contact',
+] as const;
+
 export default factories.createCoreController(
   'api::contact-submission.contact-submission' as any,
   () => ({
     async submit(ctx) {
       const body = ctx.request.body ?? {};
 
-      if (
-        !body.firstName ||
-        !body.lastName ||
-        !body.email ||
-        !body.phone ||
-        !body.subject ||
-        !body.message
-      ) {
+      if (!body.leadType || !VALID_LEAD_TYPES.includes(body.leadType)) {
         throw new ValidationError(
-          'firstName, lastName, email, phone, subject, and message are required'
+          'leadType is required and must be one of: corporate_training_request, instructor_application, solution_partner_application, general_contact'
+        );
+      }
+
+      if (!body.fullName || !body.email || !body.phone || !body.message) {
+        throw new ValidationError(
+          'fullName, email, phone, and message are required'
         );
       }
 

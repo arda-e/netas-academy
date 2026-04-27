@@ -112,4 +112,91 @@ describe("buildInternalNotificationEmail", () => {
       } as never),
     ).toThrow("Unsupported internal notification key: unsupported_notification");
   });
+
+  it("renders the corporate training lead notification in Turkish", () => {
+    const email = buildInternalNotificationEmail({
+      key: "lead_corporate_training",
+      payload: {
+        submissionId: 101,
+        fullName: "Zeynep Demir",
+        email: "zeynep@example.com",
+        phone: "+90 555 444 5566",
+        company: "ABC Corp",
+        message: "Kurumsal egitim talebimiz vardir.",
+        submittedAt: "2026-04-27T09:00:00.000Z",
+        interestTopic: "Veri Bilimi ve AI",
+      },
+    });
+
+    expect(email.subject).toContain("Kurumsal Egitim Talebi");
+    expect(email.subject).toContain("Zeynep Demir");
+    expect(email.text).toContain("Veri Bilimi ve AI");
+    expect(email.text).toContain("ABC Corp");
+    expect(email.text).toContain("Kurumsal egitim talebimiz vardir.");
+  });
+
+  it("renders the instructor application notification in Turkish", () => {
+    const email = buildInternalNotificationEmail({
+      key: "lead_instructor_application",
+      payload: {
+        submissionId: 102,
+        fullName: "Mehmet Yilmaz",
+        email: "mehmet@example.com",
+        phone: "+90 555 555 6677",
+        company: null,
+        message: "Egitmen olmak istiyorum.",
+        submittedAt: "2026-04-27T10:00:00.000Z",
+        expertiseAreas: "Python, Makine Ogrenmesi, Derin Ogrenme",
+      },
+    });
+
+    expect(email.subject).toContain("Egitmen Basvurusu");
+    expect(email.subject).toContain("Mehmet Yilmaz");
+    expect(email.text).toContain("Python, Makine Ogrenmesi, Derin Ogrenme");
+    expect(email.text).toContain("Uzmanlik Alanlari");
+  });
+
+  it("renders the solution partner notification in Turkish", () => {
+    const email = buildInternalNotificationEmail({
+      key: "lead_solution_partner",
+      payload: {
+        submissionId: 103,
+        fullName: "Ali Kaya",
+        email: "ali@example.com",
+        phone: "+90 555 666 7788",
+        company: "XYZ Ltd",
+        message: "Ortaklik konusunda gorusmek istiyoruz.",
+        submittedAt: "2026-04-27T11:00:00.000Z",
+        companySize: "50-100",
+        partnershipDetails: "Egitim platformu cozum ortakligi",
+      },
+    });
+
+    expect(email.subject).toContain("Cozum Ortakligi Basvurusu");
+    expect(email.subject).toContain("Ali Kaya");
+    expect(email.text).toContain("50-100");
+    expect(email.text).toContain("Egitim platformu cozum ortakligi");
+    expect(email.text).toContain("Sirket Buyuklugu");
+    expect(email.text).toContain("Ortaklik Detaylari");
+  });
+
+  it("renders fallback text for missing optional lead fields", () => {
+    const email = buildInternalNotificationEmail({
+      key: "lead_corporate_training",
+      payload: {
+        submissionId: 104,
+        fullName: "Ada Kaya",
+        email: "ada@example.com",
+        phone: " ",
+        company: null,
+        message: "Merhaba",
+        submittedAt: "2026-04-27T12:00:00.000Z",
+        interestTopic: null,
+      },
+    });
+
+    expect(email.text).toContain("Telefon: Belirtilmedi");
+    expect(email.text).toContain("Sirket: Belirtilmedi");
+    expect(email.text).toContain("Ilgi Konusu: Belirtilmedi");
+  });
 });
