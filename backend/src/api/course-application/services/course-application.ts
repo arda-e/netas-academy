@@ -131,11 +131,15 @@ const notifyApplicationResult = async (
       key: notificationKey,
       payload: toApplicationNotificationPayload(application, nextAction, paymentUrl),
     });
+
+    return true;
   } catch (error) {
     strapi.log.error("Course application notification delivery failed", {
       applicationId: application.id,
       error,
     });
+
+    return false;
   }
 };
 
@@ -305,7 +309,6 @@ export default factories.createCoreService("api::course-application.course-appli
         paymentStatus: outcome.paymentStatus,
         paymentProvider: outcome.status === "pending_payment" ? "local_payment_link" : null,
         paymentUrlSnapshot: paymentUrl,
-        lastNotificationSentAt: new Date().toISOString(),
       },
       populate: {
         course: true,
@@ -313,7 +316,16 @@ export default factories.createCoreService("api::course-application.course-appli
       },
     });
 
-    await notifyApplicationResult(finalApplication, outcome.nextAction, paymentUrl);
+    const notificationSent = await notifyApplicationResult(finalApplication, outcome.nextAction, paymentUrl);
+
+    if (notificationSent) {
+      await strapi.db.query(COURSE_APPLICATION_UID).update({
+        where: { id: finalApplication.id },
+        data: {
+          lastNotificationSentAt: new Date().toISOString(),
+        },
+      });
+    }
 
     return {
       applicationId: finalApplication.id,
