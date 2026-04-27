@@ -81,5 +81,24 @@ describe("sap-soap adapter", () => {
       errorReason: "SOAP response did not contain a Status value",
     });
   });
-});
 
+  it("retries transient network failures before falling back to manual review", async () => {
+    const fetchImpl = vi.fn().mockRejectedValue(new Error("network timeout"));
+
+    await expect(
+      runSapSoapSplCheck({
+        endpoint: "https://sap.example.test",
+        requestXml: "<soap />",
+        timeoutMs: 1000,
+        fetchImpl: fetchImpl as unknown as typeof fetch,
+      }),
+    ).resolves.toMatchObject({
+      provider: "sap_soap",
+      decision: "manual_review",
+      statusCode: null,
+      errorReason: "network timeout",
+    });
+
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+});

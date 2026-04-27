@@ -186,7 +186,7 @@ describe("contact-submission service", () => {
 
     expect(strapi.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
-        fullName: "Zeynep   Demir",
+        fullName: "Zeynep Demir",
         email: "zeynep@example.com",
         message: "Merhaba\n\nNasilsiniz?",
       }),

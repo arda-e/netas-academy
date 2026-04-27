@@ -82,6 +82,29 @@ describe("spl-check service", () => {
       statusCode: null,
       errorReason: "timeout",
     });
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
+  it("falls back to manual review when SPL configuration is missing", async () => {
+    vi.stubEnv("SPL_CHECK_ENDPOINT", "");
+    vi.stubEnv("SAP_SOAP_ENDPOINT", "");
+
+    await expect(
+      runSplCheck({
+        applicationNumber: "CA-20260424-AB12CD",
+        firstName: "Ada",
+        lastName: "Kaya",
+        email: "ada@example.com",
+        phone: "+90 555 111 2233",
+        tckn: "12345678901",
+        courseDocumentId: "course_123",
+      }),
+    ).resolves.toEqual({
+      provider: "sap_soap",
+      decision: "manual_review",
+      statusCode: null,
+      rawResponse: null,
+      errorReason: "SPL check endpoint is not configured",
+    });
   });
 });
-

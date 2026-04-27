@@ -16,6 +16,11 @@
       "required": true,
       "unique": true
     },
+    "activeApplicationKey": {
+      "type": "string",
+      "unique": true,
+      "description": "Set while a student has an active application for a course; cleared for terminal statuses."
+    },
     "status": {
       "type": "enumeration",
       "enum": [
@@ -99,4 +104,3 @@
     }
   }
 }
-

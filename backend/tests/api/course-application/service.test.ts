@@ -50,6 +50,9 @@ describe("course-application service", () => {
       applicationNumber: "CA-20260424-AB12CD",
       status: "submitted",
       manualReview: false,
+      applicantSnapshot: {
+        tckn: "10000000146",
+      },
       course: courseRecord,
       student: studentRecord,
       integrationProvider: "sap_soap",
@@ -181,6 +184,7 @@ describe("course-application service", () => {
       expect.objectContaining({
         data: expect.objectContaining({
           applicationNumber: expect.stringMatching(/^CA-/),
+          activeApplicationKey: "10:20",
           status: "submitted",
           manualReview: false,
           integrationDecision: "pending",
@@ -204,6 +208,9 @@ describe("course-application service", () => {
           applicationNumber: expect.stringMatching(/^CA-/),
           status: "pending_payment",
           nextAction: "redirect_to_payment",
+          student: expect.objectContaining({
+            tckn: "*******0146",
+          }),
         }),
       }),
     );
@@ -275,6 +282,76 @@ describe("course-application service", () => {
     ).rejects.toThrow("Student already has an active application for this course");
   });
 
+  it("maps a unique active application collision to the duplicate validation error", async () => {
+    const courseRecord = {
+      id: 10,
+      documentId: "course_123",
+      title: "Matematik",
+      slug: "matematik",
+    };
+    const studentRecord = {
+      id: 20,
+      firstName: "Ada",
+      lastName: "Kaya",
+      email: "ada@example.com",
+      phone: "+90 555 111 2233",
+    };
+    const applicationFindOne = vi
+      .fn()
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ id: 99, activeApplicationKey: "10:20" });
+    const create = vi.fn().mockRejectedValue(new Error("UNIQUE constraint failed: course_applications.active_application_key"));
+
+    const strapi = {
+      db: {
+        query: vi.fn((uid: string) => {
+          if (uid === "api::course.course") {
+            return { findOne: vi.fn().mockResolvedValue(courseRecord) };
+          }
+
+          if (uid === "api::course-application.course-application") {
+            return {
+              findOne: applicationFindOne,
+              create,
+            };
+          }
+
+          throw new Error(`Unexpected query uid: ${uid}`);
+        }),
+      },
+      service: vi.fn().mockReturnValue({
+        upsertByEmail: vi.fn().mockResolvedValue(studentRecord),
+      }),
+      log: {
+        error: vi.fn(),
+      },
+    };
+
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/course-application/services/course-application");
+    const service = serviceModule.default as {
+      submitApplication: (input: Record<string, unknown>) => Promise<unknown>;
+    };
+
+    await expect(
+      service.submitApplication({
+        courseDocumentId: "course_123",
+        student: {
+          firstName: "Ada",
+          email: "ada@example.com",
+          tckn: "10000000146",
+        },
+        consents: {
+          kvkk: true,
+          salesAgreement: true,
+        },
+      }),
+    ).rejects.toThrow("Student already has an active application for this course");
+
+    expect(runSplCheck).not.toHaveBeenCalled();
+  });
+
   it("falls back to manual review when the SPL integration fails", async () => {
     const courseRecord = {
       id: 10,
@@ -294,6 +371,9 @@ describe("course-application service", () => {
       applicationNumber: "CA-20260424-AB12CD",
       status: "submitted",
       manualReview: false,
+      applicantSnapshot: {
+        tckn: "10000000146",
+      },
       course: courseRecord,
       student: studentRecord,
       integrationProvider: "sap_soap",
@@ -388,5 +468,127 @@ describe("course-application service", () => {
       },
       nextAction: "show_support_message",
     });
+  });
+
+  it("maps rejected SPL decisions to completed_without_payment and clears active application key", async () => {
+    const courseRecord = {
+      id: 10,
+      documentId: "course_123",
+      title: "Matematik",
+      slug: "matematik",
+    };
+    const studentRecord = {
+      id: 20,
+      firstName: "Ada",
+      lastName: "Kaya",
+      email: "ada@example.com",
+      phone: "+90 555 111 2233",
+    };
+    const draftApplication = {
+      id: 30,
+      applicationNumber: "CA-20260424-AB12CD",
+      status: "submitted",
+      manualReview: false,
+      applicantSnapshot: {
+        tckn: "10000000146",
+      },
+      course: courseRecord,
+      student: studentRecord,
+      integrationProvider: "sap_soap",
+      integrationDecision: "pending",
+      integrationStatusCode: null,
+      integrationReference: null,
+    };
+    const finalApplication = {
+      ...draftApplication,
+      status: "completed_without_payment",
+      manualReview: false,
+      integrationDecision: "rejected",
+      integrationStatusCode: "42",
+      paymentStatus: "not_started",
+    };
+    const update = vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => {
+      if (data.status === "integration_pending") {
+        return draftApplication;
+      }
+
+      return finalApplication;
+    });
+
+    const strapi = {
+      db: {
+        query: vi.fn((uid: string) => {
+          if (uid === "api::course.course") {
+            return { findOne: vi.fn().mockResolvedValue(courseRecord) };
+          }
+
+          if (uid === "api::course-application.course-application") {
+            return {
+              findOne: vi.fn().mockResolvedValue(null),
+              create: vi.fn().mockResolvedValue(draftApplication),
+              update,
+            };
+          }
+
+          throw new Error(`Unexpected query uid: ${uid}`);
+        }),
+      },
+      service: vi.fn().mockReturnValue({ upsertByEmail: vi.fn().mockResolvedValue(studentRecord) }),
+      log: {
+        error: vi.fn(),
+      },
+    };
+
+    runSplCheck.mockResolvedValue({
+      provider: "sap_soap",
+      decision: "rejected",
+      statusCode: "42",
+      rawResponse: "<Status>42</Status>",
+      errorReason: "Business status 42",
+    });
+    deliverInternalNotificationViaStrapi.mockResolvedValue({
+      status: "sent",
+      key: "course_application_submitted",
+      recipients: ["ops@netas.com.tr"],
+    });
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/course-application/services/course-application");
+    const service = serviceModule.default as {
+      submitApplication: (input: Record<string, unknown>) => Promise<Record<string, unknown>>;
+    };
+
+    await expect(
+      service.submitApplication({
+        courseDocumentId: "course_123",
+        student: {
+          firstName: "Ada",
+          email: "ada@example.com",
+          tckn: "10000000146",
+        },
+        consents: {
+          kvkk: true,
+          salesAgreement: true,
+        },
+      }),
+    ).resolves.toMatchObject({
+      status: "completed_without_payment",
+      manualReview: false,
+      integration: {
+        decision: "rejected",
+        statusCode: "42",
+      },
+      nextAction: "show_finish_page",
+      paymentUrl: null,
+    });
+
+    expect(update).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          status: "completed_without_payment",
+          activeApplicationKey: null,
+        }),
+      }),
+    );
   });
 });

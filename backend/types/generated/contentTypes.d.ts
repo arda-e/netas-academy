@@ -527,6 +527,7 @@ export interface ApiCourseApplicationCourseApplication
     draftAndPublish: false;
   };
   attributes: {
+    activeApplicationKey: Schema.Attribute.String & Schema.Attribute.Unique;
     applicantSnapshot: Schema.Attribute.JSON & Schema.Attribute.Required;
     applicationNumber: Schema.Attribute.String &
       Schema.Attribute.Required &

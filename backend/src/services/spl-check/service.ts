@@ -1,4 +1,4 @@
-import { loadSplCheckConfig } from "./config";
+import { loadSplCheckConfig, resolveSplCheckConfig } from "./config";
 import { buildSplCheckRequestXml } from "./xml";
 import { runSapSoapSplCheck } from "./sap-soap-adapter";
 import type { SplCheckRequest, SplCheckResult } from "./types";
@@ -12,7 +12,27 @@ export async function runSplCheck(
   request: SplCheckRequest,
   dependencies: RunSplCheckDependencies = {},
 ): Promise<SplCheckResult> {
-  const config = dependencies.config ?? loadSplCheckConfig();
+  const config = dependencies.config ?? null;
+
+  if (!config) {
+    const resolvedConfig = resolveSplCheckConfig();
+
+    if (resolvedConfig.configured === false) {
+      return {
+        provider: "sap_soap",
+        decision: "manual_review",
+        statusCode: null,
+        rawResponse: null,
+        errorReason: resolvedConfig.errorReason,
+      };
+    }
+
+    return runSplCheck(request, {
+      ...dependencies,
+      config: resolvedConfig.config,
+    });
+  }
+
   const requestXml = buildSplCheckRequestXml(request);
 
   return runSapSoapSplCheck({
@@ -23,4 +43,3 @@ export async function runSplCheck(
     fetchImpl: dependencies.fetchImpl,
   });
 }
-

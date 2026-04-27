@@ -4,6 +4,16 @@ export type SplCheckConfig = {
   soapAction?: string | null;
 };
 
+export type SplCheckConfigResult =
+  | {
+      configured: true;
+      config: SplCheckConfig;
+    }
+  | {
+      configured: false;
+      errorReason: string;
+    };
+
 export function loadSplCheckConfig(env: NodeJS.ProcessEnv = process.env): SplCheckConfig {
   const endpoint = env.SPL_CHECK_ENDPOINT ?? env.SAP_SOAP_ENDPOINT ?? "";
 
@@ -18,3 +28,16 @@ export function loadSplCheckConfig(env: NodeJS.ProcessEnv = process.env): SplChe
   };
 }
 
+export function resolveSplCheckConfig(env: NodeJS.ProcessEnv = process.env): SplCheckConfigResult {
+  try {
+    return {
+      configured: true,
+      config: loadSplCheckConfig(env),
+    };
+  } catch (error) {
+    return {
+      configured: false,
+      errorReason: error instanceof Error ? error.message : "SPL check configuration failed",
+    };
+  }
+}

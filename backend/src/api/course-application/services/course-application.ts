@@ -1,10 +1,12 @@
 import { factories } from "@strapi/strapi";
 import { errors } from "@strapi/utils";
+import { randomUUID } from "node:crypto";
 
 import { normalizeTcknValue, isValidTckn } from "../../../utils/tckn";
 import { deliverInternalNotificationViaStrapi } from "../../../services/internal-notifications/strapi-service";
 import { runSplCheck } from "../../../services/spl-check/service";
 import { resolveCourseApplicationOutcomeFromSplResult } from "../../../services/course-application/domain/course-application-status";
+import type { CourseApplicationNotificationPayload } from "../../../services/internal-notifications/types";
 
 const { NotFoundError, ValidationError } = errors;
 
@@ -26,9 +28,13 @@ type CourseApplicationSubmitInput = {
   notes?: string | null;
 };
 
-type ApplicationNotificationPayload = {
-  applicationId: number;
+type CourseApplicationRecord = {
+  id: number;
   applicationNumber: string;
+  status: string;
+  applicantSnapshot?: {
+    tckn?: string | null;
+  } | null;
   course: {
     documentId: string;
     title: string;
@@ -39,20 +45,35 @@ type ApplicationNotificationPayload = {
     lastName?: string | null;
     email: string;
     phone?: string | null;
-    tckn: string;
+    tckn?: string | null;
   };
-  status: string;
-  nextAction: string;
-  paymentUrl?: string | null;
 };
 
 const ACTIVE_STATUSES = ["submitted", "integration_pending", "manual_review", "pending_payment"] as const;
+const COURSE_APPLICATION_UID = "api::course-application.course-application" as const;
 
 const normalizeWhitespace = (value?: string | null) => value?.trim().replace(/\s+/g, " ") || "";
 const normalizeEmail = (value: string) => value.trim().toLowerCase();
+const buildActiveApplicationKey = (courseId: number, studentId: number) => `${courseId}:${studentId}`;
+const isActiveApplicationStatus = (status: string) => ACTIVE_STATUSES.includes(status as (typeof ACTIVE_STATUSES)[number]);
+const maskTckn = (value?: string | null) => {
+  const normalizedValue = normalizeTcknValue(value ?? "");
+
+  if (normalizedValue.length < 4) {
+    return "****";
+  }
+
+  return `${"*".repeat(Math.max(normalizedValue.length - 4, 4))}${normalizedValue.slice(-4)}`;
+};
 
 const buildApplicationNumber = () =>
-  `CA-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  `CA-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}-${randomUUID().replace(/-/g, "").slice(0, 12).toUpperCase()}`;
+
+const isUniqueConstraintError = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+
+  return /unique|constraint|duplicate/i.test(message);
+};
 
 const resolvePaymentUrl = (courseSlug: string, template?: string | null) => {
   const resolvedTemplate = template ?? process.env.COURSE_APPLICATION_PAYMENT_URL ?? "";
@@ -65,10 +86,10 @@ const resolvePaymentUrl = (courseSlug: string, template?: string | null) => {
 };
 
 const toApplicationNotificationPayload = (
-  application: Record<string, any>,
+  application: CourseApplicationRecord,
   nextAction: string,
   paymentUrl?: string | null,
-): ApplicationNotificationPayload => ({
+): CourseApplicationNotificationPayload => ({
   applicationId: application.id,
   applicationNumber: application.applicationNumber,
   course: {
@@ -81,19 +102,24 @@ const toApplicationNotificationPayload = (
     lastName: application.student.lastName ?? null,
     email: application.student.email,
     phone: application.student.phone ?? null,
-    tckn: application.student.tckn,
+    tckn: maskTckn(application.applicantSnapshot?.tckn ?? application.student.tckn),
   },
   status: application.status,
   nextAction,
   paymentUrl: paymentUrl ?? null,
 });
 
+type CourseApplicationNotificationKey =
+  | "course_application_submitted"
+  | "course_application_manual_review"
+  | "course_payment_pending";
+
 const notifyApplicationResult = async (
-  application: Record<string, any>,
+  application: CourseApplicationRecord,
   nextAction: string,
   paymentUrl?: string | null,
 ) => {
-  const notificationKey =
+  const notificationKey: CourseApplicationNotificationKey =
     application.status === "pending_payment"
       ? "course_payment_pending"
       : application.status === "manual_review"
@@ -104,7 +130,7 @@ const notifyApplicationResult = async (
     await deliverInternalNotificationViaStrapi(strapi, {
       key: notificationKey,
       payload: toApplicationNotificationPayload(application, nextAction, paymentUrl),
-    } as any);
+    });
   } catch (error) {
     strapi.log.error("Course application notification delivery failed", {
       applicationId: application.id,
@@ -155,6 +181,7 @@ export default factories.createCoreService("api::course-application.course-appli
       email,
       phone,
     });
+    const activeApplicationKey = buildActiveApplicationKey(course.id, student.id);
 
     const existingApplication = await strapi.db.query("api::course-application.course-application").findOne({
       where: {
@@ -172,7 +199,6 @@ export default factories.createCoreService("api::course-application.course-appli
       throw new ValidationError("Student already has an active application for this course");
     }
 
-    const applicationNumber = buildApplicationNumber();
     const applicantSnapshot = {
       firstName,
       lastName: lastName || null,
@@ -183,28 +209,69 @@ export default factories.createCoreService("api::course-application.course-appli
     };
     const submittedAt = new Date().toISOString();
 
-    const draftApplication = await strapi.db.query("api::course-application.course-application").create({
-      data: {
-        applicationNumber,
-        status: "submitted",
-        manualReview: false,
-        notes: input.notes ?? null,
-        consents: input.consents,
-        applicantSnapshot,
-        submittedAt,
-        integrationProvider: "sap_soap",
-        integrationDecision: "pending",
-        paymentStatus: "not_started",
-        course: course.id,
-        student: student.id,
-      },
-      populate: {
-        course: true,
-        student: true,
-      },
-    });
+    let draftApplication: CourseApplicationRecord;
 
-    await strapi.db.query("api::course-application.course-application").update({
+    const createDraftApplication = async (): Promise<CourseApplicationRecord> => {
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          return await strapi.db.query(COURSE_APPLICATION_UID).create({
+            data: {
+              applicationNumber: buildApplicationNumber(),
+              activeApplicationKey,
+              status: "submitted",
+              manualReview: false,
+              notes: input.notes ?? null,
+              consents: input.consents,
+              applicantSnapshot,
+              submittedAt,
+              integrationProvider: "sap_soap",
+              integrationDecision: "pending",
+              paymentStatus: "not_started",
+              course: course.id,
+              student: student.id,
+            },
+            populate: {
+              course: true,
+              student: true,
+            },
+          });
+        } catch (error) {
+          if (!isUniqueConstraintError(error)) {
+            throw error;
+          }
+
+          const activeApplication = await strapi.db.query(COURSE_APPLICATION_UID).findOne({
+            where: { activeApplicationKey },
+            select: ["id"],
+          });
+
+          if (activeApplication) {
+            throw new ValidationError("Student already has an active application for this course");
+          }
+
+          if (attempt === 2) {
+            throw error;
+          }
+        }
+      }
+
+      throw new Error("Unable to create a unique course application number");
+    };
+
+    try {
+      draftApplication =
+        typeof strapi.db.transaction === "function"
+          ? await strapi.db.transaction(createDraftApplication)
+          : await createDraftApplication();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      throw error;
+    }
+
+    await strapi.db.query(COURSE_APPLICATION_UID).update({
       where: { id: draftApplication.id },
       data: {
         status: "integration_pending",
@@ -224,10 +291,11 @@ export default factories.createCoreService("api::course-application.course-appli
     const outcome = resolveCourseApplicationOutcomeFromSplResult(splResult);
     const paymentUrl = outcome.status === "pending_payment" ? resolvePaymentUrl(course.slug, options.paymentUrlTemplate) : null;
 
-    const finalApplication = await strapi.db.query("api::course-application.course-application").update({
+    const finalApplication = await strapi.db.query(COURSE_APPLICATION_UID).update({
       where: { id: draftApplication.id },
       data: {
         status: outcome.status,
+        activeApplicationKey: isActiveApplicationStatus(outcome.status) ? activeApplicationKey : null,
         manualReview: outcome.manualReview,
         completedAt: outcome.completedAt,
         integrationProvider: splResult.provider,
