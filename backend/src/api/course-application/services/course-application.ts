@@ -2,7 +2,7 @@ import { factories } from "@strapi/strapi";
 import { errors } from "@strapi/utils";
 import { randomUUID } from "node:crypto";
 
-import { normalizeTcknValue, isValidTckn } from "../../../utils/tckn";
+import { normalizeTcknValue, isValidTckn, maskTcknValue } from "../../../utils/tckn";
 import { deliverInternalNotificationViaStrapi } from "../../../services/internal-notifications/strapi-service";
 import { runSplCheck } from "../../../services/spl-check/service";
 import { resolveCourseApplicationOutcomeFromSplResult } from "../../../services/course-application/domain/course-application-status";
@@ -56,16 +56,6 @@ const normalizeWhitespace = (value?: string | null) => value?.trim().replace(/\s
 const normalizeEmail = (value: string) => value.trim().toLowerCase();
 const buildActiveApplicationKey = (courseId: number, studentId: number) => `${courseId}:${studentId}`;
 const isActiveApplicationStatus = (status: string) => ACTIVE_STATUSES.includes(status as (typeof ACTIVE_STATUSES)[number]);
-const maskTckn = (value?: string | null) => {
-  const normalizedValue = normalizeTcknValue(value ?? "");
-
-  if (normalizedValue.length < 4) {
-    return "****";
-  }
-
-  return `${"*".repeat(Math.max(normalizedValue.length - 4, 4))}${normalizedValue.slice(-4)}`;
-};
-
 const buildApplicationNumber = () =>
   `CA-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}-${randomUUID().replace(/-/g, "").slice(0, 12).toUpperCase()}`;
 
@@ -102,7 +92,7 @@ const toApplicationNotificationPayload = (
     lastName: application.student.lastName ?? null,
     email: application.student.email,
     phone: application.student.phone ?? null,
-    tckn: maskTckn(application.applicantSnapshot?.tckn ?? application.student.tckn),
+    tckn: maskTcknValue(application.applicantSnapshot?.tckn ?? application.student.tckn),
   },
   status: application.status,
   nextAction,

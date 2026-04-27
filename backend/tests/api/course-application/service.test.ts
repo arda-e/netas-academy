@@ -73,7 +73,7 @@ describe("course-application service", () => {
     const applicationFindOne = vi.fn().mockResolvedValue(null);
     const create = vi.fn().mockResolvedValue(draftApplication);
     const update = vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => {
-      events.push(`update:${String(data.status)}`);
+      events.push(data.lastNotificationSentAt ? "update:lastNotificationSentAt" : `update:${String(data.status)}`);
       return events.length === 1 ? draftApplication : finalApplication;
     });
     const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
@@ -214,7 +214,125 @@ describe("course-application service", () => {
         }),
       }),
     );
-    expect(events).toEqual(["update:integration_pending", "update:pending_payment"]);
+    expect(events).toEqual(["update:integration_pending", "update:pending_payment", "update:lastNotificationSentAt"]);
+  });
+
+  it("does not persist lastNotificationSentAt when notification delivery fails", async () => {
+    const courseRecord = {
+      id: 10,
+      documentId: "course_123",
+      title: "Matematik",
+      slug: "matematik",
+    };
+    const studentRecord = {
+      id: 20,
+      firstName: "Ada",
+      lastName: "Kaya",
+      email: "ada@example.com",
+      phone: "+90 555 111 2233",
+    };
+    const draftApplication = {
+      id: 30,
+      applicationNumber: "CA-20260424-AB12CD",
+      status: "submitted",
+      manualReview: false,
+      applicantSnapshot: {
+        tckn: "10000000146",
+      },
+      course: courseRecord,
+      student: studentRecord,
+      integrationProvider: "sap_soap",
+      integrationDecision: "pending",
+      integrationStatusCode: null,
+      integrationReference: null,
+    };
+    const finalApplication = {
+      ...draftApplication,
+      status: "pending_payment",
+      integrationDecision: "accepted",
+      integrationStatusCode: "10",
+      paymentStatus: "pending",
+      paymentUrlSnapshot: "https://pay.example.com/matematik",
+    };
+
+    const update = vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) =>
+      data.status === "integration_pending" ? draftApplication : finalApplication,
+    );
+    const strapi = {
+      db: {
+        query: vi.fn((uid: string) => {
+          if (uid === "api::course.course") {
+            return { findOne: vi.fn().mockResolvedValue(courseRecord) };
+          }
+
+          if (uid === "api::course-application.course-application") {
+            return {
+              findOne: vi.fn().mockResolvedValue(null),
+              create: vi.fn().mockResolvedValue(draftApplication),
+              update,
+            };
+          }
+
+          throw new Error(`Unexpected query uid: ${uid}`);
+        }),
+      },
+      service: vi.fn().mockReturnValue({ upsertByEmail: vi.fn().mockResolvedValue(studentRecord) }),
+      log: {
+        error: vi.fn(),
+      },
+    };
+
+    runSplCheck.mockResolvedValue({
+      provider: "sap_soap",
+      decision: "accepted",
+      statusCode: "10",
+      rawResponse: "<Status>10</Status>",
+    });
+    deliverInternalNotificationViaStrapi.mockRejectedValue(new Error("SMTP timeout"));
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/course-application/services/course-application");
+    const service = serviceModule.default as {
+      submitApplication: (input: Record<string, unknown>) => Promise<Record<string, unknown>>;
+    };
+
+    await expect(
+      service.submitApplication(
+        {
+          courseDocumentId: "course_123",
+          student: {
+            firstName: "Ada",
+            email: "ada@example.com",
+            tckn: "10000000146",
+          },
+          consents: {
+            kvkk: true,
+            salesAgreement: true,
+          },
+        },
+        {
+          paymentUrlTemplate: "https://pay.example.com/{courseSlug}",
+        },
+      ),
+    ).resolves.toMatchObject({
+      status: "pending_payment",
+      nextAction: "redirect_to_payment",
+    });
+
+    expect(update).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          lastNotificationSentAt: expect.any(String),
+        }),
+      }),
+    );
+    expect(strapi.log.error).toHaveBeenCalledWith(
+      "Course application notification delivery failed",
+      expect.objectContaining({
+        applicationId: 30,
+        error: expect.any(Error),
+      }),
+    );
   });
 
   it("rejects duplicate active applications for the same student and course", async () => {
@@ -582,7 +700,7 @@ describe("course-application service", () => {
       paymentUrl: null,
     });
 
-    expect(update).toHaveBeenLastCalledWith(
+    expect(update).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
           status: "completed_without_payment",

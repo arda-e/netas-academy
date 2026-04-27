@@ -30,3 +30,16 @@ export function isValidTckn(value: string) {
 export function normalizeTcknValue(value: string) {
   return normalizeTckn(value);
 }
+
+/**
+ * Masks a TCKN for internal notifications by keeping only the last 4 digits.
+ */
+export function maskTcknValue(value?: string | null) {
+  const normalizedValue = normalizeTckn(value ?? "");
+
+  if (normalizedValue.length < 4) {
+    return "****";
+  }
+
+  return `${"*".repeat(Math.max(normalizedValue.length - 4, 4))}${normalizedValue.slice(-4)}`;
+}
