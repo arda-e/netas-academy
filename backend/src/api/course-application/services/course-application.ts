@@ -2,7 +2,7 @@ import { factories } from "@strapi/strapi";
 import { errors } from "@strapi/utils";
 import { randomUUID } from "node:crypto";
 
-import { normalizeTcknValue, isValidTckn, maskTcknValue } from "../../../utils/tckn";
+import { normalizeTcknValue, isValidTckn, maskTcknValue, hashTcknForStorage } from "../../../utils/tckn";
 import { deliverInternalNotificationViaStrapi } from "../../../services/internal-notifications/strapi-service";
 import { runSplCheck } from "../../../services/spl-check/service";
 import { resolveCourseApplicationOutcomeFromSplResult } from "../../../services/course-application/domain/course-application-status";
@@ -33,7 +33,7 @@ type CourseApplicationRecord = {
   applicationNumber: string;
   status: string;
   applicantSnapshot?: {
-    tckn?: string | null;
+    tcknHash?: string | null;
   } | null;
   course: {
     documentId: string;
@@ -92,7 +92,7 @@ const toApplicationNotificationPayload = (
     lastName: application.student.lastName ?? null,
     email: application.student.email,
     phone: application.student.phone ?? null,
-    tckn: maskTcknValue(application.applicantSnapshot?.tckn ?? application.student.tckn),
+    tckn: maskTcknValue(application.student.tckn),
   },
   status: application.status,
   nextAction,
@@ -198,7 +198,7 @@ export default factories.createCoreService("api::course-application.course-appli
       lastName: lastName || null,
       email,
       phone: phone || null,
-      tckn,
+      tcknHash: hashTcknForStorage(tckn),
       address: address || null,
     };
     const submittedAt = new Date().toISOString();

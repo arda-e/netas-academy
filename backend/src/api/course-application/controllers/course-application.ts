@@ -7,10 +7,17 @@ export default factories.createCoreController("api::course-application.course-ap
   async submit(ctx) {
     const body = ctx.request.body ?? {};
     const student = body.student ?? {};
+    const consents = body.consents ?? {};
 
     if (!body.courseDocumentId || !student.firstName || !student.email || !student.tckn) {
       throw new ValidationError(
         "courseDocumentId, student.firstName, student.email, and student.tckn are required",
+      );
+    }
+
+    if (!consents.kvkk || !consents.salesAgreement) {
+      throw new ValidationError(
+        "consents.kvkk and consents.salesAgreement are required and must be true",
       );
     }
 

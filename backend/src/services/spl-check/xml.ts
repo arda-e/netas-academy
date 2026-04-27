@@ -1,3 +1,4 @@
+import { XMLParser } from "fast-xml-parser";
 import type { SplCheckRequest } from "./types";
 
 const escapeXml = (value: string) =>
@@ -34,22 +35,62 @@ export function buildSplCheckRequestXml(request: SplCheckRequest) {
   return parts.join("\n");
 }
 
-export function extractSoapStatus(xml: string) {
-  const statusMatch = xml.match(/<(?:\w+:)?Status>([^<]*)<\/(?:\w+:)?Status>/i);
+const soapXmlParser = new XMLParser({
+  ignoreAttributes: false,
+  removeNSPrefix: false,
+  isArray: () => false, // treat all non-array XML elements as objects
+});
 
-  if (statusMatch?.[1] != null) {
-    return statusMatch[1].trim();
+/**
+ * Deep-search a parsed SOAP XML object for a named element,
+ * matching regardless of namespace prefix.
+ *
+ * Handles nested SOAP envelopes, CDATA, and attribute-bearing elements
+ * that the previous regex-based extraction could not process.
+ */
+function findSoapElement(
+  obj: Record<string, unknown>,
+  localName: string,
+): string | null {
+  if (obj == null || typeof obj !== "object") return null;
+
+  for (const key of Object.keys(obj)) {
+    // Match local name after optional namespace prefix (e.g. "ns:Status" or "Status")
+    const lastColon = key.lastIndexOf(":");
+    const keyLocal = lastColon >= 0 ? key.slice(lastColon + 1) : key;
+
+    if (keyLocal.toLowerCase() === localName.toLowerCase()) {
+      const value = obj[key];
+      if (typeof value === "string") return value.trim();
+      // fast-xml-parser may nest text under "#text" for mixed content/CDATA
+      if (typeof value === "object" && value !== null && "#text" in (value as Record<string, unknown>)) {
+        return String((value as Record<string, unknown>)["#text"] ?? "").trim();
+      }
+      return null;
+    }
+
+    // Recurse into nested objects (handle SOAP Body → Response → element nesting)
+    const nested = findSoapElement(obj[key] as Record<string, unknown>, localName);
+    if (nested !== null) return nested;
   }
 
   return null;
 }
 
-export function extractSoapReference(xml: string) {
-  const referenceMatch = xml.match(/<(?:\w+:)?Reference>([^<]*)<\/(?:\w+:)?Reference>/i);
-
-  if (referenceMatch?.[1] != null) {
-    return referenceMatch[1].trim();
+export function extractSoapStatus(xml: string) {
+  try {
+    const parsed = soapXmlParser.parse(xml) as Record<string, unknown>;
+    return findSoapElement(parsed, "Status");
+  } catch {
+    return null;
   }
+}
 
-  return null;
+export function extractSoapReference(xml: string) {
+  try {
+    const parsed = soapXmlParser.parse(xml) as Record<string, unknown>;
+    return findSoapElement(parsed, "Reference");
+  } catch {
+    return null;
+  }
 }

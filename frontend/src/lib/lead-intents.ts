@@ -17,6 +17,9 @@ const baseSchema = z.object({
   phone: z.string().min(1, "Telefon numarası zorunludur"),
   company: z.string().optional(),
   message: z.string().min(1, "Mesaj alanı zorunludur"),
+  kvkkConsent: z.boolean().refine((val) => val === true, {
+    message: "KVKK metnini onaylamanız gerekmektedir",
+  }),
 });
 
 export const intentSchemas: Record<LeadType, z.ZodType> = {

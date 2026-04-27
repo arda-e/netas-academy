@@ -253,6 +253,54 @@ describe("contact-submission service", () => {
     ).rejects.toThrow("companySize is required for solution partner applications");
   });
 
+  it("rejects whitespace-only type-specific required fields after normalization", async () => {
+    const strapi = createStrapiMock({});
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
+    const service = serviceModule.default as {
+      createSubmission: (input: Record<string, string>) => Promise<unknown>;
+    };
+
+    await expect(
+      service.createSubmission({
+        leadType: "instructor_application",
+        fullName: "Ada Kaya",
+        email: "ada@example.com",
+        phone: "+90 555 111 2233",
+        message: "Merhaba",
+        expertiseAreas: "   ",
+      }),
+    ).rejects.toThrow("expertiseAreas is required for instructor applications");
+
+    expect(strapi.create).not.toHaveBeenCalled();
+  });
+
+  it("rejects oversized contact text fields before persistence and notification", async () => {
+    const strapi = createStrapiMock({});
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
+    const service = serviceModule.default as {
+      createSubmission: (input: Record<string, string>) => Promise<unknown>;
+    };
+
+    await expect(
+      service.createSubmission({
+        leadType: "solution_partner_application",
+        fullName: "Ada Kaya",
+        email: "ada@example.com",
+        phone: "+90 555 111 2233",
+        message: "Merhaba",
+        companySize: "11-50",
+        partnershipDetails: "a".repeat(4001),
+      }),
+    ).rejects.toThrow("partnershipDetails must be at most 4000 characters");
+
+    expect(strapi.create).not.toHaveBeenCalled();
+    expect(deliverInternalNotificationViaStrapi).not.toHaveBeenCalled();
+  });
+
   it("logs notification delivery error but does not fail lead persistence", async () => {
     const submission = {
       id: 4,
