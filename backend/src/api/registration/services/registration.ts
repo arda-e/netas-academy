@@ -2,7 +2,7 @@ import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
 import { isEventRegistrationOpen } from '../../../utils/event-registration';
-import { normalizeTcknValue } from '../../../utils/tckn';
+import { normalizeTcknValue, maskTcknValue } from '../../../utils/tckn';
 import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
 
 const { NotFoundError, ValidationError } = errors;
@@ -86,7 +86,7 @@ export default factories.createCoreService('api::registration.registration' as a
             lastName: registration.student.lastName,
             email: registration.student.email,
             phone: registration.student.phone,
-            tckn: normalizedTckn,
+            tckn: maskTcknValue(normalizedTckn),
           },
         },
       });

@@ -41,6 +41,7 @@ type FormValues = {
   expertiseAreas?: string;
   companySize?: string;
   partnershipDetails?: string;
+  kvkkConsent: boolean;
 };
 
 type IntentLeadFormProps = {
@@ -116,6 +117,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       expertiseAreas: "",
       companySize: "",
       partnershipDetails: "",
+      kvkkConsent: false,
     });
     setSuccess(false);
     setErrorMessage(null);
@@ -138,6 +140,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         expertiseAreas: data.expertiseAreas?.trim() || undefined,
         companySize: data.companySize?.trim() || undefined,
         partnershipDetails: data.partnershipDetails?.trim() || undefined,
+        kvkkConsent: data.kvkkConsent,
       };
 
       startTransition(async () => {
@@ -320,16 +323,39 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         )}
       </div>
 
-      {/* KVKK + Submit */}
-      <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
+      {/* KVKK Consent Checkbox + Notice */}
+      <div className="space-y-3">
+        <div className="flex items-start gap-3">
+          <input
+            id="kvkkConsent"
+            type="checkbox"
+            className="mt-1 h-4 w-4 rounded border-border/80 accent-primary"
+            {...register("kvkkConsent")}
+            onFocus={handleFieldInteraction}
+          />
+          <label htmlFor="kvkkConsent" className="cursor-pointer text-sm leading-6 text-muted-foreground">
+            Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır.{" "}
+            <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80">
+              Aydınlatma Metni
+            </Link>
+            &apos;ni okudum, onaylıyorum.*
+          </label>
+        </div>
+        {errors.kvkkConsent && (
+          <p className="pl-7 text-sm text-destructive">{errors.kvkkConsent.message as string}</p>
+        )}
         <div className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-          Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır. Kişisel
-          verilerinizin işlenmesi ile ilgili Aydınlatma Metnine{" "}
+          Kişisel verilerinizin işlenmesi ile ilgili Aydınlatma Metnine{" "}
           <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80">
             buradan
           </Link>{" "}
           erişebilirsiniz.
         </div>
+      </div>
+
+      {/* Submit Button */}
+      <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
+        <div className="flex-1" />
 
         <Button
           type="submit"

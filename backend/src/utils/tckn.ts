@@ -43,3 +43,26 @@ export function maskTcknValue(value?: string | null) {
 
   return `${"*".repeat(Math.max(normalizedValue.length - 4, 4))}${normalizedValue.slice(-4)}`;
 }
+
+/**
+ * One-way hash of a TCKN for pseudonymized storage.
+ *
+ * Uses SHA-256 with an optional pepper from TCKN_STORAGE_PEPPER.
+ * Falls back to a deterministic no-pepper hash if the env var is unset
+ * (still significantly better than plaintext, but a pepper is recommended
+ * for production deployments subject to KVKK).
+ */
+export function hashTcknForStorage(value?: string | null) {
+  const normalizedValue = normalizeTckn(value ?? "");
+
+  if (!normalizedValue) {
+    return null;
+  }
+
+  const pepper = process.env.TCKN_STORAGE_PEPPER ?? "";
+  const raw = `${pepper}:${normalizedValue}`;
+
+  const hash = require("node:crypto").createHash("sha256");
+  hash.update(raw, "utf8");
+  return hash.digest("hex");
+}

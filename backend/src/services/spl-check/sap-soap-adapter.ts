@@ -32,10 +32,15 @@ export async function runSapSoapSplCheck({
   const attemptCount = Math.max(1, maxAttempts);
   let lastError: unknown = null;
 
-  for (let attempt = 0; attempt < attemptCount; attempt += 1) {
+for (let attempt = 0; attempt < attemptCount; attempt += 1) {
+    // Exponential backoff before retries (skip first attempt)
+    if (attempt > 0) {
+      const delay = Math.min(Math.pow(2, attempt) * 1000, 16000);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
     try {
       const response = await fetchImpl(endpoint, {
         method: "POST",

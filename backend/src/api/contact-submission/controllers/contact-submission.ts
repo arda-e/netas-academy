@@ -28,6 +28,10 @@ export default factories.createCoreController(
         );
       }
 
+      if (!body.kvkkConsent) {
+        throw new ValidationError('kvkkConsent must be true');
+      }
+
       const submission = await strapi
         .service('api::contact-submission.contact-submission')
         .createSubmission(body);
