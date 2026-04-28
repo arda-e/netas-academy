@@ -15,10 +15,11 @@ describe("blog-author schema", () => {
       type: "string",
       required: true,
     });
-    expect(schema.attributes.slug).toEqual({
+    expect(schema.attributes.slug).toMatchObject({
       type: "uid",
       required: true,
     });
+    expect(schema.attributes.slug.targetField).toBe("displayName");
   });
 
   it("has role and shortBio as optional fields", () => {
