@@ -102,10 +102,13 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
             slug: course.slug,
             title: course.title,
             summary: course.summary,
+            description: course.description,
             topicArea: course.topicArea,
             level: course.level,
             targetAudience: course.targetAudience,
             businessValue: course.businessValue,
+            scopeSummary: course.scopeSummary,
+            outcomeBullets: course.outcomeBullets,
             teacherName: course.teacher?.fullName ?? null,
           }))}
         />

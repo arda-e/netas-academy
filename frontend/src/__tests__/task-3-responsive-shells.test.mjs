@@ -11,7 +11,7 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test("contact and registration forms use tighter mobile spacing and stacked legal/actions", () => {
-  const contactForm = readSource("components/contact-form.tsx");
+  const contactForm = readSource("components/contact/intent-lead-form.tsx");
   const registrationForm = readSource("components/event-registration-form.tsx");
 
   assert.match(contactForm, /grid gap-4 md:gap-6 md:grid-cols-2/);
@@ -28,7 +28,8 @@ test("contact and event registration pages stack panels before large screens", (
   const contactPage = readSource("app/iletisim/page.tsx");
   const registrationPage = readSource("app/etkinlikler/[slug]/kayit/page.tsx");
 
-  assert.match(contactPage, /grid gap-6 lg:grid-cols-\[minmax\(0,0\.72fr\)_minmax\(280px,0\.46fr\)\]/);
+  assert.match(contactPage, /panel-surface rounded-sm p-6 md:p-8 lg:p-10/);
+  assert.match(contactPage, /<IntentLeadForm initialLeadType=\{initialLeadType\} prefilledTopic=\{prefilledTopic\} \/>/);
   assert.match(registrationPage, /grid gap-6 xl:grid-cols-\[minmax\(0,0\.72fr\)_minmax\(300px,0\.42fr\)\]/);
   assert.doesNotMatch(registrationPage, /lg:grid-cols-\[minmax\(0,0\.72fr\)_minmax\(320px,0\.46fr\)\]/);
 });

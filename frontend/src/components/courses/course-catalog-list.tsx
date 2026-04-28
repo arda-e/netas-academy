@@ -4,30 +4,84 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { CourseList } from "@/components/content";
-import { normalizeTopicArea } from "@/lib/content-taxonomy";
+import {
+  getCourseLevelLabel,
+  getTopicAreaLabel,
+  normalizeCourseLevel,
+  normalizeTopicArea,
+  type TopicArea,
+} from "@/lib/content-taxonomy";
 
 export type CourseCatalogListItem = {
   id: number | string;
   slug: string;
   title: string;
   summary?: string | null;
+  description?: string | null;
   topicArea?: string | null;
   level?: string | null;
   targetAudience?: string | null;
   businessValue?: string | null;
+  scopeSummary?: string | null;
+  outcomeBullets?: string | null;
   teacherName?: string | null;
 };
 
 export type CourseCatalogListProps = {
   items: CourseCatalogListItem[];
   emptyMessage?: string;
-  activeTopic?: string | null;
+  activeTopic?: TopicArea | null;
   search?: string;
 };
 
 type SearchFieldProps = {
   initialValue?: string;
 };
+
+function normalizeSearchText(value: string) {
+  return value
+    .replace(/<[^>]*>/g, " ")
+    .toLocaleLowerCase("tr-TR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[çğıöşü]/g, (char) => {
+      const replacements: Record<string, string> = {
+        ç: "c",
+        ğ: "g",
+        ı: "i",
+        ö: "o",
+        ş: "s",
+        ü: "u",
+      };
+
+      return replacements[char] ?? char;
+    })
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
+function getCourseSearchText(course: CourseCatalogListItem) {
+  const topicArea = normalizeTopicArea(course.topicArea ?? null);
+  const level = normalizeCourseLevel(course.level ?? null);
+
+  return normalizeSearchText(
+    [
+      course.title,
+      course.slug,
+      course.summary,
+      course.description,
+      course.businessValue,
+      course.scopeSummary,
+      course.outcomeBullets,
+      course.targetAudience,
+      course.teacherName,
+      topicArea ? getTopicAreaLabel(topicArea) : course.topicArea,
+      level ? getCourseLevelLabel(level) : course.level,
+    ]
+      .filter(Boolean)
+      .join(" ")
+  );
+}
 
 export function SearchField({ initialValue = "" }: SearchFieldProps) {
   const router = useRouter();
@@ -112,7 +166,7 @@ export function CourseCatalogList({
   search = "",
 }: CourseCatalogListProps) {
   const filtered = useMemo(() => {
-    const term = search.trim().toLocaleLowerCase("tr-TR");
+    const terms = normalizeSearchText(search).split(" ").filter(Boolean);
 
     let result = items;
 
@@ -122,11 +176,10 @@ export function CourseCatalogList({
       );
     }
 
-    if (term) {
+    if (terms.length > 0) {
       result = result.filter((c) => {
-        const title = (c.title ?? "").toLocaleLowerCase("tr-TR");
-        const businessValue = (c.businessValue ?? "").toLocaleLowerCase("tr-TR");
-        return title.includes(term) || businessValue.includes(term);
+        const courseSearchText = getCourseSearchText(c);
+        return terms.every((term) => courseSearchText.includes(term));
       });
     }
 

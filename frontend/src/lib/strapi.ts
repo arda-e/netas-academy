@@ -216,6 +216,7 @@ export async function getCourses() {
       '&fields[0]=title&fields[1]=slug&fields[2]=summary' +
       '&fields[3]=topicArea&fields[4]=level&fields[5]=targetAudience' +
       '&fields[6]=businessValue&fields[7]=scopeSummary' +
+      '&fields[8]=description&fields[9]=outcomeBullets' +
       '&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug'
     );
 
