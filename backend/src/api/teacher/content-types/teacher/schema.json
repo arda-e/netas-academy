@@ -29,6 +29,15 @@
     "email": {
       "type": "email"
     },
+    "expertiseAreas": {
+      "type": "json"
+    },
+    "targetTeams": {
+      "type": "text"
+    },
+    "teachingApproach": {
+      "type": "text"
+    },
     "profilePhoto": {
       "type": "media",
       "multiple": false,

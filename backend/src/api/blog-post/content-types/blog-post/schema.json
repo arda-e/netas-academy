@@ -30,6 +30,18 @@
       "type": "media",
       "multiple": false,
       "allowedTypes": ["images"]
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::blog-author.blog-author"
+    },
+    "publishedDate": {
+      "type": "datetime",
+      "required": true
+    },
+    "sourceNotes": {
+      "type": "text"
     }
   }
 }

@@ -9,6 +9,7 @@ const createSummary = () => ({
   courses: { created: 0, updated: 0 },
   events: { created: 0, updated: 0 },
   blogPosts: { created: 0, updated: 0 },
+  blogAuthors: { created: 0, updated: 0 },
   students: { created: 0, updated: 0 },
   registrations: { created: 0, updated: 0 },
 });
@@ -35,6 +36,9 @@ const demoTeachers = [
     headline: 'Lead instructor for data and AI programs',
     bio: 'Ayse leads data strategy, analytics, and machine learning education for enterprise teams.',
     email: 'demo.ayse.yilmaz@netas-academy.local',
+    expertiseAreas: ['veri-muhendisligi', 'makine-ogrenmesi', 'analitik'],
+    targetTeams: 'Veri muhendisligi ekipleri, analitik birimleri, urun yoneticileri',
+    teachingApproach: 'Uygulamali atolye calismalari ve gercek dunya senaryolari ile ogrenme. Katilimcilarin kendi projelerinden ornekler uzerinde calisarak ogrenmelerini tesvik eder.',
   },
   {
     slug: 'demo-mehmet-kara',
@@ -42,6 +46,9 @@ const demoTeachers = [
     headline: 'Cloud operations and platform engineering trainer',
     bio: 'Mehmet teaches resilient cloud delivery, observability, and production readiness practices.',
     email: 'demo.mehmet.kara@netas-academy.local',
+    expertiseAreas: ['bulut-altyapi', 'guvenilirlik-muhendisligi', 'gozlemlenebilirlik'],
+    targetTeams: 'SRE ekipleri, platform muhendisleri, operasyon yoneticileri',
+    teachingApproach: 'Canli operasyonel tatbikatlar ve olay mudahale simulasyonlari ile ogrenme. Teoriyi kisa tutup, katilimcilari gercek basinc altinda karar almaya yonlendirir.',
   },
   {
     slug: 'demo-elif-demir',
@@ -49,6 +56,24 @@ const demoTeachers = [
     headline: 'Frontend systems and product delivery mentor',
     bio: 'Elif focuses on modern frontend architecture, design systems, and developer experience.',
     email: 'demo.elif.demir@netas-academy.local',
+    expertiseAreas: ['frontend-mimarisi', 'tasarim-sistemleri', 'erisilebilirlik'],
+    targetTeams: 'Frontend gelistiriciler, tasarim sistem ekipleri, UI muhendisleri',
+    teachingApproach: 'Studyo formatinda yapilandirilmis uygulamali oturumlar. Tasarim kararlarini muhendislik kararlarina baglayan butunsel bir yaklasim benimser.',
+  },
+];
+
+const demoBlogAuthors = [
+  {
+    slug: 'demo-ayse-yilmaz',
+    displayName: 'Demo: Ayse Yilmaz',
+    role: 'Data & AI Lead Instructor',
+    shortBio: 'Ayse leads data strategy, analytics, and machine learning education for enterprise teams. She brings deep experience in building data-driven decision cultures.',
+  },
+  {
+    slug: 'demo-mehmet-kara',
+    displayName: 'Demo: Mehmet Kara',
+    role: 'Cloud Operations Trainer',
+    shortBio: 'Mehmet teaches resilient cloud delivery, observability, and production readiness practices. His sessions emphasize practical operational reflexes.',
   },
 ];
 
@@ -279,6 +304,9 @@ const demoBlogPosts = [
     excerpt: 'A sample editorial entry announcing the academy portal and its learning catalog.',
     content:
       'This demo blog post exists so editors and frontend developers can test listing pages, detail pages, and featured content slots.',
+    authorSlug: 'demo-ayse-yilmaz',
+    publishedDate: '2025-12-15T10:00:00.000Z',
+    sourceNotes: 'Internal editorial calendar Q4 2025',
   },
   {
     slug: 'demo-why-event-linked-learning-matters',
@@ -286,6 +314,9 @@ const demoBlogPosts = [
     excerpt: 'Explains how courses and events work together in the academy model.',
     content:
       'This sample article highlights how structured learning journeys benefit from linked live events and reusable course context.',
+    authorSlug: 'demo-mehmet-kara',
+    publishedDate: '2026-01-20T09:00:00.000Z',
+    sourceNotes: 'Adapted from internal training documentation',
   },
   {
     slug: 'demo-teacher-stories-from-the-field',
@@ -293,6 +324,9 @@ const demoBlogPosts = [
     excerpt: 'Example editorial content focusing on instructors and their delivery approach.',
     content:
       'Use this record to validate teaser cards, detail layouts, and editor workflows for long-form teacher-related content.',
+    authorSlug: 'demo-ayse-yilmaz',
+    publishedDate: '2026-02-10T11:00:00.000Z',
+    sourceNotes: null,
   },
   {
     slug: 'demo-preparing-for-your-first-live-session',
@@ -300,6 +334,9 @@ const demoBlogPosts = [
     excerpt: 'A practical checklist post for students and participants before an event.',
     content:
       'This sample post is intentionally realistic enough to test copy-heavy templates and editorial preview behavior.',
+    authorSlug: 'demo-mehmet-kara',
+    publishedDate: '2026-03-05T08:00:00.000Z',
+    sourceNotes: 'Compiled from student feedback surveys',
   },
 ];
 
@@ -461,6 +498,22 @@ async function main() {
       teacherDocumentIds.set(teacher.slug, entry.documentId);
     }
 
+    const blogAuthorDocumentIds = new Map();
+
+    for (const author of demoBlogAuthors) {
+      const entry = await upsertPublishedDocument(
+        app,
+        'api::blog-author.blog-author',
+        'slug',
+        author.slug,
+        author,
+        result,
+        'blogAuthors'
+      );
+
+      blogAuthorDocumentIds.set(author.slug, entry.documentId);
+    }
+
     for (const course of demoCourses) {
       const teacherDocumentId = teacherDocumentIds.get(course.teacherSlug);
 
@@ -524,12 +577,22 @@ async function main() {
     }
 
     for (const post of demoBlogPosts) {
+      const authorDocumentId = blogAuthorDocumentIds.get(post.authorSlug);
+
       await upsertPublishedDocument(
         app,
         'api::blog-post.blog-post',
         'slug',
         post.slug,
-        post,
+        {
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.excerpt,
+          content: post.content,
+          publishedDate: post.publishedDate,
+          sourceNotes: post.sourceNotes || null,
+          author: authorDocumentId || null,
+        },
         result,
         'blogPosts'
       );

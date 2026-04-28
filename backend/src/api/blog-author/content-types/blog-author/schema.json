@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "blog_authors",
+  "info": {
+    "singularName": "blog-author",
+    "pluralName": "blog-authors",
+    "displayName": "Blog Author",
+    "description": "Blog author profiles"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "displayName": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "displayName",
+      "required": true
+    },
+    "role": {
+      "type": "string"
+    },
+    "shortBio": {
+      "type": "text"
+    }
+  }
+}
