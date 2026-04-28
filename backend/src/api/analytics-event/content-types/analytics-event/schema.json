@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "analytics_events",
+  "info": {
+    "singularName": "analytics-event",
+    "pluralName": "analytics-events",
+    "displayName": "Analytics Event",
+    "description": "Captured analytics events from the academy site"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "eventId": {
+      "type": "string",
+      "required": true
+    },
+    "timestamp": {
+      "type": "datetime"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "pagePath": {
+      "type": "string"
+    },
+    "sourcePage": {
+      "type": "string"
+    },
+    "ctaId": {
+      "type": "string"
+    },
+    "contentType": {
+      "type": "string"
+    },
+    "contentSlug": {
+      "type": "string"
+    },
+    "backendReference": {
+      "type": "string"
+    },
+    "properties": {
+      "type": "json"
+    }
+  }
+}
