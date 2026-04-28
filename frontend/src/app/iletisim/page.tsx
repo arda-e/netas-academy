@@ -1,6 +1,22 @@
-import { ContactForm } from "@/components/contact-form";
+import type { LeadType } from "@/lib/lead-intents";
+import { resolveLeadTypeFromQuery } from "@/lib/lead-intents";
+import { IntentLeadForm } from "@/components/contact/intent-lead-form";
 
-export default function IletisimPage() {
+export const dynamic = "force-dynamic";
+
+type IletisimPageProps = {
+  searchParams: Promise<{
+    intent?: string;
+    topic?: string;
+  }>;
+};
+
+export default async function IletisimPage({ searchParams }: IletisimPageProps) {
+  const params = await searchParams;
+  const resolvedIntent = resolveLeadTypeFromQuery(params.intent ?? null);
+  const initialLeadType: LeadType = resolvedIntent ?? "corporate_training_request";
+  const prefilledTopic = params.topic ?? undefined;
+
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
@@ -19,7 +35,7 @@ export default function IletisimPage() {
       <section className="mx-auto w-full max-w-7xl px-4 py-14 md:px-10 md:py-18 lg:px-12">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(280px,0.46fr)]">
           <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
-            <ContactForm />
+            <IntentLeadForm initialLeadType={initialLeadType} prefilledTopic={prefilledTopic} />
           </div>
 
           <aside className="panel-surface rounded-sm p-6 md:p-8">

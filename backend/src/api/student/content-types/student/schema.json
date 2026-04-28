@@ -35,6 +35,12 @@
       "relation": "oneToMany",
       "target": "api::registration.registration",
       "mappedBy": "student"
+    },
+    "courseApplications": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::course-application.course-application",
+      "mappedBy": "student"
     }
   }
 }

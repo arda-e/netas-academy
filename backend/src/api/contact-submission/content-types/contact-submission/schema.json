@@ -11,49 +11,75 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "firstName": {
-      "type": "string",
+    "leadType": {
+      "type": "enumeration",
+      "enum": [
+        "corporate_training_request",
+        "instructor_application",
+        "solution_partner_application",
+        "general_contact"
+      ],
       "required": true
     },
-    "lastName": {
-      "type": "string",
+    "status": {
+      "type": "enumeration",
+      "enum": ["new", "contacted", "closed"],
+      "default": "new",
       "required": true
     },
     "fullName": {
       "type": "string",
-      "required": true
+      "required": true,
+      "maxLength": 120
     },
     "email": {
       "type": "email",
-      "required": true
+      "required": true,
+      "maxLength": 254
     },
     "phone": {
       "type": "string",
-      "required": true
+      "required": true,
+      "maxLength": 40
     },
     "company": {
-      "type": "string"
-    },
-    "subject": {
       "type": "string",
-      "required": true
+      "maxLength": 160
     },
     "message": {
       "type": "text",
-      "required": true
+      "required": true,
+      "maxLength": 4000
     },
-    "recipientEmails": {
-      "type": "json"
+    "interestTopic": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Training or topic of interest for corporate training requests"
+    },
+    "expertiseAreas": {
+      "type": "text",
+      "maxLength": 2000,
+      "description": "Areas of expertise for instructor applications"
+    },
+    "companySize": {
+      "type": "string",
+      "maxLength": 80,
+      "description": "Company size for solution partner applications"
+    },
+    "partnershipDetails": {
+      "type": "text",
+      "maxLength": 4000,
+      "description": "Partnership motivation and details for solution partner applications"
     },
     "submittedAt": {
       "type": "datetime",
       "required": true
     },
-    "status": {
-      "type": "enumeration",
-      "enum": ["new", "reviewed", "replied", "archived"],
-      "default": "new",
-      "required": true
+    "kvkkConsent": {
+      "type": "boolean",
+      "required": true,
+      "default": false,
+      "description": "Whether the user explicitly consented to KVKK data processing"
     }
   }
 }

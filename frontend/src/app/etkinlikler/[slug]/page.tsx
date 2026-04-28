@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { getEventBySlug } from "@/lib/strapi";
 
 type EventDetailPageProps = {
@@ -49,6 +50,9 @@ function EventInformationPanel({
 
       <Button asChild className="mt-6 w-full rounded-sm">
         <Link href={`/etkinlikler/${slug}/kayit`}>Etkinlige Kayit Ol</Link>
+      </Button>
+      <Button asChild variant="outline" className="mt-3 w-full rounded-sm">
+        <Link href={buildIntentLeadUrl("general_contact")}>Iletisime Gec</Link>
       </Button>
     </aside>
   );
