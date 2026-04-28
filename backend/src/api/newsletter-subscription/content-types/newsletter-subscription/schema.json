@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "newsletter_subscriptions",
+  "info": {
+    "singularName": "newsletter-subscription",
+    "pluralName": "newsletter-subscriptions",
+    "displayName": "Newsletter Subscription",
+    "description": "Newsletter subscription captures from the academy site"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "consentAccepted": {
+      "type": "boolean",
+      "required": true
+    },
+    "consentTextSnapshot": {
+      "type": "text"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["active", "passive", "unsubscribed"],
+      "default": "active",
+      "required": true
+    },
+    "sourcePage": {
+      "type": "string"
+    },
+    "sourceContentType": {
+      "type": "string"
+    },
+    "sourceContentSlug": {
+      "type": "string"
+    },
+    "subscribedAt": {
+      "type": "datetime"
+    },
+    "lastSeenAt": {
+      "type": "datetime"
+    }
+  }
+}
