@@ -173,29 +173,6 @@ export const hakkimizdaVisualSection = {
   ],
 };
 
-export const courseDetailVisualSection = {
-  eyebrow: "Program Derinliği",
-  title: "Eğitim içeriğini bağlam ve uygulama örnekleriyle tamamlayın.",
-  description:
-    "Sayfayı yalnızca açıklama alanı olmaktan çıkarıp, katılımcının karar vermesini kolaylaştıran bir sunuma dönüştürün.",
-  items: [
-    {
-      title: "Gerçek Senaryolar",
-      description:
-        "Saha örnekleri ve ekip içi uygulamalarla eğitimin kullanım alanlarını daha görünür hale getirin.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=1200&q=80",
-    },
-    {
-      title: "Uzman Desteği",
-      description:
-        "Eğitmenin yaklaşımını ve öğrenme temposunu hissettiren daha güvenli bir karar alanı oluşturun.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80",
-    },
-  ],
-};
-
 export const eventDetailVisualSection = {
   eyebrow: "Etkinlik Atmosferi",
   title: "Katılımcılara etkinliğin enerjisini daha sayfa açılır açılmaz hissettirin.",

@@ -25,12 +25,31 @@ export type StrapiCourse = {
   slug: string;
   summary?: string | null;
   description?: string | null;
+  /* ─── taxonomy fields ─── */
+  topicArea?: string | null;
+  level?: string | null;
+  targetAudience?: string | null;
+  /* ─── capability fields ─── */
+  businessValue?: string | null;
+  scopeSummary?: string | null;
+  outcomeBullets?: string | null;
   teacher?: {
     id: number;
     documentId: string;
     fullName: string;
     slug: string;
   } | null;
+  /* ─── related events ─── */
+  events?: Array<{
+    id: number;
+    documentId: string;
+    title: string;
+    slug: string;
+    summary?: string | null;
+    startsAt: string;
+    eventType: string;
+    topicArea?: string | null;
+  }> | null;
 };
 
 export type StrapiEventType = "etkinlik" | "egitim" | "kurs";
@@ -72,11 +91,13 @@ export type StrapiEvent = {
   endsAt?: string | null;
   keepRegistrationsOpen?: boolean | null;
   location?: string | null;
+  topicArea?: string | null;
   course?: {
     id: number;
     documentId: string;
     title: string;
     slug: string;
+    topicArea?: string | null;
   } | null;
 };
 
@@ -191,7 +212,11 @@ function getNestedString(value: unknown, path: string[]) {
 export async function getCourses() {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
-      '/api/courses?pagination[pageSize]=100&sort[0]=title:asc&fields[0]=title&fields[1]=slug&fields[2]=summary&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug'
+      '/api/courses?pagination[pageSize]=100&sort[0]=title:asc' +
+      '&fields[0]=title&fields[1]=slug&fields[2]=summary' +
+      '&fields[3]=topicArea&fields[4]=level&fields[5]=targetAudience' +
+      '&fields[6]=businessValue&fields[7]=scopeSummary' +
+      '&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug'
     );
 
     return response.data;
@@ -216,7 +241,15 @@ export async function getCourseSlugs() {
 export async function getCourseBySlug(slug: string) {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
-      `/api/courses?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=description&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug`,
+      `/api/courses?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1` +
+      '&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=description' +
+      '&fields[4]=topicArea&fields[5]=level&fields[6]=targetAudience' +
+      '&fields[7]=businessValue&fields[8]=scopeSummary&fields[9]=outcomeBullets' +
+      '&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug' +
+      '&populate[events][fields][0]=title&populate[events][fields][1]=slug' +
+      '&populate[events][fields][2]=summary&populate[events][fields][3]=startsAt' +
+      '&populate[events][fields][4]=eventType&populate[events][fields][5]=topicArea' +
+      '&populate[events][sort][0]=startsAt:asc',
       { cache: 'force-cache' }
     );
 
@@ -234,7 +267,7 @@ export async function getEvents(
     const eventSort = sortOrder === "desc" ? "startsAt:desc" : "startsAt:asc";
 
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&populate[course][fields][0]=title&populate[course][fields][1]=slug`
+      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=topicArea&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea`
     );
 
     if (!eventType) {
@@ -265,7 +298,7 @@ export async function getEventSlugs() {
 export async function getEventBySlug(slug: string) {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-      `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=details&populate[course][fields][0]=title&populate[course][fields][1]=slug`,
+      `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=details&fields[9]=topicArea&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea`,
       { cache: 'force-cache' }
     );
 

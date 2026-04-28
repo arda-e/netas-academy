@@ -1,9 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+  type FormEvent,
+} from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 import type { LeadType } from "@/lib/lead-intents";
 import { LEAD_INTENTS, LEAD_TYPES, getSchemaForLeadType } from "@/lib/lead-intents";
@@ -23,7 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { IntentFieldSections } from "./intent-field-sections";
 
 const fieldClassName =
-  "h-12 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-14 md:px-5 md:text-base";
+  "h-11 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-12 md:px-5 md:text-base";
 
 const labelClassName = "text-md font-medium text-foreground";
 
@@ -44,15 +50,20 @@ type FormValues = {
   kvkkConsent: boolean;
 };
 
+export type IntentLeadFormValues = FormValues;
+
 type IntentLeadFormProps = {
   initialLeadType: LeadType;
   prefilledTopic?: string;
 };
 
+type FieldErrors = Partial<Record<keyof FormValues, string>>;
+
 export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFormProps) {
   const [leadType, setLeadType] = useState<LeadType>(initialLeadType);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [isPending, startTransition] = useTransition();
   const hasEmittedStartRef = useRef(false);
 
@@ -79,12 +90,10 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   const schema = getSchemaForLeadType(leadType);
   const {
     register,
-    handleSubmit,
-    formState: { errors },
+    getValues,
     reset,
-    trigger,
   } = useForm<FormValues>({
-    resolver: zodResolver(schema) as any,
+    shouldUnregister: true,
     defaultValues: {
       fullName: "",
       email: "",
@@ -95,15 +104,11 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       expertiseAreas: "",
       companySize: "",
       partnershipDetails: "",
+      kvkkConsent: false,
     },
     mode: "onSubmit",
     reValidateMode: "onSubmit",
   });
-
-  // Re-validate on tab change
-  useEffect(() => {
-    trigger();
-  }, [leadType, trigger]);
 
   // Reset form when switching tabs
   useEffect(() => {
@@ -119,8 +124,6 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       partnershipDetails: "",
       kvkkConsent: false,
     });
-    setSuccess(false);
-    setErrorMessage(null);
     hasEmittedStartRef.current = false;
   }, [leadType, reset, prefilledTopic]);
 
@@ -173,6 +176,34 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     [leadType, reset]
   );
 
+  const handleFormSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      const values = getValues();
+      const parsed = schema.safeParse(values);
+
+      if (!parsed.success) {
+        const nextFieldErrors: FieldErrors = {};
+
+        for (const issue of parsed.error.issues) {
+          const fieldName = issue.path[0];
+          if (typeof fieldName === "string" && fieldName in values) {
+            nextFieldErrors[fieldName as keyof FormValues] = issue.message;
+          }
+        }
+
+        setFieldErrors(nextFieldErrors);
+        setErrorMessage(null);
+        return;
+      }
+
+      setFieldErrors({});
+      onSubmit(parsed.data as FormValues);
+    },
+    [getValues, onSubmit, schema]
+  );
+
   if (success) {
     const intent = LEAD_INTENTS[leadType];
     return (
@@ -205,7 +236,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   }
 
   return (
-    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-6 md:space-y-8" onSubmit={handleFormSubmit}>
       {/* Tabs */}
       <div className="flex flex-wrap gap-2 border-b border-white/8 pb-3">
         {LEAD_TYPES.map((type) => {
@@ -217,6 +248,9 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
               onClick={() => {
                 if (type !== leadType) {
                   emitLeadTabChange(leadType, type);
+                  setSuccess(false);
+                  setErrorMessage(null);
+                  setFieldErrors({});
                   setLeadType(type);
                 }
               }}
@@ -250,9 +284,9 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             {...register("fullName")}
             onFocus={handleFieldInteraction}
           />
-          {errors.fullName && (
-            <p className="text-sm text-destructive">{errors.fullName.message as string}</p>
-          )}
+          {fieldErrors.fullName ? (
+            <p className="text-sm text-destructive">{fieldErrors.fullName}</p>
+          ) : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -266,9 +300,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             {...register("email")}
             onFocus={handleFieldInteraction}
           />
-          {errors.email && (
-            <p className="text-sm text-destructive">{errors.email.message as string}</p>
-          )}
+          {fieldErrors.email ? <p className="text-sm text-destructive">{fieldErrors.email}</p> : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -282,9 +314,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             {...register("phone")}
             onFocus={handleFieldInteraction}
           />
-          {errors.phone && (
-            <p className="text-sm text-destructive">{errors.phone.message as string}</p>
-          )}
+          {fieldErrors.phone ? <p className="text-sm text-destructive">{fieldErrors.phone}</p> : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -303,8 +333,8 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       {/* Intent-specific fields */}
       <IntentFieldSections
         leadType={leadType}
-        register={register as any}
-        errors={getSectionErrors(errors, leadType)}
+        register={register}
+        errors={getSectionErrors(fieldErrors, leadType)}
       />
 
       {/* Message */}
@@ -314,13 +344,11 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         </label>
         <Textarea
           id="message"
-          className="min-h-[12rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[14rem] md:px-5 md:text-base"
+          className="min-h-[10rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[12rem] md:px-5 md:text-base"
           {...register("message")}
           onFocus={handleFieldInteraction}
         />
-        {errors.message && (
-          <p className="text-sm text-destructive">{errors.message.message as string}</p>
-        )}
+        {fieldErrors.message ? <p className="text-sm text-destructive">{fieldErrors.message}</p> : null}
       </div>
 
       {/* KVKK Consent Checkbox + Notice */}
@@ -341,9 +369,9 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             &apos;ni okudum, onaylıyorum.*
           </label>
         </div>
-        {errors.kvkkConsent && (
-          <p className="pl-7 text-sm text-destructive">{errors.kvkkConsent.message as string}</p>
-        )}
+        {fieldErrors.kvkkConsent ? (
+          <p className="pl-7 text-sm text-destructive">{fieldErrors.kvkkConsent}</p>
+        ) : null}
         <div className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
           Kişisel verilerinizin işlenmesi ile ilgili Aydınlatma Metnine{" "}
           <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80">
@@ -357,11 +385,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
         <div className="flex-1" />
 
-        <Button
-          type="submit"
-          disabled={isPending}
-          className="h-12 w-full rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg"
-        >
+        <Button type="submit" disabled={isPending} className="h-12 w-full rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg">
           {isPending ? "Gönderiliyor..." : "Gönder"}
         </Button>
       </div>
@@ -370,19 +394,18 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
 }
 
 function getSectionErrors(
-  errors: Record<string, { message?: unknown } | undefined>,
+  errors: Partial<Record<keyof FormValues, string>>,
   leadType: LeadType
 ): Record<string, string | undefined> {
   const result: Record<string, string | undefined> = {};
-  const fieldMap: Record<LeadType, string[]> = {
+  const fieldMap: Record<LeadType, Array<keyof FormValues>> = {
     corporate_training_request: ["interestTopic"],
     instructor_application: ["expertiseAreas"],
     solution_partner_application: ["companySize", "partnershipDetails"],
     general_contact: [],
   };
   for (const field of fieldMap[leadType]) {
-    const err = errors[field];
-    result[field] = err?.message ? String(err.message) : undefined;
+    result[field] = errors[field];
   }
   return result;
 }

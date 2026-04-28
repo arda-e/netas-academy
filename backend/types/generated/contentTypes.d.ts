@@ -476,15 +476,38 @@ export interface ApiContactSubmissionContactSubmission
     draftAndPublish: false;
   };
   attributes: {
-    company: Schema.Attribute.String;
-    companySize: Schema.Attribute.String;
+    company: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 160;
+      }>;
+    companySize: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    email: Schema.Attribute.Email & Schema.Attribute.Required;
-    expertiseAreas: Schema.Attribute.Text;
-    fullName: Schema.Attribute.String & Schema.Attribute.Required;
-    interestTopic: Schema.Attribute.String;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 254;
+      }>;
+    expertiseAreas: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 2000;
+      }>;
+    fullName: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 120;
+      }>;
+    interestTopic: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    kvkkConsent: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
     leadType: Schema.Attribute.Enumeration<
       [
         'corporate_training_request',
@@ -500,9 +523,20 @@ export interface ApiContactSubmissionContactSubmission
       'api::contact-submission.contact-submission'
     > &
       Schema.Attribute.Private;
-    message: Schema.Attribute.Text & Schema.Attribute.Required;
-    partnershipDetails: Schema.Attribute.Text;
-    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    message: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 4000;
+      }>;
+    partnershipDetails: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 4000;
+      }>;
+    phone: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 40;
+      }>;
     publishedAt: Schema.Attribute.DateTime;
     status: Schema.Attribute.Enumeration<['new', 'contacted', 'closed']> &
       Schema.Attribute.Required &
@@ -599,6 +633,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    businessValue: Schema.Attribute.Text;
     courseApplications: Schema.Attribute.Relation<
       'oneToMany',
       'api::course-application.course-application'
@@ -609,17 +644,32 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText;
     events: Schema.Attribute.Relation<'oneToMany', 'api::event.event'>;
+    level: Schema.Attribute.Enumeration<['temel', 'orta', 'ileri']>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::course.course'
     > &
       Schema.Attribute.Private;
+    outcomeBullets: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
+    scopeSummary: Schema.Attribute.Text;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     summary: Schema.Attribute.Text;
+    targetAudience: Schema.Attribute.Text;
     teacher: Schema.Attribute.Relation<'manyToOne', 'api::teacher.teacher'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    topicArea: Schema.Attribute.Enumeration<
+      [
+        'siber-guvenlik',
+        'yazilim-gelistirme',
+        'veri-bilimi',
+        'bulut-altyapi',
+        'is-surecleri',
+        'yapay-zeka',
+      ]
+    > &
+      Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -662,6 +712,16 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     startsAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
     summary: Schema.Attribute.Text;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    topicArea: Schema.Attribute.Enumeration<
+      [
+        'siber-guvenlik',
+        'yazilim-gelistirme',
+        'veri-bilimi',
+        'bulut-altyapi',
+        'is-surecleri',
+        'yapay-zeka',
+      ]
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

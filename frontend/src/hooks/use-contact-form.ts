@@ -12,6 +12,8 @@ type ContactFormValues = {
   message: string;
 };
 
+type ContactFormErrors = Partial<Record<keyof ContactFormValues, string>>;
+
 const initialValues: ContactFormValues = {
   firstName: "",
   lastName: "",
@@ -47,11 +49,44 @@ function getErrorMessage(payload: unknown) {
   return "Mesajınız gönderilemedi. Lütfen tekrar deneyin.";
 }
 
+function validateContactForm(values: ContactFormValues): ContactFormErrors {
+  const errors: ContactFormErrors = {};
+
+  if (!values.firstName.trim()) {
+    errors.firstName = "Adınızı girin.";
+  }
+
+  if (!values.lastName.trim()) {
+    errors.lastName = "Soyadınızı girin.";
+  }
+
+  if (!values.email.trim()) {
+    errors.email = "E-posta adresinizi girin.";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
+    errors.email = "Geçerli bir e-posta adresi girin.";
+  }
+
+  if (!values.phone.trim()) {
+    errors.phone = "Telefon numaranızı girin.";
+  }
+
+  if (!values.subject.trim()) {
+    errors.subject = "Konu alanını doldurun.";
+  }
+
+  if (!values.message.trim()) {
+    errors.message = "Mesajınızı yazın.";
+  }
+
+  return errors;
+}
+
 export function useContactForm() {
   const [values, setValues] = useState<ContactFormValues>(initialValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errors, setErrors] = useState<ContactFormErrors>({});
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -59,6 +94,15 @@ export function useContactForm() {
     const { name, value } = event.target;
     setErrorMessage(null);
     setSuccessMessage(null);
+    setErrors((currentErrors) => {
+      if (!(name in currentErrors)) {
+        return currentErrors;
+      }
+
+      const nextErrors = { ...currentErrors };
+      delete nextErrors[name as keyof ContactFormErrors];
+      return nextErrors;
+    });
 
     setValues((currentValues) => ({
       ...currentValues,
@@ -71,6 +115,15 @@ export function useContactForm() {
     setIsSubmitting(true);
     setErrorMessage(null);
     setSuccessMessage(null);
+
+    const validationErrors = validateContactForm(values);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setIsSubmitting(false);
+      return;
+    }
+
+    setErrors({});
 
     try {
       const response = await fetch("/api/contact-submissions/submit", {
@@ -100,6 +153,7 @@ export function useContactForm() {
         "Mesajınız kaydedildi. Ekibimiz en kısa süre içinde sizinle iletişime geçecek."
       );
       setValues(initialValues);
+      setErrors({});
     } catch {
       setErrorMessage("Mesaj isteği gönderilemedi. Lütfen tekrar deneyin.");
     } finally {
@@ -112,6 +166,7 @@ export function useContactForm() {
     isSubmitting,
     errorMessage,
     successMessage,
+    errors,
     handleChange,
     handleSubmit,
   };

@@ -118,7 +118,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
                   sort: selectedSort,
                 })}
                 className={[
-                  "rounded-full border px-3 py-1 transition-colors",
+                  "rounded-full border px-3 py-1.5 text-xs transition-colors sm:text-sm",
                   active
                     ? "border-[#009ca6] bg-[#009ca6] text-white shadow-sm"
                     : "border-border/70 bg-white/70 text-foreground/74 hover:bg-white hover:text-foreground",

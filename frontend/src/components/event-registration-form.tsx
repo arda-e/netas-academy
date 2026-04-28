@@ -15,7 +15,7 @@ type EventRegistrationFormProps = {
 };
 
 const fieldClassName =
-  "h-12 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-14 md:px-5 md:text-base";
+  "h-11 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-12 md:px-5 md:text-base";
 
 const labelClassName =
   "text-lg font-semibold tracking-tight text-foreground md:text-xl";
@@ -137,7 +137,7 @@ export function EventRegistrationForm({
           name="notes"
           value={values.notes}
           onChange={handleChange}
-          className="min-h-[10rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:px-5 md:text-base"
+          className="min-h-[9rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:px-5 md:text-base"
           placeholder="Katılım beklentiniz, kurumunuz veya iletmek istediginiz notlar..."
         />
       </div>

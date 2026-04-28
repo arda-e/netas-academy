@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 const fieldClassName =
-  "h-12 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-14 md:px-5 md:text-base";
+  "h-11 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-12 md:px-5 md:text-base";
 
 const labelClassName =
   "text-md font-medium text-foreground";
@@ -21,6 +21,7 @@ export function ContactForm() {
     isSubmitting,
     errorMessage,
     successMessage,
+    errors,
     handleChange,
     handleSubmit,
   } = useContactForm();
@@ -53,8 +54,12 @@ export function ContactForm() {
             value={values.firstName}
             onChange={handleChange}
             className={fieldClassName}
+            aria-invalid={Boolean(errors.firstName)}
             required
           />
+          {errors.firstName ? (
+            <p className="text-sm text-destructive">{errors.firstName}</p>
+          ) : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -70,8 +75,12 @@ export function ContactForm() {
             value={values.lastName}
             onChange={handleChange}
             className={fieldClassName}
+            aria-invalid={Boolean(errors.lastName)}
             required
           />
+          {errors.lastName ? (
+            <p className="text-sm text-destructive">{errors.lastName}</p>
+          ) : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -88,8 +97,10 @@ export function ContactForm() {
             value={values.email}
             onChange={handleChange}
             className={fieldClassName}
+            aria-invalid={Boolean(errors.email)}
             required
           />
+          {errors.email ? <p className="text-sm text-destructive">{errors.email}</p> : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -106,8 +117,10 @@ export function ContactForm() {
             value={values.phone}
             onChange={handleChange}
             className={fieldClassName}
+            aria-invalid={Boolean(errors.phone)}
             required
           />
+          {errors.phone ? <p className="text-sm text-destructive">{errors.phone}</p> : null}
         </div>
       </div>
 
@@ -140,8 +153,10 @@ export function ContactForm() {
           value={values.subject}
           onChange={handleChange}
           className={fieldClassName}
+          aria-invalid={Boolean(errors.subject)}
           required
         />
+        {errors.subject ? <p className="text-sm text-destructive">{errors.subject}</p> : null}
       </div>
 
       <div className={fieldWrapperClassName}>
@@ -156,9 +171,11 @@ export function ContactForm() {
           name="message"
           value={values.message}
           onChange={handleChange}
-          className="min-h-[12rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[14rem] md:px-5 md:text-base"
+          className="min-h-[10rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[12rem] md:px-5 md:text-base"
+          aria-invalid={Boolean(errors.message)}
           required
         />
+        {errors.message ? <p className="text-sm text-destructive">{errors.message}</p> : null}
       </div>
 
       <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
