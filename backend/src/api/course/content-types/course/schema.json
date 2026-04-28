@@ -26,6 +26,34 @@
     "description": {
       "type": "richtext"
     },
+    "topicArea": {
+      "type": "enumeration",
+      "enum": [
+        "siber-guvenlik",
+        "yazilim-gelistirme",
+        "veri-bilimi",
+        "bulut-altyapi",
+        "is-surecleri",
+        "yapay-zeka"
+      ],
+      "required": true
+    },
+    "level": {
+      "type": "enumeration",
+      "enum": ["temel", "orta", "ileri"]
+    },
+    "targetAudience": {
+      "type": "text"
+    },
+    "businessValue": {
+      "type": "text"
+    },
+    "scopeSummary": {
+      "type": "text"
+    },
+    "outcomeBullets": {
+      "type": "text"
+    },
     "coverImage": {
       "type": "media",
       "multiple": false,

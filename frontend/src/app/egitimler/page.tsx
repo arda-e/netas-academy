@@ -1,10 +1,25 @@
-import { ContentPageShell, CourseList, VisualStorySection } from "@/components/content";
-import { egitimlerVisualSection } from "@/lib/page-visual-sections";
+import Link from "next/link";
+import { Download, Filter } from "lucide-react";
+import { ContentPageShell } from "@/components/content";
+import { CourseCatalogList, SearchField } from "@/components/courses/course-catalog-list";
 import { getCourses } from "@/lib/strapi";
+import {
+  TOPIC_AREAS,
+  resolveTopicFilter,
+  buildTopicFilterHrefWithSearch,
+  getTopicAreaLabel,
+} from "@/lib/content-taxonomy";
 
 export const dynamic = "force-dynamic";
 
-export default async function EgitimlerPage() {
+type EgitimlerPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps) {
+  const params = await searchParams;
+  const activeTopic = resolveTopicFilter(params.topic);
+  const search = Array.isArray(params.search) ? params.search[0] ?? "" : params.search ?? "";
   const courses = await getCourses();
 
   return (
@@ -14,9 +29,9 @@ export default async function EgitimlerPage() {
         <>
           <p>
             <strong className="text-white">
-              Uzman eğitmenler tarafından hazırlanan programları
+              Uzman eğitmenlerin hazırladığı programları
             </strong>{" "}
-            inceleyin ve kurumunuz için en uygun öğrenme yolculuğunu planlayın.
+            inceleyin, kurumunuza en uygun öğrenme yolunu seçin.
           </p>
           <div className="flex flex-wrap gap-1.5 text-[11px] font-medium text-white/88 sm:gap-2 sm:text-sm">
             <span className="rounded-full border border-white/18 bg-white/10 px-3 py-1">
@@ -31,90 +46,72 @@ export default async function EgitimlerPage() {
           </div>
         </>
       }
+      descriptionTrailing={
+        <div
+          aria-disabled="true"
+          className="pointer-events-none inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-white/58 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm"
+        >
+          <span className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/48">
+            <Download className="size-4" aria-hidden="true" />
+          </span>
+          <span className="flex flex-col items-start leading-tight">
+            <span className="text-sm font-semibold">Katalog PDF indir</span>
+            <span className="text-[11px] uppercase tracking-[0.22em] text-white/38">
+              Yakında aktif
+            </span>
+          </span>
+        </div>
+      }
     >
       <div className="space-y-10 sm:space-y-12">
-        <section className="grid gap-4 md:grid-cols-3 md:gap-5">
-          <article className="panel-surface rounded-sm p-5 sm:p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary/72">
-              Kurumsal Uyum
-            </p>
-            <h2 className="mt-3 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              Eğitimleri kurum ihtiyaçlarına göre değerlendirin.
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
-              Programları yalnızca konu başlığıyla değil, ekiplerinize sağlayacağı
-              uygulama değeri ve kurumsal uyarlanabilirlik açısından inceleyin.
-            </p>
-          </article>
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+          <SearchField initialValue={search} />
 
-          <article className="panel-surface rounded-sm p-5 sm:p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary/72">
-              Uzman Eğitmen
-            </p>
-            <h2 className="mt-3 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              Program yaklaşımını eğitmen perspektifiyle görün.
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
-              Her eğitim kartında eğitmen bilgisini görünür tutarak içerik ile uzmanlık
-              arasında daha net bir karar hattı kuruyoruz.
-            </p>
-          </article>
+          <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
+            <Filter className="size-4 text-[#009ca6]" aria-hidden="true" />
+            {TOPIC_AREAS.map((area) => {
+              const isActive = activeTopic === area;
+              const href = buildTopicFilterHrefWithSearch(
+                isActive ? "all" : area,
+                search
+              );
 
-          <article className="panel-surface rounded-sm p-5 sm:p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary/72">
-              Uygulamalı Kazanım
-            </p>
-            <h2 className="mt-3 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              Öğrenme çıktısını daha erken görün.
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
-              Detay sayfaları yalnızca açıklama alanı değil, ekibiniz için nasıl bir
-              öğrenme değeri üretileceğini anlamayı kolaylaştıran karar yüzeyleri olmalı.
-            </p>
-          </article>
-        </section>
-
-        <section className="panel-surface rounded-sm p-5 sm:p-8 md:p-10">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(260px,0.8fr)] lg:items-start">
-            <div className="space-y-3 sm:space-y-4">
-              <p className="text-sm font-semibold uppercase tracking-[0.34em] text-primary/72">
-                Eğitim Yaklaşımı
-              </p>
-              <h2 className="text-balance text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-                Katalog değil, kurumsal öğrenme kararı vermeyi kolaylaştıran bir yüzey.
-              </h2>
-              <p className="max-w-3xl text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
-                Bu sayfa eğitimleri yalnızca listelemek için değil, ekibinizin ihtiyaçlarına
-                en yakın programı daha hızlı ayırt edebilmeniz için kurgulanır. Program
-                özetleri, eğitmen odağı ve detay sayfası akışı birlikte çalışarak ilk karar
-                adımını kolaylaştırır.
-              </p>
-            </div>
-
-            <div className="space-y-3 rounded-sm border border-white/8 bg-white/4 p-4 sm:p-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary/72">
-                Ne Beklemelisiniz?
-              </p>
-              <ul className="space-y-2 text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
-                <li>Programın odağını hızlı anlama</li>
-                <li>Eğitmen perspektifini görme</li>
-                <li>Detay sayfasından kurumsal talebe ilerleme</li>
-              </ul>
-            </div>
+              return (
+                <Link
+                  key={area}
+                  aria-current={isActive ? "page" : undefined}
+                  href={href}
+                  className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
+                    isActive
+                      ? "border-[#009ca6] bg-[#009ca6] text-white shadow-sm"
+                      : "border-border/70 bg-white/70 text-foreground/74 hover:border-[#009ca6] hover:bg-white/70 hover:text-[#009ca6]"
+                  }`}
+                >
+                  {getTopicAreaLabel(area)}
+                </Link>
+              );
+            })}
           </div>
-        </section>
+        </div>
 
-        <CourseList
+        <CourseCatalogList
+          activeTopic={activeTopic === "all" ? null : activeTopic}
+          search={search}
           items={courses.map((course) => ({
             id: course.documentId,
             slug: course.slug,
             title: course.title,
             summary: course.summary,
+            description: course.description,
+            topicArea: course.topicArea,
+            level: course.level,
+            targetAudience: course.targetAudience,
+            businessValue: course.businessValue,
+            scopeSummary: course.scopeSummary,
+            outcomeBullets: course.outcomeBullets,
             teacherName: course.teacher?.fullName ?? null,
           }))}
         />
-
-        <VisualStorySection {...egitimlerVisualSection} />
       </div>
     </ContentPageShell>
   );

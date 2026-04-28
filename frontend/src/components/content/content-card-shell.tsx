@@ -9,7 +9,8 @@ type ContentCardShellProps = {
   href?: string;
   title: string;
   kicker?: string;
-  summary?: string;
+  headerAddon?: ReactNode;
+  summary?: ReactNode;
   meta?: ReactNode;
   className?: string;
 };
@@ -18,6 +19,7 @@ export function ContentCardShell({
   href,
   title,
   kicker,
+  headerAddon,
   summary,
   meta,
   className,
@@ -29,20 +31,36 @@ export function ContentCardShell({
         className
       )}
     >
-      <CardHeader className={cn("space-y-0 px-5 sm:px-6", kicker ? "pb-0" : undefined)}>
-        {kicker ? (
-          <ContentSuperheading className="group-hover/card-link:text-[#009ca6]">
-            {kicker}
-          </ContentSuperheading>
-        ) : null}
-        <CardTitle className="text-xl leading-6 text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-2xl sm:leading-tight">
-          <span>{title}</span>
-        </CardTitle>
+      <CardHeader
+        className={cn(
+          "flex flex-row items-start justify-between gap-4 px-5 sm:px-6",
+          kicker || headerAddon ? "pb-0" : undefined
+        )}
+      >
+        <div className="min-w-0 space-y-1.5">
+          {kicker ? (
+            <ContentSuperheading className="group-hover/card-link:text-[#009ca6]">
+              {kicker}
+            </ContentSuperheading>
+          ) : null}
+          <CardTitle className="text-xl leading-6 text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-2xl sm:leading-tight">
+            <span>{title}</span>
+          </CardTitle>
+        </div>
+        {headerAddon ? <div className="shrink-0 pt-1">{headerAddon}</div> : null}
       </CardHeader>
-      <CardContent className="space-y-3 px-5 sm:space-y-4 sm:px-6">
-        {summary ? (
-          <p className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">{summary}</p>
-        ) : null}
+      <CardContent className="flex flex-1 flex-col justify-between gap-5 px-5 sm:px-6">
+        <div className="space-y-3 sm:space-y-4">
+          {summary ? (
+            typeof summary === "string" ? (
+              <p className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
+                {summary}
+              </p>
+            ) : (
+              summary
+            )
+          ) : null}
+        </div>
         {meta ? <div className="space-y-1 text-sm text-foreground/62">{meta}</div> : null}
       </CardContent>
     </Card>

@@ -1,11 +1,13 @@
 "use client";
 
 import type { LeadType } from "@/lib/lead-intents";
+import type { UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import type { IntentLeadFormValues } from "./intent-lead-form";
 
 const fieldClassName =
-  "h-12 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-14 md:px-5 md:text-base";
+  "h-11 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-12 md:px-5 md:text-base";
 
 const labelClassName = "text-md font-medium text-foreground";
 
@@ -13,7 +15,7 @@ const fieldWrapperClassName = "space-y-2 md:space-y-3";
 
 type IntentFieldSectionsProps = {
   leadType: LeadType;
-  register: (name: string) => { onChange: (...args: unknown[]) => void; onBlur: () => void; ref: (instance: HTMLInputElement | HTMLTextAreaElement | null) => void };
+  register: UseFormRegister<IntentLeadFormValues>;
   errors: Record<string, string | undefined>;
 };
 
@@ -46,7 +48,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
           <Textarea
             id="expertiseAreas"
             placeholder="Örn. Python, Makine Öğrenmesi, Derin Öğrenme"
-            className="min-h-[8rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[10rem] md:px-5 md:text-base"
+            className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
             {...register("expertiseAreas")}
           />
           {errors.expertiseAreas && (
@@ -79,7 +81,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
             <Textarea
               id="partnershipDetails"
               placeholder="Ortaklık motivasyonunuzu ve beklentilerinizi kısaca paylaşın."
-              className="min-h-[8rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[10rem] md:px-5 md:text-base"
+              className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
               {...register("partnershipDetails")}
             />
           </div>

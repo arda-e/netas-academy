@@ -28,10 +28,25 @@ It does not replace the source plans. Each subagent should treat the referenced 
 - Every subagent must read `AGENTS.md`, `frontend/AGENTS.md` when touching frontend code, and the exact source plan files assigned to it.
 - Do not revert unrelated dirty worktree changes. Work with the current repo state.
 - Keep write ownership narrow. If a required file is outside the assigned write set, stop and report the needed handoff instead of editing it silently.
+- Each implementation or integration block should be delivered as its own branch and GitHub pull request opened with `gh`. Use the unit id in the branch and PR title, for example `feat/u03-newsletter-subscription-backend` and `U03 Newsletter subscription backend`.
+- If a block is incomplete because of an upstream dependency, open a draft PR only when the partial work is reviewable and clearly labels the blocker. Otherwise report the exact blocker and the `gh pr create` command that should be run after the blocker is cleared.
 - Avoid multiple subagents regenerating `backend/types/generated/contentTypes.d.ts`; schema-owning agents should update schemas and tests/seed coverage, then the integration unit regenerates or reconciles generated types once.
 - Avoid multiple subagents editing `backend/src/index.ts`; backend agents should document needed bootstrap/public-permission changes, then the backend integration unit applies them once.
 - Frontend agents should consume typed helpers from `frontend/src/lib/strapi.ts` and intent/analytics helpers instead of duplicating query or event logic.
-- Each subagent final output must include changed files, skipped items, validation commands run, and any dependency blockers.
+- Each subagent final output must include changed files, skipped items, validation commands run, dependency blockers, branch name, and PR URL.
+
+## Pull Request Workflow
+
+Use one pull request per block: U01 through U15 each gets its own PR when it has source changes. U00 gets a PR only if it creates a committed inventory note.
+
+For every block:
+
+- Create or switch to a unit-scoped branch before editing, using the unit id in the branch name.
+- Keep the PR scope aligned with the unit ownership in this document.
+- Run the unit's validation before opening the PR, or mark the PR as draft and state exactly which validation is blocked.
+- Open the PR with `gh pr create`, targeting the correct base branch for the repository.
+- Include the unit id, source plan paths, changed files, validation results, skipped/deferred requirements, and integration handoffs in the PR body.
+- Do not merge feature PRs directly from a subagent. Leave merge sequencing to the integration owner after U14/U15 validation.
 
 ## Dependency Graph
 
@@ -552,18 +567,21 @@ Work only inside the unit's primary write ownership. Do not edit excluded/shared
 
 Implement the assigned unit against the current repo state. If another unit's dependency is missing, create the smallest compatible local boundary only when the unit allows it; otherwise report the blocker.
 
+Before editing, create or switch to a branch named for the assigned unit, for example feat/u03-newsletter-subscription-backend. After validation, open a unit-scoped pull request with gh pr create. If the work is reviewable but blocked by an upstream dependency, open the PR as draft and explain the blocker in the PR body.
+
 Final response must include:
 - changed files
 - validation commands and results
 - blockers or handoffs for integration units
 - any source-plan requirement intentionally deferred
+- branch name
+- pull request URL, or the exact reason gh could not open one
 ```
 
 ## Merge Order
 
-1. Merge U01-U06 independently only after each passes its targeted validation.
-2. Run U14 to reconcile backend shared files and generated types.
-3. Merge U07-U12, resolving shared `frontend/src/lib/strapi.ts` and navigation/footer conflicts carefully.
-4. Run U13 after all pages it instruments are present.
-5. Run U15 as the final cross-stack validation and polish pass.
-
+1. Open PRs for U01-U06 independently only after each passes its targeted validation, using draft PRs for reviewable but blocked work.
+2. Merge ready U01-U06 PRs in dependency order, then run U14 on its own branch and open a separate integration PR to reconcile backend shared files and generated types.
+3. Open PRs for U07-U12 after their backend/data contracts are available, resolving shared `frontend/src/lib/strapi.ts` and navigation/footer conflicts carefully.
+4. Run U13 after all pages it instruments are present, then open a separate instrumentation PR.
+5. Run U15 as the final cross-stack validation and polish pass, then open the final validation/polish PR.

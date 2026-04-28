@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { responsiveLayoutClasses } from "./responsive-layout.ts";
+import { responsiveLayoutClasses } from "./responsive-layout";
 
 test("listing grids keep denser mobile gaps and add tablet columns", () => {
   assert.equal(

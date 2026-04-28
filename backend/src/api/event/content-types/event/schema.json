@@ -47,6 +47,17 @@
     "location": {
       "type": "string"
     },
+    "topicArea": {
+      "type": "enumeration",
+      "enum": [
+        "siber-guvenlik",
+        "yazilim-gelistirme",
+        "veri-bilimi",
+        "bulut-altyapi",
+        "is-surecleri",
+        "yapay-zeka"
+      ]
+    },
     "course": {
       "type": "relation",
       "relation": "manyToOne",
