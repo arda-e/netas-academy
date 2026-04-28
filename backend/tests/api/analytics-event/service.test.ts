@@ -6,12 +6,6 @@ vi.mock("@strapi/strapi", () => ({
   },
 }));
 
-vi.mock("@strapi/utils", () => ({
-  errors: {
-    ValidationError: class ValidationError extends Error {},
-  },
-}));
-
 describe("analytics-event service", () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -67,40 +61,6 @@ describe("analytics-event service", () => {
         timestamp: expect.any(String),
       }),
     });
-  });
-
-  it("rejects unknown eventId", async () => {
-    const strapi = createStrapiMock({});
-    vi.stubGlobal("strapi", strapi);
-
-    const serviceModule = await import(
-      "../../../src/api/analytics-event/services/analytics-event"
-    );
-    const service = serviceModule.default as {
-      capture: (input: Record<string, unknown>) => Promise<unknown>;
-    };
-
-    await expect(
-      service.capture({
-        eventId: "unknown_event",
-      }),
-    ).rejects.toThrow("eventId must be one of:");
-  });
-
-  it("rejects missing eventId", async () => {
-    const strapi = createStrapiMock({});
-    vi.stubGlobal("strapi", strapi);
-
-    const serviceModule = await import(
-      "../../../src/api/analytics-event/services/analytics-event"
-    );
-    const service = serviceModule.default as {
-      capture: (input: Record<string, unknown>) => Promise<unknown>;
-    };
-
-    await expect(
-      service.capture({}),
-    ).rejects.toThrow("eventId is required");
   });
 
   it("strips PII-like keys from properties", async () => {

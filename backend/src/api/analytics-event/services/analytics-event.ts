@@ -1,20 +1,31 @@
 import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
+import { sanitizeProperties } from '../lib/constants';
 
 const { ValidationError } = errors;
 
-const KNOWN_EVENT_IDS = [
-  'lead_tab_view',
-  'lead_tab_change',
-  'lead_form_start',
-  'lead_submit_success',
-  'lead_submit_fail',
-  'lead_contextual_entry',
-  'lead_catalog_click',
-  'lead_related_content_click',
+const MAX_STRING_LENGTH = 1000;
+
+const STRING_FIELDS = [
+  'sessionId',
+  'pagePath',
+  'sourcePage',
+  'ctaId',
+  'contentType',
+  'contentSlug',
+  'backendReference',
 ] as const;
 
-const PII_PATTERNS = ['email', 'phone', 'name', 'tckn', 'address', 'password'];
+function validateInput(input: Record<string, unknown>): void {
+  for (const field of STRING_FIELDS) {
+    const value = input[field];
+    if (value !== undefined && value !== null && typeof value === 'string' && value.length > MAX_STRING_LENGTH) {
+      throw new ValidationError(
+        `${field} exceeds maximum length of ${MAX_STRING_LENGTH} characters`
+      );
+    }
+  }
+}
 
 type CaptureInput = {
   eventId: string;
@@ -28,41 +39,11 @@ type CaptureInput = {
   properties?: Record<string, unknown>;
 };
 
-function containsPII(key: string): boolean {
-  const lower = key.toLowerCase();
-  return PII_PATTERNS.some((pattern) => lower.includes(pattern));
-}
-
-function sanitizeProperties(properties: Record<string, unknown> | null | undefined): Record<string, unknown> {
-  if (!properties || typeof properties !== 'object') {
-    return {};
-  }
-
-  const sanitized: Record<string, unknown> = {};
-
-  for (const [key, value] of Object.entries(properties)) {
-    if (containsPII(key)) {
-      continue;
-    }
-    sanitized[key] = value;
-  }
-
-  return sanitized;
-}
-
 export default factories.createCoreService(
   'api::analytics-event.analytics-event' as any,
   () => ({
     async capture(input: CaptureInput) {
-      if (!input.eventId) {
-        throw new ValidationError('eventId is required');
-      }
-
-      if (!KNOWN_EVENT_IDS.includes(input.eventId as typeof KNOWN_EVENT_IDS[number])) {
-        throw new ValidationError(
-          `eventId must be one of: ${KNOWN_EVENT_IDS.join(', ')}`
-        );
-      }
+      validateInput(input as Record<string, unknown>);
 
       const sanitizedProperties = sanitizeProperties(input.properties);
 
