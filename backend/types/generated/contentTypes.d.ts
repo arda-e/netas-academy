@@ -728,6 +728,50 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiNewsletterSubscriptionNewsletterSubscription
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'newsletter_subscriptions';
+  info: {
+    description: 'Newsletter subscription captures from the academy site';
+    displayName: 'Newsletter Subscription';
+    pluralName: 'newsletter-subscriptions';
+    singularName: 'newsletter-subscription';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    consentAccepted: Schema.Attribute.Boolean & Schema.Attribute.Required;
+    consentTextSnapshot: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    lastSeenAt: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::newsletter-subscription.newsletter-subscription'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    sourceContentSlug: Schema.Attribute.String;
+    sourceContentType: Schema.Attribute.String;
+    sourcePage: Schema.Attribute.String;
+    status: Schema.Attribute.Enumeration<
+      ['active', 'passive', 'unsubscribed']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'active'>;
+    subscribedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiNotificationRoutingNotificationRouting
   extends Struct.CollectionTypeSchema {
   collectionName: 'notification_routings';
@@ -1411,6 +1455,7 @@ declare module '@strapi/strapi' {
       'api::course-application.course-application': ApiCourseApplicationCourseApplication;
       'api::course.course': ApiCourseCourse;
       'api::event.event': ApiEventEvent;
+      'api::newsletter-subscription.newsletter-subscription': ApiNewsletterSubscriptionNewsletterSubscription;
       'api::notification-routing.notification-routing': ApiNotificationRoutingNotificationRouting;
       'api::registration.registration': ApiRegistrationRegistration;
       'api::student.student': ApiStudentStudent;

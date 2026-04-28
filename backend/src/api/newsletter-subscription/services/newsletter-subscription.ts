@@ -72,7 +72,6 @@ export default factories.createCoreService(
             data: {
               status: 'active',
               lastSeenAt: now,
-              subscribedAt: now,
               sourcePage: input.sourcePage || null,
               sourceContentType: input.sourceContentType || null,
               sourceContentSlug: input.sourceContentSlug || null,

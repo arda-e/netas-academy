@@ -129,7 +129,38 @@ describe("newsletter-subscription service", () => {
       where: { id: 7 },
       data: expect.objectContaining({
         status: "active",
-        subscribedAt: expect.any(String),
+        lastSeenAt: expect.any(String),
+      }),
+    });
+  });
+
+  it("reactivates unsubscribed subscription", async () => {
+    const existing = { id: 8, documentId: "doc8", status: "unsubscribed" };
+    const strapi = createStrapiMock(existing);
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import(
+      "../../../src/api/newsletter-subscription/services/newsletter-subscription"
+    );
+    const service = serviceModule.default as {
+      subscribe: (input: Record<string, unknown>) => Promise<unknown>;
+    };
+
+    const result = await service.subscribe({
+      email: "unsubscribed@example.com",
+      consentAccepted: true,
+    });
+
+    expect(result).toEqual({
+      success: true,
+      message: "Aboneliginiz basariyla yeniden aktiflestirildi.",
+      alreadySubscribed: false,
+    });
+
+    expect(strapi.update).toHaveBeenCalledWith({
+      where: { id: 8 },
+      data: expect.objectContaining({
+        status: "active",
         lastSeenAt: expect.any(String),
       }),
     });
