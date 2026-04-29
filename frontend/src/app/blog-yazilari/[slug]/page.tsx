@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { BlogDetail, BlogList, VisualStorySection } from "@/components/content";
+import { RichTextContent } from "@/components/content/rich-text-content";
 import { blogDetailVisualSection } from "@/lib/page-visual-sections";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/strapi";
 
@@ -83,7 +84,11 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       sourceNotes={post.sourceNotes ?? undefined}
     >
       <div className="max-w-3xl text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
-        {post.content ?? "Bu yazı için içerik yakında eklenecek."}
+        {post.content ? (
+          <RichTextContent content={post.content} />
+        ) : (
+          "Bu yazı için içerik yakında eklenecek."
+        )}
       </div>
       {relatedPosts.length > 0 ? (
         <div className="mt-10 border-t border-white/10 pt-8 sm:mt-12 sm:pt-10">

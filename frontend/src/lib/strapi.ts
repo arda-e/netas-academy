@@ -390,7 +390,7 @@ export async function getTeacherBySlug(slug: string) {
     const path = `/api/teachers?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=fullName&fields[1]=slug&fields[2]=headline&fields[3]=bio&fields[4]=email&fields[5]=expertiseAreas&fields[6]=targetTeams&fields[7]=teachingApproach&populate[profilePhoto][fields][0]=url&populate[profilePhoto][fields][1]=alternativeText&populate[courses][fields][0]=title&populate[courses][fields][1]=slug&sort[0]=fullName:asc`;
 
     const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(path, {
-      cache: "no-store",
+      cache: "force-cache",
     });
 
     return response.data[0] ?? null;

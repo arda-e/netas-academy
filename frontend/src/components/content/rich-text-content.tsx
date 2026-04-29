@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import DOMPurify from "dompurify";
+import DOMPurify from "isomorphic-dompurify";
 
 type RichTextContentProps = {
   content: string;

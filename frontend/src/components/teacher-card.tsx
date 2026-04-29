@@ -1,15 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-
-function getInitials(name: string) {
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
+import { getInitials } from "@/lib/utils";
 
 type TeacherCardProps = {
   slug: string;
@@ -17,10 +9,6 @@ type TeacherCardProps = {
   headline?: string | null;
   expertiseAreas?: string[] | null;
   targetTeams?: string | null;
-  profilePhoto?: {
-    url?: string | null;
-    alternativeText?: string | null;
-  } | null;
   photoUrl?: string | null;
   photoAlt?: string | null;
 };

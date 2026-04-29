@@ -11,21 +11,13 @@ import {
   getTeacherBySlug,
 } from "@/lib/strapi";
 import { teacherDetailVisualSection } from "@/lib/page-visual-sections";
+import { getInitials } from "@/lib/utils";
 
 type TeacherDetailPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-function getInitials(name: string) {
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
 
 export const dynamic = "force-dynamic";
 

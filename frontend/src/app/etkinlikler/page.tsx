@@ -98,7 +98,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
               Yaklaşan buluşmaları, webinarları ve özel oturumları
             </strong>{" "}
             takip edin; <span className="hidden sm:inline"><br /></span>
-            katılım için gerekli detaylara tek ekrandan ulasin.
+            katılım için gerekli detaylara tek ekrandan ulaşın.
           </p>
         </>
       }
@@ -151,7 +151,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
         emptyMessage={
           selectedType
             ? `${getEventTypeLabel(selectedType)} türünde gösterilecek etkinlik bulunamadı.`
-            : "Gosterilecek etkinlik verisi su an kullanilabilir degil."
+            : "Gösterilecek etkinlik verisi şu an kullanılabilir değil."
         }
         items={events.map((event) => ({
           id: event.documentId,
