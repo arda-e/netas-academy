@@ -6,6 +6,7 @@ export { ContentDetailShell } from "./content-detail-shell";
 export { CourseList, CourseDetail } from "./courses";
 export { EventList, EventDetail } from "./events";
 export { BlogList, BlogDetail } from "./blog";
+export { SearchField } from "./search-field";
 export { NewsList } from "./news";
 export { VisualStorySection } from "./visual-story-section";
 export type { NewsListItem } from "./news";

@@ -1,11 +1,27 @@
-import { ContentPageShell } from "@/components/content";
-import { getBlogPosts } from "@/lib/strapi";
-import { BlogSearch } from "./blog-search";
+import { ContentPageShell, BlogList, SearchField } from "@/components/content";
+import { getBlogPosts, getStrapiMediaUrl, getStrapiMediaAltText } from "@/lib/strapi";
 
 export const dynamic = "force-dynamic";
 
-export default async function BlogYazilariPage() {
-  const posts = await getBlogPosts();
+type BlogYazilariPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function BlogYazilariPage({ searchParams }: BlogYazilariPageProps) {
+  const params = await searchParams;
+  const search = Array.isArray(params.search) ? params.search[0] ?? "" : params.search ?? "";
+  const posts = await getBlogPosts(search);
+
+  const mappedPosts = posts.map((post) => ({
+    id: post.documentId,
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    publishedDate: post.publishedDate,
+    authorName: post.author?.displayName ?? null,
+    coverImageUrl: getStrapiMediaUrl(post.coverImage),
+    coverImageAlt: getStrapiMediaAltText(post.coverImage) ?? undefined,
+  }));
 
   return (
     <ContentPageShell
@@ -17,16 +33,13 @@ export default async function BlogYazilariPage() {
         </p>
       }
     >
-      <BlogSearch
-        posts={posts.map((post) => ({
-          id: post.documentId,
-          slug: post.slug,
-          title: post.title,
-          excerpt: post.excerpt,
-          publishedDate: post.publishedDate,
-          authorName: post.author?.displayName ?? null,
-        }))}
-      />
+      <div className="space-y-8">
+        <SearchField initialValue={search} searchOnly />
+        <BlogList
+          items={mappedPosts}
+          emptyMessage="Aramanızla eşleşen blog yazısı bulunamadı."
+        />
+      </div>
     </ContentPageShell>
   );
 }

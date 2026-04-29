@@ -10,13 +10,13 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
-test("blog list page imports BlogSearch client component", () => {
+test("blog list page imports SearchField from shared content barrel", () => {
   const source = readSource("app/blog-yazilari/page.tsx");
 
   assert.match(
     source,
-    /import\s*\{\s*BlogSearch\s*\}\s*from\s*"\.\/blog-search"/,
-    "blog list page should import BlogSearch from ./blog-search"
+    /import\s*\{[^}]*SearchField[^}]*\}\s*from\s*"@\/components\/content"/,
+    "blog list page should import SearchField from @/components/content"
   );
 });
 
@@ -40,42 +40,82 @@ test("blog list page passes authorName to blog cards", () => {
   );
 });
 
-test("BlogSearch client component has use client directive", () => {
-  const source = readSource("app/blog-yazilari/blog-search.tsx");
+test("blog list page reads search from searchParams", () => {
+  const source = readSource("app/blog-yazilari/page.tsx");
 
   assert.match(
     source,
-    /"use client"/,
-    "BlogSearch should have 'use client' directive"
+    /params\.search/,
+    "blog list page should read search from searchParams"
   );
 });
 
-test("BlogSearch renders search input", () => {
-  const source = readSource("app/blog-yazilari/blog-search.tsx");
+test("blog list page passes search to getBlogPosts", () => {
+  const source = readSource("app/blog-yazilari/page.tsx");
 
   assert.match(
     source,
-    /<input/,
-    "BlogSearch should render a search input element"
+    /getBlogPosts\(search\)/,
+    "blog list page should pass search term to getBlogPosts"
   );
 });
 
-test("BlogSearch shows empty message for no results", () => {
-  const source = readSource("app/blog-yazilari/blog-search.tsx");
+test("blog list page shows empty message for no results", () => {
+  const source = readSource("app/blog-yazilari/page.tsx");
 
   assert.match(
     source,
     /Aramanızla eşleşen blog yazısı bulunamadı/,
-    "BlogSearch should show empty message when no search results"
+    "blog list page should show empty message when no search results"
   );
 });
 
-test("BlogSearch filters posts by title", () => {
-  const source = readSource("app/blog-yazilari/blog-search.tsx");
+test("SearchField component has use client directive", () => {
+  const source = readSource("components/content/search-field.tsx");
 
   assert.match(
     source,
-    /post\.title\.toLocaleLowerCase/,
-    "BlogSearch should filter posts by title case-insensitively"
+    /"use client"/,
+    "SearchField should have 'use client' directive"
+  );
+});
+
+test("SearchField renders search input", () => {
+  const source = readSource("components/content/search-field.tsx");
+
+  assert.match(
+    source,
+    /<input/,
+    "SearchField should render a search input element"
+  );
+});
+
+test("SearchField accepts searchOnly prop", () => {
+  const source = readSource("components/content/search-field.tsx");
+
+  assert.match(
+    source,
+    /searchOnly/,
+    "SearchField should accept searchOnly prop"
+  );
+});
+
+test("getBlogPosts accepts optional search parameter", () => {
+  const source = readSource("lib/strapi.ts");
+
+  assert.match(
+    source,
+    /getBlogPosts\(search\?:\s*string\)/,
+    "getBlogPosts should accept optional search parameter"
+  );
+});
+
+test("getBlogPosts builds $containsi filters when search is provided", () => {
+  const source = readSource("lib/strapi.ts");
+
+  assert.match(
+    source,
+    /\$containsi/,
+    "getBlogPosts should use $containsi filter for search"
   );
 });

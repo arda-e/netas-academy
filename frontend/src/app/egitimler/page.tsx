@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Download, Filter } from "lucide-react";
-import { ContentPageShell } from "@/components/content";
-import { CourseCatalogList, SearchField } from "@/components/courses/course-catalog-list";
+import { ContentPageShell, SearchField } from "@/components/content";
+import { CourseCatalogList } from "@/components/courses/course-catalog-list";
 import { getCourses } from "@/lib/strapi";
 import {
   TOPIC_AREAS,

@@ -321,11 +321,17 @@ export async function getEventBySlug(slug: string) {
   }
 }
 
-export async function getBlogPosts() {
+export async function getBlogPosts(search?: string) {
   try {
-    const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(
-      '/api/blog-posts?pagination[pageSize]=100&sort[0]=publishedDate:desc&fields[0]=title&fields[1]=slug&fields[2]=excerpt&fields[3]=publishedDate&populate[author][fields][0]=displayName&populate[author][fields][1]=slug&populate[author][fields][2]=role&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=alternativeText'
-    );
+    let path =
+      '/api/blog-posts?pagination[pageSize]=100&sort[0]=publishedDate:desc&fields[0]=title&fields[1]=slug&fields[2]=excerpt&fields[3]=publishedDate&populate[author][fields][0]=displayName&populate[author][fields][1]=slug&populate[author][fields][2]=role&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=alternativeText';
+
+    if (search && search.trim()) {
+      const term = encodeURIComponent(search.trim());
+      path += `&filters[$or][0][title][$containsi]=${term}&filters[$or][1][excerpt][$containsi]=${term}&filters[$or][2][content][$containsi]=${term}`;
+    }
+
+    const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(path);
 
     return response.data;
   } catch {
