@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { BlogDetail, BlogList, VisualStorySection } from "@/components/content";
+import { BlogDetail, BlogList } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
-import { blogDetailVisualSection } from "@/lib/page-visual-sections";
-import { getBlogPostBySlug, getBlogPosts } from "@/lib/strapi";
+import { getBlogPostBySlug, getBlogPosts, getStrapiMediaUrl, getStrapiMediaAltText } from "@/lib/strapi";
 
 type BlogDetailPageProps = {
   params: Promise<{
@@ -56,10 +55,10 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const author = post.author;
 
   const metaContent = (
-    <div className="space-y-2">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
       {author?.displayName ? (
         <p>
-          <span className="font-medium text-foreground/78">Yazar:</span>{" "}
+          <span className="font-medium text-white">Yazar:</span>{" "}
           {author.displayName}
           {author.role ? ` — ${author.role}` : null}
         </p>
@@ -68,7 +67,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         <p>{formatBlogDate(post.publishedDate)}</p>
       ) : null}
       {author?.shortBio ? (
-        <p className="pt-1 leading-relaxed text-foreground/58">
+        <p className="basis-full leading-relaxed text-white/64">
           {author.shortBio}
         </p>
       ) : null}
@@ -77,10 +76,15 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
   return (
     <BlogDetail
+      breadcrumbItems={[
+        { label: "Blog", href: "/blog-yazilari" },
+        { label: post.title },
+      ]}
       title={post.title}
       excerpt={post.excerpt}
+      coverImageUrl={getStrapiMediaUrl(post.coverImage)}
+      coverImageAlt={getStrapiMediaAltText(post.coverImage) ?? undefined}
       meta={metaContent}
-      afterContent={<VisualStorySection {...blogDetailVisualSection} />}
       sourceNotes={post.sourceNotes ?? undefined}
     >
       <div className="max-w-3xl text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
@@ -103,6 +107,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               excerpt: rp.excerpt,
               publishedDate: rp.publishedDate,
               authorName: rp.author?.displayName ?? null,
+              coverImageUrl: getStrapiMediaUrl(rp.coverImage),
+              coverImageAlt: getStrapiMediaAltText(rp.coverImage) ?? undefined,
             }))}
           />
         </div>

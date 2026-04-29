@@ -157,7 +157,7 @@ export default async function HakkimizdaPage() {
             data-measurement-id="about_education_cta"
             className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
           >
-            Eğitimleri İncele
+            Eğitim Kataloğunu İncele
           </Link>
         </div>
       </div>

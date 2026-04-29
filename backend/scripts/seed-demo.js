@@ -307,6 +307,8 @@ const demoBlogPosts = [
     authorSlug: 'demo-ayse-yilmaz',
     publishedDate: '2025-12-15T10:00:00.000Z',
     sourceNotes: 'Internal editorial calendar Q4 2025',
+    coverImageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+    coverImageAlt: 'Takım çalışması ve dijital dönüşüm',
   },
   {
     slug: 'demo-why-event-linked-learning-matters',
@@ -317,6 +319,8 @@ const demoBlogPosts = [
     authorSlug: 'demo-mehmet-kara',
     publishedDate: '2026-01-20T09:00:00.000Z',
     sourceNotes: 'Adapted from internal training documentation',
+    coverImageUrl: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=800&q=80',
+    coverImageAlt: 'Canlı eğitim oturumu',
   },
   {
     slug: 'demo-teacher-stories-from-the-field',
@@ -327,6 +331,8 @@ const demoBlogPosts = [
     authorSlug: 'demo-ayse-yilmaz',
     publishedDate: '2026-02-10T11:00:00.000Z',
     sourceNotes: null,
+    coverImageUrl: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=800&q=80',
+    coverImageAlt: 'Mentorluk ve rehberlik',
   },
   {
     slug: 'demo-preparing-for-your-first-live-session',
@@ -337,6 +343,8 @@ const demoBlogPosts = [
     authorSlug: 'demo-mehmet-kara',
     publishedDate: '2026-03-05T08:00:00.000Z',
     sourceNotes: 'Compiled from student feedback surveys',
+    coverImageUrl: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=800&q=80',
+    coverImageAlt: 'Hazırlık ve planlama',
   },
 ];
 
@@ -375,6 +383,60 @@ const demoRegistrations = [
   { studentEmail: 'demo.selin.aydin@example.com', eventSlug: 'demo-reliability-roundtable', status: 'confirmed' },
   { studentEmail: 'demo.kerem.demir@example.com', eventSlug: 'demo-reliability-roundtable', status: 'waitlisted' },
 ];
+
+async function uploadImageFromUrl(strapi, imageUrl, fileName, altText) {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const os = require('node:os');
+
+  let tmpPath = null;
+
+  try {
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      console.warn(`Failed to fetch image ${imageUrl}: ${imageResponse.status}`);
+      return null;
+    }
+
+    const buffer = Buffer.from(await imageResponse.arrayBuffer());
+    const ext = imageUrl.split('?')[0].split('.').pop() || 'jpg';
+
+    tmpPath = path.join(os.tmpdir(), `${fileName}.${ext}`);
+    fs.writeFileSync(tmpPath, buffer);
+
+    const uploadResult = await strapi.plugin('upload').service('upload').upload({
+      data: {
+        fileInfo: {
+          name: `${fileName}.${ext}`,
+          alternativeText: altText || fileName,
+          caption: altText || null,
+        },
+      },
+      files: {
+        file: {
+          path: tmpPath,
+          name: `${fileName}.${ext}`,
+          type: imageResponse.headers.get('content-type') || `image/${ext}`,
+          size: buffer.length,
+        },
+      },
+    });
+
+    if (!uploadResult || !uploadResult[0]) {
+      console.warn(`Upload returned empty result for ${imageUrl}`);
+      return null;
+    }
+
+    return uploadResult[0].documentId;
+  } catch (error) {
+    console.warn(`Error uploading image ${imageUrl}:`, error.message);
+    return null;
+  } finally {
+    if (tmpPath) {
+      try { fs.unlinkSync(tmpPath); } catch { /* ignore */ }
+    }
+  }
+}
 
 async function upsertPublishedDocument(strapi, uid, uniqueField, uniqueValue, data, result, summaryKey) {
   const existing = await strapi.db.query(uid).findOne({
@@ -579,6 +641,20 @@ async function main() {
     for (const post of demoBlogPosts) {
       const authorDocumentId = blogAuthorDocumentIds.get(post.authorSlug);
 
+      let coverImageDocumentId = null;
+      if (post.coverImageUrl) {
+        console.log(`Uploading cover image for blog post "${post.slug}"...`);
+        coverImageDocumentId = await uploadImageFromUrl(
+          app,
+          post.coverImageUrl,
+          post.slug,
+          post.coverImageAlt || post.title
+        );
+        if (coverImageDocumentId) {
+          console.log(`  -> uploaded (documentId: ${coverImageDocumentId})`);
+        }
+      }
+
       await upsertPublishedDocument(
         app,
         'api::blog-post.blog-post',
@@ -592,6 +668,7 @@ async function main() {
           publishedDate: post.publishedDate,
           sourceNotes: post.sourceNotes || null,
           author: authorDocumentId || null,
+          coverImage: coverImageDocumentId || null,
         },
         result,
         'blogPosts'

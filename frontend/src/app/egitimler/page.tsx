@@ -24,7 +24,7 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
 
   return (
     <ContentPageShell
-      title="Eğitimler"
+      title="Eğitim Kataloğu"
       description={
         <>
           <p>

@@ -4,13 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
-import { VisualStorySection } from "@/components/content";
 import {
   getStrapiMediaAltText,
   getStrapiMediaUrl,
   getTeacherBySlug,
 } from "@/lib/strapi";
-import { teacherDetailVisualSection } from "@/lib/page-visual-sections";
 import { getInitials } from "@/lib/utils";
 
 type TeacherDetailPageProps = {
@@ -52,6 +50,10 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
 
   return (
     <ContentDetailShell
+      breadcrumbItems={[
+        { label: "Eğitmenlerimiz", href: "/egitmenler" },
+        { label: teacher.fullName },
+      ]}
       leadMedia={
         <div className="relative h-24 w-24 overflow-hidden rounded-full border border-white/8 bg-card/50 shadow-[0_24px_64px_rgba(0,0,0,0.26)] sm:h-[112px] sm:w-[112px] md:h-[162px] md:w-[162px]">
           <div className="relative h-full w-full">
@@ -76,19 +78,22 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
       }
       title={teacher.fullName}
       summary={teacher.headline ?? undefined}
-      afterContent={<VisualStorySection {...teacherDetailVisualSection} />}
-      meta={
-        teacher.email ? (
-          <p className="max-w-full">
-            E-posta:{" "}
-            <a className="break-all text-primary hover:underline" href={`mailto:${teacher.email}`}>
-              {teacher.email}
-            </a>
-          </p>
-        ) : null
-      }
     >
       <div className="max-w-3xl space-y-5 sm:space-y-6">
+        {teacher.email ? (
+          <section className="space-y-2">
+            <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+              E-posta
+            </h2>
+            <a
+              className="break-all text-[15px] leading-7 text-primary hover:underline sm:text-base sm:leading-8"
+              href={`mailto:${teacher.email}`}
+            >
+              {teacher.email}
+            </a>
+          </section>
+        ) : null}
+
         {teacher.expertiseAreas && teacher.expertiseAreas.length > 0 ? (
           <section className="space-y-3 sm:space-y-4">
             <h2 className="text-lg font-semibold text-foreground sm:text-xl">

@@ -14,7 +14,7 @@ test("listing grids keep denser mobile gaps and add tablet columns", () => {
   );
   assert.equal(
     responsiveLayoutClasses.blogListGrid,
-    "grid gap-3 sm:gap-4 md:grid-cols-2 lg:gap-5"
+    "grid gap-3 sm:gap-4 md:grid-cols-2 lg:gap-5 xl:grid-cols-3"
   );
   assert.equal(
     responsiveLayoutClasses.newsListGrid,

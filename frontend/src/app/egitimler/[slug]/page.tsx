@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { CourseDetail } from "@/components/content";
+import { ContentPageShell } from "@/components/content";
+import { RichTextContent } from "@/components/content/rich-text-content";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { getCourseBySlug } from "@/lib/strapi";
 import {
@@ -58,41 +59,100 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   }
 
   const outcomeBullets = parseOutcomeBullets(course.outcomeBullets);
+  const topicAreaLabel = course.topicArea
+    ? (() => {
+        const ta = normalizeTopicArea(course.topicArea);
+        return ta ? getTopicAreaLabel(ta) : course.teacher?.fullName ?? undefined;
+      })()
+    : course.teacher?.fullName ?? undefined;
+  const levelLabel = course.level
+    ? (() => {
+        const cl = normalizeCourseLevel(course.level);
+        return cl ? getCourseLevelLabel(cl) : undefined;
+      })()
+    : undefined;
 
   return (
-    <CourseDetail
-      eyebrow={
-        course.topicArea
-          ? (() => {
-              const ta = normalizeTopicArea(course.topicArea);
-              return ta ? getTopicAreaLabel(ta) : (course.teacher?.fullName ?? undefined);
-            })()
-          : course.teacher?.fullName ?? undefined
-      }
+    <ContentPageShell
+      breadcrumbItems={[
+        { label: "Eğitim Kataloğu", href: "/egitimler" },
+        { label: course.title },
+      ]}
+      eyebrow={topicAreaLabel}
       title={course.title}
-      summary={course.summary}
-      meta={
-        <div className="flex flex-wrap items-center gap-3 text-sm">
-          {course.level ? (() => {
-            const cl = normalizeCourseLevel(course.level);
-            return cl ? (
-              <span className="rounded-full border border-primary/30 bg-primary/8 px-2.5 py-0.5 text-xs font-medium text-primary">
-                {getCourseLevelLabel(cl)}
-              </span>
-            ) : null;
-          })() : null}
-          {course.targetAudience ? (
-            <span className="text-foreground/70">{course.targetAudience}</span>
-          ) : null}
-          {course.teacher ? (
-            <Link className="text-primary hover:underline" href={`/egitmenler/${course.teacher.slug}`}>
-              {course.teacher.fullName}
-            </Link>
-          ) : null}
+      description={
+        <div className="flex w-full flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+          <div className="max-w-3xl space-y-5">
+            {course.summary ? (
+              <p className="max-w-2xl text-[15px] leading-7 text-white/76 sm:text-lg sm:leading-8">
+                {course.summary}
+              </p>
+            ) : (
+              <p className="max-w-2xl text-[15px] leading-7 text-white/76 sm:text-lg sm:leading-8">
+                Kurumunuza uygun, uygulama odaklı ve detaylı eğitim içeriği.
+              </p>
+            )}
+            <div className="space-y-3 text-sm text-white/82 sm:text-base">
+              <div className="flex flex-wrap items-center gap-3">
+                {levelLabel ? (
+                  <span className="inline-flex items-center rounded-full border border-white/18 bg-white/12 px-3 py-1 text-xs font-semibold text-white">
+                    {levelLabel}
+                  </span>
+                ) : null}
+                {course.targetAudience ? <span>{course.targetAudience}</span> : null}
+              </div>
+              {course.teacher ? (
+                <p>
+                  <span className="font-medium text-white/86">Eğitmen:</span>{" "}
+                  <Link
+                    className="font-medium text-white underline decoration-white/28 decoration-2 underline-offset-4 transition-colors hover:text-white/90"
+                    href={`/egitmenler/${course.teacher.slug}`}
+                  >
+                    {course.teacher.fullName}
+                  </Link>
+                </p>
+              ) : null}
+            </div>
+          </div>
         </div>
+      }
+      descriptionClassName="max-w-3xl"
+      descriptionTrailing={
+        <Link
+          href={buildIntentLeadUrl("corporate_training_request", { topic: course.title })}
+          className="inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-white/58 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-colors hover:bg-white/14 hover:text-white/72"
+        >
+          <span className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/48">
+            <span className="text-sm leading-none">→</span>
+          </span>
+          <span className="flex flex-col items-start leading-tight">
+            <span className="text-sm font-semibold text-white">
+              Bu Eğitimi Kurumsal Olarak Talep Et
+            </span>
+            <span className="text-[11px] uppercase tracking-[0.22em] text-white/38">
+              Talep formuna git
+            </span>
+          </span>
+        </Link>
       }
     >
       <div className="max-w-3xl space-y-6 sm:space-y-8">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground">Eğitim Açıklaması</h2>
+          {course.description ? (
+            <div className="mt-2">
+              <RichTextContent
+                content={course.description}
+                className="max-w-none text-foreground/80 prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary prose-li:text-foreground/80"
+              />
+            </div>
+          ) : (
+            <p className="mt-2 text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
+              Bu eğitim için detaylı içerik yakında eklenecek.
+            </p>
+          )}
+        </section>
+
         {course.businessValue ? (
           <section>
             <h2 className="text-lg font-semibold text-foreground">Kurumsal Değer</h2>
@@ -126,13 +186,6 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           </section>
         ) : null}
 
-        <section>
-          <h2 className="text-lg font-semibold text-foreground">Eğitim Açıklaması</h2>
-          <p className="mt-2 text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
-            {course.description ?? "Bu eğitim için detaylı içerik yakında eklenecek."}
-          </p>
-        </section>
-
         {course.events && course.events.length > 0 ? (
           <section>
             <h2 className="text-lg font-semibold text-foreground">İlişkili Etkinlikler</h2>
@@ -156,16 +209,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
             </ul>
           </section>
         ) : null}
-
-        <div className="pt-2">
-          <Link
-            href={buildIntentLeadUrl("corporate_training_request", { topic: course.title })}
-            className="inline-flex items-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
-          >
-            Bu Eğitimi Kurumsal Olarak Talep Et
-          </Link>
-        </div>
       </div>
-    </CourseDetail>
+    </ContentPageShell>
   );
 }

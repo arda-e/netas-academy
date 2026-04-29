@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { SiteBreadcrumbs } from "@/components/breadcrumbs";
+
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -47,7 +49,10 @@ export default function KvkkPage() {
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
-        <div className="page-container flex min-h-[260px] w-full items-end py-8 sm:min-h-[320px] sm:py-12">
+        <div className="page-container relative flex min-h-[260px] w-full items-end py-8 sm:min-h-[320px] sm:py-12">
+          <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
+            <SiteBreadcrumbs items={[{ label: "KVKK" }]} />
+          </div>
           <div className="max-w-4xl space-y-4 sm:space-y-5">
             <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
               KVKK

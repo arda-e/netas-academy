@@ -1,6 +1,12 @@
 import type { ReactNode } from "react";
 
+import {
+  SiteBreadcrumbs,
+  type BreadcrumbItem,
+} from "@/components/breadcrumbs";
+
 type ContentDetailShellProps = {
+  breadcrumbItems?: BreadcrumbItem[];
   leadMedia?: ReactNode;
   eyebrow?: string;
   title: string;
@@ -11,6 +17,7 @@ type ContentDetailShellProps = {
 };
 
 export function ContentDetailShell({
+  breadcrumbItems,
   leadMedia,
   eyebrow,
   title,
@@ -22,6 +29,11 @@ export function ContentDetailShell({
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
       <article className="page-section pt-8 sm:pt-10 lg:pt-12">
+        <SiteBreadcrumbs
+          items={breadcrumbItems ?? [{ label: title }]}
+          variant="dark"
+          className="mb-5 sm:mb-6"
+        />
         <div
           className={
             leadMedia

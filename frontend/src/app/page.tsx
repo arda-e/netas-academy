@@ -7,6 +7,7 @@ export default function Home() {
   return (
     <>
       <HeroOverlay
+        showBreadcrumb={false}
         title={
           <>
             Ekiplerinizi dönüşüm ve adaptasyon
@@ -18,7 +19,7 @@ export default function Home() {
         }
         description="Teknoloji ve iş yapış biçimleri hızla değişiyor. Kurumların rekabet avantajını koruyabilmesi, ekiplerini bu değişime hazır hale getirmesine bağlı. Netaş Akademi, onlarca yıllık sektör tecrübesini kurumsal öğrenme programlarına dönüştürerek dönüşüm yolculuğunuzda yanınızda olur."
         primaryCta={{ href: buildIntentLeadUrl("corporate_training_request"), label: "Kurumsal Eğitim Talep Et" }}
-        secondaryCta={{ href: "/egitimler", label: "Eğitimleri İncele" }}
+        secondaryCta={{ href: "/egitimler", label: "Eğitim Kataloğunu İncele" }}
         primaryCtaMeasurementId="home-hero-primary"
         secondaryCtaMeasurementId="home-hero-secondary"
       />

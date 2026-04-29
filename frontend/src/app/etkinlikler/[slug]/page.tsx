@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { NewsletterSubscriptionForm } from "@/components/newsletter-subscription-form";
@@ -107,7 +108,15 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
       <section className="sticky top-[81px] border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
-        <div className="mx-auto flex min-h-[320px] w-full max-w-7xl items-end px-6 py-10 md:px-10 lg:px-12">
+        <div className="relative mx-auto flex min-h-[320px] w-full max-w-7xl items-end px-6 py-10 md:px-10 lg:px-12">
+          <div className="absolute left-6 right-6 top-10 md:left-10 md:right-10 lg:left-12 lg:right-12">
+            <SiteBreadcrumbs
+              items={[
+                { label: "Etkinlikler", href: "/etkinlikler" },
+                { label: event.title },
+              ]}
+            />
+          </div>
           <div className="max-w-3xl space-y-5">
             <p className="text-sm font-medium uppercase tracking-[0.34em] text-white/88">
               {event.course?.title ?? "Etkinlik"}

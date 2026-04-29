@@ -11,7 +11,7 @@ export const homeVisualSection = {
       imageUrl:
         "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
       href: "/egitimler",
-      ctaLabel: "Eğitimleri Keşfet",
+      ctaLabel: "Eğitim Kataloğunu Keşfet",
     },
     {
       title: "Takımlarda Dönüşüm",
@@ -192,29 +192,6 @@ export const eventDetailVisualSection = {
         "Konuşma, demo ve oturum anlarını öne çıkaran güçlü sahneler ile beklentiyi yükseltin.",
       imageUrl:
         "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80",
-    },
-  ],
-};
-
-export const blogDetailVisualSection = {
-  eyebrow: "Okuma Katmanı",
-  title: "Yazı sayfalarına nefes alan, görsel destekli bir ikinci katman ekleyin.",
-  description:
-    "Uzun metinleri daha kolay sindirilen, daha modern ve daha ritmik bir içerik deneyimine dönüştürün.",
-  items: [
-    {
-      title: "Ara İçgörüler",
-      description:
-        "Okuyucuyu metin içinde tutan, zihinsel tempo sağlayan editoryal duraklar oluşturun.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-    },
-    {
-      title: "İlham Veren Notlar",
-      description:
-        "Bilgiyi daha akılda kalıcı kılacak sahne ve kompozisyonlarla sayfanın hissini güçlendirin.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1494173853739-c21f58b16055?auto=format&fit=crop&w=1200&q=80",
     },
   ],
 };

@@ -19,12 +19,12 @@ test("Hero contains 'Kurumsal Eğitim Talep Et' as primary CTA label", () => {
   );
 });
 
-test("Hero contains 'Eğitimleri İncele' as secondary CTA label", () => {
+test("Hero contains 'Eğitim Kataloğunu İncele' as secondary CTA label", () => {
   const source = readSource("app/page.tsx");
   assert.match(
     source,
-    /Eğitimleri İncele/i,
-    "Hero should have 'Eğitimleri İncele' as secondary CTA label"
+    /Eğitim Kataloğunu İncele/i,
+    "Hero should have 'Eğitim Kataloğunu İncele' as secondary CTA label"
   );
 });
 

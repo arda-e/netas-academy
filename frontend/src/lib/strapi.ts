@@ -356,7 +356,7 @@ export async function getBlogPostBySlug(slug: string) {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(
       `/api/blog-posts?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=excerpt&fields[3]=content&fields[4]=publishedDate&fields[5]=sourceNotes&populate[author][fields][0]=displayName&populate[author][fields][1]=slug&populate[author][fields][2]=role&populate[author][fields][3]=shortBio&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=alternativeText`,
-      { cache: 'force-cache' }
+      { cache: 'no-store' }
     );
 
     return response.data[0] ?? null;

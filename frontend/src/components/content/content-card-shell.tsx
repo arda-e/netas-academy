@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,8 @@ type ContentCardShellProps = {
   summary?: ReactNode;
   meta?: ReactNode;
   className?: string;
+  imageUrl?: string | null;
+  imageAlt?: string;
 };
 
 export function ContentCardShell({
@@ -23,18 +26,35 @@ export function ContentCardShell({
   summary,
   meta,
   className,
+  imageUrl,
+  imageAlt,
 }: ContentCardShellProps) {
+  const hasImage = Boolean(imageUrl);
+
   const card = (
     <Card
       className={cn(
-        "h-full gap-5 rounded-sm bg-slate-100 py-5 backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm group-hover/card-link:border-[#009ca6] sm:gap-6 sm:py-6",
+        "h-full rounded-sm bg-slate-100 py-5 backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm group-hover/card-link:border-[#009ca6] sm:pb-6",
+        hasImage ? "gap-0 pt-0" : "gap-5 sm:gap-6",
         className
       )}
     >
+      {hasImage ? (
+        <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-t-sm">
+          <Image
+            src={imageUrl!}
+            alt={imageAlt ?? title}
+            fill
+            sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </div>
+      ) : null}
       <CardHeader
         className={cn(
           "flex flex-row items-start justify-between gap-4 px-5 sm:px-6",
-          kicker || headerAddon ? "pb-0" : undefined
+          kicker || headerAddon ? "pb-0" : undefined,
+          hasImage ? "pt-6" : undefined
         )}
       >
         <div className="min-w-0 space-y-1.5">

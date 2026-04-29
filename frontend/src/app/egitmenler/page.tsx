@@ -10,6 +10,7 @@ export default async function EgitmenlerPage() {
   return (
     <ContentPageShell
       title="Eğitmenlerimiz"
+      descriptionClassName="max-w-3xl text-balance"
       description={
         <p>
           <strong className="text-white">Alanında uzman eğitmen kadromuzla</strong>{" "}

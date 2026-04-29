@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
+import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
 
 type HeroOverlayProps = {
@@ -16,6 +17,7 @@ type HeroOverlayProps = {
     href: string;
     label: string;
   };
+  showBreadcrumb?: boolean;
   primaryCtaMeasurementId?: string;
   secondaryCtaMeasurementId?: string;
 };
@@ -27,6 +29,7 @@ export function HeroOverlay({
   imageUrl = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80",
   primaryCta,
   secondaryCta,
+  showBreadcrumb = true,
   primaryCtaMeasurementId,
   secondaryCtaMeasurementId,
 }: HeroOverlayProps) {
@@ -41,6 +44,11 @@ export function HeroOverlay({
       <div className="absolute inset-y-0 left-0 w-[38%] bg-[linear-gradient(90deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.03)_72%,transparent_100%)]" />
 
       <div className="page-container relative flex min-h-[calc(58vh-81px)] w-full items-center py-10 sm:min-h-[calc(70vh-81px)] sm:py-14 lg:min-h-[calc(74vh-81px)] lg:justify-end lg:py-16">
+        {showBreadcrumb ? (
+          <div className="absolute left-4 right-4 top-10 sm:left-6 sm:right-6 sm:top-14 lg:left-10 lg:right-10 lg:top-16 xl:left-12 xl:right-12">
+            <SiteBreadcrumbs items={[]} />
+          </div>
+        ) : null}
         <div className="max-w-3xl space-y-5 text-left text-white lg:mr-6">
           {eyebrow ? (
             <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/74">

@@ -25,7 +25,7 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
 
   return (
     <ContentPageShell
-      title="Blog Yazıları"
+      title="Blog"
       description={
         <p>
           Sektörel bakış açıları, uygulama notları ve eğitim odaklı
@@ -33,7 +33,7 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
         </p>
       }
     >
-      <div className="space-y-8">
+      <div className="space-y-4 sm:space-y-8">
         <SearchField initialValue={search} searchOnly />
         <BlogList
           items={mappedPosts}

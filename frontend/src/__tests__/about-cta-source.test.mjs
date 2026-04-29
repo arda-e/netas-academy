@@ -37,12 +37,12 @@ test("Primary CTA has data-measurement-id='about_corporate_cta'", () => {
   );
 });
 
-test("Secondary CTA label is 'Eğitimleri İncele'", () => {
+test("Secondary CTA label is 'Eğitim Kataloğunu İncele'", () => {
   const source = readSource("app/hakkimizda/page.tsx");
   assert.match(
     source,
-    /Eğitimleri İncele/i,
-    "Secondary CTA label should be 'Eğitimleri İncele'"
+    /Eğitim Kataloğunu İncele/i,
+    "Secondary CTA label should be 'Eğitim Kataloğunu İncele'"
   );
 });
 
