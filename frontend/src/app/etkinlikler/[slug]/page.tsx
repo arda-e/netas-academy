@@ -3,6 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { RichTextContent } from "@/components/content/rich-text-content";
+import { NewsletterSubscriptionForm } from "@/components/newsletter-subscription-form";
+import { isEventRegistrationOpen } from "@/lib/event-registration";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { getEventBySlug } from "@/lib/strapi";
 
@@ -27,12 +30,14 @@ function EventInformationPanel({
   endsAt,
   location,
   slug,
+  registrationOpen,
 }: {
   title: string;
   startsAt: string;
   endsAt?: string | null;
   location?: string | null;
   slug: string;
+  registrationOpen: boolean;
 }) {
   return (
     <aside className="panel-surface rounded-sm p-6 md:p-8">
@@ -48,12 +53,23 @@ function EventInformationPanel({
         {location ? <p>{location}</p> : null}
       </div>
 
-      <Button asChild className="mt-6 w-full rounded-sm">
-        <Link href={`/etkinlikler/${slug}/kayit`}>Etkinlige Kayit Ol</Link>
-      </Button>
-      <Button asChild variant="outline" className="mt-3 w-full rounded-sm">
-        <Link href={buildIntentLeadUrl("general_contact")}>Iletisime Gec</Link>
-      </Button>
+      {registrationOpen ? (
+        <>
+          <Button asChild className="mt-6 w-full rounded-sm">
+            <Link href={`/etkinlikler/${slug}/kayit`}>Etkinliğe Kayıt Ol</Link>
+          </Button>
+          <Button asChild variant="outline" className="mt-3 w-full rounded-sm">
+            <Link href={buildIntentLeadUrl("general_contact")}>İletişime Geç</Link>
+          </Button>
+        </>
+      ) : (
+        <div className="mt-6 space-y-4">
+          <p className="text-sm font-medium text-foreground/72">
+            Bu etkinliğin kayıtları şu an kapalı. Yeni etkinliklerden haberdar olmak için bültenimize abone olun.
+          </p>
+          <NewsletterSubscriptionForm source="event_closed_registration" />
+        </div>
+      )}
     </aside>
   );
 }
@@ -68,7 +84,7 @@ export async function generateMetadata({
 
   if (!event) {
     return {
-      title: "Etkinlik Bulunamadi",
+      title: "Etkinlik Bulunamadı",
     };
   }
 
@@ -85,6 +101,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   if (!event) {
     notFound();
   }
+
+  const registrationOpen = isEventRegistrationOpen(event);
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]">
@@ -107,11 +125,16 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
       <section className="relative z-10 mx-auto w-full max-w-7xl bg-background px-4 py-14 md:px-10 md:py-18 lg:px-12">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,0.72fr)_minmax(300px,0.42fr)]">
           <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
-            <div className="prose prose-invert max-w-none whitespace-pre-wrap text-base leading-7 prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary prose-li:text-foreground/80 sm:leading-8">
-              <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
-                {event.details ?? "Bu etkinlik icin detayli icerik yakinda eklenecek."}
-              </p>
-            </div>
+            {event.summary ? (
+              <div className="mb-8 pb-8 border-b border-white/8">
+                <p className="text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
+                  {event.summary}
+                </p>
+              </div>
+            ) : null}
+            <RichTextContent
+              content={event.details ?? "Bu etkinlik için detaylı içerik yakında eklenecek."}
+            />
           </div>
 
           <EventInformationPanel
@@ -120,6 +143,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             endsAt={event.endsAt}
             location={event.location}
             slug={event.slug}
+            registrationOpen={registrationOpen}
           />
         </div>
       </section>

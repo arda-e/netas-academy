@@ -10,6 +10,8 @@ const navigationItems = [
   { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/etkinlikler", label: "Etkinlikler" },
   { href: "/egitimler", label: "Eğitimler" },
+  { href: "/egitmenler", label: "Eğitmenler" },
+  { href: "/cozum-ortagi", label: "Çözüm Ortağı" },
   { href: "/blog-yazilari", label: "Blog Yazıları" },
   { href: "/haberler", label: "Haberler" },
   { href: "/iletisim", label: "İletişim" },
