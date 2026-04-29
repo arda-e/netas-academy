@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import DOMPurify from "dompurify";
 
 type RichTextContentProps = {
   content: string;
@@ -6,7 +7,7 @@ type RichTextContentProps = {
 };
 
 function sanitizeHtml(html: string): string {
-  return html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+  return DOMPurify.sanitize(html);
 }
 
 export function RichTextContent({ content, className }: RichTextContentProps) {
