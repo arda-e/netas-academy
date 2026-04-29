@@ -11,21 +11,13 @@ import {
   getTeacherBySlug,
 } from "@/lib/strapi";
 import { teacherDetailVisualSection } from "@/lib/page-visual-sections";
+import { getInitials } from "@/lib/utils";
 
 type TeacherDetailPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-function getInitials(name: string) {
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
 
 export const dynamic = "force-dynamic";
 
@@ -37,12 +29,12 @@ export async function generateMetadata({
 
   if (!teacher) {
     return {
-      title: "Egitmen Bulunamadi",
+      title: "Eğitmen Bulunamadı",
     };
   }
 
   return {
-    title: `${teacher.fullName} | Egitmen`,
+    title: `${teacher.fullName} | Eğitmen`,
     description: teacher.headline ?? undefined,
   };
 }
@@ -97,13 +89,49 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
       }
     >
       <div className="max-w-3xl space-y-5 sm:space-y-6">
-        <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
-          {teacher.bio ?? "Bu egitmen icin detayli profil icerigi yakinda eklenecek."}
-        </p>
+        {teacher.expertiseAreas && teacher.expertiseAreas.length > 0 ? (
+          <section className="space-y-3 sm:space-y-4">
+            <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+              Uzmanlık Alanları
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {teacher.expertiseAreas.map((area) => (
+                <span
+                  key={area}
+                  className="inline-flex items-center rounded-full border border-[#009ca6]/30 bg-[#009ca6]/10 px-3 py-1 text-sm font-medium text-[#009ca6]"
+                >
+                  {area}
+                </span>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {teacher.targetTeams ? (
+          <section className="space-y-3 sm:space-y-4">
+            <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+              Hedef Kitle / Ekipler
+            </h2>
+            <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
+              {teacher.targetTeams}
+            </p>
+          </section>
+        ) : null}
+
+        {teacher.teachingApproach ? (
+          <section className="space-y-3 sm:space-y-4">
+            <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+              Eğitim Yaklaşımı
+            </h2>
+            <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
+              {teacher.teachingApproach}
+            </p>
+          </section>
+        ) : null}
 
         {teacher.courses && teacher.courses.length > 0 ? (
           <section className="space-y-3 sm:space-y-4">
-            <h2 className="text-xl font-semibold text-foreground">Egitimleri</h2>
+            <h2 className="text-lg font-semibold text-foreground sm:text-xl">Eğitimleri</h2>
             <ul className="grid gap-2 sm:grid-cols-2 sm:gap-3">
               {teacher.courses.map((course) => (
                 <li key={course.documentId}>
@@ -115,6 +143,21 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
             </ul>
           </section>
         ) : null}
+
+        {teacher.bio ? (
+          <section className="space-y-3 sm:space-y-4">
+            <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+              Hakkında
+            </h2>
+            <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
+              {teacher.bio}
+            </p>
+          </section>
+        ) : (
+          <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
+            Bu eğitmen için detaylı profil içeriği yakında eklenecek.
+          </p>
+        )}
       </div>
     </ContentDetailShell>
   );

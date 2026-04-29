@@ -95,10 +95,10 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
         <>
           <p>
             <strong className="text-white">
-              Yaklasan bulusmalari, webinarlari ve ozel oturumlari
+              Yaklaşan buluşmaları, webinarları ve özel oturumları
             </strong>{" "}
             takip edin; <span className="hidden sm:inline"><br /></span>
-            katilim icin gerekli detaylara tek ekrandan ulasin.
+            katılım için gerekli detaylara tek ekrandan ulaşın.
           </p>
         </>
       }
@@ -151,7 +151,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
         emptyMessage={
           selectedType
             ? `${getEventTypeLabel(selectedType)} türünde gösterilecek etkinlik bulunamadı.`
-            : "Gosterilecek etkinlik verisi su an kullanilabilir degil."
+            : "Gösterilecek etkinlik verisi şu an kullanılabilir değil."
         }
         items={events.map((event) => ({
           id: event.documentId,
@@ -162,6 +162,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
           startsAt: event.startsAt,
           endsAt: event.endsAt,
           location: event.location,
+          topicArea: event.topicArea,
         }))}
       />
     </ContentPageShell>

@@ -6,6 +6,7 @@ import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 
 type EventListItem = {
+  topicArea?: string | null;
   id: number | string;
   slug: string;
   title: string;
