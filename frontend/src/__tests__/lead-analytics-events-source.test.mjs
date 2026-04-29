@@ -100,7 +100,95 @@ test("emitLeadSubmitFail('corporate_training_request', 'validation_error') emits
   );
 });
 
-test("No PII (email, phone, fullName) appears in any event properties", () => {
+test("emitHomeCorporateCtaClick emits home_corporate_cta_click with { source: 'home' }", () => {
+  const source = readSource("lib/analytics-events.ts");
+
+  assert.match(
+    source,
+    /eventName:\s*"home_corporate_cta_click"/,
+    "HomeCorporateCtaClickEvent should have eventName 'home_corporate_cta_click'"
+  );
+
+  assert.match(
+    source,
+    /export\s+function\s+emitHomeCorporateCtaClick/,
+    "emitHomeCorporateCtaClick function should be exported"
+  );
+
+  assert.match(
+    source,
+    /emit\(\{?\s*eventName:\s*"home_corporate_cta_click",?\s*properties:\s*\{\s*source:\s*"home"\s*\}\s*\}\)/,
+    "emitHomeCorporateCtaClick should emit home_corporate_cta_click with { source: 'home' }"
+  );
+});
+
+test("emitHomeEducationCtaClick emits home_education_cta_click with { source: 'home' }", () => {
+  const source = readSource("lib/analytics-events.ts");
+
+  assert.match(
+    source,
+    /eventName:\s*"home_education_cta_click"/,
+    "HomeEducationCtaClickEvent should have eventName 'home_education_cta_click'"
+  );
+
+  assert.match(
+    source,
+    /export\s+function\s+emitHomeEducationCtaClick/,
+    "emitHomeEducationCtaClick function should be exported"
+  );
+
+  assert.match(
+    source,
+    /emit\(\{?\s*eventName:\s*"home_education_cta_click",?\s*properties:\s*\{\s*source:\s*"home"\s*\}\s*\}\)/,
+    "emitHomeEducationCtaClick should emit home_education_cta_click with { source: 'home' }"
+  );
+});
+
+test("emitAboutCorporateCtaClick emits about_corporate_cta_click with { source: 'about' }", () => {
+  const source = readSource("lib/analytics-events.ts");
+
+  assert.match(
+    source,
+    /eventName:\s*"about_corporate_cta_click"/,
+    "AboutCorporateCtaClickEvent should have eventName 'about_corporate_cta_click'"
+  );
+
+  assert.match(
+    source,
+    /export\s+function\s+emitAboutCorporateCtaClick/,
+    "emitAboutCorporateCtaClick function should be exported"
+  );
+
+  assert.match(
+    source,
+    /emit\(\{?\s*eventName:\s*"about_corporate_cta_click",?\s*properties:\s*\{\s*source:\s*"about"\s*\}\s*\}\)/,
+    "emitAboutCorporateCtaClick should emit about_corporate_cta_click with { source: 'about' }"
+  );
+});
+
+test("emitAboutEducationCtaClick emits about_education_cta_click with { source: 'about' }", () => {
+  const source = readSource("lib/analytics-events.ts");
+
+  assert.match(
+    source,
+    /eventName:\s*"about_education_cta_click"/,
+    "AboutEducationCtaClickEvent should have eventName 'about_education_cta_click'"
+  );
+
+  assert.match(
+    source,
+    /export\s+function\s+emitAboutEducationCtaClick/,
+    "emitAboutEducationCtaClick function should be exported"
+  );
+
+  assert.match(
+    source,
+    /emit\(\{?\s*eventName:\s*"about_education_cta_click",?\s*properties:\s*\{\s*source:\s*"about"\s*\}\s*\}\)/,
+    "emitAboutEducationCtaClick should emit about_education_cta_click with { source: 'about' }"
+  );
+});
+
+test("No PII (email, phone, fullName) appears in any event properties including new CTA events", () => {
   const source = readSource("lib/analytics-events.ts");
 
   // Extract all properties blocks (between "properties: {" and "}")

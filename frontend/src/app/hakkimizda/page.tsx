@@ -2,94 +2,98 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ContentPageShell, VisualStorySection } from "@/components/content";
+import { CourseCarousel } from "@/components/course-carousel";
 import { TeacherCarousel } from "@/components/teacher-carousel";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { hakkimizdaVisualSection } from "@/lib/page-visual-sections";
-import { getStrapiMediaAltText, getStrapiMediaUrl, getTeachers } from "@/lib/strapi";
+import { getLatestCourses, getStrapiMediaAltText, getStrapiMediaUrl, getTeachers } from "@/lib/strapi";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Hakkımızda | Netas Academy",
   description:
-    "Netaş Academy'nin vizyonunu, eğitim yaklaşımını ve tecrübeli eğitmen kadrosunu keşfedin.",
+    "Netaş teknoloji ve sektör deneyimiyle şekillenen, vaka ve senaryo tabanlı uygulamalı eğitim modelimizi, kurum ihtiyacına göre esnek program yapımızı ve saha deneyimi güçlü eğitmen kadromuzu keşfedin.",
 };
-
-const sections = [
-  {
-    title: "Eğitimde Fark Yaratıyoruz!",
-    body: "Eğitim dünyasında yeni bir anlayışın öncüsü olma vizyonuyla yola çıkan Netaş Academy, katılımcılarına sadece bilgi sunmakla kalmıyor; aynı zamanda onların profesyonel gelişimlerine değer katan bir öğrenim deneyimi de sunuyor. Alanında yetkin ve tecrübeli eğitmen kadromuz, yılların birikimiyle şekillenen eğitim içerikleriyle katılımcılarına sektörel bilgi ve pratik beceri kazandırmayı hedefliyor.",
-  },
-  {
-    title: "Tecrübeli Eğitmen Kadrosu",
-    body: "Eğitmenlerimiz, akademik alandaki güçlü altyapılarının yanı sıra, sahada edindikleri sektörel tecrübelerle de öne çıkıyor. Eğitmen kadromuzun gerçek iş dünyasından örneklerle zenginleştirilmiş anlatımları, katılımcılara çok yönlü bir bakış açısı sunuyor. Bu sayede katılımcılar, edindikleri teorik bilgiyi gerçek çalışma ortamlarında kolaylıkla uygulayabilecek yetkinliğe kavuşuyor.",
-  },
-  {
-    title: "Uygulamalı ve İnteraktif Eğitim Modeli",
-    body: "Katılımcının sürece aktif biçimde dahil olduğu bu eğitim modeli; vaka analizleri, senaryo temelli çalışmalar ve uygulamalı aktiviteler aracılığıyla, öğrenilen bilginin hızlıca hayata geçirilmesini amaçlıyor.",
-  },
-  {
-    title: "Çeşitlilikten Beslenen İçerik",
-    body: "Farklı sektörlerin ihtiyaçları dikkate alınarak tasarlanan eğitim programlarımız, katılımcı profiline göre özelleştirilmiş içerikleriyle yalnızca mevcut uzmanlık alanlarına değil, diğer sektörlerde de uygulanabilir bilgiler edinme fırsatı sunuyor.",
-  },
-];
 
 export default async function HakkimizdaPage() {
   const teachers = await getTeachers();
+  const courses = await getLatestCourses(5);
 
   return (
     <ContentPageShell
       eyebrow="Hakkımızda"
-      title="Bir Netaş markası olan Netaş Academy, ilham verici yolculuğuna başladı!"
+      title="Netaş Academy: Uygulamalı Eğitim Deneyimiyle Kurumsal Gelişimde Fark Yaratıyoruz"
       description={
         <>
           <p>
-            Katılımcılarına bilgi, deneyim ve uygulama odaklı bir öğrenim
-            yolculuğu sunan Netaş Academy; profesyonel gelişimi destekleyen,
-            sektörle güçlü bağ kuran bir eğitim yaklaşımı benimsiyor.
+            Netaş teknoloji ve sektör deneyimiyle şekillenen Netaş Academy,
+            kurumların gelişim ihtiyaçlarına yanıt veren uygulamalı eğitim
+            çözümleri sunar. Vaka, senaryo ve gerçek iş problemleri üzerinden
+            yapılandırılmış programlarla katılımcıların yetkinliklerini
+            bir üst seviyeye taşımayı hedefliyoruz.
           </p>
         </>
       }
     >
-      <div className="space-y-12 sm:space-y-16">
-        <div className="grid gap-6 sm:gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.65fr)] xl:items-start xl:gap-10">
-          <aside className="panel-surface rounded-sm p-4 sm:p-6">
-            <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
-              Yaklaşımımız
-            </p>
-            <ul className="mt-4 space-y-3 text-[15px] leading-7 text-foreground/80 sm:mt-5 sm:space-y-4 sm:text-base sm:leading-8">
-              <li>Bilgiyi profesyonel gelişime dönüştüren içerikler</li>
-              <li>Akademik temeli güçlü, sektör deneyimi yüksek eğitmenler</li>
-              <li>Vaka ve senaryo tabanlı uygulamalı öğrenme modeli</li>
-              <li>Farklı sektörlere uyarlanabilen esnek program yapısı</li>
-            </ul>
-          </aside>
+      <div className="space-y-10 sm:space-y-14">
+        {/* B — Netaş Trust */}
+        <section className="panel-surface rounded-sm p-5 sm:p-8">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            Netaş Güvencesiyle Kurumsal Eğitim
+          </h2>
+          <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            Netaş Academy, Netaş&rsquo;ın derin teknoloji ve sektör deneyiminden güç
+            alır. Köklü geçmişin getirdiği bilgi birikimi, eğitim
+            programlarımızın sağlam bir temele oturmasını sağlar. Kurumlara
+            özel, ölçeklenebilir ve sahada karşılığı olan eğitim çözümleri
+            üretiyoruz.
+          </p>
+        </section>
 
-          <div className="grid gap-4 sm:gap-6">
-            {sections.map((section) => (
-              <article
-                key={section.title}
-                className="panel-surface rounded-sm p-5 sm:p-8"
-              >
-                <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-                  {section.title}
-                </h2>
-                <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
-                  {section.body}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
+        {/* C — Applied Learning Model */}
+        <section className="panel-surface rounded-sm p-5 sm:p-8">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            Vaka, Senaryo ve Gerçek İş Problemine Dayalı Eğitim Modeli
+          </h2>
+          <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            Eğitim modelimiz, katılımcıların teorik bilgiyi ezberlemek yerine
+            gerçek iş problemleri, vaka analizleri ve senaryo temelli
+            çalışmalarla içselleştirmesine odaklanır. Etkileşimli
+            uygulamalar, grup çalışmaları ve yansıtma oturumları sayesinde
+            öğrenme süreci kalıcı hale gelir. Her oturum, katılımcının kendi
+            iş bağlamına doğrudan taşıyabileceği araçlar ve yöntemler sunar.
+          </p>
+        </section>
 
+        {/* D — Institution-Shaped Programs */}
+        <section className="panel-surface rounded-sm p-5 sm:p-8">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            Kurum İhtiyacına Göre Şekillenen Programlar
+          </h2>
+          <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            Her kurumun ihtiyacı farklıdır. Eğitim programlarımız; sektör,
+            ekip profili, mevcut yetkinlik düzeyi ve hedeflenen gelişim
+            alanları doğrultusunda esnek biçimde şekillenir. Açık sınıf
+            eğitimlerinden kapalı devre kurumsal programlara, hibrit
+            modellerden tamamen uzaktan yapılandırmalara kadar her formatta
+            çözüm sunabiliyoruz.
+          </p>
+        </section>
+
+        {/* Visual Story Section — reinforces learning model visually */}
         <VisualStorySection {...hakkimizdaVisualSection} />
 
+        {/* E — Instructors */}
         <div className="space-y-4 sm:space-y-5">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-            Egitmenlerimiz
+            Saha Deneyimi Güçlü Eğitmen Kadromuz
           </h2>
           <p className="max-w-3xl text-[15px] leading-7 text-foreground/72 sm:text-lg sm:leading-8">
-            Farkli uzmanlik alanlarindan gelen egitmen kadromuzu yakindan taniyin.
+            Eğitmenlerimiz yalnızca anlatıcı değil, saha deneyimi olan ve
+            dönüşüm projelerinde yer almış uzmanlardır. Katılımcılara
+            rehberlik ederken kendi tecrübelerinden somut örnekler sunar,
+            kuramla pratik arasındaki köprüyü birlikte kurar.
           </p>
           <TeacherCarousel
             items={teachers.map((teacher) => ({
@@ -102,18 +106,58 @@ export default async function HakkimizdaPage() {
           />
         </div>
 
+        {/* F — Participant Outcomes */}
+        <section className="panel-surface rounded-sm p-5 sm:p-8">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            Katılımcı Çıktısı: Teoriyi İşe Taşıma ve Pratik Beceri
+          </h2>
+          <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            Eğitimlerimizin nihai hedefi, katılımcıların edindiği bilgiyi iş
+            ortamına hızla taşıyabilmesidir. Program sonunda katılımcılar:
+            yeni bakış açıları kazanır, uygulanabilir yöntemler öğrenir,
+            pratik becerilerini geliştirir ve kurum içinde fark yaratacak
+            donanıma ulaşır. Öğrenmenin ölçülebilir iş sonuçlarına
+            dönüşmesini hedefliyoruz.
+          </p>
+        </section>
+
+        {/* G — Latest Courses Preview */}
+        <div className="space-y-4 sm:space-y-5">
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+            Eğitim Programlarımızdan Öne Çıkanlar
+          </h2>
+          <p className="max-w-3xl text-[15px] leading-7 text-foreground/72 sm:text-lg sm:leading-8">
+            En güncel eğitim programlarımızı keşfedin. Her program, sahada
+            kanıtlanmış yöntemlerle kurumların dönüşüm ihtiyaçlarına yanıt
+            verecek şekilde yapılandırılmıştır.
+          </p>
+          <CourseCarousel
+            items={courses.map((course) => ({
+              documentId: course.documentId,
+              slug: course.slug,
+              title: course.title,
+              summary: course.summary,
+              topicArea: course.topicArea,
+              level: course.level,
+            }))}
+          />
+        </div>
+
+        {/* H — CTAs */}
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
           <Link
-            href={buildIntentLeadUrl("instructor_application")}
-            className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
+            href={buildIntentLeadUrl("corporate_training_request")}
+            data-measurement-id="about_corporate_cta"
+            className="inline-flex items-center justify-center gap-2 rounded-sm bg-[#ffb933] px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-[#e5a72e]"
           >
-            Egitmen Basvurusu Yap
+            Kurumsal Eğitim Talebi
           </Link>
           <Link
-            href={buildIntentLeadUrl("solution_partner_application")}
+            href="/egitimler"
+            data-measurement-id="about_education_cta"
             className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
           >
-            Cozum Ortakligi Basvurusu
+            Eğitimleri İncele
           </Link>
         </div>
       </div>

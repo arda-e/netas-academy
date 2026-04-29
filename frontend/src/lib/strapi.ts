@@ -392,3 +392,17 @@ export async function getTeacherBySlug(slug: string) {
     return null;
   }
 }
+
+export async function getLatestCourses(limit = 5) {
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
+      `/api/courses?pagination[pageSize]=${limit}&sort[0]=createdAt:desc` +
+      '&fields[0]=title&fields[1]=slug&fields[2]=summary' +
+      '&fields[3]=topicArea&fields[4]=level'
+    );
+
+    return response.data;
+  } catch {
+    return [];
+  }
+}

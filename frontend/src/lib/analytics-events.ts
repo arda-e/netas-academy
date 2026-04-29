@@ -44,6 +44,26 @@ export interface LeadRelatedContentClickEvent {
   properties: { leadType: LeadType };
 }
 
+export interface HomeCorporateCtaClickEvent {
+  eventName: "home_corporate_cta_click";
+  properties: { source: "home" };
+}
+
+export interface HomeEducationCtaClickEvent {
+  eventName: "home_education_cta_click";
+  properties: { source: "home" };
+}
+
+export interface AboutCorporateCtaClickEvent {
+  eventName: "about_corporate_cta_click";
+  properties: { source: "about" };
+}
+
+export interface AboutEducationCtaClickEvent {
+  eventName: "about_education_cta_click";
+  properties: { source: "about" };
+}
+
 export type LeadAnalyticsEvent =
   | LeadTabViewEvent
   | LeadTabChangeEvent
@@ -52,7 +72,11 @@ export type LeadAnalyticsEvent =
   | LeadSubmitFailEvent
   | LeadContextualEntryEvent
   | LeadCatalogClickEvent
-  | LeadRelatedContentClickEvent;
+  | LeadRelatedContentClickEvent
+  | HomeCorporateCtaClickEvent
+  | HomeEducationCtaClickEvent
+  | AboutCorporateCtaClickEvent
+  | AboutEducationCtaClickEvent;
 
 /* ─── Swappable backend interface ─── */
 
@@ -65,7 +89,6 @@ export interface AnalyticsBackend {
 const consoleBackend: AnalyticsBackend = {
   emit(event: LeadAnalyticsEvent) {
     if (process.env.NODE_ENV === "development") {
-      // eslint-disable-next-line no-console
       console.log("[analytics]", event.eventName, event.properties);
     }
   },
@@ -119,4 +142,20 @@ export function emitLeadCatalogClick(leadType: LeadType): void {
 
 export function emitLeadRelatedContentClick(leadType: LeadType): void {
   emit({ eventName: "lead_related_content_click", properties: { leadType } });
+}
+
+export function emitHomeCorporateCtaClick(): void {
+  emit({ eventName: "home_corporate_cta_click", properties: { source: "home" } });
+}
+
+export function emitHomeEducationCtaClick(): void {
+  emit({ eventName: "home_education_cta_click", properties: { source: "home" } });
+}
+
+export function emitAboutCorporateCtaClick(): void {
+  emit({ eventName: "about_corporate_cta_click", properties: { source: "about" } });
+}
+
+export function emitAboutEducationCtaClick(): void {
+  emit({ eventName: "about_education_cta_click", properties: { source: "about" } });
 }

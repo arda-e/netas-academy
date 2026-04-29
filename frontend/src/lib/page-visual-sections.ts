@@ -1,26 +1,26 @@
 export const homeVisualSection = {
-  eyebrow: "Program Akışı",
-  title: "Akademi deneyimini tek bir görsel akış içinde kurgulayın.",
+  eyebrow: "Kurumsal Deneyim",
+  title: "Netaş Akademi, sektör tecrübesini öğrenme yolculuğuna taşıyan kurumsal bir platformdur.",
   description:
-    "Kurumsal eğitim operasyonlarını, etkinlik iletişimini ve içerik yayını süreçlerini aynı çatı altında daha görünür bir yapıya taşıyın.",
+    "Netaş'ın onlarca yıllık teknoloji ve dönüşüm birikimi üzerine inşa edilen akademi, her kurumun kendi ihtiyacına göre şekillenen bir öğrenme ekosistemi sunar. Amacımız, bilgiyi yalnızca aktarmak değil, kurumların yetenek dönüşümünde somut bir fark yaratmaktır.",
   items: [
     {
-      title: "Eğitim Planlama",
+      title: "Uygulanabilir Yöntemler",
       description:
-        "Takvim, eğitmen ve içerik yönetimini daha düzenli bir operasyon modeline dönüştürün.",
+        "Teorik çerçeveler değil, sahada işe yarayan araçlar ve metodolojiler. Her eğitim, katılımcının kendi iş bağlamına doğrudan taşıyabileceği kazanımlarla yapılandırılır.",
       imageUrl:
         "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
       href: "/egitimler",
-      ctaLabel: "Eğitimlere Git",
+      ctaLabel: "Eğitimleri Keşfet",
     },
     {
-      title: "Etkinlik Kurgusu",
+      title: "Takımlarda Dönüşüm",
       description:
-        "Lansman, webinar ve kayıt süreçlerini daha güçlü bir görsel sunumla öne çıkarın.",
+        "Bireysel öğrenmenin ötesinde, ekiplerin ortak dil ve yetkinlik kazanması hedeflenir. Eğitim programları, takım dinamiklerini güçlendiren ve iş birliğini artıran bir yapıda tasarlanır.",
       imageUrl:
         "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80",
       href: "/etkinlikler",
-      ctaLabel: "Etkinlikleri Aç",
+      ctaLabel: "Etkinlikleri Keşfet",
     },
   ],
 };
@@ -149,22 +149,22 @@ export const iletisimVisualSection = {
 };
 
 export const hakkimizdaVisualSection = {
-  eyebrow: "Kurum Kültürü",
-  title: "Marka anlatısını görsel bir güven katmanı ile güçlendirin.",
+  eyebrow: "Öğrenme Modeli",
+  title: "Gerçek iş problemleri üzerinden öğrenme, saha tecrübesi ile birleşen bir yaklaşım.",
   description:
-    "Akademinin yaklaşımını, eğitmen kalitesini ve öğrenme atmosferini daha güçlü bir sahne düzeni içinde sunun.",
+    "Netaş Akademi'nin eğitim modeli, katılımcıları senaryolar, vakalar ve etkileşimli çalışmalarla buluşturur. Öğrenme süreci, teorik bilginin ötesine geçerek gerçek dünya problemlerine çözüm üretme becerisini merkeze alır.",
   items: [
     {
-      title: "Deneyim Odaklı Eğitim",
+      title: "Senaryo ve Vaka Temelli Öğrenme",
       description:
-        "Teoriyi uygulama ile birleştiren yapıyı gerçek ekip ve öğrenme sahneleriyle görünür kılın.",
+        "Her eğitim, katılımcıların kendi iş ortamlarında karşılaştıkları sorunlara benzer vakalar ve gerçek senaryolar etrafında kurgulanır. Çözüm üretme, analiz ve karar verme becerileri uygulamalı olarak geliştirilir.",
       imageUrl:
         "https://images.unsplash.com/photo-1523240798132-8757216d3f5a?auto=format&fit=crop&w=1200&q=80",
     },
     {
-      title: "Uzman Eğitmen Ağı",
+      title: "Sahada Kanıtlanmış Eğitmenler",
       description:
-        "Sektörel derinliği yüksek eğitmen kadrosunu daha çağdaş ve daha kurumsal bir vitrinle destekleyin.",
+        "Eğitmenlerimiz yalnızca anlatıcı değil, saha deneyimi olan ve dönüşüm projelerinde yer almış uzmanlardır. Katılımcılara rehberlik ederken kendi tecrübelerinden somut örnekler sunar, kuramla pratik arasındaki köprüyü birlikte kurar.",
       imageUrl:
         "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1200&q=80",
       href: "/egitmenler/demo-ayse-yilmaz",
