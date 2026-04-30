@@ -61,6 +61,9 @@ jobs:
             export GIT_COMMIT_SHA=${{ env.DEPLOY_SHA }}
             printf "APP_IMAGE=%s\nSTRAPI_PUBLIC_URL=%s\nGIT_COMMIT_SHA=%s\n" "$APP_IMAGE" "$STRAPI_PUBLIC_URL" "$GIT_COMMIT_SHA" > .env
             cp docker-compose.deploy.yml docker-compose.yml
+            docker container prune -f
+            docker image prune -af
+
             for attempt in 1 2 3 4 5; do
               echo "GHCR connectivity probe attempt ${attempt}/5"
               status_code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --location --max-time 15 https://ghcr.io/v2/ || true)"
@@ -108,7 +111,7 @@ jobs:
             docker compose down
             docker compose up -d --remove-orphans --wait --wait-timeout 180
             docker compose ps
-            docker image prune -f
+            docker image prune -af
 
       - name: Collect remote logs on failure
         if: failure()
