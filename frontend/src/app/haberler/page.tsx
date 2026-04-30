@@ -3,6 +3,7 @@ import { ContentPageShell, NewsList } from "@/components/content";
 export default function HaberlerPage() {
   return (
     <ContentPageShell
+      testId="page.haberler"
       title="Haberler"
       description={
         <p>

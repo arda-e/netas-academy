@@ -3,6 +3,7 @@ import { Filter } from "lucide-react";
 import { SortAscending, SortDescending } from "@phosphor-icons/react/dist/ssr";
 
 import { ContentPageShell, EventList } from "@/components/content";
+import { join } from "@/lib/testids";
 import {
   getEvents,
   normalizeEventType,
@@ -102,6 +103,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
           </p>
         </>
       }
+      testId="page.etkinlikler"
     >
       <div className="-mt-6 mb-6 flex flex-col gap-3 sm:-mt-8 sm:mb-8 sm:gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
@@ -113,6 +115,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
               <Link
                 key={filter.value}
                 aria-current={active ? "page" : undefined}
+                data-testid={join("page", "etkinlikler", "filter", "type", filter.value)}
                 href={buildEventHref({
                   type: active ? null : filter.value,
                   sort: selectedSort,
@@ -133,6 +136,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
           aria-label={
             selectedSort === "asc" ? "Sırala: önce yeni" : "Sırala: önce eski"
           }
+          data-testid="page.etkinlikler.sort.toggle"
           href={buildEventHref({
             type: selectedType,
             sort: getToggledSortOrder(selectedSort),

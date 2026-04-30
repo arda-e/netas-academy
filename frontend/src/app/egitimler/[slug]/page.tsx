@@ -12,6 +12,7 @@ import {
   normalizeCourseLevel,
   getCourseLevelLabel,
 } from "@/lib/content-taxonomy";
+import { join } from "@/lib/testids";
 
 function parseOutcomeBullets(value?: string | null) {
   if (!value) {
@@ -74,6 +75,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
   return (
     <ContentPageShell
+      testId="page.course-detail"
       breadcrumbItems={[
         { label: "Eğitim Kataloğu", href: "/egitimler" },
         { label: course.title },
@@ -107,6 +109,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                   <Link
                     className="font-medium text-white underline decoration-white/28 decoration-2 underline-offset-4 transition-colors hover:text-white/90"
                     href={`/egitmenler/${course.teacher.slug}`}
+                    data-testid={join("page", "course-detail", "teacher-link", course.teacher.slug)}
                   >
                     {course.teacher.fullName}
                   </Link>
@@ -120,6 +123,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
       descriptionTrailing={
         <Link
           href={buildIntentLeadUrl("corporate_training_request", { topic: course.title })}
+          data-testid="page.course-detail.cta.corporate-request"
           className="inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-white/58 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-colors hover:bg-white/14 hover:text-white/72"
         >
           <span className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/48">
@@ -137,7 +141,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
       }
     >
       <div className="max-w-3xl space-y-6 sm:space-y-8">
-        <section>
+        <section data-testid="page.course-detail.section.description">
           <h2 className="text-lg font-semibold text-foreground">Eğitim Açıklaması</h2>
           {course.description ? (
             <div className="mt-2">
@@ -154,7 +158,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         </section>
 
         {course.businessValue ? (
-          <section>
+          <section data-testid="page.course-detail.section.business-value">
             <h2 className="text-lg font-semibold text-foreground">Kurumsal Değer</h2>
             <p className="mt-2 text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
               {course.businessValue}
@@ -167,7 +171,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         )}
 
         {outcomeBullets.length > 0 ? (
-          <section>
+          <section data-testid="page.course-detail.section.outcomes">
             <h2 className="text-lg font-semibold text-foreground">Beklenen Çıktılar</h2>
             <ul className="mt-2 list-disc space-y-2 pl-5 text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
               {outcomeBullets.map((bullet) => (
@@ -178,7 +182,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         ) : null}
 
         {course.scopeSummary ? (
-          <section>
+          <section data-testid="page.course-detail.section.scope">
             <h2 className="text-lg font-semibold text-foreground">Kapsam ve İçerik</h2>
             <p className="mt-2 text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
               {course.scopeSummary}
@@ -192,7 +196,11 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
             <ul className="mt-2 space-y-2">
               {course.events.map((event) => (
                 <li key={event.documentId}>
-                  <Link className="text-primary hover:underline" href={`/etkinlikler/${event.slug}`}>
+                  <Link
+                    className="text-primary hover:underline"
+                    href={`/etkinlikler/${event.slug}`}
+                    data-testid={join("page", "course-detail", "related-event", event.slug)}
+                  >
                     {event.title}
                   </Link>
                   {event.startsAt ? (

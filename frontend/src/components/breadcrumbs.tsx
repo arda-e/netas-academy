@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
+import { join } from "@/lib/testids";
 
 export type BreadcrumbItem = {
   label: string;
@@ -13,6 +14,11 @@ type SiteBreadcrumbsProps = {
   className?: string;
 };
 
+function getRouteKey(href: string): string {
+  const key = href.replace(/^\//, "").replace(/\//g, "-");
+  return key || "ana-sayfa";
+}
+
 export function SiteBreadcrumbs({
   items = [],
   variant = "light",
@@ -24,6 +30,7 @@ export function SiteBreadcrumbs({
   return (
     <nav
       aria-label="Sayfa yolu"
+      data-testid="breadcrumbs.nav"
       className={cn(
         "text-xs font-semibold uppercase tracking-[0.22em]",
         variant === "light" ? "text-white/58" : "text-foreground/52",
@@ -44,6 +51,7 @@ export function SiteBreadcrumbs({
               {item.href && !isCurrent ? (
                 <Link
                   href={item.href}
+                  data-testid={join("breadcrumbs", "link", getRouteKey(item.href))}
                   className={cn(
                     "transition-colors",
                     variant === "light"
@@ -56,6 +64,7 @@ export function SiteBreadcrumbs({
               ) : (
                 <span
                   aria-current={isCurrent ? "page" : undefined}
+                  data-testid="breadcrumbs.current"
                   className={cn(
                     "truncate",
                     isCurrent

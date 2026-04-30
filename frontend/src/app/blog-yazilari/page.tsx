@@ -32,12 +32,14 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
           içgörülerle hazırlanan yazı arşivini keşfedin.
         </p>
       }
+      testId="page.blog"
     >
       <div className="space-y-4 sm:space-y-8">
         <SearchField initialValue={search} searchOnly />
         <BlogList
           items={mappedPosts}
           emptyMessage="Aramanızla eşleşen blog yazısı bulunamadı."
+          testId="page.blog"
         />
       </div>
     </ContentPageShell>

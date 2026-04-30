@@ -6,6 +6,7 @@ import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import { cn } from "@/lib/utils";
+import { join } from "@/lib/testids";
 
 export type BlogListItem = {
   id: number | string;
@@ -21,6 +22,7 @@ export type BlogListItem = {
 type BlogListProps = {
   items: BlogListItem[];
   emptyMessage?: string;
+  testId?: string;
 };
 
 type BlogDetailProps = {
@@ -45,11 +47,14 @@ const formatBlogDate = (value: string) =>
 export function BlogList({
   items,
   emptyMessage = "Gösterilecek blog verisi şu an kullanılabilir değil.",
+  testId,
 }: BlogListProps) {
+  const resolvedTestId = testId ?? "blog-yazilari.list";
   return (
     <ContentGrid
       itemsCount={items.length}
       emptyMessage={emptyMessage}
+      testId={resolvedTestId}
       columnsClassName={responsiveLayoutClasses.blogListGrid}
     >
       {items.map((post) => {
@@ -61,6 +66,7 @@ export function BlogList({
             href={`/blog-yazilari/${post.slug}`}
             title={post.title}
             summary={post.excerpt ?? "Bu yazı için özet yakında eklenecek."}
+            testId={join("blog-yazilari", "card", post.slug)}
             className="bg-white"
             imageUrl={post.coverImageUrl ?? null}
             imageAlt={post.coverImageAlt ?? undefined}
@@ -91,7 +97,7 @@ export function BlogDetail({
   sourceNotes,
 }: BlogDetailProps) {
   return (
-    <main className="page-shell min-h-[calc(100vh-81px)]">
+    <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="blog-yazilari.detail">
       <section
         className={cn(
           "relative isolate overflow-hidden border-b border-white/10",
@@ -102,7 +108,7 @@ export function BlogDetail({
       >
         {coverImageUrl ? (
           <>
-            <div className="absolute inset-0">
+            <div className="absolute inset-0" data-testid="blog-yazilari.detail.cover-image">
               <Image
                 src={coverImageUrl}
                 alt={coverImageAlt ?? title}
@@ -131,16 +137,16 @@ export function BlogDetail({
             <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/82">
               Blog
             </p>
-            <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl" data-testid="blog-yazilari.detail.title">
               {title}
             </h1>
             {excerpt ? (
-              <p className="max-w-2xl text-[15px] leading-7 text-white/76 sm:text-lg sm:leading-8">
+              <p className="max-w-2xl text-[15px] leading-7 text-white/76 sm:text-lg sm:leading-8" data-testid="blog-yazilari.detail.excerpt">
                 {excerpt}
               </p>
             ) : null}
             {meta ? (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-sm leading-6 text-white/76 sm:text-base">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-sm leading-6 text-white/76 sm:text-base" data-testid="blog-yazilari.detail.meta">
                 {meta}
               </div>
             ) : null}
@@ -149,7 +155,7 @@ export function BlogDetail({
       </section>
 
       <section className="page-section pt-8 sm:pt-10 lg:pt-12">
-        <article className="max-w-4xl">
+        <article className="max-w-4xl" data-testid="blog-yazilari.detail.body">
           <div className="max-w-3xl">
             <div className="prose prose-invert max-w-none whitespace-pre-wrap text-base leading-7 prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary prose-li:text-foreground/80 sm:leading-8">
               {children}
@@ -157,7 +163,7 @@ export function BlogDetail({
           </div>
 
           {sourceNotes ? (
-            <div className="mt-8 border-t border-white/10 pt-6 sm:mt-10 sm:pt-8">
+            <div className="mt-8 border-t border-white/10 pt-6 sm:mt-10 sm:pt-8" data-testid="blog-yazilari.detail.source-notes">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/46">
                 Dayanak / Kaynak
               </p>
@@ -167,7 +173,7 @@ export function BlogDetail({
             </div>
           ) : null}
 
-          {afterContent}
+          <div data-testid="blog-yazilari.detail.after-content">{afterContent}</div>
         </article>
       </section>
     </main>

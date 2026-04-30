@@ -32,6 +32,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
             placeholder="Örn. Veri Bilimi, Liderlik, Siber Güvenlik"
             className={fieldClassName}
             {...register("interestTopic")}
+            data-testid="contact-lead.field.interest-topic"
           />
           {errors.interestTopic && (
             <p className="text-sm text-destructive">{errors.interestTopic}</p>
@@ -50,6 +51,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
             placeholder="Örn. Python, Makine Öğrenmesi, Derin Öğrenme"
             className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
             {...register("expertiseAreas")}
+            data-testid="contact-lead.field.expertise-areas"
           />
           {errors.expertiseAreas && (
             <p className="text-sm text-destructive">{errors.expertiseAreas}</p>
@@ -69,6 +71,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
               placeholder="Örn. 10-50, 50-100, 100+"
               className={fieldClassName}
               {...register("companySize")}
+              data-testid="contact-lead.field.company-size"
             />
             {errors.companySize && (
               <p className="text-sm text-destructive">{errors.companySize}</p>
@@ -83,6 +86,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
               placeholder="Ortaklık motivasyonunuzu ve beklentilerinizi kısaca paylaşın."
               className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
               {...register("partnershipDetails")}
+              data-testid="contact-lead.field.partnership-details"
             />
           </div>
         </>

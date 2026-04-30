@@ -20,6 +20,9 @@ type TeacherCarouselProps = {
   items: TeacherCarouselItem[];
   className?: string;
   emptyMessage?: string;
+  getCardTestId?: (slug: string) => string;
+  prevButtonTestId?: string;
+  nextButtonTestId?: string;
 };
 
 function getInitials(name: string) {
@@ -35,6 +38,9 @@ export function TeacherCarousel({
   items,
   className,
   emptyMessage = "Gosterilecek egitmen bulunamadi.",
+  getCardTestId,
+  prevButtonTestId,
+  nextButtonTestId,
 }: TeacherCarouselProps) {
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
@@ -68,6 +74,7 @@ export function TeacherCarousel({
           size="icon-sm"
           variant="outline"
           aria-label="Onceki egitmenler"
+          data-testid={prevButtonTestId}
           onClick={() => scrollByPage("left")}
         >
           <CaretLeft className="size-4" weight="bold" />
@@ -77,6 +84,7 @@ export function TeacherCarousel({
           size="icon-sm"
           variant="outline"
           aria-label="Sonraki egitmenler"
+          data-testid={nextButtonTestId}
           onClick={() => scrollByPage("right")}
         >
           <CaretRight className="size-4" weight="bold" />
@@ -92,6 +100,7 @@ export function TeacherCarousel({
             key={teacher.id}
             href={`/egitmenler/${teacher.slug}`}
             className="panel-surface group/card-link min-w-[220px] snap-start cursor-pointer rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[250px]"
+            data-testid={getCardTestId?.(teacher.slug)}
           >
             <Avatar className="size-24 ring-1 ring-border/60">
               <AvatarImage

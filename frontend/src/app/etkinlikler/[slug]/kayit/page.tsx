@@ -58,7 +58,7 @@ function EventInformationPanel({
         </p>
       </div>
 
-      <Button asChild variant="outline" className="mt-6 rounded-sm">
+      <Button asChild variant="outline" className="mt-6 rounded-sm" data-testid="page.event-registration.back-to-detail">
         <Link href={`/etkinlikler/${slug}`}>Etkinlik Detayina Don</Link>
       </Button>
     </aside>
@@ -98,7 +98,7 @@ export default async function EventRegistrationPage({
   const registrationOpen = isEventRegistrationOpen(event);
 
   return (
-    <main className="page-shell min-h-[calc(100vh-81px)]">
+    <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.event-registration">
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
         <div className="relative mx-auto flex min-h-[400px] w-full max-w-7xl items-end px-6 py-12 md:px-10 lg:px-12">
           <div className="absolute left-6 right-6 top-12 md:left-10 md:right-10 lg:left-12 lg:right-12">
@@ -130,13 +130,15 @@ export default async function EventRegistrationPage({
         <div className="grid gap-6 xl:grid-cols-[minmax(0,0.72fr)_minmax(300px,0.42fr)]">
           <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
             {registrationOpen ? (
-              <EventRegistrationForm
-                eventDocumentId={event.documentId}
-                eventTitle={event.title}
-                eventType={event.eventType}
-              />
+              <div data-testid="page.event-registration.form">
+                <EventRegistrationForm
+                  eventDocumentId={event.documentId}
+                  eventTitle={event.title}
+                  eventType={event.eventType}
+                />
+              </div>
             ) : (
-              <div className="space-y-5">
+              <div className="space-y-5" data-testid="page.event-registration.closed-state">
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary/76">
                   Kayitlar Kapandi
                 </p>

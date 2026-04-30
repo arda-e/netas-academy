@@ -10,6 +10,7 @@ import {
   getTeacherBySlug,
 } from "@/lib/strapi";
 import { getInitials } from "@/lib/utils";
+import { join } from "@/lib/testids";
 
 type TeacherDetailPageProps = {
   params: Promise<{
@@ -50,12 +51,16 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
 
   return (
     <ContentDetailShell
+      testId="page.teacher-detail"
       breadcrumbItems={[
         { label: "Eğitmenlerimiz", href: "/egitmenler" },
         { label: teacher.fullName },
       ]}
       leadMedia={
-        <div className="relative h-24 w-24 overflow-hidden rounded-full border border-white/8 bg-card/50 shadow-[0_24px_64px_rgba(0,0,0,0.26)] sm:h-[112px] sm:w-[112px] md:h-[162px] md:w-[162px]">
+        <div
+          data-testid="page.teacher-detail.photo"
+          className="relative h-24 w-24 overflow-hidden rounded-full border border-white/8 bg-card/50 shadow-[0_24px_64px_rgba(0,0,0,0.26)] sm:h-[112px] sm:w-[112px] md:h-[162px] md:w-[162px]"
+        >
           <div className="relative h-full w-full">
             {photoUrl ? (
               <Image
@@ -88,6 +93,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
             <a
               className="break-all text-[15px] leading-7 text-primary hover:underline sm:text-base sm:leading-8"
               href={`mailto:${teacher.email}`}
+              data-testid="page.teacher-detail.email"
             >
               {teacher.email}
             </a>
@@ -95,7 +101,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
         ) : null}
 
         {teacher.expertiseAreas && teacher.expertiseAreas.length > 0 ? (
-          <section className="space-y-3 sm:space-y-4">
+          <section data-testid="page.teacher-detail.section.expertise-areas" className="space-y-3 sm:space-y-4">
             <h2 className="text-lg font-semibold text-foreground sm:text-xl">
               Uzmanlık Alanları
             </h2>
@@ -113,7 +119,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
         ) : null}
 
         {teacher.targetTeams ? (
-          <section className="space-y-3 sm:space-y-4">
+          <section data-testid="page.teacher-detail.section.target-teams" className="space-y-3 sm:space-y-4">
             <h2 className="text-lg font-semibold text-foreground sm:text-xl">
               Hedef Kitle / Ekipler
             </h2>
@@ -124,7 +130,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
         ) : null}
 
         {teacher.teachingApproach ? (
-          <section className="space-y-3 sm:space-y-4">
+          <section data-testid="page.teacher-detail.section.teaching-approach" className="space-y-3 sm:space-y-4">
             <h2 className="text-lg font-semibold text-foreground sm:text-xl">
               Eğitim Yaklaşımı
             </h2>
@@ -140,7 +146,11 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
             <ul className="grid gap-2 sm:grid-cols-2 sm:gap-3">
               {teacher.courses.map((course) => (
                 <li key={course.documentId}>
-                  <Link className="text-primary hover:underline" href={`/egitimler/${course.slug}`}>
+                  <Link
+                    className="text-primary hover:underline"
+                    href={`/egitimler/${course.slug}`}
+                    data-testid={join("page", "teacher-detail", "course", course.slug)}
+                  >
                     {course.title}
                   </Link>
                 </li>
@@ -150,7 +160,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
         ) : null}
 
         {teacher.bio ? (
-          <section className="space-y-3 sm:space-y-4">
+          <section data-testid="page.teacher-detail.section.bio" className="space-y-3 sm:space-y-4">
             <h2 className="text-lg font-semibold text-foreground sm:text-xl">
               Hakkında
             </h2>

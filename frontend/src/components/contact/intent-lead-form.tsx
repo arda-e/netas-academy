@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { IntentFieldSections } from "./intent-field-sections";
+import { join } from "@/lib/testids";
 
 const fieldClassName =
   "h-11 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-12 md:px-5 md:text-base";
@@ -207,7 +208,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   if (success) {
     const intent = LEAD_INTENTS[leadType];
     return (
-      <div className="space-y-6">
+      <div className="space-y-6" data-testid="contact-lead.success">
         <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100">
           {intent.successMessage}
         </div>
@@ -216,6 +217,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             href={intent.successCtaHref}
             className="inline-flex items-center gap-2 text-sm text-primary transition-colors hover:text-primary/80"
             onClick={() => emitLeadCatalogClick(leadType)}
+            data-testid="contact-lead.success-cta"
           >
             {intent.successCtaLabel}
           </Link>
@@ -228,6 +230,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             setSuccess(false);
           }}
           className="h-12 rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg"
+          data-testid="contact-lead.new-submission"
         >
           Yeni Başvuru Yap
         </Button>
@@ -236,15 +239,16 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   }
 
   return (
-    <form className="space-y-6 md:space-y-8" onSubmit={handleFormSubmit}>
+    <form className="space-y-6 md:space-y-8" onSubmit={handleFormSubmit} data-testid="contact-lead.form">
       {/* Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-white/8 pb-3">
+      <div className="flex flex-wrap gap-2 border-b border-white/8 pb-3" data-testid="contact-lead.tabs">
         {LEAD_TYPES.map((type) => {
           const isActive = type === leadType;
           return (
             <button
               key={type}
               type="button"
+              data-testid={join("contact-lead", "tab", type)}
               onClick={() => {
                 if (type !== leadType) {
                   emitLeadTabChange(leadType, type);
@@ -267,7 +271,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       </div>
 
       {errorMessage && (
-        <div className="rounded-sm border border-destructive/40 bg-destructive/10 px-5 py-4 text-base text-destructive">
+        <div className="rounded-sm border border-destructive/40 bg-destructive/10 px-5 py-4 text-base text-destructive" data-testid="contact-lead.error">
           {errorMessage}
         </div>
       )}
@@ -283,9 +287,10 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             className={fieldClassName}
             {...register("fullName")}
             onFocus={handleFieldInteraction}
+            data-testid="contact-lead.field.full-name"
           />
           {fieldErrors.fullName ? (
-            <p className="text-sm text-destructive">{fieldErrors.fullName}</p>
+            <p className="text-sm text-destructive" data-testid={join("contact-lead", "error", "fullName")}>{fieldErrors.fullName}</p>
           ) : null}
         </div>
 
@@ -299,8 +304,9 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             className={fieldClassName}
             {...register("email")}
             onFocus={handleFieldInteraction}
+            data-testid="contact-lead.field.email"
           />
-          {fieldErrors.email ? <p className="text-sm text-destructive">{fieldErrors.email}</p> : null}
+          {fieldErrors.email ? <p className="text-sm text-destructive" data-testid={join("contact-lead", "error", "email")}>{fieldErrors.email}</p> : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -313,8 +319,9 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             className={fieldClassName}
             {...register("phone")}
             onFocus={handleFieldInteraction}
+            data-testid="contact-lead.field.phone"
           />
-          {fieldErrors.phone ? <p className="text-sm text-destructive">{fieldErrors.phone}</p> : null}
+          {fieldErrors.phone ? <p className="text-sm text-destructive" data-testid={join("contact-lead", "error", "phone")}>{fieldErrors.phone}</p> : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -326,6 +333,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             className={fieldClassName}
             {...register("company")}
             onFocus={handleFieldInteraction}
+            data-testid="contact-lead.field.company"
           />
         </div>
       </div>
@@ -347,8 +355,9 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           className="min-h-[10rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[12rem] md:px-5 md:text-base"
           {...register("message")}
           onFocus={handleFieldInteraction}
+          data-testid="contact-lead.field.message"
         />
-        {fieldErrors.message ? <p className="text-sm text-destructive">{fieldErrors.message}</p> : null}
+        {fieldErrors.message ? <p className="text-sm text-destructive" data-testid={join("contact-lead", "error", "message")}>{fieldErrors.message}</p> : null}
       </div>
 
       {/* KVKK Consent Checkbox + Notice */}
@@ -360,10 +369,11 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             className="mt-1 h-4 w-4 rounded border-border/80 accent-primary"
             {...register("kvkkConsent")}
             onFocus={handleFieldInteraction}
+            data-testid="contact-lead.field.kvkk-consent"
           />
           <label htmlFor="kvkkConsent" className="cursor-pointer text-sm leading-6 text-muted-foreground">
             Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır.{" "}
-            <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80">
+            <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80" data-testid="contact-lead.link.kvkk-disclosure">
               Aydınlatma Metni
             </Link>
             &apos;ni okudum, onaylıyorum.*
@@ -385,7 +395,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
         <div className="flex-1" />
 
-        <Button type="submit" disabled={isPending} className="h-12 w-full rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg">
+        <Button type="submit" disabled={isPending} className="h-12 w-full rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg" data-testid="contact-lead.submit">
           {isPending ? "Gönderiliyor..." : "Gönder"}
         </Button>
       </div>

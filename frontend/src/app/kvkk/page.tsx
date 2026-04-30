@@ -47,7 +47,7 @@ export default function KvkkPage() {
   const latestCommitId = getLatestCommitId();
 
   return (
-    <main className="page-shell min-h-[calc(100vh-81px)]">
+    <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.kvkk">
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
         <div className="page-container relative flex min-h-[260px] w-full items-end py-8 sm:min-h-[320px] sm:py-12">
           <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
@@ -270,12 +270,13 @@ export default function KvkkPage() {
               target="_blank"
               rel="noreferrer"
               className="mt-5 inline-flex w-full items-center justify-center rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:mt-6 sm:w-auto sm:self-start"
+              data-testid="page.kvkk.external-link.netas"
             >
               Netaş Web Sitesine Git
             </a>
             <p className="mt-5 text-sm text-foreground/56 sm:mt-6">
               Güncel commit ID:{" "}
-              <span className="font-mono text-foreground/72">
+              <span className="font-mono text-foreground/72" data-testid="page.kvkk.commit-id">
                 {latestCommitId ?? "Bilinmiyor"}
               </span>
             </p>

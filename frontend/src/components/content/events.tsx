@@ -4,6 +4,7 @@ import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
+import { join } from "@/lib/testids";
 
 type EventListItem = {
   topicArea?: string | null;
@@ -63,10 +64,12 @@ export function EventList({
       itemsCount={items.length}
       emptyMessage={emptyMessage}
       columnsClassName={responsiveLayoutClasses.eventListGrid}
+      testId="etkinlikler.list"
     >
       {items.map((event) => (
         <ContentCardShell
           key={event.id}
+          testId={join("etkinlikler", "card", event.slug)}
           href={`/etkinlikler/${event.slug}`}
           title={event.title}
           kicker={formatEventType(event.eventType)}
@@ -99,6 +102,7 @@ export function EventDetail({
 }: EventDetailProps) {
   return (
     <ContentDetailShell
+      testId="etkinlikler.detail"
       eyebrow={eyebrow}
       title={title}
       summary={summary ?? undefined}

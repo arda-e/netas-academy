@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { join } from "@/lib/testids";
 
 const navigationItems = [
   { href: "/hakkimizda", label: "Hakkımızda" },
@@ -33,6 +34,7 @@ export function SiteHeader() {
           href="/"
           className="flex items-center py-4"
           aria-label="Netas Academy ana sayfası"
+          data-testid="site-header.logo-link"
         >
           <Image
             src="/netas-academy.svg"
@@ -49,20 +51,23 @@ export function SiteHeader() {
           className="my-3 inline-flex items-center rounded-sm border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted/70 md:hidden"
           aria-expanded={isMobileMenuOpen}
           aria-controls="site-mobile-navigation"
+          data-testid="site-header.mobile-menu.toggle"
           onClick={() => setIsMobileMenuOpen((open) => !open)}
         >
           Menü
         </button>
 
-        <nav className="hidden flex-wrap items-stretch justify-end gap-0 md:flex">
+        <nav className="hidden flex-wrap items-stretch justify-end gap-0 md:flex" data-testid="site-header.desktop-nav">
           {navigationItems.map((item) => {
             const isActive = isNavigationItemActive(pathname, item.href);
+            const routeKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "ana-sayfa";
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
+                data-testid={join("site-header", "desktop-nav", routeKey)}
                 className={cn(
                   "flex items-center border-x px-4 text-sm font-medium transition-all",
                   isActive
@@ -86,15 +91,18 @@ export function SiteHeader() {
         <nav
           id="site-mobile-navigation"
           className="panel-surface flex flex-col gap-1 p-2"
+          data-testid="site-header.mobile-nav"
         >
           {navigationItems.map((item) => {
             const isActive = isNavigationItemActive(pathname, item.href);
+            const routeKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "ana-sayfa";
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
+                data-testid={join("site-header", "mobile-nav", routeKey)}
                 className={cn(
                   "w-full rounded-sm border px-4 py-3 text-left text-base font-medium transition-all",
                   isActive

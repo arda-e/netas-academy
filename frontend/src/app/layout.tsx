@@ -41,7 +41,7 @@ export default function RootLayout({
       <body className="min-h-full overflow-x-hidden bg-slate-50 font-sans text-foreground">
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
-          <div className="flex-1">{children}</div>
+          <div className="flex-1" data-testid="root-layout.content">{children}</div>
           <SiteFooter />
         </div>
       </body>

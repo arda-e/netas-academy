@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { join } from "@/lib/testids";
+
 const sitePlanItems = [
   { href: "/", label: "Ana Sayfa" },
   { href: "/hakkimizda", label: "Hakkımızda" },
@@ -25,29 +27,35 @@ export function SiteFooter() {
           </p>
         </div>
 
-        <nav aria-label="Site planı" className="space-y-2">
+        <nav aria-label="Site planı" className="space-y-2" data-testid="site-footer.site-plan">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/72">
             Site Planı
           </p>
           <div className="flex flex-col gap-1">
-            {sitePlanItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-sm border border-transparent px-3 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {sitePlanItems.map((item) => {
+              const linkKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "ana-sayfa";
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  data-testid={join("site-footer", "site-plan", linkKey)}
+                  className="rounded-sm border border-transparent px-3 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
         </nav>
 
         <nav
           aria-label="Yasal ve kurumsal bağlantılar"
           className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end"
+          data-testid="site-footer.legal"
         >
           <Link
             href="/kvkk"
+            data-testid="site-footer.legal.kvkk"
             className="rounded-sm border border-transparent px-3 py-2 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
           >
             KVKK
@@ -56,6 +64,7 @@ export function SiteFooter() {
             href="https://netas.com.tr/"
             target="_blank"
             rel="noreferrer"
+            data-testid="site-footer.legal.netas-website"
             className="rounded-sm border border-transparent px-3 py-2 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
           >
             Netaş Web Sitesi

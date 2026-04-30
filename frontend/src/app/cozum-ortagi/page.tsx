@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { ContentPageShell } from "@/components/content";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
+import { join, normalizeKey } from "@/lib/testids";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,7 @@ const collaborationAreas = [
 export default async function CozumOrtagiPage() {
   return (
     <ContentPageShell
+      testId="page.cozum-ortagi"
       eyebrow="Çözüm Ortaklığı"
       title="Eğitim ve danışmanlık alanında birlikte yeni değer üretelim."
       description={
@@ -66,6 +68,7 @@ export default async function CozumOrtagiPage() {
               <article
                 key={area.title}
                 className="panel-surface rounded-sm p-5 sm:p-8"
+                data-testid={join('page', 'cozum-ortagi', 'area-card', normalizeKey(area.title))}
               >
                 <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
                   {area.title}
@@ -90,6 +93,7 @@ export default async function CozumOrtagiPage() {
           <Link
             href={buildIntentLeadUrl("solution_partner_application")}
             className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
+            data-testid="page.cozum-ortagi.cta.apply"
           >
             Çözüm Ortağı Başvurusu
           </Link>

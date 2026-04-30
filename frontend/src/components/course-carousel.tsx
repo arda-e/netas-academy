@@ -27,12 +27,18 @@ type CourseCarouselProps = {
   items: CourseCarouselItem[];
   className?: string;
   emptyMessage?: string;
+  getCardTestId?: (slug: string) => string;
+  prevButtonTestId?: string;
+  nextButtonTestId?: string;
 };
 
 export function CourseCarousel({
   items,
   className,
   emptyMessage = "Gosterilecek egitim bulunamadi.",
+  getCardTestId,
+  prevButtonTestId,
+  nextButtonTestId,
 }: CourseCarouselProps) {
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
@@ -66,6 +72,7 @@ export function CourseCarousel({
           size="icon-sm"
           variant="outline"
           aria-label="Onceki egitimler"
+          data-testid={prevButtonTestId}
           onClick={() => scrollByPage("left")}
         >
           <CaretLeft className="size-4" weight="bold" />
@@ -75,6 +82,7 @@ export function CourseCarousel({
           size="icon-sm"
           variant="outline"
           aria-label="Sonraki egitimler"
+          data-testid={nextButtonTestId}
           onClick={() => scrollByPage("right")}
         >
           <CaretRight className="size-4" weight="bold" />
@@ -94,6 +102,7 @@ export function CourseCarousel({
               key={course.documentId}
               href={`/egitimler/${course.slug}`}
               className="panel-surface group/card-link flex min-w-[260px] snap-start cursor-pointer flex-col rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[300px]"
+              data-testid={getCardTestId?.(course.slug)}
             >
               <div className="flex flex-wrap gap-1.5">
                 {topicSlug ? (

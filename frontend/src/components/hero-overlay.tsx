@@ -20,6 +20,8 @@ type HeroOverlayProps = {
   showBreadcrumb?: boolean;
   primaryCtaMeasurementId?: string;
   secondaryCtaMeasurementId?: string;
+  primaryCtaTestId?: string;
+  secondaryCtaTestId?: string;
 };
 
 export function HeroOverlay({
@@ -32,6 +34,8 @@ export function HeroOverlay({
   showBreadcrumb = true,
   primaryCtaMeasurementId,
   secondaryCtaMeasurementId,
+  primaryCtaTestId,
+  secondaryCtaTestId,
 }: HeroOverlayProps) {
   return (
     <section className="relative isolate overflow-hidden bg-[linear-gradient(120deg,#197f84_0%,#238d91_48%,#2f999d_100%)]">
@@ -72,7 +76,7 @@ export function HeroOverlay({
                   size="lg"
                   className="w-full rounded-full border-0 bg-[#ffb933] px-7 text-base font-semibold text-slate-950 shadow-[0_18px_36px_rgba(255,185,51,0.34)] hover:bg-[#ffca59] sm:w-auto"
                 >
-                  <Link href={primaryCta.href} data-measurement-id={primaryCtaMeasurementId}>{primaryCta.label}</Link>
+                  <Link href={primaryCta.href} data-measurement-id={primaryCtaMeasurementId} data-testid={primaryCtaTestId}>{primaryCta.label}</Link>
                 </Button>
               ) : null}
 
@@ -83,7 +87,7 @@ export function HeroOverlay({
                   size="lg"
                   className="w-full rounded-full border-white/36 bg-white/10 px-7 text-base text-white backdrop-blur-sm hover:bg-white/18 hover:text-white sm:w-auto"
                 >
-                  <Link href={secondaryCta.href} data-measurement-id={secondaryCtaMeasurementId}>{secondaryCta.label}</Link>
+                  <Link href={secondaryCta.href} data-measurement-id={secondaryCtaMeasurementId} data-testid={secondaryCtaTestId}>{secondaryCta.label}</Link>
                 </Button>
               ) : null}
             </div>

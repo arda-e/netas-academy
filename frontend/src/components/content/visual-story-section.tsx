@@ -15,6 +15,7 @@ type VisualStorySectionProps = {
   title: string;
   description: string;
   items: VisualStoryItem[];
+  itemTestIdPrefix?: string;
 };
 
 export function VisualStorySection({
@@ -22,6 +23,7 @@ export function VisualStorySection({
   title,
   description,
   items,
+  itemTestIdPrefix,
 }: VisualStorySectionProps) {
   return (
     <section className="mt-14 space-y-6 sm:mt-16 sm:space-y-8">
@@ -38,10 +40,11 @@ export function VisualStorySection({
       </div>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <article
             key={item.title}
             className="panel-surface rounded-sm overflow-hidden"
+            data-testid={itemTestIdPrefix ? `${itemTestIdPrefix}.${index}` : undefined}
           >
             <div
               className="h-44 w-full border-b border-white/8 bg-cover bg-center sm:h-56"

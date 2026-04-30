@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
+import { join } from "@/lib/testids";
 
 export type NewsListItem = {
   id: number | string;
@@ -39,6 +40,7 @@ function NewsCard({ item }: { item: NewsListItem }) {
       title={item.title}
       summary={item.summary}
       meta={meta}
+      testId={join("haberler", "card", String(item.id))}
     />
   );
 }
@@ -51,6 +53,7 @@ export function NewsList({
     <ContentGrid
       itemsCount={items.length}
       emptyMessage={emptyMessage}
+      testId="haberler.list"
       columnsClassName={responsiveLayoutClasses.newsListGrid}
     >
       {items.map((item) => (

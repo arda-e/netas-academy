@@ -38,15 +38,15 @@ export function EventRegistrationForm({
   } = useEventRegistrationForm({ eventDocumentId, eventTitle, eventType });
 
   return (
-    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit}>
+    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit} data-testid="event-registration.form">
       {successMessage ? (
-        <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100">
+        <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100" data-testid="event-registration.success">
           {successMessage}
         </div>
       ) : null}
 
       {errorMessage ? (
-        <div className="rounded-sm border border-destructive/40 bg-destructive/10 px-5 py-4 text-base text-destructive">
+        <div className="rounded-sm border border-destructive/40 bg-destructive/10 px-5 py-4 text-base text-destructive" data-testid="event-registration.error">
           {errorMessage}
         </div>
       ) : null}
@@ -63,6 +63,7 @@ export function EventRegistrationForm({
             onChange={handleChange}
             className={fieldClassName}
             required
+            data-testid="event-registration.field.first-name"
           />
         </div>
 
@@ -76,6 +77,7 @@ export function EventRegistrationForm({
             value={values.lastName}
             onChange={handleChange}
             className={fieldClassName}
+            data-testid="event-registration.field.last-name"
           />
         </div>
 
@@ -91,6 +93,7 @@ export function EventRegistrationForm({
             onChange={handleChange}
             className={fieldClassName}
             required
+            data-testid="event-registration.field.email"
           />
         </div>
 
@@ -105,6 +108,7 @@ export function EventRegistrationForm({
             value={values.phone}
             onChange={handleChange}
             className={fieldClassName}
+            data-testid="event-registration.field.phone"
           />
         </div>
 
@@ -124,6 +128,7 @@ export function EventRegistrationForm({
             className={fieldClassName}
             required
             placeholder="11 haneli kimlik numarası"
+            data-testid="event-registration.field.tckn"
           />
         </div>
       </div>
@@ -139,6 +144,7 @@ export function EventRegistrationForm({
           onChange={handleChange}
           className="min-h-[9rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:px-5 md:text-base"
           placeholder="Katılım beklentiniz, kurumunuz veya iletmek istediginiz notlar..."
+          data-testid="event-registration.field.notes"
         />
       </div>
 
@@ -152,11 +158,12 @@ export function EventRegistrationForm({
               checked={values.kvkkConsent}
               onChange={handleChange}
               className="mt-1 size-5 shrink-0 rounded-sm border-2 border-gray-300 text-primary focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 md:size-6"
+              data-testid="event-registration.field.kvkk-consent"
             />
             <span className="space-y-1">
               <span className="block font-medium text-foreground">
                 Bu eğitim programına katılımım sebebiyle işlenecek olan kişisel verilerime ilişkin detaylı bilgilerin yer aldığı{" "}
-                <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80">
+                <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80" data-testid="event-registration.link.kvkk-disclosure">
                   6698 Sayılı Kişisel Verileri Koruma Kanunu Uyarınca Eğitim Programı Aydınlatma Metni&apos;ni
                 </Link>{" "}
                 okudum ve anladım.
@@ -176,6 +183,7 @@ export function EventRegistrationForm({
           type="submit"
           disabled={isSubmitting}
           className="h-12 w-full rounded-sm px-7 text-base font-semibold sm:w-auto md:h-14 md:text-lg"
+          data-testid="event-registration.submit"
         >
           {isSubmitting ? "Kayit Gonderiliyor..." : "Kaydi Tamamla"}
         </Button>

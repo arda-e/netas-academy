@@ -59,6 +59,7 @@ export function SearchField({
       <button
         type="button"
         aria-label="Ara"
+        data-testid="search-field.toggle"
         onClick={() => setOpen(true)}
         className={`inline-flex h-9 shrink-0 items-center justify-center text-gray-800 transition-all duration-200 hover:bg-[#009ca6]/10 hover:text-[#009ca6] ${
           open ? "pointer-events-none w-0 opacity-0" : "w-10 cursor-pointer opacity-100"
@@ -84,6 +85,7 @@ export function SearchField({
             }
           }}
           placeholder="Ara..."
+          data-testid="search-field.input"
           className="h-9 w-full bg-transparent py-2 pl-8 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
         />
       </div>

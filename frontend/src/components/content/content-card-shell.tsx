@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContentSuperheading } from "@/components/content/content-superheading";
 import { cn } from "@/lib/utils";
+import { join } from "@/lib/testids";
 
 type ContentCardShellProps = {
   href?: string;
@@ -16,6 +17,7 @@ type ContentCardShellProps = {
   className?: string;
   imageUrl?: string | null;
   imageAlt?: string;
+  testId?: string;
 };
 
 export function ContentCardShell({
@@ -28,6 +30,7 @@ export function ContentCardShell({
   className,
   imageUrl,
   imageAlt,
+  testId,
 }: ContentCardShellProps) {
   const hasImage = Boolean(imageUrl);
 
@@ -38,9 +41,10 @@ export function ContentCardShell({
         hasImage ? "gap-0 pt-0" : "gap-5 sm:gap-6",
         className
       )}
+      data-testid={href ? undefined : testId}
     >
       {hasImage ? (
-        <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-t-sm">
+        <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-t-sm" data-testid={testId && join(testId, 'image')}>
           <Image
             src={imageUrl!}
             alt={imageAlt ?? title}
@@ -59,21 +63,21 @@ export function ContentCardShell({
       >
         <div className="min-w-0 space-y-1.5">
           {kicker ? (
-            <ContentSuperheading className="group-hover/card-link:text-[#009ca6]">
+            <ContentSuperheading className="group-hover/card-link:text-[#009ca6]" data-testid={testId && join(testId, 'kicker')}>
               {kicker}
             </ContentSuperheading>
           ) : null}
-          <CardTitle className="text-xl leading-6 text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-2xl sm:leading-tight">
+          <CardTitle className="text-xl leading-6 text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-2xl sm:leading-tight" data-testid={testId && join(testId, 'title')}>
             <span>{title}</span>
           </CardTitle>
         </div>
-        {headerAddon ? <div className="shrink-0 pt-1">{headerAddon}</div> : null}
+        {headerAddon ? <div className="shrink-0 pt-1" data-testid={testId && join(testId, 'header-addon')}>{headerAddon}</div> : null}
       </CardHeader>
       <CardContent className="flex flex-1 flex-col justify-between gap-5 px-5 sm:px-6">
         <div className="space-y-3 sm:space-y-4">
           {summary ? (
             typeof summary === "string" ? (
-              <p className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
+              <p className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7" data-testid={testId && join(testId, 'summary')}>
                 {summary}
               </p>
             ) : (
@@ -81,7 +85,7 @@ export function ContentCardShell({
             )
           ) : null}
         </div>
-        {meta ? <div className="space-y-1 text-sm text-foreground/62">{meta}</div> : null}
+        {meta ? <div className="space-y-1 text-sm text-foreground/62" data-testid={testId && join(testId, 'meta')}>{meta}</div> : null}
       </CardContent>
     </Card>
   );
@@ -91,7 +95,7 @@ export function ContentCardShell({
   }
 
   return (
-    <Link href={href} className="group/card-link block h-full cursor-pointer">
+    <Link href={href} className="group/card-link block h-full cursor-pointer" data-testid={testId}>
       {card}
     </Link>
   );

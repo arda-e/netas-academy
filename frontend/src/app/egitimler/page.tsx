@@ -9,6 +9,7 @@ import {
   buildTopicFilterHrefWithSearch,
   getTopicAreaLabel,
 } from "@/lib/content-taxonomy";
+import { join, normalizeKey } from "@/lib/testids";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
 
   return (
     <ContentPageShell
+      testId="page.egitimler"
       title="Eğitim Kataloğu"
       description={
         <>
@@ -49,6 +51,7 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
       descriptionTrailing={
         <div
           aria-disabled="true"
+          data-testid="page.egitimler.catalog-pdf-download"
           className="pointer-events-none inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-white/58 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm"
         >
           <span className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/48">
@@ -80,6 +83,7 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
                 <Link
                   key={area}
                   aria-current={isActive ? "page" : undefined}
+                  data-testid={join("page", "egitimler", "filter", "topic", normalizeKey(area))}
                   href={href}
                   className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
                     isActive

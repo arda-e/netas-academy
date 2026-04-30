@@ -4,6 +4,7 @@ import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
+import { join } from "@/lib/testids";
 import {
   normalizeTopicArea,
   getTopicAreaLabel,
@@ -47,6 +48,7 @@ export function CourseList({
       itemsCount={items.length}
       emptyMessage={emptyMessage}
       columnsClassName={responsiveLayoutClasses.courseListGrid}
+      testId="egitimler.catalog"
     >
       {items.map((course) => {
         const topicAreaNormalized = course.topicArea
@@ -69,6 +71,7 @@ export function CourseList({
         return (
           <ContentCardShell
             key={course.id}
+            testId={join('egitimler', 'card', course.slug)}
             href={`/egitimler/${course.slug}`}
             title={course.title}
             kicker={topicAreaLabel ?? undefined}
@@ -122,6 +125,7 @@ export function CourseDetail({
 }: CourseDetailProps) {
   return (
     <ContentDetailShell
+      testId="egitimler.detail"
       eyebrow={eyebrow}
       title={title}
       summary={summary ?? undefined}

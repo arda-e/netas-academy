@@ -4,6 +4,7 @@ import {
   SiteBreadcrumbs,
   type BreadcrumbItem,
 } from "@/components/breadcrumbs";
+import { join } from "@/lib/testids";
 
 type ContentPageShellProps = {
   breadcrumbItems?: BreadcrumbItem[];
@@ -13,6 +14,7 @@ type ContentPageShellProps = {
   descriptionClassName?: string;
   descriptionTrailing?: ReactNode;
   children: ReactNode;
+  testId?: string;
 };
 
 export function ContentPageShell({
@@ -23,13 +25,14 @@ export function ContentPageShell({
   descriptionClassName,
   descriptionTrailing,
   children,
+  testId,
 }: ContentPageShellProps) {
   const resolvedBreadcrumbItems = breadcrumbItems ?? [
     { label: eyebrow ?? title },
   ];
 
   return (
-    <main className="page-shell min-h-[calc(100vh-81px)]">
+    <main className="page-shell min-h-[calc(100vh-81px)]" data-testid={testId}>
       <section className="border-b border-white/10 bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]">
         <div className="page-container relative flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">
           <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
@@ -42,11 +45,11 @@ export function ContentPageShell({
             ].join(" ")}
           >
             {eyebrow ? (
-              <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/82">
+              <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/82" data-testid={testId && join(testId, 'eyebrow')}>
                 {eyebrow}
               </p>
             ) : null}
-            <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl" data-testid={testId && join(testId, 'title')}>
               {title}
             </h1>
             {description ? (
@@ -59,10 +62,11 @@ export function ContentPageShell({
                     ]
                       .filter(Boolean)
                       .join(" ")}
+                    data-testid={testId && join(testId, 'description')}
                   >
                     {description}
                   </div>
-                  <div className="flex shrink-0 justify-end lg:pb-1">
+                  <div className="flex shrink-0 justify-end lg:pb-1" data-testid={testId && join(testId, 'description-trailing')}>
                     {descriptionTrailing}
                   </div>
                 </div>
@@ -74,6 +78,7 @@ export function ContentPageShell({
                   ]
                     .filter(Boolean)
                     .join(" ")}
+                  data-testid={testId && join(testId, 'description')}
                 >
                   {description}
                 </div>
@@ -84,7 +89,7 @@ export function ContentPageShell({
       </section>
 
       <section className="page-section pt-4 sm:pt-8 lg:pt-8">
-        <div>{children}</div>
+        <div data-testid={testId && join(testId, 'content')}>{children}</div>
       </section>
     </main>
   );

@@ -7,6 +7,7 @@ import { TeacherCarousel } from "@/components/teacher-carousel";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { hakkimizdaVisualSection } from "@/lib/page-visual-sections";
 import { getLatestCourses, getStrapiMediaAltText, getStrapiMediaUrl, getTeachers } from "@/lib/strapi";
+import { join } from "@/lib/testids";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,7 @@ export default async function HakkimizdaPage() {
 
   return (
     <ContentPageShell
+      testId="page.hakkimizda"
       eyebrow="Hakkımızda"
       title="Netaş Academy: Uygulamalı Eğitim Deneyimiyle Kurumsal Gelişimde Fark Yaratıyoruz"
       description={
@@ -38,7 +40,7 @@ export default async function HakkimizdaPage() {
     >
       <div className="space-y-10 sm:space-y-14">
         {/* B — Netaş Trust */}
-        <section className="panel-surface rounded-sm p-5 sm:p-8">
+        <section className="panel-surface rounded-sm p-5 sm:p-8" data-testid="page.hakkimizda.section.netas-trust">
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             Netaş Güvencesiyle Kurumsal Eğitim
           </h2>
@@ -52,7 +54,7 @@ export default async function HakkimizdaPage() {
         </section>
 
         {/* C — Applied Learning Model */}
-        <section className="panel-surface rounded-sm p-5 sm:p-8">
+        <section className="panel-surface rounded-sm p-5 sm:p-8" data-testid="page.hakkimizda.section.applied-learning">
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             Vaka, Senaryo ve Gerçek İş Problemine Dayalı Eğitim Modeli
           </h2>
@@ -67,7 +69,7 @@ export default async function HakkimizdaPage() {
         </section>
 
         {/* D — Institution-Shaped Programs */}
-        <section className="panel-surface rounded-sm p-5 sm:p-8">
+        <section className="panel-surface rounded-sm p-5 sm:p-8" data-testid="page.hakkimizda.section.institution-programs">
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             Kurum İhtiyacına Göre Şekillenen Programlar
           </h2>
@@ -82,7 +84,7 @@ export default async function HakkimizdaPage() {
         </section>
 
         {/* Visual Story Section — reinforces learning model visually */}
-        <VisualStorySection {...hakkimizdaVisualSection} />
+        <VisualStorySection {...hakkimizdaVisualSection} itemTestIdPrefix="page.hakkimizda.visual-story.item" />
 
         {/* E — Instructors */}
         <div className="space-y-4 sm:space-y-5">
@@ -103,11 +105,14 @@ export default async function HakkimizdaPage() {
               imageUrl: getStrapiMediaUrl(teacher.profilePhoto),
               imageAlt: getStrapiMediaAltText(teacher.profilePhoto) ?? teacher.fullName,
             }))}
+            getCardTestId={(slug) => join('page', 'hakkimizda', 'teacher-carousel', 'card', slug)}
+            prevButtonTestId="page.hakkimizda.teacher-carousel.prev"
+            nextButtonTestId="page.hakkimizda.teacher-carousel.next"
           />
         </div>
 
         {/* F — Participant Outcomes */}
-        <section className="panel-surface rounded-sm p-5 sm:p-8">
+        <section className="panel-surface rounded-sm p-5 sm:p-8" data-testid="page.hakkimizda.section.participant-outcomes">
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             Katılımcı Çıktısı: Teoriyi İşe Taşıma ve Pratik Beceri
           </h2>
@@ -140,6 +145,7 @@ export default async function HakkimizdaPage() {
               topicArea: course.topicArea,
               level: course.level,
             }))}
+            getCardTestId={(slug) => join('page', 'hakkimizda', 'course-carousel', 'card', slug)}
           />
         </div>
 
@@ -148,6 +154,7 @@ export default async function HakkimizdaPage() {
           <Link
             href={buildIntentLeadUrl("corporate_training_request")}
             data-measurement-id="about_corporate_cta"
+            data-testid="page.hakkimizda.cta.corporate-training"
             className="inline-flex items-center justify-center gap-2 rounded-sm bg-[#ffb933] px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-[#e5a72e]"
           >
             Kurumsal Eğitim Talebi
@@ -155,6 +162,7 @@ export default async function HakkimizdaPage() {
           <Link
             href="/egitimler"
             data-measurement-id="about_education_cta"
+            data-testid="page.hakkimizda.cta.catalog"
             className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
           >
             Eğitim Kataloğunu İncele
