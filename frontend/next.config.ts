@@ -45,6 +45,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   images: {
     dangerouslyAllowLocalIP: true,
+    unoptimized: true,
     remotePatterns: getStrapiImageRemotePatterns(),
   },
   turbopack: {
