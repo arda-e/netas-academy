@@ -105,7 +105,7 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
       }
       testId="page.etkinlikler"
     >
-      <div className="-mt-6 mb-6 flex flex-col gap-3 sm:-mt-8 sm:mb-8 sm:gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="mt-2 mb-6 flex flex-col gap-3 sm:mt-4 sm:mb-8 sm:gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
           <Filter className="size-4 text-gray-800" aria-hidden="true" />
           {eventTypeFilters.map((filter) => {
