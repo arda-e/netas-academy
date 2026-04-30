@@ -17,7 +17,7 @@ const sitePlanItems = [
 export function SiteFooter() {
   return (
     <footer className="border-t border-border/80 bg-white/95 backdrop-blur-2xl">
-      <div className="page-container grid gap-6 py-6 text-sm text-muted-foreground lg:grid-cols-[minmax(180px,0.8fr)_minmax(0,2fr)_auto] lg:items-start">
+      <div className="page-container grid gap-6 py-6 text-sm text-muted-foreground lg:grid-cols-[1fr_1fr_auto] lg:items-start">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-foreground/72">
             Netas Academy
