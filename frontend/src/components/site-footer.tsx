@@ -31,7 +31,7 @@ export function SiteFooter() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/72">
             Site Planı
           </p>
-          <div className="flex flex-col gap-1">
+          <div className="grid grid-cols-1 gap-x-4 gap-y-1 sm:grid-cols-2">
             {sitePlanItems.map((item) => {
               const linkKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "ana-sayfa";
               return (
@@ -39,7 +39,7 @@ export function SiteFooter() {
                   key={item.href}
                   href={item.href}
                   data-testid={join("site-footer", "site-plan", linkKey)}
-                  className="rounded-sm border border-transparent px-3 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
+                  className="block truncate rounded-sm border border-transparent pl-0 pr-3 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
                 >
                   {item.label}
                 </Link>
