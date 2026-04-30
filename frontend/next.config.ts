@@ -1,12 +1,13 @@
 import type { NextConfig } from "next";
 
+const strapiUrl = process.env.STRAPI_URL ?? "http://127.0.0.1:1337";
+
 const strapiImageOrigins = [
   process.env.STRAPI_PUBLIC_URL,
   process.env.NEXT_PUBLIC_STRAPI_URL,
-  process.env.STRAPI_URL,
+  strapiUrl,
   "http://127.0.0.1:1337",
   "http://localhost:1337",
-  "http://44.216.170.38:1337",
 ];
 
 function getStrapiImageRemotePatterns() {
@@ -45,8 +46,15 @@ const nextConfig: NextConfig = {
   output: "standalone",
   images: {
     dangerouslyAllowLocalIP: true,
-    unoptimized: true,
     remotePatterns: getStrapiImageRemotePatterns(),
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/uploads/:path*",
+        destination: `${strapiUrl}/uploads/:path*`,
+      },
+    ];
   },
   turbopack: {
     root: __dirname,

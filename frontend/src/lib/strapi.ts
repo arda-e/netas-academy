@@ -1,5 +1,4 @@
 const STRAPI_URL = process.env.STRAPI_URL ?? 'http://127.0.0.1:1337';
-const STRAPI_PUBLIC_URL = process.env.STRAPI_PUBLIC_URL ?? process.env.STRAPI_URL ?? 'http://localhost:1337';
 
 type StrapiListResponse<T> = {
   data: T[];
@@ -168,10 +167,20 @@ export function toStrapiAssetUrl(path: string | null | undefined) {
   }
 
   if (path.startsWith("http://") || path.startsWith("https://")) {
+    try {
+      const url = new URL(path);
+
+      if (url.pathname.startsWith("/uploads/")) {
+        return `${url.pathname}${url.search}`;
+      }
+    } catch {
+      return path;
+    }
+
     return path;
   }
 
-  return `${STRAPI_PUBLIC_URL}${path}`;
+  return path.startsWith("/") ? path : `/${path}`;
 }
 
 export function getStrapiMediaUrl(media?: StrapiMedia | null) {

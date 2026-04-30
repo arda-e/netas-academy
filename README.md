@@ -71,5 +71,5 @@ Notes:
 - Uploaded files persist in `./.docker-data/uploads`
 - The single container starts Strapi first, then boots Next.js on port `3000`
 - Local compose defaults to `netas-academy:local`; EC2 deploy overrides this with the GHCR image
-- Server-to-server calls use `STRAPI_URL`; browser-facing asset URLs use `STRAPI_PUBLIC_URL`
+- Server-to-server calls use `STRAPI_URL`; Strapi uploads are exposed through the frontend `/uploads/*` rewrite so browser image URLs stay same-origin
 - Replace the placeholder secrets in `docker-compose.yml` before using this anywhere beyond local testing
