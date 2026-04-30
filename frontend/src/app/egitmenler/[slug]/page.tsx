@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
+import { RichTextContent } from "@/components/content/rich-text-content";
 import {
   getStrapiMediaAltText,
   getStrapiMediaUrl,
@@ -131,7 +132,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
 
         {teacher.teachingApproach ? (
           <section data-testid="page.teacher-detail.section.teaching-approach" className="space-y-3 sm:space-y-4">
-            <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+            <h2 className="text-lg font-semxibold text-foreground sm:text-xl">
               Eğitim Yaklaşımı
             </h2>
             <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
@@ -164,9 +165,7 @@ export default async function TeacherDetailPage({ params }: TeacherDetailPagePro
             <h2 className="text-lg font-semibold text-foreground sm:text-xl">
               Hakkında
             </h2>
-            <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8">
-              {teacher.bio}
-            </p>
+            <RichTextContent content={teacher.bio} />
           </section>
         ) : (
           <p className="text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg">
