@@ -74,7 +74,7 @@ export function EventList({
           title={event.title}
           kicker={formatEventType(event.eventType)}
           summary={event.summary ?? "Bu etkinlik icin aciklama yakinda eklenecek."}
-          className="border-[3px] bg-white"
+          className="bg-white"
           meta={
             <div className="space-y-1.5 break-words">
               <p className="font-bold text-gray-700">{formatEventDate(event.startsAt)}</p>
