@@ -1,18 +1,10 @@
 import Link from "next/link";
 
 import { join } from "@/lib/testids";
+import { footerSitePlanItems } from "@/config/navigation";
 
-const sitePlanItems = [
-  { href: "/", label: "Ana Sayfa" },
-  { href: "/hakkimizda", label: "Hakkımızda" },
-  { href: "/etkinlikler", label: "Etkinlikler" },
-  { href: "/egitimler", label: "Eğitim Kataloğu" },
-  { href: "/egitmenler", label: "Eğitmenler" },
-  { href: "/cozum-ortagi", label: "Çözüm Ortağı" },
-  { href: "/blog-yazilari", label: "Blog" },
-  { href: "/haberler", label: "Haberler" },
-  { href: "/iletisim", label: "İletişim" },
-];
+const footerLinkClassName =
+  "rounded-sm border border-transparent text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground";
 
 export function SiteFooter() {
   return (
@@ -32,14 +24,13 @@ export function SiteFooter() {
             Site Planı
           </p>
           <div className="grid grid-cols-1 gap-x-4 gap-y-1 sm:grid-cols-2">
-            {sitePlanItems.map((item) => {
-              const linkKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "ana-sayfa";
+            {footerSitePlanItems.map((item) => {
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  data-testid={join("site-footer", "site-plan", linkKey)}
-                  className="block truncate rounded-sm border border-transparent pl-0 pr-3 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
+                  data-testid={join("site-footer", "site-plan", item.routeKey)}
+                  className={`${footerLinkClassName} block truncate py-1.5 pl-0 pr-3`}
                 >
                   {item.label}
                 </Link>
@@ -56,7 +47,7 @@ export function SiteFooter() {
           <Link
             href="/kvkk"
             data-testid="site-footer.legal.kvkk"
-            className="rounded-sm border border-transparent px-3 py-2 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
+            className={`${footerLinkClassName} px-3 py-2`}
           >
             KVKK
           </Link>
@@ -65,7 +56,7 @@ export function SiteFooter() {
             target="_blank"
             rel="noreferrer"
             data-testid="site-footer.legal.netas-website"
-            className="rounded-sm border border-transparent px-3 py-2 text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground"
+            className={`${footerLinkClassName} px-3 py-2`}
           >
             Netaş Web Sitesi
           </a>
