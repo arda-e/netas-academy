@@ -1,0 +1,29 @@
+{
+  "purposeItems": [
+    "Netaş ürün ve hizmetlerinin sizlere sunulabilmesini teminen, ürünlerin ücretlendirilmesi ve faturalandırılması, ürünlerin ve hizmetlerin satışı, satın alınan ve/veya kullanılan ürün ve hizmetlerle ilgili talep ettiğiniz işlemlerin gerçekleştirilmesi ve takibinin sağlanması, ürünlerin teslimi, kurulum, bakım, onarım vb. satış sonrası servis hizmetlerinin yerine getirilmesi.",
+    "Gümrük operasyonları, üretim ve/veya operasyonları süreçlerinin planlanması ve icrası, tedarik zinciri yönetiminin planlanması ve icrası, müşteri ilişkileri yönetim süreçlerinin planlanması ve icrası.",
+    "Çağrı merkezi, resepsiyon hizmetleri, arızalı ürün iadesi, bakım onarım hizmeti, yerinde onarım hizmetleri, müşteri bilgilendirme hizmetlerinin planlanması ve icrası.",
+    "Danışmanlık hizmetleri, bakım, destek ve raporlama hizmetlerinin planlanması ve icrası.",
+    "Sizlere karşı olan yükümlülüklerimizin yerine getirilmesi, kayıt ve belgelerin düzenlenebilmesi, yerel ve uluslararası yasal mevzuatın öngördüğü bilgi saklama, raporlama, bilgilendirme, vergi ve sair yükümlülüklere uymak.",
+    "Hizmet ve ürünlerin kalitesinin artırılmasına yönelik yapılacak olan satış ve pazarlama faaliyetleri için yapılacak size özel tanıtım, reklam, kampanya, indirim, fayda, koşul, ücretlendirme, avantajlar ve diğer faydaları sunmak, bunlara ilişkin sizlerle iletişime geçilmesi.",
+    "Bilgi işlem gereksinimleri, sistemsel yapısı, alınan bilgi işlem destek hizmetlerinin gerekliliği, bu hizmet ve ürünlere ilişkin olarak sizlere gerekli bilgilerin aktarılması amacıyla iletişim kurmak.",
+    "Satış ve pazarlama faaliyetleri için yapılacak trafik ölçümleme, istatistiki analizler, segmentasyon/profilleme ve CRM çalışmalarını yürütmek.",
+    "Müşteri memnuniyetinin ölçümlenmesi ve artırılması, şikâyet yönetimi, yeni hizmet ve ürünler ile ilgili görüş ve önerilerinizi almak, sorun-hata bildirimlerinizi almak, ürün ve hizmetlere, şikayet ve taleplerinize yönelik tarafınıza bilgi vermek.",
+    "Siparişlerinizi almak, ödeme işlemlerinizi gerçekleştirmek, 3. kişiler ile lojistik iş birliği sağlayıp ürün gönderimini sağlamak, ilginizi çekebilecek ürün ve hizmetleri önermek, online davranışsal reklamcılık ve pazarlama, müşteri portföy yönetimi, hizmet kalitesinin ölçülmesi ve geliştirilmesi, iletişim, optimizasyon, denetim, risk yönetimi ve kontrol, promosyon, analiz, ilgi alanları belirleme, skorlama, profilleme, pazarlama, satış, reklam, iletişim.",
+    "Karşılaştırmalı ürün ve/veya hizmet teklifi, modelleme, mevcut veya yeni ürün çalışmaları ve/veya geliştirmeleri, kişisel verilerinizi Netaş'a açıklamanıza konu olan Netaş ana sözleşmesinde yazılı olan işleri düzenleyen kanun ve ilgili mevzuat kapsamında sizlere sunulacak her türlü ürün ve hizmetlerde kullanılmak.",
+    "Resmî kurumlarca öngörülen bilgi saklama, raporlama, bilgilendirme yükümlülüklerine uymak, sözleşmelerin gerekliliklerini yerine getirmek ve bu hizmetlerden faydalanılmasına ilişkin olarak Netaş'ın tabi olduğu yasal yükümlülükleri ifa etmek.",
+    "Netaş'ın ticari ve iş stratejilerinin belirlenmesi ve uygulanması amacı doğrultusunda; Netaş tarafından yürütülen finans operasyonları, iletişim, pazar araştırması ve sosyal sorumluluk aktiviteleri, satın alma operasyonları (talep, teklif, değerlendirme, sipariş, bütçeleme, sözleşme), şirket içi sistem ve uygulama yönetimi operasyonları, hukuki operasyonları yönetmek.",
+    "Kitle kaynak (Crowdsourcing) çalışmalarında iletişim, görevlendirme ve ödeme işlemleri için kullanmak.",
+    "Resmi makamlardan veya sizlerden gelen talepleri incelemek, değerlendirmek ve yanıtlamak."
+  ],
+  "rightsItems": [
+    "Kişisel veri işlenip işlenmediğini öğrenme.",
+    "Kişisel verileri işlenmişse buna ilişkin bilgi talep etme.",
+    "Kişisel verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme.",
+    "Yurt içinde veya yurt dışında kişisel verilerin aktarıldığı üçüncü kişileri bilme.",
+    "Kişisel verilerin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme ve bu kapsamda yapılan işlemin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme.",
+    "6698 sayılı Kanun ve ilgili diğer kanun hükümlerine uygun olarak işlenmiş olmasına rağmen, işlenmesini gerektiren sebeplerin ortadan kalkması halinde kişisel verilerin silinmesini veya yok edilmesini isteme ve bu kapsamda yapılan işlemin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme.",
+    "İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle kişinin kendisi aleyhine bir sonucun ortaya çıkmasına itiraz etme.",
+    "Kişisel verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğraması halinde zararın giderilmesini talep etme."
+  ]
+}

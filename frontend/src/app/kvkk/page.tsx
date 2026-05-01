@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
+import kvkkData from "@/data/kvkk.json";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
+import { KvkkBackButton } from "@/components/kvkk-back-button";
 
 export const dynamic = "force-dynamic";
 
@@ -14,44 +16,17 @@ function getLatestCommitId() {
   return process.env.GIT_COMMIT_SHA?.slice(0, 7) ?? null;
 }
 
-const purposeItems = [
-  "Netaş ürün ve hizmetlerinin sizlere sunulabilmesini teminen, ürünlerin ücretlendirilmesi ve faturalandırılması, ürünlerin ve hizmetlerin satışı, satın alınan ve/veya kullanılan ürün ve hizmetlerle ilgili talep ettiğiniz işlemlerin gerçekleştirilmesi ve takibinin sağlanması, ürünlerin teslimi, kurulum, bakım, onarım vb. satış sonrası servis hizmetlerinin yerine getirilmesi.",
-  "Gümrük operasyonları, üretim ve/veya operasyonları süreçlerinin planlanması ve icrası, tedarik zinciri yönetiminin planlanması ve icrası, müşteri ilişkileri yönetim süreçlerinin planlanması ve icrası.",
-  "Çağrı merkezi, resepsiyon hizmetleri, arızalı ürün iadesi, bakım onarım hizmeti, yerinde onarım hizmetleri, müşteri bilgilendirme hizmetlerinin planlanması ve icrası.",
-  "Danışmanlık hizmetleri, bakım, destek ve raporlama hizmetlerinin planlanması ve icrası.",
-  "Sizlere karşı olan yükümlülüklerimizin yerine getirilmesi, kayıt ve belgelerin düzenlenebilmesi, yerel ve uluslararası yasal mevzuatın öngördüğü bilgi saklama, raporlama, bilgilendirme, vergi ve sair yükümlülüklere uymak.",
-  "Hizmet ve ürünlerin kalitesinin artırılmasına yönelik yapılacak olan satış ve pazarlama faaliyetleri için yapılacak size özel tanıtım, reklam, kampanya, indirim, fayda, koşul, ücretlendirme, avantajlar ve diğer faydaları sunmak, bunlara ilişkin sizlerle iletişime geçilmesi.",
-  "Bilgi işlem gereksinimleri, sistemsel yapısı, alınan bilgi işlem destek hizmetlerinin gerekliliği, bu hizmet ve ürünlere ilişkin olarak sizlere gerekli bilgilerin aktarılması amacıyla iletişim kurmak.",
-  "Satış ve pazarlama faaliyetleri için yapılacak trafik ölçümleme, istatistiki analizler, segmentasyon/profilleme ve CRM çalışmalarını yürütmek.",
-  "Müşteri memnuniyetinin ölçümlenmesi ve artırılması, şikâyet yönetimi, yeni hizmet ve ürünler ile ilgili görüş ve önerilerinizi almak, sorun-hata bildirimlerinizi almak, ürün ve hizmetlere, şikayet ve taleplerinize yönelik tarafınıza bilgi vermek.",
-  "Siparişlerinizi almak, ödeme işlemlerinizi gerçekleştirmek, 3. kişiler ile lojistik iş birliği sağlayıp ürün gönderimini sağlamak, ilginizi çekebilecek ürün ve hizmetleri önermek, online davranışsal reklamcılık ve pazarlama, müşteri portföy yönetimi, hizmet kalitesinin ölçülmesi ve geliştirilmesi, iletişim, optimizasyon, denetim, risk yönetimi ve kontrol, promosyon, analiz, ilgi alanları belirleme, skorlama, profilleme, pazarlama, satış, reklam, iletişim.",
-  "Karşılaştırmalı ürün ve/veya hizmet teklifi, modelleme, mevcut veya yeni ürün çalışmaları ve/veya geliştirmeleri, kişisel verilerinizi Netaş’a açıklamanıza konu olan Netaş ana sözleşmesinde yazılı olan işleri düzenleyen kanun ve ilgili mevzuat kapsamında sizlere sunulacak her türlü ürün ve hizmetlerde kullanılmak.",
-  "Resmî kurumlarca öngörülen bilgi saklama, raporlama, bilgilendirme yükümlülüklerine uymak, sözleşmelerin gerekliliklerini yerine getirmek ve bu hizmetlerden faydalanılmasına ilişkin olarak Netaş’ın tabi olduğu yasal yükümlülükleri ifa etmek.",
-  "Netaş’ın ticari ve iş stratejilerinin belirlenmesi ve uygulanması amacı doğrultusunda; Netaş tarafından yürütülen finans operasyonları, iletişim, pazar araştırması ve sosyal sorumluluk aktiviteleri, satın alma operasyonları (talep, teklif, değerlendirme, sipariş, bütçelendirme, sözleşme), şirket içi sistem ve uygulama yönetimi operasyonları, hukuki operasyonları yönetmek.",
-  "Kitle kaynak (Crowdsourcing) çalışmalarında iletişim, görevlendirme ve ödeme işlemleri için kullanmak.",
-  "Resmi makamlardan veya sizlerden gelen talepleri incelemek, değerlendirmek ve yanıtlamak.",
-];
-
-const rightsItems = [
-  "Kişisel veri işlenip işlenmediğini öğrenme.",
-  "Kişisel verileri işlenmişse buna ilişkin bilgi talep etme.",
-  "Kişisel verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme.",
-  "Yurt içinde veya yurt dışında kişisel verilerin aktarıldığı üçüncü kişileri bilme.",
-  "Kişisel verilerin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme ve bu kapsamda yapılan işlemin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme.",
-  "6698 sayılı Kanun ve ilgili diğer kanun hükümlerine uygun olarak işlenmiş olmasına rağmen, işlenmesini gerektiren sebeplerin ortadan kalkması halinde kişisel verilerin silinmesini veya yok edilmesini isteme ve bu kapsamda yapılan işlemin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme.",
-  "İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle kişinin kendisi aleyhine bir sonucun ortaya çıkmasına itiraz etme.",
-  "Kişisel verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğraması halinde zararın giderilmesini talep etme.",
-];
-
 export default function KvkkPage() {
   const latestCommitId = getLatestCommitId();
+  const { purposeItems, rightsItems } = kvkkData;
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.kvkk">
       <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
         <div className="page-container relative flex min-h-[260px] w-full items-end py-8 sm:min-h-[320px] sm:py-12">
-          <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
+          <div className="absolute left-4 right-4 top-8 flex items-start justify-between sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
             <SiteBreadcrumbs items={[{ label: "KVKK" }]} />
+            <KvkkBackButton />
           </div>
           <div className="max-w-4xl space-y-4 sm:space-y-5">
             <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
@@ -77,7 +52,7 @@ export default function KvkkPage() {
               Genel Bilgilendirme
             </h2>
             <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
-              Amacımız; 6698 sayılı “Kişisel Verilerin Korunması Kanunu”nun 10.
+              Amacımız; 6698 sayılı "Kişisel Verilerin Korunması Kanunu"nun 10.
               maddesi gereğince ve sizlerin memnuniyeti doğrultusunda, kişisel
               verilerinizin alınma şekilleri, işlenme amaçları, paylaşılan kişiler,
               hukuki nedenleri ve haklarınız konularında sizi en şeffaf şekilde
@@ -90,9 +65,9 @@ export default function KvkkPage() {
               a) Veri Sorumlusu
             </h2>
             <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
-              6698 sayılı Kişisel Verilerin Korunması Kanunu (“6698 sayılı Kanun”)
+              6698 sayılı Kişisel Verilerin Korunması Kanunu ("6698 sayılı Kanun")
               uyarınca, kişisel verileriniz; veri sorumlusu olarak Netaş
-              Telekomünikasyon A.Ş. (“Netaş”) tarafından aşağıda açıklanan kapsamda
+              Telekomünikasyon A.Ş. ("Netaş") tarafından aşağıda açıklanan kapsamda
               toplanacak ve işlenebilecektir.
             </p>
           </article>
@@ -120,7 +95,7 @@ export default function KvkkPage() {
               ))}
             </div>
             <p className="mt-5 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
-              amaçlarıyla 6698 sayılı Kanun’un 5. ve 6. maddelerinde belirtilen
+              amaçlarıyla 6698 sayılı Kanun'un 5. ve 6. maddelerinde belirtilen
               kişisel veri işleme şartları ve amaçları dahilinde işlenecektir.
             </p>
           </article>
@@ -135,7 +110,7 @@ export default function KvkkPage() {
               aktarılabilecektir:
             </p>
             <ul className="mt-5 space-y-3 text-[15px] leading-7 text-foreground/72 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
-              <li>Netaş’ın iş ortaklarına, hissedarlarına, iştiraklerine,</li>
+              <li>Netaş'ın iş ortaklarına, hissedarlarına, iştiraklerine,</li>
               <li>
                 Vergi Usul Kanunu, Sosyal Güvenlik Kurumu mevzuatı, Sayıştay, Suç
                 Gelirlerinin Aklanmasının Önlenmesi Hakkında Kanun, Karaparanın
@@ -153,7 +128,7 @@ export default function KvkkPage() {
                 kurum ve kuruluşlara, müşterilerimize gönderdiğimiz iletilerin
                 gönderilmesi konusunda anlaşmalı olduğumuz kurumlara, verilen
                 siparişlerin size teslimini gerçekleştiren kargo şirketlerine
-                6698 sayılı Kanun’un 8. ve 9. maddelerinde belirtilen kişisel veri
+                6698 sayılı Kanun'un 8. ve 9. maddelerinde belirtilen kişisel veri
                 işleme şartları ve amaçları çerçevesinde aktarılabilecektir.
               </li>
             </ul>
@@ -179,7 +154,7 @@ export default function KvkkPage() {
 
           <article className="panel-surface rounded-sm p-4 sm:p-8">
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              d) Kişisel Veri Sahibinin 6698 sayılı Kanun’un 11. Maddesinde Sayılan Hakları
+              d) Kişisel Veri Sahibinin 6698 sayılı Kanun'un 11. Maddesinde Sayılan Hakları
             </h2>
             <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Kişisel veri sahipleri olarak, haklarınıza ilişkin taleplerinizi
@@ -209,17 +184,17 @@ export default function KvkkPage() {
             </h2>
             <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
               Yukarıda belirtilen haklarınızı kullanma ile ilgili talebinizi,
-              6698 sayılı Kanun’un 13. maddesinin 1. fıkrası ve 30356 sayılı ve
+              6698 sayılı Kanun'un 13. maddesinin 1. fıkrası ve 30356 sayılı ve
               10.03.2018 tarihli Veri Sorumlusuna Başvuru Usul ve Esasları
               Hakkında Tebliğ gereğince Türkçe ve yazılı olarak veya kayıtlı
               elektronik posta (KEP) adresi, güvenli elektronik imza, mobil imza
-              ya da Netaş’a daha önce bildirilen ve sistemimizde kayıtlı bulunan
+              ya da Netaş'a daha önce bildirilen ve sistemimizde kayıtlı bulunan
               elektronik posta adresini kullanmak suretiyle iletebilirsiniz.
             </p>
             <p className="mt-4 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
               Başvurularda sadece başvuru sahibi kişi hakkında bilgi verilecek
               olup diğer aile fertleri ve üçüncü kişiler hakkında bilgi alınması
-              mümkün olmayacaktır. Netaş’ın cevap vermeden önce kimliğinizi
+              mümkün olmayacaktır. Netaş'ın cevap vermeden önce kimliğinizi
               doğrulama hakkı saklıdır.
             </p>
             <p className="mt-4 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
@@ -281,6 +256,10 @@ export default function KvkkPage() {
               </span>
             </p>
           </article>
+
+          <div className="flex justify-start pt-2">
+            <KvkkBackButton />
+          </div>
         </div>
       </section>
     </main>
