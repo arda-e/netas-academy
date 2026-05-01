@@ -33,7 +33,11 @@ export function TeacherCard({
       className="group/card-link panel-surface block h-full cursor-pointer overflow-hidden rounded-sm transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm"
     >
       <div className="flex h-full flex-col">
-        <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-t-sm bg-card/50" data-testid={join("egitmenler", "card", slug, "photo")}>
+        {/* Photo Section */}
+        <div
+          className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-t-sm bg-card/50"
+          data-testid={join("egitmenler", "card", slug, "photo")}
+        >
           {photoUrl ? (
             <Image
               src={photoUrl}
@@ -51,25 +55,37 @@ export function TeacherCard({
           )}
         </div>
 
+        {/* Content Section */}
         <div className="flex flex-1 flex-col px-5 pb-5 pt-4 text-left sm:px-6 sm:pb-6">
+          {/* Name & Headline */}
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold tracking-tight text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-xl" data-testid={join("egitmenler", "card", slug, "name")}>
+            <h3
+              className="text-lg font-semibold tracking-tight text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-xl"
+              data-testid={join("egitmenler", "card", slug, "name")}
+            >
               {fullName}
             </h3>
-            {headline ? (
-              <p className="text-sm leading-5 text-foreground/62" data-testid={join("egitmenler", "card", slug, "headline")}>
+            {headline && (
+              <p
+                className="text-sm leading-5 text-foreground/62"
+                data-testid={join("egitmenler", "card", slug, "headline")}
+              >
                 {headline}
               </p>
-            ) : null}
+            )}
           </div>
 
+          {/* Footer: Target Teams & Expertise Tags */}
           <div className="mt-auto flex flex-col gap-4 pt-4">
-            {displayTargetTeams ? (
-              <p className="text-xs leading-5 text-foreground/50" data-testid={join("egitmenler", "card", slug, "targetTeams")}>
+            {displayTargetTeams && (
+              <p
+                className="text-xs leading-5 text-foreground/50"
+                data-testid={join("egitmenler", "card", slug, "targetTeams")}
+              >
                 {displayTargetTeams}
               </p>
-            ) : null}
-            {display.length > 0 ? (
+            )}
+            {display.length > 0 && (
               <div className="flex flex-wrap justify-start gap-1.5">
                 {display.map((area) => (
                   <span
@@ -81,7 +97,7 @@ export function TeacherCard({
                   </span>
                 ))}
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       </div>
