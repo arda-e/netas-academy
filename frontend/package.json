@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:coverage": "node --experimental-test-coverage --test-reporter=spec scripts/run-tests-with-coverage.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
