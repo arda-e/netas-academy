@@ -61,12 +61,22 @@ test("blog detail page passes sourceNotes to BlogDetail", () => {
 });
 
 test("blog detail page has İlgili Yazılar section", () => {
-  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
+  const source = readSource("components/content/blog-related-posts.tsx");
 
   assert.match(
     source,
     /İlgili Yazılar/,
-    "blog detail page should have 'İlgili Yazılar' heading"
+    "related posts section module should have 'İlgili Yazılar' heading"
+  );
+});
+
+test("blog detail page imports the related posts section module", () => {
+  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
+
+  assert.match(
+    source,
+    /RelatedPostsSection/,
+    "blog detail page should import and render RelatedPostsSection"
   );
 });
 

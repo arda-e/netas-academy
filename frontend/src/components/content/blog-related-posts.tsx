@@ -1,0 +1,89 @@
+import { ContentCardShell } from "@/components/content/content-card-shell";
+import { ContentGrid } from "@/components/content/content-grid";
+import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
+import {
+  getStrapiMediaAltText,
+  getStrapiMediaUrl,
+  type StrapiBlogPost,
+} from "@/lib/strapi";
+import { join } from "@/lib/testids";
+
+const EMPTY_RELATED_POST_SUMMARY = "Bu yazı için özet yakında eklenecek.";
+
+const formatBlogDate = (value: string) =>
+  new Intl.DateTimeFormat("tr-TR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(value));
+
+type RelatedPostMetaProps = {
+  publishedDate?: string | null;
+  authorName?: string | null;
+};
+
+function RelatedPostMeta({ publishedDate, authorName }: RelatedPostMetaProps) {
+  const hasMeta = Boolean(publishedDate || authorName);
+
+  if (!hasMeta) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-1.5 text-sm leading-6 text-foreground/62">
+      {publishedDate ? <p>{formatBlogDate(publishedDate)}</p> : null}
+      {authorName ? <p>{authorName}</p> : null}
+    </div>
+  );
+}
+
+type RelatedPostsSectionProps = {
+  relatedPosts: Array<
+    Pick<
+      StrapiBlogPost,
+      "documentId" | "slug" | "title" | "excerpt" | "publishedDate" | "coverImage" | "author"
+    >
+  >;
+};
+
+export function RelatedPostsSection({ relatedPosts }: RelatedPostsSectionProps) {
+  if (relatedPosts.length === 0) {
+    return null;
+  }
+
+  return (
+    <div
+      className="mt-10 border-t border-white/10 pt-8 sm:mt-12 sm:pt-10"
+      data-testid="page.blog-detail.related-posts"
+    >
+      <h2 className="mb-6 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+        İlgili Yazılar
+      </h2>
+      <ContentGrid
+        itemsCount={relatedPosts.length}
+        emptyMessage=""
+        columnsClassName={responsiveLayoutClasses.blogListGrid}
+        testId={join("page", "blog-detail", "related-posts")}
+      >
+        {relatedPosts.map((relatedPost) => (
+          <ContentCardShell
+            key={relatedPost.documentId}
+            href={`/blog-yazilari/${relatedPost.slug}`}
+            title={relatedPost.title}
+            summary={relatedPost.excerpt ?? EMPTY_RELATED_POST_SUMMARY}
+            testId={join("page", "blog-detail", "related-posts", "card", relatedPost.slug)}
+            className="bg-white"
+            imageUrl={getStrapiMediaUrl(relatedPost.coverImage) ?? null}
+            imageAlt={getStrapiMediaAltText(relatedPost.coverImage) ?? undefined}
+            meta={
+              <RelatedPostMeta
+                publishedDate={relatedPost.publishedDate}
+                authorName={relatedPost.author?.displayName}
+              />
+            }
+          />
+        ))}
+      </ContentGrid>
+    </div>
+  );
+}
