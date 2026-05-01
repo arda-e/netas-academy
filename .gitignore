@@ -3,6 +3,7 @@
 /.docker-data
 frontend/node_modules
 frontend/.next
+.next
 backend/node_modules
 backend/dist
 backend/.cache
