@@ -10,8 +10,8 @@ export default factories.createCoreController('api::registration.registration' a
     const body = ctx.request.body ?? {};
     const tckn = typeof body.student?.tckn === 'string' ? body.student.tckn : '';
 
-    if (!body.eventDocumentId || !body.student?.firstName || !body.student?.email || !tckn) {
-      throw new ValidationError('eventDocumentId, student.firstName, student.email, and student.tckn are required');
+    if (!body.eventDocumentId || !body.student?.firstName || !body.student?.lastName || !body.student?.email || !tckn) {
+      throw new ValidationError('eventDocumentId, student.firstName, student.lastName, student.email, and student.tckn are required');
     }
 
     if (!isValidTckn(tckn)) {
