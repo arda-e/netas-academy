@@ -1,9 +1,10 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 
 import type { StrapiEventType } from "@/lib/strapi";
 import { isValidTckn, normalizeTcknValue } from "@/lib/tckn";
+import { FormStorage } from "@/lib/form-storage";
 
 type EventRegistrationValues = {
   firstName: string;
@@ -70,11 +71,24 @@ export function useEventRegistrationForm({
   eventTitle,
   eventType,
 }: UseEventRegistrationFormOptions) {
+  const storage = useMemo(
+    () => new FormStorage(`event-registration-${eventDocumentId}`),
+    [eventDocumentId]
+  );
+
   const requiresKvkkConsent = eventType === "egitim" || eventType === "kurs";
-  const [values, setValues] = useState<EventRegistrationValues>(initialValues);
+  const [values, setValues] = useState<EventRegistrationValues>(() => {
+    const saved = storage.load<EventRegistrationValues>();
+    return saved ?? initialValues;
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Persist form values to sessionStorage on every change
+  useEffect(() => {
+    storage.save(values);
+  }, [values, storage]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -100,6 +114,18 @@ export function useEventRegistrationForm({
     setIsSubmitting(true);
     setErrorMessage(null);
     setSuccessMessage(null);
+
+    if (!values.firstName.trim()) {
+      setErrorMessage("Ad alani zorunludur.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!values.lastName.trim()) {
+      setErrorMessage("Soyad alani zorunludur.");
+      setIsSubmitting(false);
+      return;
+    }
 
     const normalizedTckn = normalizeTcknValue(values.tckn);
 
@@ -144,6 +170,7 @@ export function useEventRegistrationForm({
       setSuccessMessage(
         `${eventTitle} etkinligi icin kaydiniz alindi. Ekibimiz kisa sure icinde sizinle iletisime gececek.`
       );
+      storage.clear();
       setValues(initialValues);
     } catch {
       setErrorMessage("Kayit istegi gonderilemedi. Lutfen tekrar deneyin.");

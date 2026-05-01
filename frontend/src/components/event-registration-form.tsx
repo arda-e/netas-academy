@@ -69,7 +69,7 @@ export function EventRegistrationForm({
 
         <div className={fieldWrapperClassName}>
           <label htmlFor="lastName" className={labelClassName}>
-            Soyadınız
+            Soyadınız*
           </label>
           <Input
             id="lastName"
@@ -77,6 +77,7 @@ export function EventRegistrationForm({
             value={values.lastName}
             onChange={handleChange}
             className={fieldClassName}
+            required
             data-testid="event-registration.field.last-name"
           />
         </div>

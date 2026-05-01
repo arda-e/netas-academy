@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 
 import type { LeadType } from "@/lib/lead-intents";
 import { LEAD_INTENTS, LEAD_TYPES, getSchemaForLeadType } from "@/lib/lead-intents";
+import { FormStorage } from "@/lib/form-storage";
 import {
   emitLeadCatalogClick,
   emitLeadContextualEntry,
@@ -37,6 +38,10 @@ const labelClassName = "text-md font-medium text-foreground";
 const fieldWrapperClassName = "space-y-2 md:space-y-3";
 
 /* ─── Types ─── */
+
+function storageFor(leadType: LeadType): FormStorage {
+  return new FormStorage(`contact-form-${leadType}`);
+}
 
 type FormValues = {
   fullName: string;
@@ -67,6 +72,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [isPending, startTransition] = useTransition();
   const hasEmittedStartRef = useRef(false);
+  const mountedRef = useRef(false);
 
   // lead_tab_view: emit on mount and when leadType changes
   useEffect(() => {
@@ -93,6 +99,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     register,
     getValues,
     reset,
+    watch,
   } = useForm<FormValues>({
     shouldUnregister: true,
     defaultValues: {
@@ -111,8 +118,32 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     reValidateMode: "onSubmit",
   });
 
-  // Reset form when switching tabs
+  // Restore form values from sessionStorage on mount
   useEffect(() => {
+    const saved = storageFor(initialLeadType).load<FormValues>();
+    if (saved) {
+      reset({
+        fullName: saved.fullName ?? "",
+        email: saved.email ?? "",
+        phone: saved.phone ?? "",
+        company: saved.company ?? "",
+        message: saved.message ?? "",
+        interestTopic: saved.interestTopic ?? prefilledTopic ?? "",
+        expertiseAreas: saved.expertiseAreas ?? "",
+        companySize: saved.companySize ?? "",
+        partnershipDetails: saved.partnershipDetails ?? "",
+        kvkkConsent: saved.kvkkConsent ?? false,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Reset form when switching tabs (skip on initial mount)
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
     reset({
       fullName: "",
       email: "",
@@ -126,7 +157,14 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       kvkkConsent: false,
     });
     hasEmittedStartRef.current = false;
+    storageFor(leadType).clear();
   }, [leadType, reset, prefilledTopic]);
+
+  // Persist form values to sessionStorage on every change
+  const watchedValues = watch();
+  useEffect(() => {
+    storageFor(leadType).save(watchedValues as FormValues);
+  }, [watchedValues, leadType]);
 
   const onSubmit = useCallback(
     (data: FormValues) => {
@@ -166,6 +204,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
 
           setSuccess(true);
           emitLeadSubmitSuccess(leadType);
+          storageFor(leadType).clear();
           reset();
         } catch {
           const reason = "Form gönderilemedi. Lütfen tekrar deneyin.";
@@ -227,6 +266,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           variant="outline"
           onClick={() => {
             emitLeadRelatedContentClick(leadType);
+            storageFor(leadType).clear();
             setSuccess(false);
           }}
           className="h-12 rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg"
