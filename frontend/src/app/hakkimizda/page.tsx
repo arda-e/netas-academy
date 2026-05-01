@@ -7,8 +7,6 @@ import { TeacherCarousel } from "@/components/teacher-carousel";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { hakkimizdaVisualSection } from "@/lib/page-visual-sections";
 import { getLatestCourses, getStrapiMediaAltText, getStrapiMediaUrl, getTeachers } from "@/lib/strapi";
-import { join } from "@/lib/testids";
-
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -105,7 +103,7 @@ export default async function HakkimizdaPage() {
               imageUrl: getStrapiMediaUrl(teacher.profilePhoto),
               imageAlt: getStrapiMediaAltText(teacher.profilePhoto) ?? teacher.fullName,
             }))}
-            getCardTestId={(slug) => join('page', 'hakkimizda', 'teacher-carousel', 'card', slug)}
+            cardTestIdPrefix="page.hakkimizda.teacher-carousel.card"
             prevButtonTestId="page.hakkimizda.teacher-carousel.prev"
             nextButtonTestId="page.hakkimizda.teacher-carousel.next"
           />
@@ -145,7 +143,7 @@ export default async function HakkimizdaPage() {
               topicArea: course.topicArea,
               level: course.level,
             }))}
-            getCardTestId={(slug) => join('page', 'hakkimizda', 'course-carousel', 'card', slug)}
+            cardTestIdPrefix="page.hakkimizda.course-carousel.card"
           />
         </div>
 

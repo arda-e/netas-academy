@@ -20,7 +20,7 @@ type TeacherCarouselProps = {
   items: TeacherCarouselItem[];
   className?: string;
   emptyMessage?: string;
-  getCardTestId?: (slug: string) => string;
+  cardTestIdPrefix?: string;
   prevButtonTestId?: string;
   nextButtonTestId?: string;
 };
@@ -38,7 +38,7 @@ export function TeacherCarousel({
   items,
   className,
   emptyMessage = "Gosterilecek egitmen bulunamadi.",
-  getCardTestId,
+  cardTestIdPrefix,
   prevButtonTestId,
   nextButtonTestId,
 }: TeacherCarouselProps) {
@@ -100,7 +100,7 @@ export function TeacherCarousel({
             key={teacher.id}
             href={`/egitmenler/${teacher.slug}`}
             className="panel-surface group/card-link min-w-[220px] snap-start cursor-pointer rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[250px]"
-            data-testid={getCardTestId?.(teacher.slug)}
+            data-testid={cardTestIdPrefix ? `${cardTestIdPrefix}.${teacher.slug}` : undefined}
           >
             <Avatar className="size-24 ring-1 ring-border/60">
               <AvatarImage
