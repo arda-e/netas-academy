@@ -23,6 +23,15 @@ services:
       EMAIL_DEFAULT_FROM: "Netas Academy <no-reply@example.local>"
       EMAIL_DEFAULT_REPLY_TO: "support@example.local"
       EMAIL_TEST_ADDRESS: "test@example.local"
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_ACCESS_SECRET: ${AWS_ACCESS_SECRET:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-}
+      AWS_BUCKET: ${AWS_BUCKET:-}
+      AWS_ACL: ${AWS_ACL:-public-read}
+      AWS_CACHE_CONTROL: ${AWS_CACHE_CONTROL:-public, max-age=31536000, immutable}
+      MEDIA_PUBLIC_URL: ${MEDIA_PUBLIC_URL:-}
+      MEDIA_ROOT_PATH: ${MEDIA_ROOT_PATH:-uploads}
     volumes:
       - ./.docker-data/strapi:/app/backend/.tmp
       - ./.docker-data/uploads:/app/backend/public/uploads
