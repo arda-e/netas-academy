@@ -18,6 +18,10 @@ export default factories.createCoreController('api::registration.registration' a
       throw new ValidationError('Invalid TCKN');
     }
 
+    if (!body.kvkkConsent) {
+      throw new ValidationError('kvkkConsent must be true');
+    }
+
     const registration = await strapi
       .service('api::registration.registration')
       .registerStudentForEvent({
@@ -27,6 +31,6 @@ export default factories.createCoreController('api::registration.registration' a
         notes: body.notes,
       });
 
-    ctx.body = { data: registration };
+    ctx.body = registration;
   },
 }));

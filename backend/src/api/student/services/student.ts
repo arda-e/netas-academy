@@ -35,14 +35,44 @@ export default factories.createCoreService('api::student.student' as any, () => 
       });
     }
 
-    return strapi.db.query('api::student.student').create({
-      data: {
-        firstName,
-        lastName: lastName || null,
-        fullName,
-        email,
-        phone: phone || null,
-      },
-    });
+    try {
+      return await strapi.db.query('api::student.student').create({
+        data: {
+          firstName,
+          lastName: lastName || null,
+          fullName,
+          email,
+          phone: phone || null,
+        },
+      });
+    } catch (error: unknown) {
+      // SQLite UNIQUE constraint violation on email — another concurrent request
+      // created this student between our findOne and create. Retry with update.
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        (error as { code: string }).code === 'SQLITE_CONSTRAINT_UNIQUE'
+      ) {
+        const existing = await strapi.db.query('api::student.student').findOne({
+          where: { email },
+        });
+
+        if (existing) {
+          return strapi.db.query('api::student.student').update({
+            where: { id: existing.id },
+            data: {
+              firstName,
+              lastName: lastName || null,
+              fullName,
+              email,
+              phone: phone || null,
+            },
+          });
+        }
+      }
+
+      throw error;
+    }
   },
 }));
