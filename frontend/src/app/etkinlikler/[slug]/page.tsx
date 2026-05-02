@@ -138,7 +138,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
             {event.summary ? (
               <div className="mb-8 pb-8 border-b border-white/8">
-                <p className="text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
+                <p className="page-body-text">
                   {event.summary}
                 </p>
               </div>

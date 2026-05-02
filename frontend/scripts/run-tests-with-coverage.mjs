@@ -6,13 +6,26 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testsDir = path.resolve(__dirname, "../src/__tests__");
 
-const testFiles = fs.readdirSync(testsDir).filter(f => f.endsWith(".test.mjs"));
+function collectTestFiles(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...collectTestFiles(fullPath));
+    } else if (entry.name.endsWith(".test.mjs")) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+const testFiles = collectTestFiles(testsDir);
 
 let passed = 0;
 let failed = 0;
 
-for (const file of testFiles) {
-  const filePath = path.join(testsDir, file);
+for (const filePath of testFiles) {
   await describe(path.relative(process.cwd(), filePath), async () => {
     try {
       await import(filePath);

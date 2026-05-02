@@ -209,7 +209,7 @@ describe("course-application service", () => {
           status: "pending_payment",
           nextAction: "redirect_to_payment",
           student: expect.objectContaining({
-            tckn: "*******0146",
+            tckn: "****",
           }),
         }),
       }),

@@ -9,12 +9,12 @@ services:
       GIT_COMMIT_SHA: ${GIT_COMMIT_SHA:-}
       HOST: 0.0.0.0
       PORT: 1337
-      APP_KEYS: "app-key-1,app-key-2,app-key-3,app-key-4"
-      ADMIN_JWT_SECRET: "change-admin-jwt-secret"
-      API_TOKEN_SALT: "change-api-token-salt"
-      TRANSFER_TOKEN_SALT: "change-transfer-token-salt"
-      ENCRYPTION_KEY: "change-encryption-key"
-      JWT_SECRET: "change-jwt-secret"
+      APP_KEYS: ${APP_KEYS:-app-key-1,app-key-2,app-key-3,app-key-4}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-change-admin-jwt-secret}
+      API_TOKEN_SALT: ${API_TOKEN_SALT:-change-api-token-salt}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:-change-transfer-token-salt}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-change-encryption-key}
+      JWT_SECRET: ${JWT_SECRET:-change-jwt-secret}
       DATABASE_CLIENT: sqlite
       DATABASE_FILENAME: .tmp/data.db
       EMAIL_PROVIDER: sendmail

@@ -2,8 +2,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -84,10 +82,6 @@
   --foreground: oklch(0.2 0.012 244);
 }
 
-.dark {
-  color-scheme: light;
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -119,5 +113,13 @@
 
   .panel-surface {
     @apply border-2 border-gray-200 bg-slate-100 shadow-sm;
+  }
+
+  .page-body-text {
+    @apply text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg;
+  }
+
+  .page-eyebrow {
+    @apply text-sm font-semibold uppercase tracking-[0.28em] text-primary/72;
   }
 }

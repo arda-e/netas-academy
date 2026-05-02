@@ -19,10 +19,10 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
-    "@strapi/plugin-cloud": "5.43.0",
-    "@strapi/plugin-users-permissions": "5.43.0",
-    "@strapi/provider-upload-aws-s3": "^5.43.0",
-    "@strapi/strapi": "5.43.0",
+    "@strapi/plugin-cloud": "5.44.0",
+    "@strapi/plugin-users-permissions": "5.44.0",
+    "@strapi/provider-upload-aws-s3": "^5.44.0",
+    "@strapi/strapi": "5.44.0",
     "better-sqlite3": "12.8.0",
     "fast-xml-parser": "^5.7.2",
     "react": "^18.0.0",
@@ -39,6 +39,9 @@
     "@vitest/coverage-v8": "^4.1.5",
     "typescript": "^5",
     "vitest": "^4.1.4"
+  },
+  "overrides": {
+    "lodash": ">=4.17.24"
   },
   "engines": {
     "node": ">=22.0.0 <23.0.0",

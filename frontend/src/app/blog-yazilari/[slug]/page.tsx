@@ -36,7 +36,8 @@ type BlogMetaProps = {
 
 function BlogMetaContent({ author, publishedDate }: BlogMetaProps) {
   const hasAuthorLine = Boolean(author?.displayName);
-  const hasPublishedDate = Boolean(publishedDate);
+  const safePublishedDate = publishedDate ?? '';
+  const hasPublishedDate = Boolean(safePublishedDate);
   const hasBio = Boolean(author?.shortBio);
 
   if (!hasAuthorLine && !hasPublishedDate && !hasBio) {
@@ -52,7 +53,7 @@ function BlogMetaContent({ author, publishedDate }: BlogMetaProps) {
           {author?.role ? ` — ${author.role}` : null}
         </p>
       ) : null}
-      {hasPublishedDate ? <p>{formatBlogDate(publishedDate)}</p> : null}
+      {hasPublishedDate ? <p>{formatBlogDate(safePublishedDate)}</p> : null}
       {hasBio ? (
         <p className="basis-full leading-relaxed text-white/64">{author?.shortBio}</p>
       ) : null}

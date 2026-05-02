@@ -1,3 +1,5 @@
+let pepperWarningEmitted = false;
+
 const normalizeTckn = (value: string) => value.trim().replace(/\s+/g, "");
 
 /**
@@ -60,6 +62,16 @@ export function hashTcknForStorage(value?: string | null) {
   }
 
   const pepper = process.env.TCKN_STORAGE_PEPPER ?? "";
+
+  if (!pepper && !pepperWarningEmitted) {
+    pepperWarningEmitted = true;
+    process.stderr.write(
+      "WARNING: TCKN_STORAGE_PEPPER environment variable is not set. " +
+        "TCKN hashes will be computed without a pepper, making them vulnerable to rainbow table attacks. " +
+        "Set TCKN_STORAGE_PEPPER to a random 256-bit value in production.\n",
+    );
+  }
+
   const raw = `${pepper}:${normalizedValue}`;
 
   const hash = require("node:crypto").createHash("sha256");

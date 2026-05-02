@@ -7,14 +7,13 @@ import { Search } from "lucide-react";
 type SearchFieldProps = {
   initialValue?: string;
   /** Reserved for future use — when true, hides any non-search filter UI.
-   *  Currently the component is search-only by design. */
+   *  Currently the component is search-only by design. Use _searchOnly convention. */
   searchOnly?: boolean;
 };
 
 export function SearchField({
   initialValue = "",
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  searchOnly = true,
+  searchOnly: _searchOnly = true,
 }: SearchFieldProps) {
   const router = useRouter();
   const pathname = usePathname();

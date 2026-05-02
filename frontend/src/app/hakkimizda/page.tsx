@@ -42,7 +42,7 @@ export default async function HakkimizdaPage() {
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             Netaş Güvencesiyle Kurumsal Eğitim
           </h2>
-          <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+          <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
             Netaş Academy, Netaş&rsquo;ın derin teknoloji ve sektör deneyiminden güç
             alır. Köklü geçmişin getirdiği bilgi birikimi, eğitim
             programlarımızın sağlam bir temele oturmasını sağlar. Kurumlara
@@ -56,7 +56,7 @@ export default async function HakkimizdaPage() {
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             Vaka, Senaryo ve Gerçek İş Problemine Dayalı Eğitim Modeli
           </h2>
-          <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+          <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
             Eğitim modelimiz, katılımcıların teorik bilgiyi ezberlemek yerine
             gerçek iş problemleri, vaka analizleri ve senaryo temelli
             çalışmalarla içselleştirmesine odaklanır. Etkileşimli
@@ -71,7 +71,7 @@ export default async function HakkimizdaPage() {
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             Kurum İhtiyacına Göre Şekillenen Programlar
           </h2>
-          <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+          <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
             Her kurumun ihtiyacı farklıdır. Eğitim programlarımız; sektör,
             ekip profili, mevcut yetkinlik düzeyi ve hedeflenen gelişim
             alanları doğrultusunda esnek biçimde şekillenir. Açık sınıf
@@ -114,7 +114,7 @@ export default async function HakkimizdaPage() {
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             Katılımcı Çıktısı: Teoriyi İşe Taşıma ve Pratik Beceri
           </h2>
-          <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+          <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
             Eğitimlerimizin nihai hedefi, katılımcıların edindiği bilgiyi iş
             ortamına hızla taşıyabilmesidir. Program sonunda katılımcılar:
             yeni bakış açıları kazanır, uygulanabilir yöntemler öğrenir,

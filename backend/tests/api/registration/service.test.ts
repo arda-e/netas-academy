@@ -138,7 +138,7 @@ describe("registration service", () => {
           lastName: "Kaya",
           email: "ada@example.com",
           phone: "+90 555 111 2233",
-          tckn: "12345678901",
+          tckn: "*******8901",
         },
       },
     };
@@ -247,7 +247,7 @@ describe("registration service", () => {
           lastName: "Kaya",
           email: "ada@example.com",
           phone: "+90 555 111 2233",
-          tckn: "123 456 789 01",
+          tckn: "*******8901",
         },
       }),
     ).resolves.toEqual(createdRegistration);
@@ -259,7 +259,7 @@ describe("registration service", () => {
         payload: expect.objectContaining({
           registrationId: 43,
           student: expect.objectContaining({
-            tckn: "12345678901",
+            tckn: "*******8901",
           }),
         }),
       }),
