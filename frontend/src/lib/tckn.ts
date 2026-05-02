@@ -1,3 +1,9 @@
+/**
+ * Synchronized with: backend/src/utils/tckn.ts
+ * When updating the validation algorithm here, update the backend copy as well.
+ * Test vector: TBD (add known-valid and known-invalid TCKNs for cross-stack validation).
+ */
+
 const normalizeTckn = (value: string) => value.trim().replace(/\s+/g, "");
 
 /**
