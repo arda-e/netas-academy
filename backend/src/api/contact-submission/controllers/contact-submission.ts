@@ -1,7 +1,6 @@
 import { factories } from '@strapi/strapi';
-import { errors } from '@strapi/utils';
 
-const { ValidationError } = errors;
+import { formatError, formatSuccess, validateBody } from '../../../utils/controller-helpers';
 
 const VALID_LEAD_TYPES = [
   'corporate_training_request',
@@ -17,26 +16,33 @@ export default factories.createCoreController(
       const body = ctx.request.body ?? {};
 
       if (!body.leadType || !VALID_LEAD_TYPES.includes(body.leadType)) {
-        throw new ValidationError(
+        const err = formatError(
           'leadType is required and must be one of: corporate_training_request, instructor_application, solution_partner_application, general_contact'
         );
+        ctx.body = err;
+        ctx.status = err.status;
+        return;
       }
 
-      if (!body.fullName || !body.email || !body.phone || !body.message) {
-        throw new ValidationError(
-          'fullName, email, phone, and message are required'
-        );
+      const err = validateBody(body, ['fullName', 'email', 'phone', 'message']);
+      if (err) {
+        ctx.body = err;
+        ctx.status = err.status;
+        return;
       }
 
       if (!body.kvkkConsent) {
-        throw new ValidationError('kvkkConsent must be true');
+        const err = formatError('kvkkConsent must be true');
+        ctx.body = err;
+        ctx.status = err.status;
+        return;
       }
 
       const submission = await strapi
         .service('api::contact-submission.contact-submission')
         .createSubmission(body);
 
-      ctx.body = { data: submission };
+      ctx.body = formatSuccess(submission);
     },
   })
 );

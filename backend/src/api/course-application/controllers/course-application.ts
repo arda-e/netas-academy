@@ -1,7 +1,6 @@
 import { factories } from "@strapi/strapi";
-import { errors } from "@strapi/utils";
 
-const { NotFoundError, ValidationError } = errors;
+import { formatError, formatSuccess, validateBody } from "../../../utils/controller-helpers";
 
 export default factories.createCoreController("api::course-application.course-application" as any, () => ({
   async submit(ctx) {
@@ -9,16 +8,20 @@ export default factories.createCoreController("api::course-application.course-ap
     const student = body.student ?? {};
     const consents = body.consents ?? {};
 
-    if (!body.courseDocumentId || !student.firstName || !student.email || !student.tckn) {
-      throw new ValidationError(
-        "courseDocumentId, student.firstName, student.email, and student.tckn are required",
-      );
+    const err = validateBody(body, ["courseDocumentId", "student.firstName", "student.email", "student.tckn"]);
+    if (err) {
+      ctx.body = err;
+      ctx.status = err.status;
+      return;
     }
 
     if (!consents.kvkk || !consents.salesAgreement) {
-      throw new ValidationError(
+      const err = formatError(
         "consents.kvkk and consents.salesAgreement are required and must be true",
       );
+      ctx.body = err;
+      ctx.status = err.status;
+      return;
     }
 
     const submission = await strapi.service("api::course-application.course-application").submitApplication({
@@ -29,9 +32,12 @@ export default factories.createCoreController("api::course-application.course-ap
     });
 
     if (!submission) {
-      throw new NotFoundError("Course application could not be created");
+      const err = formatError("Course application could not be created", 404);
+      ctx.body = err;
+      ctx.status = err.status;
+      return;
     }
 
-    ctx.body = { data: submission };
+    ctx.body = formatSuccess(submission);
   },
 }));

@@ -10,21 +10,21 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
-test("Detail page imports isEventRegistrationOpen", () => {
+test("Detail page imports getEventRegistrationStatus", () => {
   const source = readSource("app/etkinlikler/[slug]/page.tsx");
   assert.match(
     source,
-    /import\s*\{\s*isEventRegistrationOpen\s*\}\s*from\s*"@\/lib\/event-registration"/,
-    "Detail page should import isEventRegistrationOpen"
+    /import\s*\{[^}]*\bgetEventRegistrationStatus\b[^}]*\}\s*from\s*"@\/lib\/strapi"/,
+    "Detail page should import getEventRegistrationStatus"
   );
 });
 
-test("Detail page computes registrationOpen with isEventRegistrationOpen", () => {
+test("Detail page computes registrationOpen with getEventRegistrationStatus", () => {
   const source = readSource("app/etkinlikler/[slug]/page.tsx");
   assert.match(
     source,
-    /isEventRegistrationOpen\(event\)/,
-    "Detail page should call isEventRegistrationOpen(event)"
+    /getEventRegistrationStatus\(event\.documentId\)/,
+    "Detail page should call getEventRegistrationStatus(event.documentId)"
   );
 });
 
