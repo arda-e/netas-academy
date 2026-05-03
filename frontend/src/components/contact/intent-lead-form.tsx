@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import type { LeadType } from "@/lib/lead-intents";
 import { LEAD_INTENTS, LEAD_TYPES, getSchemaForLeadType } from "@/lib/lead-intents";
 import { FormStorage } from "@/lib/form-storage";
+import { useFormPersistence } from "@/hooks/use-form-persistence";
 import {
   emitLeadCatalogClick,
   emitLeadContextualEntry,
@@ -38,10 +39,6 @@ const labelClassName = "text-md font-medium text-foreground";
 const fieldWrapperClassName = "space-y-2 md:space-y-3";
 
 /* ─── Types ─── */
-
-function storageFor(leadType: LeadType): FormStorage {
-  return new FormStorage(`contact-form-${leadType}`);
-}
 
 type FormValues = {
   fullName: string;
@@ -73,6 +70,11 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   const [isPending, startTransition] = useTransition();
   const hasEmittedStartRef = useRef(false);
   const mountedRef = useRef(false);
+
+  const { save: persistValues, clear: clearStorage } =
+    useFormPersistence<FormValues>(`contact-form-${leadType}`, {
+      sensitiveFields: [],
+    });
 
   // lead_tab_view: emit on mount and when leadType changes
   useEffect(() => {
@@ -119,8 +121,10 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   });
 
   // Restore form values from sessionStorage on mount
+  // Uses a direct FormStorage call with initialLeadType to avoid hook complication
+  // when leadType may have already changed on re-render.
   useEffect(() => {
-    const saved = storageFor(initialLeadType).load<FormValues>();
+    const saved = new FormStorage(`contact-form-${initialLeadType}`).load<FormValues>();
     if (saved) {
       reset({
         fullName: saved.fullName ?? "",
@@ -157,14 +161,14 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       kvkkConsent: false,
     });
     hasEmittedStartRef.current = false;
-    storageFor(leadType).clear();
+    clearStorage();
   }, [leadType, reset, prefilledTopic]);
 
   // Persist form values to sessionStorage on every change
   const watchedValues = watch();
   useEffect(() => {
-    storageFor(leadType).save(watchedValues as FormValues);
-  }, [watchedValues, leadType]);
+    persistValues(watchedValues as FormValues);
+  }, [watchedValues, persistValues]);
 
   const onSubmit = useCallback(
     (data: FormValues) => {
@@ -204,7 +208,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
 
           setSuccess(true);
           emitLeadSubmitSuccess(leadType);
-          storageFor(leadType).clear();
+          clearStorage();
           reset();
         } catch {
           const reason = "Form gönderilemedi. Lütfen tekrar deneyin.";
@@ -266,7 +270,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           variant="outline"
           onClick={() => {
             emitLeadRelatedContentClick(leadType);
-            storageFor(leadType).clear();
+            clearStorage();
             setSuccess(false);
           }}
           className="h-12 rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg"

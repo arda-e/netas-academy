@@ -1,10 +1,10 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import type { StrapiEventType } from "@/lib/strapi";
 import { isValidTckn, normalizeTcknValue } from "@/lib/tckn";
-import { FormStorage } from "@/lib/form-storage";
+import { useFormPersistence } from "@/hooks/use-form-persistence";
 
 type EventRegistrationValues = {
   firstName: string;
@@ -19,7 +19,7 @@ type EventRegistrationValues = {
 type UseEventRegistrationFormOptions = {
   eventDocumentId: string;
   eventTitle: string;
-  eventType: StrapiEventType;
+  eventType?: StrapiEventType;
 };
 
 const initialValues: EventRegistrationValues = {
@@ -44,10 +44,6 @@ function getErrorMessage(payload: unknown) {
   ) {
     const message = payload.error.message;
 
-    if (message === "Student is already registered for this event") {
-      return "Bu etkinlik icin daha once kayit oldunuz.";
-    }
-
     if (message === "Event registration is closed") {
       return "Bu etkinlik icin kayitlar kapandi. Kayitlar etkinlik baslangicindan 24 saat once otomatik olarak kapanir.";
     }
@@ -60,6 +56,10 @@ function getErrorMessage(payload: unknown) {
       return "Gecerli bir TCKN girin.";
     }
 
+    if (message === "kvkkConsent must be true") {
+      return "KVKK aydinlatma metnini onaylamaniz gerekmektedir.";
+    }
+
     return message;
   }
 
@@ -69,16 +69,16 @@ function getErrorMessage(payload: unknown) {
 export function useEventRegistrationForm({
   eventDocumentId,
   eventTitle,
-  eventType,
 }: UseEventRegistrationFormOptions) {
-  const storage = useMemo(
-    () => new FormStorage(`event-registration-${eventDocumentId}`),
-    [eventDocumentId]
-  );
+  const { load, save: persistValues, clear: clearStorage } =
+    useFormPersistence<EventRegistrationValues>(
+      `event-registration-${eventDocumentId}`,
+      { sensitiveFields: ["tckn"] }
+    );
 
-  const requiresKvkkConsent = eventType === "egitim" || eventType === "kurs";
+  const requiresKvkkConsent = true;
   const [values, setValues] = useState<EventRegistrationValues>(() => {
-    const saved = storage.load<EventRegistrationValues>();
+    const saved = load();
     return saved ?? initialValues;
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,8 +87,8 @@ export function useEventRegistrationForm({
 
   // Persist form values to sessionStorage on every change
   useEffect(() => {
-    storage.save(values);
-  }, [values, storage]);
+    persistValues(values);
+  }, [values, persistValues]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -157,6 +157,7 @@ export function useEventRegistrationForm({
             tckn: normalizedTckn,
           },
           notes: values.notes.trim() || undefined,
+          kvkkConsent: values.kvkkConsent,
         }),
       });
 
@@ -170,7 +171,7 @@ export function useEventRegistrationForm({
       setSuccessMessage(
         `${eventTitle} etkinligi icin kaydiniz alindi. Ekibimiz kisa sure icinde sizinle iletisime gececek.`
       );
-      storage.clear();
+      clearStorage();
       setValues(initialValues);
     } catch {
       setErrorMessage("Kayit istegi gonderilemedi. Lutfen tekrar deneyin.");

@@ -5,23 +5,14 @@ import { notFound } from "next/navigation";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { EventRegistrationForm } from "@/components/event-registration-form";
 import { Button } from "@/components/ui/button";
-import { isEventRegistrationOpen } from "@/lib/event-registration";
-import { getEventBySlug } from "@/lib/strapi";
+import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi";
+import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventRegistrationPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-const formatEventDate = (value: string) =>
-  new Intl.DateTimeFormat("tr-TR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
 
 function EventInformationPanel({
   title,
@@ -49,8 +40,8 @@ function EventInformationPanel({
         <p className="font-bold text-lg text-gray-700">{title}</p>
         <p>{summary ?? "Bu etkinlik icin aciklama yakinda eklenecek."}</p>
         <div className="space-y-0.5">
-          <p className="font-bold text-gray-700">{formatEventDate(startsAt)}</p>
-          {endsAt ? <p className="font-bold text-gray-700">{formatEventDate(endsAt)}</p> : null}
+          <p className="font-bold text-gray-700">{formatEventDateTime(startsAt)}</p>
+          {endsAt ? <p className="font-bold text-gray-700">{formatEventDateTime(endsAt)}</p> : null}
         </div>
         {location ? <p>{location}</p> : null}
         <p className={registrationOpen ? "font-semibold text-emerald-400" : "font-semibold text-amber-300"}>
@@ -95,7 +86,8 @@ export default async function EventRegistrationPage({
     notFound();
   }
 
-  const registrationOpen = isEventRegistrationOpen(event);
+  const registrationStatus = await getEventRegistrationStatus(event.documentId);
+  const registrationOpen = registrationStatus?.isOpen ?? false;
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.event-registration">
@@ -134,7 +126,6 @@ export default async function EventRegistrationPage({
                 <EventRegistrationForm
                   eventDocumentId={event.documentId}
                   eventTitle={event.title}
-                  eventType={event.eventType}
                 />
               </div>
             ) : (

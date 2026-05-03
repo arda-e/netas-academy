@@ -1,21 +1,29 @@
 import { factories } from '@strapi/strapi';
-import { errors } from '@strapi/utils';
 
 import { isValidTckn } from '../../../utils/tckn';
-
-const { ValidationError } = errors;
+import { formatError, formatSuccess, validateBody } from '../../../utils/controller-helpers';
 
 export default factories.createCoreController('api::registration.registration' as any, () => ({
   async register(ctx) {
     const body = ctx.request.body ?? {};
     const tckn = typeof body.student?.tckn === 'string' ? body.student.tckn : '';
 
-    if (!body.eventDocumentId || !body.student?.firstName || !body.student?.lastName || !body.student?.email || !tckn) {
-      throw new ValidationError('eventDocumentId, student.firstName, student.lastName, student.email, and student.tckn are required');
+    const err = validateBody(body, ['eventDocumentId', 'student.firstName', 'student.lastName', 'student.email', 'student.tckn']);
+    if (err) {
+      ctx.body = err;
+      ctx.status = err.status;
+      return;
     }
 
     if (!isValidTckn(tckn)) {
-      throw new ValidationError('Invalid TCKN');
+      const err = formatError('Invalid TCKN');
+      ctx.body = err;
+      ctx.status = err.status;
+      return;
+    }
+
+    if (!body.kvkkConsent) {
+      throw new ValidationError('kvkkConsent must be true');
     }
 
     const registration = await strapi
@@ -27,6 +35,6 @@ export default factories.createCoreController('api::registration.registration' a
         notes: body.notes,
       });
 
-    ctx.body = { data: registration };
+    ctx.body = registration;
   },
 }));
