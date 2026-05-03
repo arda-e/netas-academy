@@ -71,6 +71,7 @@ describe("contact-submission service", () => {
         company: " Netas ",
         message: " Kurumsal egitim hakkinda bilgi almak istiyorum. ",
         interestTopic: " Veri Bilimi ",
+        kvkkConsent: true,
       }),
     ).resolves.toEqual(submission);
 
@@ -88,6 +89,7 @@ describe("contact-submission service", () => {
         partnershipDetails: null,
         submittedAt: expect.any(String),
         status: "new",
+        kvkkConsent: true,
       },
     });
 
@@ -137,6 +139,7 @@ describe("contact-submission service", () => {
         phone: "+90 555 222 3344",
         message: "Egitmen olmak istiyorum.",
         expertiseAreas: "Python, Makine Ogrenmesi",
+        kvkkConsent: true,
       }),
     ).resolves.toEqual(submission);
 
@@ -182,6 +185,7 @@ describe("contact-submission service", () => {
       email: "  ZEYNEP@EXAMPLE.COM  ",
       phone: " +90 555 333 4455 ",
       message: "  Merhaba\n\n\nNasilsiniz?  ",
+      kvkkConsent: true,
     });
 
     expect(strapi.create).toHaveBeenCalledWith({
@@ -209,6 +213,7 @@ describe("contact-submission service", () => {
         email: "ada@example.com",
         phone: "+90 555 111 2233",
         message: "Merhaba",
+        kvkkConsent: true,
       }),
     ).rejects.toThrow("interestTopic is required for corporate training requests");
   });
@@ -229,6 +234,7 @@ describe("contact-submission service", () => {
         email: "ada@example.com",
         phone: "+90 555 111 2233",
         message: "Merhaba",
+        kvkkConsent: true,
       }),
     ).rejects.toThrow("expertiseAreas is required for instructor applications");
   });
@@ -249,6 +255,7 @@ describe("contact-submission service", () => {
         email: "ada@example.com",
         phone: "+90 555 111 2233",
         message: "Merhaba",
+        kvkkConsent: true,
       }),
     ).rejects.toThrow("companySize is required for solution partner applications");
   });
@@ -270,6 +277,7 @@ describe("contact-submission service", () => {
         phone: "+90 555 111 2233",
         message: "Merhaba",
         expertiseAreas: "   ",
+        kvkkConsent: true,
       }),
     ).rejects.toThrow("expertiseAreas is required for instructor applications");
 
@@ -294,6 +302,7 @@ describe("contact-submission service", () => {
         message: "Merhaba",
         companySize: "11-50",
         partnershipDetails: "a".repeat(4001),
+        kvkkConsent: true,
       }),
     ).rejects.toThrow("partnershipDetails must be at most 4000 characters");
 
@@ -332,6 +341,7 @@ describe("contact-submission service", () => {
       email: "ada@example.com",
       phone: "+90 555 111 2233",
       message: "Merhaba",
+      kvkkConsent: true,
     });
 
     expect(result).toEqual(submission);

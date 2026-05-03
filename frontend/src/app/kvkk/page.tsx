@@ -51,8 +51,8 @@ export default function KvkkPage() {
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Genel Bilgilendirme
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
-              Amacımız; 6698 sayılı "Kişisel Verilerin Korunması Kanunu"nun 10.
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
+              Amacımız; 6698 sayılı &ldquo;Kişisel Verilerin Korunması Kanunu&rdquo;nun 10.
               maddesi gereğince ve sizlerin memnuniyeti doğrultusunda, kişisel
               verilerinizin alınma şekilleri, işlenme amaçları, paylaşılan kişiler,
               hukuki nedenleri ve haklarınız konularında sizi en şeffaf şekilde
@@ -64,10 +64,10 @@ export default function KvkkPage() {
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               a) Veri Sorumlusu
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
-              6698 sayılı Kişisel Verilerin Korunması Kanunu ("6698 sayılı Kanun")
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
+              6698 sayılı Kişisel Verilerin Korunması Kanunu (&ldquo;6698 sayılı Kanun&rdquo;)
               uyarınca, kişisel verileriniz; veri sorumlusu olarak Netaş
-              Telekomünikasyon A.Ş. ("Netaş") tarafından aşağıda açıklanan kapsamda
+              Telekomünikasyon A.Ş. (&ldquo;Netaş&rdquo;) tarafından aşağıda açıklanan kapsamda
               toplanacak ve işlenebilecektir.
             </p>
           </article>
@@ -76,7 +76,7 @@ export default function KvkkPage() {
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               b) Kişisel Verilerin Hangi Amaçla İşleneceği
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
               Netaş tarafından, müşterileri, çalışanları, potansiyel müşterileri,
               çalışan adayları, iş ortakları ve tedarikçileri gibi taraflardan,
               kimlik bilgisi, iletişim bilgisi, müşteri bilgisi, müşteri işlem
@@ -88,14 +88,14 @@ export default function KvkkPage() {
               {purposeItems.map((item) => (
                 <p
                   key={item}
-                  className="text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg"
+                  className="page-body-text"
                 >
                   {item}
                 </p>
               ))}
             </div>
-            <p className="mt-5 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
-              amaçlarıyla 6698 sayılı Kanun'un 5. ve 6. maddelerinde belirtilen
+            <p className="mt-5 max-w-4xl page-body-text sm:mt-6">
+              amaçlarıyla 6698 sayılı Kanun&rsquo;un 5. ve 6. maddelerinde belirtilen
               kişisel veri işleme şartları ve amaçları dahilinde işlenecektir.
             </p>
           </article>
@@ -104,13 +104,13 @@ export default function KvkkPage() {
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               c) İşlenen Kişisel Verilerin Kimlere ve Hangi Amaçla Aktarılabileceği
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
               Toplanan kişisel verileriniz; yukarıda belirtilen amaçların
               gerçekleştirilmesi ile sınırlı olmak üzere aşağıdaki taraflara
               aktarılabilecektir:
             </p>
-            <ul className="mt-5 space-y-3 text-[15px] leading-7 text-foreground/72 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
-              <li>Netaş'ın iş ortaklarına, hissedarlarına, iştiraklerine,</li>
+            <ul className="mt-5 space-y-3 page-body-text sm:mt-6">
+              <li>Netaş&rsquo;ın iş ortaklarına, hissedarlarına, iştiraklerine,</li>
               <li>
                 Vergi Usul Kanunu, Sosyal Güvenlik Kurumu mevzuatı, Sayıştay, Suç
                 Gelirlerinin Aklanmasının Önlenmesi Hakkında Kanun, Karaparanın
@@ -128,7 +128,7 @@ export default function KvkkPage() {
                 kurum ve kuruluşlara, müşterilerimize gönderdiğimiz iletilerin
                 gönderilmesi konusunda anlaşmalı olduğumuz kurumlara, verilen
                 siparişlerin size teslimini gerçekleştiren kargo şirketlerine
-                6698 sayılı Kanun'un 8. ve 9. maddelerinde belirtilen kişisel veri
+                6698 sayılı Kanun&rsquo;un 8. ve 9. maddelerinde belirtilen kişisel veri
                 işleme şartları ve amaçları çerçevesinde aktarılabilecektir.
               </li>
             </ul>
@@ -138,7 +138,7 @@ export default function KvkkPage() {
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               ç) Kişisel Veri Toplamanın Yöntemi ve Hukuki Sebebi
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
               Kişisel verileriniz Netaş Genel Müdürlük, anlaşmalı internet siteleri
               üzerinden yapılmış olan başvurular, destek hizmeti verdiğimiz / aldığımız
               sair kurumlar ile her türlü mevzuat veya sözleşme dahilinde işlem
@@ -154,9 +154,9 @@ export default function KvkkPage() {
 
           <article className="panel-surface rounded-sm p-4 sm:p-8">
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              d) Kişisel Veri Sahibinin 6698 sayılı Kanun'un 11. Maddesinde Sayılan Hakları
+              d) Kişisel Veri Sahibinin 6698 sayılı Kanun&rsquo;un 11. Maddesinde Sayılan Hakları
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
               Kişisel veri sahipleri olarak, haklarınıza ilişkin taleplerinizi
               aşağıda düzenlenen yöntemlerle iletmeniz durumunda Netaş talebin
               niteliğine göre talebi en kısa sürede ve en geç otuz gün içinde
@@ -170,7 +170,7 @@ export default function KvkkPage() {
               {rightsItems.map((item) => (
                 <p
                   key={item}
-                  className="text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg"
+                  className="page-body-text"
                 >
                   {item}
                 </p>
@@ -182,22 +182,22 @@ export default function KvkkPage() {
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Başvuru Usulü
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
               Yukarıda belirtilen haklarınızı kullanma ile ilgili talebinizi,
-              6698 sayılı Kanun'un 13. maddesinin 1. fıkrası ve 30356 sayılı ve
+              6698 sayılı Kanun&rsquo;un 13. maddesinin 1. fıkrası ve 30356 sayılı ve
               10.03.2018 tarihli Veri Sorumlusuna Başvuru Usul ve Esasları
               Hakkında Tebliğ gereğince Türkçe ve yazılı olarak veya kayıtlı
               elektronik posta (KEP) adresi, güvenli elektronik imza, mobil imza
-              ya da Netaş'a daha önce bildirilen ve sistemimizde kayıtlı bulunan
+              ya da Netaş&rsquo;a daha önce bildirilen ve sistemimizde kayıtlı bulunan
               elektronik posta adresini kullanmak suretiyle iletebilirsiniz.
             </p>
-            <p className="mt-4 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-4 max-w-4xl page-body-text">
               Başvurularda sadece başvuru sahibi kişi hakkında bilgi verilecek
               olup diğer aile fertleri ve üçüncü kişiler hakkında bilgi alınması
-              mümkün olmayacaktır. Netaş'ın cevap vermeden önce kimliğinizi
+              mümkün olmayacaktır. Netaş&rsquo;ın cevap vermeden önce kimliğinizi
               doğrulama hakkı saklıdır.
             </p>
-            <p className="mt-4 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-4 max-w-4xl page-body-text">
               Başvurunuzda adınızın, soyadınızın ve başvuru yazılı ise imzanızın;
               Türkiye Cumhuriyeti vatandaşları için T.C. kimlik numaranızın, yabancı
               iseniz uyruğunuzun, pasaport numaranızın veya varsa kimlik
@@ -212,17 +212,17 @@ export default function KvkkPage() {
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               İletişim Bilgileri
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
               Yazılı olarak yapmak istediğiniz başvurularınızı, gerekli belgeleri
               ekleyerek veri sorumlusu olarak Şirketimizin Yenişehir Mah. Osmanlı
               Bulvarı No:11 34912 adresine verebilirsiniz.
             </p>
-            <p className="mt-4 max-w-4xl break-words text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-4 max-w-4xl break-words page-body-text">
               E-posta yoluyla yapmak istediğiniz başvurularınızı netas@hs02.kep.tr
               KEP adresimize yapabilirsiniz. E-posta yoluyla yapmak istediğiniz
               başvurularınızı kvkk@netas.com.tr e-posta adresine yapabilirsiniz.
             </p>
-            <p className="mt-4 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-4 max-w-4xl page-body-text">
               Talebinizin niteliğine göre kimlik tespitine olanak sağlayacak bilgi
               ve belgelerin eksiksiz ve doğru olarak tarafımıza sağlanması
               gerekmektedir. İstenilen bilgi ve belgelerin gereği gibi sağlanmaması
@@ -236,7 +236,7 @@ export default function KvkkPage() {
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Resmi Netaş Sitesi
             </h2>
-            <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
               Kurumsal ve hukuki detaylar için resmi Netaş web sitesini
               inceleyebilirsiniz.
             </p>

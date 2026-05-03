@@ -30,7 +30,7 @@ export default function Home() {
       <main className="page-shell" data-testid="page.home">
         <section className="page-section pt-8 sm:pt-10 lg:pt-12">
           <div className="mx-auto max-w-4xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-primary/72">
+            <p className="page-eyebrow">
               Netaş Akademi
             </p>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
@@ -38,7 +38,7 @@ export default function Home() {
               <br />
               şekillenen bir öğrenme platformu.
             </h2>
-            <p className="mt-5 text-[15px] leading-7 text-foreground/72 sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
+            <p className="mt-5 page-body-text sm:mt-6">
               Netaş Akademi, kurumların değişen dünyaya uyum sağlaması için
               ihtiyaç duyduğu bilgi ve becerileri, sahada kanıtlanmış
               yöntemlerle sunar. Amacımız, ekiplerinizin potansiyelini ortaya

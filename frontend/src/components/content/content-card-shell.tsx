@@ -33,6 +33,7 @@ export function ContentCardShell({
   testId,
 }: ContentCardShellProps) {
   const hasImage = Boolean(imageUrl);
+  const safeUrl = imageUrl ?? '';
 
   const card = (
     <Card
@@ -46,7 +47,7 @@ export function ContentCardShell({
       {hasImage ? (
         <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-t-sm" data-testid={testId && join(testId, 'image')}>
           <Image
-            src={imageUrl!}
+            src={safeUrl}
             alt={imageAlt ?? title}
             fill
             sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"

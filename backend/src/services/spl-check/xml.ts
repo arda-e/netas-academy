@@ -35,10 +35,15 @@ export function buildSplCheckRequestXml(request: SplCheckRequest) {
   return parts.join("\n");
 }
 
+const MAX_XML_SIZE = 1_000_000; // 1 MB
+
 const soapXmlParser = new XMLParser({
   ignoreAttributes: false,
   removeNSPrefix: false,
   isArray: () => false, // treat all non-array XML elements as objects
+  processEntities: false,
+  htmlEntities: false,
+  ignoreDeclaration: true,
 });
 
 /**
@@ -61,7 +66,9 @@ function findSoapElement(
 
     if (keyLocal.toLowerCase() === localName.toLowerCase()) {
       const value = obj[key];
-      if (typeof value === "string") return value.trim();
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+        return String(value).trim();
+      }
       // fast-xml-parser may nest text under "#text" for mixed content/CDATA
       if (typeof value === "object" && value !== null && "#text" in (value as Record<string, unknown>)) {
         return String((value as Record<string, unknown>)["#text"] ?? "").trim();
@@ -78,6 +85,8 @@ function findSoapElement(
 }
 
 export function extractSoapStatus(xml: string) {
+  if (xml.length > MAX_XML_SIZE) return null;
+
   try {
     const parsed = soapXmlParser.parse(xml) as Record<string, unknown>;
     return findSoapElement(parsed, "Status");
@@ -87,6 +96,8 @@ export function extractSoapStatus(xml: string) {
 }
 
 export function extractSoapReference(xml: string) {
+  if (xml.length > MAX_XML_SIZE) return null;
+
   try {
     const parsed = soapXmlParser.parse(xml) as Record<string, unknown>;
     return findSoapElement(parsed, "Reference");

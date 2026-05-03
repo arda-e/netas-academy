@@ -73,7 +73,7 @@ export default async function CozumOrtagiPage() {
                 <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
                   {area.title}
                 </h2>
-                <p className="mt-3 max-w-4xl text-[15px] leading-7 text-foreground/72 sm:mt-4 sm:text-base sm:leading-8 md:text-lg">
+                <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
                   {area.body}
                 </p>
               </article>
