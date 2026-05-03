@@ -4,6 +4,7 @@ import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import { join } from "@/lib/testids";
+import { formatLongDate } from "@/lib/date-formatting";
 
 export type NewsListItem = {
   id: number | string;
@@ -19,18 +20,11 @@ type NewsListProps = {
   emptyMessage?: string;
 };
 
-const formatNewsDate = (value: string) =>
-  new Intl.DateTimeFormat("tr-TR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
-
 function NewsCard({ item }: { item: NewsListItem }) {
   const meta: ReactNode = (
     <div className="space-y-1.5 break-words">
       {item.tag ? <p>{item.tag}</p> : null}
-      {item.publishedAt ? <p>{formatNewsDate(item.publishedAt)}</p> : null}
+      {item.publishedAt ? <p>{formatLongDate(item.publishedAt)}</p> : null}
     </div>
   );
 

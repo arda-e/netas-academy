@@ -6,24 +6,15 @@ import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { NewsletterSubscriptionForm } from "@/components/newsletter-subscription-form";
-import { isEventRegistrationOpen } from "@/lib/event-registration";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
-import { getEventBySlug } from "@/lib/strapi";
+import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi";
+import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventDetailPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-const formatEventDate = (value: string) =>
-  new Intl.DateTimeFormat("tr-TR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
 
 function EventInformationPanel({
   title,
@@ -48,8 +39,8 @@ function EventInformationPanel({
       <div className="mt-5 space-y-4 text-base leading-7 text-foreground/78">
         <p className="font-bold text-lg text-gray-700">{title}</p>
         <div className="space-y-0.5">
-          <p className="font-bold text-gray-700">{formatEventDate(startsAt)}</p>
-          {endsAt ? <p className="font-bold text-gray-700">{formatEventDate(endsAt)}</p> : null}
+          <p className="font-bold text-gray-700">{formatEventDateTime(startsAt)}</p>
+          {endsAt ? <p className="font-bold text-gray-700">{formatEventDateTime(endsAt)}</p> : null}
         </div>
         {location ? <p>{location}</p> : null}
       </div>
@@ -105,7 +96,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
     notFound();
   }
 
-  const registrationOpen = isEventRegistrationOpen(event);
+  const registrationStatus = await getEventRegistrationStatus(event.documentId);
+  const registrationOpen = registrationStatus?.isOpen ?? false;
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.event-detail">

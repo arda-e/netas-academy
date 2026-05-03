@@ -5,6 +5,7 @@ import { ContentGrid } from "@/components/content/content-grid";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import { join } from "@/lib/testids";
+import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventListItem = {
   topicArea?: string | null;
@@ -46,15 +47,6 @@ const formatEventType = (eventType: string) => {
   }
 };
 
-const formatEventDate = (value: string) =>
-  new Intl.DateTimeFormat("tr-TR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
-
 export function EventList({
   items,
   emptyMessage = "Gosterilecek etkinlik verisi su an kullanilabilir degil.",
@@ -77,9 +69,9 @@ export function EventList({
           className="bg-white"
           meta={
             <div className="space-y-1.5 break-words">
-              <p className="font-bold text-gray-700">{formatEventDate(event.startsAt)}</p>
+              <p className="font-bold text-gray-700">{formatEventDateTime(event.startsAt)}</p>
               {event.endsAt ? (
-                <p className="font-bold text-gray-700">{formatEventDate(event.endsAt)}</p>
+                <p className="font-bold text-gray-700">{formatEventDateTime(event.endsAt)}</p>
               ) : null}
               {event.location ? <p>{event.location}</p> : null}
             </div>
@@ -108,8 +100,8 @@ export function EventDetail({
       summary={summary ?? undefined}
       meta={
         <div className={responsiveLayoutClasses.eventMeta}>
-          <p className="font-bold text-gray-700">{formatEventDate(startsAt)}</p>
-          {endsAt ? <p className="font-bold text-gray-700">{formatEventDate(endsAt)}</p> : null}
+          <p className="font-bold text-gray-700">{formatEventDateTime(startsAt)}</p>
+          {endsAt ? <p className="font-bold text-gray-700">{formatEventDateTime(endsAt)}</p> : null}
           {location ? <p>{location}</p> : null}
         </div>
       }
