@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -46,10 +47,15 @@ export function VisualStorySection({
             className="panel-surface rounded-sm overflow-hidden"
             data-testid={itemTestIdPrefix ? `${itemTestIdPrefix}.${index}` : undefined}
           >
-            <div
-              className="h-44 w-full border-b border-white/8 bg-cover bg-center sm:h-56"
-              style={{ backgroundImage: `url(${item.imageUrl})` }}
-            />
+            <div className="relative h-44 w-full overflow-hidden border-b border-white/8 sm:h-56">
+              <Image
+                src={item.imageUrl}
+                alt={item.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            </div>
             <div className="space-y-3 p-5 sm:space-y-4 sm:p-6">
               <h3 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
                 {item.title}

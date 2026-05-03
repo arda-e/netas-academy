@@ -6,8 +6,8 @@
  * transaction-level checks in the registration service.
  */
 export default {
-  async beforeCreate(event: { params: { data: { student?: number; event?: number } } }) {
-    const { student, event } = event.params.data;
+  async beforeCreate(lifecycleEvent: { params: { data: { student?: number; event?: number } } }) {
+    const { student, event } = lifecycleEvent.params.data;
 
     if (!student || !event) {
       return;

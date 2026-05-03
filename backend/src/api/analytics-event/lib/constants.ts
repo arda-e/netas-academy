@@ -16,19 +16,28 @@ export function containsPII(key: string): boolean {
   return PII_PATTERNS.some((pattern) => lower.includes(pattern));
 }
 
-export function sanitizeProperties(properties: Record<string, unknown> | null | undefined): Record<string, unknown> {
-  if (!properties || typeof properties !== 'object') {
-    return {};
+function sanitizeValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(sanitizeValue);
   }
 
-  const sanitized: Record<string, unknown> = {};
+  if (value && typeof value === 'object' && !(value instanceof Date)) {
+    const sanitized: Record<string, unknown> = {};
 
-  for (const [key, value] of Object.entries(properties)) {
-    if (containsPII(key)) {
-      continue;
+    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      if (containsPII(key)) {
+        continue;
+      }
+      sanitized[key] = sanitizeValue(val);
     }
-    sanitized[key] = value;
+
+    return sanitized;
   }
 
-  return sanitized;
+  return value;
+}
+
+export function sanitizeProperties(properties: Record<string, unknown> | null | undefined): Record<string, unknown> {
+  const result = sanitizeValue(properties);
+  return (result && typeof result === 'object' && !Array.isArray(result) ? result : {}) as Record<string, unknown>;
 }
