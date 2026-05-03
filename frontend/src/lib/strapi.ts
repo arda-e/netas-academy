@@ -414,6 +414,25 @@ export async function getTeacherBySlug(slug: string) {
   }
 }
 
+export type EventRegistrationStatus = {
+  isOpen: boolean;
+  startsAt: string;
+  keepRegistrationsOpen: boolean;
+};
+
+export async function getEventRegistrationStatus(
+  documentId: string
+): Promise<EventRegistrationStatus | null> {
+  try {
+    const data = await fetchStrapi<{ data: EventRegistrationStatus }>(
+      `/api/events/${documentId}/registration-status`
+    );
+    return data?.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function getLatestCourses(limit = 5) {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(

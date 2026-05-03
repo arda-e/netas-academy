@@ -11,6 +11,7 @@ import {
   getStrapiMediaAltText,
   type StrapiBlogPost,
 } from "@/lib/strapi";
+import { formatLongDate } from "@/lib/date-formatting";
 
 type BlogDetailPageProps = {
   params: Promise<{
@@ -21,13 +22,6 @@ type BlogDetailPageProps = {
 export const dynamic = "force-dynamic";
 
 const EMPTY_BLOG_CONTENT = "Bu yazı için içerik yakında eklenecek.";
-
-const formatBlogDate = (value: string) =>
-  new Intl.DateTimeFormat("tr-TR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
 
 type BlogMetaProps = {
   author?: StrapiBlogPost["author"];
@@ -52,7 +46,7 @@ function BlogMetaContent({ author, publishedDate }: BlogMetaProps) {
           {author?.role ? ` — ${author.role}` : null}
         </p>
       ) : null}
-      {hasPublishedDate ? <p>{formatBlogDate(publishedDate)}</p> : null}
+      {hasPublishedDate ? <p>{formatLongDate(publishedDate)}</p> : null}
       {hasBio ? (
         <p className="basis-full leading-relaxed text-white/64">{author?.shortBio}</p>
       ) : null}

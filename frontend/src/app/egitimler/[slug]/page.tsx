@@ -13,6 +13,7 @@ import {
   getCourseLevelLabel,
 } from "@/lib/content-taxonomy";
 import { join } from "@/lib/testids";
+import { formatEventDateTime } from "@/lib/date-formatting";
 
 function parseOutcomeBullets(value?: string | null) {
   if (!value) {
@@ -205,11 +206,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                   </Link>
                   {event.startsAt ? (
                     <span className="ml-2 text-sm text-foreground/50">
-                      {new Intl.DateTimeFormat("tr-TR", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      }).format(new Date(event.startsAt))}
+                      {formatEventDateTime(event.startsAt)}
                     </span>
                   ) : null}
                 </li>

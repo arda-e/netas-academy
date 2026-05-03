@@ -7,6 +7,7 @@ import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
+import { formatLongDate } from "@/lib/date-formatting";
 
 export type BlogListItem = {
   id: number | string;
@@ -37,13 +38,6 @@ type BlogDetailProps = {
   sourceNotes?: ReactNode;
 };
 
-const formatBlogDate = (value: string) =>
-  new Intl.DateTimeFormat("tr-TR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
-
 export function BlogList({
   items,
   emptyMessage = "Gösterilecek blog verisi şu an kullanılabilir değil.",
@@ -73,7 +67,7 @@ export function BlogList({
             meta={
               hasMeta ? (
                 <div className="space-y-1.5 text-sm leading-6 text-foreground/62">
-                  {post.publishedDate ? <p>{formatBlogDate(post.publishedDate)}</p> : null}
+                  {post.publishedDate ? <p>{formatLongDate(post.publishedDate)}</p> : null}
                   {post.authorName ? <p>{post.authorName}</p> : null}
                 </div>
               ) : undefined

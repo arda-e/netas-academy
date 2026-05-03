@@ -7,15 +7,9 @@ import {
   type StrapiBlogPost,
 } from "@/lib/strapi";
 import { join } from "@/lib/testids";
+import { formatLongDate } from "@/lib/date-formatting";
 
 const EMPTY_RELATED_POST_SUMMARY = "Bu yazı için özet yakında eklenecek.";
-
-const formatBlogDate = (value: string) =>
-  new Intl.DateTimeFormat("tr-TR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
 
 type RelatedPostMetaProps = {
   publishedDate?: string | null;
@@ -31,7 +25,7 @@ function RelatedPostMeta({ publishedDate, authorName }: RelatedPostMetaProps) {
 
   return (
     <div className="space-y-1.5 text-sm leading-6 text-foreground/62">
-      {publishedDate ? <p>{formatBlogDate(publishedDate)}</p> : null}
+      {publishedDate ? <p>{formatLongDate(publishedDate)}</p> : null}
       {authorName ? <p>{authorName}</p> : null}
     </div>
   );
