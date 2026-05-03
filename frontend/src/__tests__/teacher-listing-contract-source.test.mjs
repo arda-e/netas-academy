@@ -11,7 +11,7 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test("StrapiTeacher type includes expertiseAreas field", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-types.ts");
   assert.match(
     source,
     /expertiseAreas\?\s*:\s*string\[\]\s*\|\s*null/,
@@ -20,7 +20,7 @@ test("StrapiTeacher type includes expertiseAreas field", () => {
 });
 
 test("StrapiTeacher type includes targetTeams field", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-types.ts");
   assert.match(
     source,
     /targetTeams\?\s*:\s*string\s*\|\s*null/,
@@ -29,7 +29,7 @@ test("StrapiTeacher type includes targetTeams field", () => {
 });
 
 test("StrapiTeacher type includes teachingApproach field", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-types.ts");
   assert.match(
     source,
     /teachingApproach\?\s*:\s*string\s*\|\s*null/,
@@ -38,7 +38,7 @@ test("StrapiTeacher type includes teachingApproach field", () => {
 });
 
 test("getTeachers query includes expertiseAreas field param", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-teachers.ts");
   assert.match(
     source,
     /fields\[3\]=expertiseAreas/,
@@ -47,7 +47,7 @@ test("getTeachers query includes expertiseAreas field param", () => {
 });
 
 test("getTeachers query includes targetTeams field param", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-teachers.ts");
   assert.match(
     source,
     /fields\[4\]=targetTeams/,
@@ -56,7 +56,7 @@ test("getTeachers query includes targetTeams field param", () => {
 });
 
 test("getTeachers query includes teachingApproach field param", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-teachers.ts");
   assert.match(
     source,
     /fields\[5\]=teachingApproach/,
@@ -65,11 +65,11 @@ test("getTeachers query includes teachingApproach field param", () => {
 });
 
 test("getTeacherBySlug has no console.log debug statements", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-teachers.ts");
 
   const getTeacherFn = source.substring(
     source.indexOf("export async function getTeacherBySlug"),
-    source.indexOf("export async function getLatestCourses")
+    source.indexOf("export async function getTeachers")
   );
 
   assert.doesNotMatch(
@@ -80,7 +80,7 @@ test("getTeacherBySlug has no console.log debug statements", () => {
 });
 
 test("getTeacherBySlug query includes expertiseAreas field param", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-teachers.ts");
   assert.match(
     source,
     /fields\[5\]=expertiseAreas/,
@@ -89,7 +89,7 @@ test("getTeacherBySlug query includes expertiseAreas field param", () => {
 });
 
 test("getTeacherBySlug query includes targetTeams field param", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-teachers.ts");
   assert.match(
     source,
     /fields\[6\]=targetTeams/,
@@ -98,7 +98,7 @@ test("getTeacherBySlug query includes targetTeams field param", () => {
 });
 
 test("getTeacherBySlug query includes teachingApproach field param", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-teachers.ts");
   assert.match(
     source,
     /fields\[7\]=teachingApproach/,

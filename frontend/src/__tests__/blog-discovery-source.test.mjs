@@ -101,7 +101,7 @@ test("SearchField accepts searchOnly prop", () => {
 });
 
 test("getBlogPosts accepts optional search parameter", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-blog.ts");
 
   assert.match(
     source,
@@ -111,7 +111,7 @@ test("getBlogPosts accepts optional search parameter", () => {
 });
 
 test("getBlogPosts builds $containsi filters when search is provided", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-blog.ts");
 
   assert.match(
     source,

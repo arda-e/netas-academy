@@ -43,7 +43,7 @@ test("EventList includes topicArea in EventListItem type", () => {
 });
 
 test("getEvents query includes details field", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-events.ts");
   assert.match(
     source,
     /fields\[9\]=details/,

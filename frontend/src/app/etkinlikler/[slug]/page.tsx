@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { NewsletterSubscriptionForm } from "@/components/newsletter-subscription-form";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
-import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi";
+import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi-events";
 import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventDetailPageProps = {

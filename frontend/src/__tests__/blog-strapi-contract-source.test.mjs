@@ -11,7 +11,7 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test("StrapiBlogPost type includes author with displayName, slug, role, shortBio", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-types.ts");
 
   assert.match(
     source,
@@ -21,7 +21,7 @@ test("StrapiBlogPost type includes author with displayName, slug, role, shortBio
 });
 
 test("StrapiBlogPost type includes publishedDate", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-types.ts");
 
   assert.match(
     source,
@@ -31,7 +31,7 @@ test("StrapiBlogPost type includes publishedDate", () => {
 });
 
 test("StrapiBlogPost type includes sourceNotes", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-types.ts");
 
   assert.match(
     source,
@@ -41,7 +41,7 @@ test("StrapiBlogPost type includes sourceNotes", () => {
 });
 
 test("StrapiBlogPost type includes coverImage", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-types.ts");
 
   assert.match(
     source,
@@ -51,7 +51,7 @@ test("StrapiBlogPost type includes coverImage", () => {
 });
 
 test("getBlogPosts sorts by publishedDate:desc", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-blog.ts");
 
   assert.match(
     source,
@@ -61,7 +61,7 @@ test("getBlogPosts sorts by publishedDate:desc", () => {
 });
 
 test("getBlogPosts populates author with displayName, slug, role", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-blog.ts");
 
   const populateAuthorRegex =
     /populate\[author\]\[fields\]\[0\]=displayName&populate\[author\]\[fields\]\[1\]=slug&populate\[author\]\[fields\]\[2\]=role/;
@@ -74,7 +74,7 @@ test("getBlogPosts populates author with displayName, slug, role", () => {
 });
 
 test("getBlogPosts populates coverImage", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-blog.ts");
 
   assert.match(
     source,
@@ -84,7 +84,7 @@ test("getBlogPosts populates coverImage", () => {
 });
 
 test("getBlogPostBySlug includes fields for publishedDate and sourceNotes", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-blog.ts");
 
   assert.match(
     source,
@@ -94,7 +94,7 @@ test("getBlogPostBySlug includes fields for publishedDate and sourceNotes", () =
 });
 
 test("getBlogPostBySlug populates author with shortBio", () => {
-  const source = readSource("lib/strapi.ts");
+  const source = readSource("lib/strapi-blog.ts");
 
   const populateAuthorRegex =
     /populate\[author\]\[fields\]\[3\]=shortBio/;

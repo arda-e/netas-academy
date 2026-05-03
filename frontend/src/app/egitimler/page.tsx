@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Download, Filter } from "lucide-react";
 import { ContentPageShell, SearchField } from "@/components/content";
 import { CourseCatalogList } from "@/components/courses/course-catalog-list";
-import { getCourses } from "@/lib/strapi";
+import { getCourses } from "@/lib/strapi-courses";
 import {
   TOPIC_AREAS,
   resolveTopicFilter,

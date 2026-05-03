@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useEventRegistrationForm } from "@/hooks/use-event-registration-form";
-import type { StrapiEventType } from "@/lib/strapi";
+import type { StrapiEventType } from "@/lib/strapi-types";
 
 type EventRegistrationFormProps = {
   eventDocumentId: string;
