@@ -126,7 +126,6 @@ export default async function EventRegistrationPage({
                 <EventRegistrationForm
                   eventDocumentId={event.documentId}
                   eventTitle={event.title}
-                  eventType={event.eventType}
                 />
               </div>
             ) : (

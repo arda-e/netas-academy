@@ -20,8 +20,17 @@ type RegisterStudentInput = {
   notes?: string;
 };
 
+type SanitizedRegistration = {
+  id: number;
+  status: string;
+  event: {
+    documentId: string;
+    title: string;
+  };
+};
+
 export default factories.createCoreService('api::registration.registration' as any, () => ({
-  async registerStudentForEvent(input: RegisterStudentInput) {
+  async registerStudentForEvent(input: RegisterStudentInput): Promise<SanitizedRegistration> {
     const normalizedTckn = normalizeTcknValue(input.student.tckn);
 
     const event = await strapi.db.query('api::event.event').findOne({
@@ -37,36 +46,42 @@ export default factories.createCoreService('api::registration.registration' as a
       throw new ValidationError('Event registration is closed');
     }
 
-    const student = await strapi.service('api::student.student').upsertByEmail(input.student);
+    // Wrap the entire registration flow in a transaction to prevent race conditions.
+    // Notification delivery is moved outside the transaction (fire-and-forget).
+    const registration = await strapi.db.transaction(async () => {
+      const student = await strapi.service('api::student.student').upsertByEmail(input.student);
 
-    const existingRegistration = await strapi.db.query('api::registration.registration').findOne({
-      where: {
-        event: { id: event.id },
-        student: { id: student.id },
-      },
-      populate: {
-        event: true,
-        student: true,
-      },
+      const existingRegistration = await strapi.db.query('api::registration.registration').findOne({
+        where: {
+          event: { id: event.id },
+          student: { id: student.id },
+        },
+        populate: {
+          event: true,
+          student: true,
+        },
+      });
+
+      // Idempotent: if already registered, return success with sanitized data
+      if (existingRegistration) {
+        return existingRegistration;
+      }
+
+      return strapi.db.query('api::registration.registration').create({
+        data: {
+          status: input.status ?? 'pending',
+          notes: input.notes ?? null,
+          event: event.id,
+          student: student.id,
+        },
+        populate: {
+          event: true,
+          student: true,
+        },
+      });
     });
 
-    if (existingRegistration) {
-      throw new ValidationError('Student is already registered for this event');
-    }
-
-    const registration = await strapi.db.query('api::registration.registration').create({
-      data: {
-        status: input.status ?? 'pending',
-        notes: input.notes ?? null,
-        event: event.id,
-        student: student.id,
-      },
-      populate: {
-        event: true,
-        student: true,
-      },
-    });
-
+    // Fire-and-forget notification (outside transaction)
     try {
       await deliverInternalNotificationViaStrapi(strapi, {
         key: 'event_registration',
@@ -97,6 +112,14 @@ export default factories.createCoreService('api::registration.registration' as a
       });
     }
 
-    return registration;
+    // Return sanitized response — no student PII
+    return {
+      id: registration.id,
+      status: registration.status,
+      event: {
+        documentId: registration.event.documentId,
+        title: registration.event.title,
+      },
+    };
   },
 }));

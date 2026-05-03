@@ -145,5 +145,15 @@ export default {
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await ensurePublicReadPermissions(strapi);
     await ensureNotificationRoutingDefaults(strapi);
+
+    // Safety net: unique constraint on (student_id, event_id) to prevent
+    // duplicate registrations at the database level.
+    try {
+      await strapi.db.connection.raw(
+        'CREATE UNIQUE INDEX IF NOT EXISTS idx_registration_student_event ON registrations (student_id, event_id)'
+      );
+    } catch (error) {
+      strapi.log.warn('Could not create unique index on registrations(student_id, event_id)', { error });
+    }
   },
 };
