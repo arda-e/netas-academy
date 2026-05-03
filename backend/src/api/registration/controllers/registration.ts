@@ -22,10 +22,6 @@ export default factories.createCoreController('api::registration.registration' a
       return;
     }
 
-    if (!body.kvkkConsent) {
-      throw new ValidationError('kvkkConsent must be true');
-    }
-
     const registration = await strapi
       .service('api::registration.registration')
       .registerStudentForEvent({
@@ -33,6 +29,7 @@ export default factories.createCoreController('api::registration.registration' a
         student: body.student,
         status: body.status,
         notes: body.notes,
+        kvkkConsent: body.kvkkConsent === true,
       });
 
     ctx.body = registration;
