@@ -8,20 +8,25 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
 
-const navigationItems = [
-  { href: "/hakkimizda", label: "Hakkımızda" },
-  { href: "/etkinlikler", label: "Etkinlikler" },
-  { href: "/egitimler", label: "Eğitim Kataloğu" },
-  { href: "/egitmenler", label: "Eğitmenler" },
-  { href: "/cozum-ortagi", label: "Çözüm Ortağı" },
-  { href: "/blog-yazilari", label: "Blog" },
-  { href: "/haberler", label: "Haberler" },
-  { href: "/iletisim", label: "İletişim" },
-];
+import { headerNavigationItems } from "@/config/navigation";
 
 function isNavigationItemActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
+
+const navigationLinkActiveClassName = "text-[#0f4c81]";
+
+const desktopNavigationLinkClassName =
+  "flex items-center border-x px-4 text-sm font-medium transition-all";
+
+const desktopNavigationLinkInactiveClassName =
+  "border-transparent text-muted-foreground hover:border-border/70 hover:bg-muted/70 hover:text-foreground";
+
+const mobileNavigationLinkClassName =
+  "w-full rounded-sm border px-4 py-3 text-left text-base font-medium transition-all";
+
+const mobileNavigationLinkInactiveClassName =
+  "border-transparent text-foreground hover:border-border hover:bg-white/70";
 
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -51,6 +56,7 @@ export function SiteHeader() {
           className="my-3 inline-flex items-center rounded-sm border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted/70 md:hidden"
           aria-expanded={isMobileMenuOpen}
           aria-controls="site-mobile-navigation"
+          aria-label={isMobileMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
           data-testid="site-header.mobile-menu.toggle"
           onClick={() => setIsMobileMenuOpen((open) => !open)}
         >
@@ -58,21 +64,20 @@ export function SiteHeader() {
         </button>
 
         <nav className="hidden flex-wrap items-stretch justify-end gap-0 md:flex" data-testid="site-header.desktop-nav">
-          {navigationItems.map((item) => {
+          {headerNavigationItems.map((item) => {
             const isActive = isNavigationItemActive(pathname, item.href);
-            const routeKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "ana-sayfa";
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                data-testid={join("site-header", "desktop-nav", routeKey)}
+                data-testid={join("site-header", "desktop-nav", item.routeKey)}
                 className={cn(
-                  "flex items-center border-x px-4 text-sm font-medium transition-all",
+                  desktopNavigationLinkClassName,
                   isActive
-                    ? "border-primary/20 bg-primary/10 text-[#0f4c81] shadow-[inset_0_-3px_0_var(--primary)]"
-                    : "border-transparent text-muted-foreground hover:border-border/70 hover:bg-muted/70 hover:text-foreground"
+                    ? `border-primary/20 bg-primary/10 ${navigationLinkActiveClassName} shadow-[inset_0_-3px_0_var(--primary)]`
+                    : desktopNavigationLinkInactiveClassName
                 )}
               >
                 {item.label}
@@ -93,21 +98,20 @@ export function SiteHeader() {
           className="panel-surface flex flex-col gap-1 p-2"
           data-testid="site-header.mobile-nav"
         >
-          {navigationItems.map((item) => {
+          {headerNavigationItems.map((item) => {
             const isActive = isNavigationItemActive(pathname, item.href);
-            const routeKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "ana-sayfa";
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                data-testid={join("site-header", "mobile-nav", routeKey)}
+                data-testid={join("site-header", "mobile-nav", item.routeKey)}
                 className={cn(
-                  "w-full rounded-sm border px-4 py-3 text-left text-base font-medium transition-all",
+                  mobileNavigationLinkClassName,
                   isActive
-                    ? "border-primary/30 bg-white text-[#0f4c81] shadow-[inset_3px_0_0_var(--primary)]"
-                    : "border-transparent text-foreground hover:border-border hover:bg-white/70"
+                    ? `border-primary/30 bg-white ${navigationLinkActiveClassName} shadow-[inset_3px_0_0_var(--primary)]`
+                    : mobileNavigationLinkInactiveClassName
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >

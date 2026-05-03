@@ -1,0 +1,2107 @@
+{
+  "findings": [
+    {
+      "id": "SA-001",
+      "agent": "static-analysis-001",
+      "module": "FRONT-ARCH",
+      "severity": "error",
+      "category": "lint",
+      "title": "13 unescaped entity violations in KVKK page",
+      "file": "frontend/src/app/kvkk/page.tsx",
+      "line_range": [
+        55,
+        197
+      ],
+      "description": "ESLint reports 13 react/no-unescaped-entities violations on the KVKK page. Turkish quotes (”, ’) and apostrophes are used inside JSX text nodes without HTML entities, causing the lint to fail. Affected lines: 55, 68, 70, 98, 113, 131, 157, 187, 191, 197.",
+      "remediation": "Replace Turkish quotes with HTML entities ('&ldquo;', '&rdquo;', '&apos;', '&rsquo;') or replace with ASCII equivalents. Alternatively, configure eslint to allow these characters or extract the text to a const variable so the rule does not trigger on plain text.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P6-01",
+      "implementation_notes": {
+        "estimated_effort_days": 0.5,
+        "files_to_modify": [
+          "frontend/src/app/kvkk/page.tsx"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "SA-002",
+      "agent": "static-analysis-001",
+      "module": "BACK-API",
+      "severity": "warning",
+      "category": "type_safety",
+      "title": "`as any` type assertions in Strapi controller/service factory calls",
+      "file": "backend/src/api/registration/controllers/registration.ts",
+      "line_range": [
+        8,
+        8
+      ],
+      "description": "Multiple backend controllers and services use `as any` casts when calling factories.createCoreController and factories.createCoreService. This defeats TypeScript type checking for the Strapi API UID parameter. Affected files: registration controller (line 8), registration service (line 23), contact-submission controller (line 14), contact-submission service (line 60).",
+      "remediation": "Use the proper Strapi type from @strapi/strapi for the UID parameter. Alternatively, define a typed wrapper that constrains the UID to known content-type identifiers.",
+      "effort": "xs",
+      "cross_refs": [
+        "BACK-DOMAIN"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P5-03"
+    },
+    {
+      "id": "SA-003",
+      "agent": "static-analysis-001",
+      "module": "FRONT-COMP",
+      "severity": "warning",
+      "category": "type_safety",
+      "title": "Non-null assertion (!) on imageUrl prop in ContentCardShell",
+      "file": "frontend/src/components/content/content-card-shell.tsx",
+      "line_range": [
+        49,
+        49
+      ],
+      "description": "The `imageUrl!` non-null assertion on line 49 is used to bypass TypeScript null checking when passing to the Image `src` prop. While `hasImage` guards the rendering, the non-null assertion could mask a type change in the future where `imageUrl` is undefined but `hasImage` is still truthy (e.g., empty string).",
+      "remediation": "Use a local variable with an explicit type guard: `const safeUrl = imageUrl ?? '';` and pass `safeUrl` to Image `src`. Add a fallback or no-image placeholder when the URL is empty.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P5-04"
+    },
+    {
+      "id": "SA-004",
+      "agent": "static-analysis-001",
+      "module": "FRONT-DATA",
+      "severity": "info",
+      "category": "complexity",
+      "title": "strapi.ts exceeds recommended file length (429 lines)",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        1,
+        429
+      ],
+      "description": "The strapi.ts data-layer file is 429 lines and contains 11 exported async fetch functions, 2 media utility functions, 3 type definitions, and internal helpers. This exceeds the 400-line complexity threshold and mixes concerns: type definitions, fetch infrastructure, per-content-type queries, and media URL resolution.",
+      "remediation": "Split into separate modules: strapi-types.ts (type definitions), strapi-client.ts (fetchStrapi base), strapi-courses.ts, strapi-events.ts, strapi-blog.ts, strapi-teachers.ts, strapi-media.ts. This aligns with separation of concerns and makes each file independently testable.",
+      "effort": "m",
+      "cross_refs": [
+        "FRONT-COMP",
+        "BACK-API"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P3-01"
+    },
+    {
+      "id": "SA-005",
+      "agent": "static-analysis-001",
+      "module": "FRONT-FORMS",
+      "severity": "info",
+      "category": "complexity",
+      "title": "intent-lead-form.tsx exceeds recommended file length (489 lines)",
+      "file": "frontend/src/components/contact/intent-lead-form.tsx",
+      "line_range": [
+        1,
+        489
+      ],
+      "description": "The IntentLeadForm component file is 489 lines, exceeding the 400-line threshold. It combines tab UI, form state management, validation, analytics emission, localStorage persistence, and error handling into a single component. The getErrorMessage function (lines 463-489) also has deep nesting (5+ conditional levels).",
+      "remediation": "Extract into smaller components and hooks: extract tab rendering into <LeadTypeTabs>, extract form field rendering into <ContactFormFields>, extract validation logic into a custom hook, move getErrorMessage to a separate utility file, and move the success state into a <SubmissionSuccess> component.",
+      "effort": "m",
+      "cross_refs": [
+        "FRONT-COMP"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P5-01"
+    },
+    {
+      "id": "SA-006",
+      "agent": "static-analysis-001",
+      "module": "FRONT-DATA",
+      "severity": "warning",
+      "category": "consistency",
+      "title": "Inconsistent caching strategy: getBlogPostBySlug uses no-store while other BySlug functions use force-cache",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        364,
+        375
+      ],
+      "description": "getBlogPostBySlug explicitly sets `cache: 'no-store'` (line 368), while getCourseBySlug (line 275), getEventBySlug (line 324), and getTeacherBySlug (line 407) all use `cache: 'force-cache'`. This means blog detail pages always fetch fresh data from Strapi while other content types serve cached data. Additionally, getBlogPosts (listing) uses default no-store while getBlogPostSlugs uses force-cache — the slug list and content list use opposite strategies within the same content type.",
+      "remediation": "Decide on a unified caching policy for content types. Options: (a) use force-cache for all detail pages with ISR revalidation tags, (b) use no-store for all if draft preview is needed, or (c) document the intentional difference (e.g., blog content may be updated more frequently for editorial workflow). The mismatch between slugs (force-cache) and content (no-store) is the most concerning sub-issue.",
+      "effort": "s",
+      "cross_refs": [
+        "BACK-API"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P3-03"
+    },
+    {
+      "id": "SA-007",
+      "agent": "static-analysis-001",
+      "module": "FRONT-DATA",
+      "severity": "warning",
+      "category": "pattern",
+      "title": "Frontend API proxy routes missing error handling try-catch blocks",
+      "file": "frontend/src/app/api/contact-submissions/submit/route.ts",
+      "line_range": [
+        5,
+        23
+      ],
+      "description": "Two of three frontend API proxy routes (contact-submissions/submit and registrations/register) lack try-catch blocks around the Strapi fetch call. If the Strapi backend is unreachable, the fetch throws an uncaught error that propagates to Next.js as a 500 error instead of returning a structured JSON error response. The analytics/events route correctly wraps its fetch in try-catch and returns a 502 with a structured error message.",
+      "remediation": "Add try-catch blocks to both route handlers (contact-submissions/submit/route.ts and registrations/register/route.ts) following the same pattern used in analytics/events/route.ts. Return NextResponse.json with a structured error and appropriate HTTP status code (502 for upstream failures).",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P6-02"
+    },
+    {
+      "id": "SA-008",
+      "agent": "static-analysis-001",
+      "module": "FRONT-COMP",
+      "severity": "info",
+      "category": "pattern",
+      "title": "dangerouslySetInnerHTML with DOMPurify sanitization — acceptable but worth audit",
+      "file": "frontend/src/components/content/rich-text-content.tsx",
+      "line_range": [
+        22,
+        22
+      ],
+      "description": "RichTextContent uses dangerouslySetInnerHTML to render sanitized HTML via DOMPurify. While DOMPurify provides strong XSS protection, the data source (Strapi richtext fields) allows arbitrary HTML from CMS editors. DOMPurify configuration should be reviewed to ensure it strips all potentially dangerous elements (scripts, event handlers, iframes).",
+      "remediation": "Verify DOMPurify is configured with ALLOWED_TAGS and ALLOWED_ATTR whitelists appropriate for the richtext content. Consider adding a Content Security Policy header. Document the expected HTML schema for Strapi editors.",
+      "effort": "s",
+      "cross_refs": [
+        "BACK-API"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P2-01"
+    },
+    {
+      "id": "SA-009",
+      "agent": "static-analysis-001",
+      "module": "FRONT-DATA",
+      "severity": "info",
+      "category": "type_safety",
+      "title": "All catch blocks in strapi.ts swallow errors silently with empty returns",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        245,
+        428
+      ],
+      "description": "Every fetch function in strapi.ts uses `catch { return []; }` or `catch { return null; }` without any error logging. Network failures, Strapi errors, and JSON parsing errors are all silently converted to empty arrays or null, making debugging difficult. The caller cannot distinguish between 'no results' and 'the backend is down'.",
+      "remediation": "Log errors to console.error or a monitoring service before returning defaults. Consider adding an optional error callback pattern or returning a Result type (`{ data: T[] | null, error: string | null }`) so callers can decide how to handle failures.",
+      "effort": "s",
+      "cross_refs": [
+        "FRONT-COMP",
+        "FRONT-ARCH"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P6-02"
+    },
+    {
+      "id": "SA-010",
+      "agent": "static-analysis-001",
+      "module": "FRONT-STYLES",
+      "severity": "info",
+      "category": "consistency",
+      "title": "Repeated long Tailwind text utility classes across page components",
+      "file": "frontend/src/app/kvkk/page.tsx",
+      "line_range": [
+        54,
+        243
+      ],
+      "description": "The class string `text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg` is repeated extensively across multiple page components (kvkk/page.tsx, hakkimizda/page.tsx, cozum-ortagi/page.tsx, and others). Similarly, `text-sm font-semibold uppercase tracking-[0.28em]` and `text-sm font-semibold uppercase tracking-[0.34em]` are repeated for eyebrow labels. These should be extracted into Tailwind @apply utilities or CSS component classes.",
+      "remediation": "Define shared utility classes in globals.css using @layer components, e.g.: `.page-body-text { @apply text-[15px] leading-7 text-foreground/72 sm:text-base sm:leading-8 md:text-lg; }` and `.page-eyebrow { @apply text-sm font-semibold uppercase tracking-[0.28em] text-primary/72; }`. This improves maintainability and reduces CSS bundle size.",
+      "effort": "s",
+      "cross_refs": [
+        "FRONT-ARCH"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P5-04"
+    },
+    {
+      "id": "SA-011",
+      "agent": "static-analysis-001",
+      "module": "FRONT-FORMS",
+      "severity": "warning",
+      "category": "lint",
+      "title": "eslint-disable comment suppresses react-hooks/exhaustive-deps warning",
+      "file": "frontend/src/components/contact/intent-lead-form.tsx",
+      "line_range": [
+        138,
+        139
+      ],
+      "description": "The useEffect on lines 122-139 has an eslint-disable-next-line comment for react-hooks/exhaustive-deps. The effect only runs on mount (empty dependency array) but depends on `initialLeadType`, `reset`, and `prefilledTopic`. The eslint suppression hides a legitimate concern: if the component is reused with a different initialLeadType (e.g., via client-side navigation), the form will not restore the correct saved state.",
+      "remediation": "Add the missing dependencies to the dependency array: `[initialLeadType, reset]`. Consider using a ref to track whether the initial load has already occurred, avoiding double-reset when dependencies change.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P5-01"
+    },
+    {
+      "id": "SA-012",
+      "agent": "static-analysis-001",
+      "module": "FRONT-COMP",
+      "severity": "info",
+      "category": "lint",
+      "title": "Unused `searchOnly` prop with eslint-disable comment in SearchField",
+      "file": "frontend/src/components/content/search-field.tsx",
+      "line_range": [
+        9,
+        18
+      ],
+      "description": "The `searchOnly` prop is destructured but never used in the SearchField component. Its only purpose is to suppress a TypeScript unused variable error via an eslint-disable comment on line 16. The component comment on lines 9-10 mentions it's 'reserved for future use', but dead code with lint suppressions creates technical debt.",
+      "remediation": "If the prop is truly reserved for a future feature, use the underscore convention (`_searchOnly`) which TypeScript and ESLint will ignore without needing a suppression. Alternatively, remove the prop until the feature is implemented.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P5-04"
+    },
+    {
+      "id": "SA-013",
+      "agent": "static-analysis-001",
+      "module": "FRONT-COMP",
+      "severity": "info",
+      "category": "pattern",
+      "title": "Inline style with dynamic image URL — potential XSS vector in VisualStorySection",
+      "file": "frontend/src/components/content/visual-story-section.tsx",
+      "line_range": [
+        49,
+        52
+      ],
+      "description": "The VisualStorySection component uses `style={{ backgroundImage: url(${item.imageUrl}) }}` with a dynamic imageUrl value sourced from a static data file (page-visual-sections.ts). While currently safe because the data is hardcoded, if imageUrl ever comes from user input or Strapi content, this would be an XSS vector. The pattern should be replaced with a proper Image component or a validated URL.",
+      "remediation": "Replace inline backgroundImage with Next.js Image component using fill layout. This provides automatic image optimization and eliminates the XSS risk. Alternatively, validate imageUrl with `new URL()` before use.",
+      "effort": "s",
+      "cross_refs": [
+        "FRONT-DATA"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P2-01"
+    },
+    {
+      "id": "SA-014",
+      "agent": "static-analysis-001",
+      "module": "FRONT-DATA",
+      "severity": "info",
+      "category": "consistency",
+      "title": "getLatestCourses has no caching — every /hakkimizda page load hits Strapi",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        417,
+        429
+      ],
+      "description": "The getLatestCourses function uses default fetchStrapi caching (no-store), meaning every request to the /hakkimizda page hits the Strapi backend directly with no caching layer. This is inconsistent with getCourseSlugs/getCourseBySlug which use force-cache. The about page is a high-traffic marketing page that would benefit from caching.",
+      "remediation": "Add `{ cache: 'force-cache' }` to the getLatestCourses fetch call. If the course listing needs to be somewhat fresh, use Next.js ISR with revalidation tags instead of completely bypassing the cache.",
+      "effort": "xs",
+      "cross_refs": [
+        "FRONT-ARCH"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P3-03"
+    },
+    {
+      "id": "SA-015",
+      "agent": "static-analysis-001",
+      "module": "FRONT-ARCH",
+      "severity": "info",
+      "category": "pattern",
+      "title": "Haberler page renders empty hardcoded list with no data fetching",
+      "file": "frontend/src/app/haberler/page.tsx",
+      "line_range": [
+        3,
+        17
+      ],
+      "description": "The /haberler page passes `items={[]}` to NewsList, rendering only the empty state message. There is no data fetching from Strapi and no `export const dynamic = 'force-dynamic'` directive. Other list pages (egitimler, etkinlikler, blog-yazilari) all fetch data server-side. This page appears to be a placeholder.",
+      "remediation": "Either add a Strapi news content type with corresponding fetch function, or add a `dynamic = 'force-dynamic'` directive if the page is intended to be a placeholder awaiting backend implementation. Add a TODO comment to indicate future plans.",
+      "effort": "xs",
+      "cross_refs": [
+        "BACK-API"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P6-01"
+    },
+    {
+      "id": "SA-016",
+      "agent": "static-analysis-001",
+      "module": "FRONT-DATA",
+      "severity": "warning",
+      "category": "type_safety",
+      "title": "fetchStrapi returns unsafe type assertion with `as T`",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        161,
+        161
+      ],
+      "description": "The fetchStrapi function uses `return (await response.json()) as T` which performs an unsafe type assertion on the API response. The runtime value is not validated against the T type at all, meaning type mismatches between the Strapi schema and the TypeScript types will only surface at runtime, potentially as undefined property access errors deep in the component tree.",
+      "remediation": "Add a Zod or Valibot schema for each Strapi response type and validate the API response before returning it. This ensures runtime type safety and catches schema drift between backend and frontend at the boundary. At minimum, add a basic runtime check that the response has the expected `data` array structure.",
+      "effort": "l",
+      "cross_refs": [
+        "BACK-API"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P3-02"
+    },
+    {
+      "id": "SA-017",
+      "agent": "static-analysis-001",
+      "module": "FRONT-ARCH",
+      "severity": "info",
+      "category": "consistency",
+      "title": "Route-level dynamic directive conflicts with fetch-level caching",
+      "file": "frontend/src/app/egitimler/page.tsx",
+      "line_range": [
+        14,
+        14
+      ],
+      "description": "Several pages declare `export const dynamic = 'force-dynamic'` (egitimler, etkinlikler, blog-yazilari, iletisim, kvkk, hakkimizda, cozum-ortagi) which tells Next.js to never statically generate these pages. However, the underlying strapi.ts fetch functions for detail views (getCourseBySlug, getEventBySlug, getTeacherBySlug) use `cache: 'force-cache'`. This creates a subtle behavior: the page is always SSR'd but the data may be stale from the fetch cache. This is technically valid but could lead to confusing 'why isn't my content updating?' scenarios.",
+      "remediation": "Audit the intended caching strategy: if pages should always show fresh data, align the fetch cache option to 'no-store' or use revalidation tags. If content can be cached, remove the unnecessary `force-dynamic` directive and rely on ISR. Document the caching policy per content type.",
+      "effort": "s",
+      "cross_refs": [
+        "FRONT-DATA"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P3-03"
+    },
+    {
+      "id": "SA-018",
+      "agent": "static-analysis-001",
+      "module": "BACK-API",
+      "severity": "info",
+      "category": "consistency",
+      "title": "PUBLIC_READ_ACTIONS lists blog-author but no frontend currently queries blog-authors directly",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        113,
+        131
+      ],
+      "description": "The backend bootstrap enables public read for blog-author.find and blog-author.findOne, but the frontend StrapiBlogPost type inlines author as a nested populate object (lines 120-127) rather than referencing a separate blog-author fetch function. The author data is fetched through the blog-post relation, which already works via the blog-post public permission. The explicit blog-author permission is unnecessary but harmless.",
+      "remediation": "Either remove the blog-author entries from PUBLIC_READ_ACTIONS if they are never accessed directly, or create a dedicated blog-authors page that uses direct blog-author queries. Keep if future author profile pages are planned.",
+      "effort": "xs",
+      "cross_refs": [
+        "FRONT-DATA"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P5-03"
+    },
+    {
+      "id": "SA-019",
+      "agent": "static-analysis-001",
+      "module": "FRONT-FORMS",
+      "severity": "warning",
+      "category": "pattern",
+      "title": "Newsletter subscription form lacks rate limiting and CSRF protection",
+      "file": "frontend/src/components/newsletter-subscription-form.tsx",
+      "line_range": [
+        21,
+        51
+      ],
+      "description": "The NewsletterSubscriptionForm makes a direct POST request to the Strapi backend with no CSRF token and no client-side rate limiting. The form state resets on success but there's no mechanism to prevent rapid repeated submissions (e.g., a cooldown timer or disabled state after success).",
+      "remediation": "Add a cooldown period after successful submission (e.g., disable the form for 5 seconds). Consider adding a CSRF token exchange mechanism. Verify that the backend newsletter-subscription endpoint has rate limiting and input validation.",
+      "effort": "s",
+      "cross_refs": [
+        "BACK-API"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P1-01"
+    },
+    {
+      "id": "SA-020",
+      "agent": "static-analysis-001",
+      "module": "FRONT-STYLES",
+      "severity": "info",
+      "category": "consistency",
+      "title": "globals.css defines .dark class but sets color-scheme to light",
+      "file": "frontend/src/app/globals.css",
+      "line_range": [
+        87,
+        89
+      ],
+      "description": "The .dark class at lines 87-89 sets `color-scheme: light` instead of `color-scheme: dark`. This is likely intentional (the app only supports light mode) but the .dark class selector exists and is empty aside from this incorrect color-scheme declaration. The @custom-variant dark rule on line 5 references this class but no dark-specific CSS variables are defined.",
+      "remediation": "If dark mode support is planned, add proper dark mode CSS variable overrides within the .dark class and set `color-scheme: dark`. If dark mode is not planned, remove the .dark class, the @custom-variant dark line, and any dark: Tailwind variants from components to reduce confusion.",
+      "effort": "s",
+      "cross_refs": [
+        "FRONT-COMP"
+      ],
+      "timestamp": "2026-05-01T00:00:00Z",
+      "pr_group": "P5-04"
+    },
+    {
+      "id": "SEC-001",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "critical",
+      "category": "authorization",
+      "title": "No rate limiting on any public custom endpoints — DoS and brute-force vulnerable",
+      "file": "backend/src/api/registration/routes/custom-registration.ts",
+      "line_range": [
+        1,
+        12
+      ],
+      "description": "All five public custom endpoints (POST /api/registrations/register, /api/contact-submissions/submit, /api/analytics-events/capture, /api/course-applications/submit, /api/newsletter-subscriptions/subscribe) are configured with `auth: false` and NONE have rate limiting. An attacker can flood these endpoints with thousands of requests per second, causing: (1) database saturation from upsert/create operations, (2) email notification spam to admins via deliverInternalNotificationViaStrapi, (3) cost amplification if an email provider like SES is configured and billing is per-send, (4) disk exhaustion from analytics event storage. The analytics-event route even has a TODO comment acknowledging this gap on line 8. Strapi bundles `koa2-ratelimit` as a dependency (visible in package-lock.json) but it is not wired into any route.",
+      "remediation": "Implement rate limiting using Strapi's built-in koa2-ratelimit middleware. Example config in backend/config/middlewares.ts: add a custom middleware that applies rate limiting to the /api/* custom endpoint paths. Minimum: 5-10 requests per minute per IP for registration/contact endpoints, 30/minute for analytics capture. For stricter protection, add IP-based cooldown in the service layer: `backend/src/services/rate-limit.ts` that tracks attempts in-memory with a Map<IP, {count, resetTime}> and throws 429 before processing. Also add CAPTCHA integration for production deployments.",
+      "effort": "m",
+      "cross_refs": [
+        "SEC-002",
+        "SEC-012"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-01",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "backend/src/api/registration/routes/custom-registration.ts"
+        ],
+        "test_required": true,
+        "rollback_risk": "HIGH"
+      }
+    },
+    {
+      "id": "SEC-002",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "high",
+      "category": "data_security",
+      "title": "Race condition in registration duplicate prevention — two concurrent requests can create duplicate registrations",
+      "file": "backend/src/api/registration/services/registration.ts",
+      "line_range": [
+        42,
+        68
+      ],
+      "description": "The `registerStudentForEvent` function uses a check-then-act pattern: it queries for an existing registration (lines 42-51), and if none found, creates a new one (lines 57-68). These are two separate non-transactional database queries. Two concurrent requests for the same student+event pair can both pass the existence check before either creates, resulting in duplicate registrations. The `isUniqueConstraintError` pattern used in course-application services (which wraps creation in a retry loop with unique constraint handling) is a better approach. The registration schema has no unique constraint on (event, student), so the database cannot enforce uniqueness.",
+      "remediation": "Two complementary fixes: (1) Add a compound unique constraint on the registration schema (event + student fields) by modifying `backend/src/api/registration/content-types/registration/schema.json` to include a unique index declaration. (2) Wrap the check + create in a database transaction using `strapi.db.transaction()` to make the read and write atomic. If a transaction API is not available, use the `isUniqueConstraintError` retry pattern already present in course-application services. For SQLite, a UNIQUE index on (event_id, student_id) is the most reliable fix.",
+      "effort": "m",
+      "cross_refs": [
+        "SEC-001"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-02",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "backend/src/api/registration/services/registration.ts"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "SEC-003",
+      "agent": "security-audit-001",
+      "module": "FRONT-FORMS",
+      "severity": "medium",
+      "category": "data_security",
+      "title": "TCKN stored in plaintext in sessionStorage via event registration form",
+      "file": "frontend/src/hooks/use-event-registration-form.ts",
+      "line_range": [
+        88,
+        91
+      ],
+      "description": "The `useEventRegistrationForm` hook persists all form values, including the plaintext TCKN (11-digit Turkish ID), to sessionStorage on every keystroke (lines 88-91). The FormStorage class in `frontend/src/lib/form-storage.ts` writes to sessionStorage via `JSON.stringify(data)` which stores the TCKN in plaintext. While sessionStorage is cleared on tab close, the TCKN is readable by any JavaScript running in the same origin during the session. An XSS vulnerability anywhere on the site could exfiltrate TCKN values from sessionStorage before the user closes the tab. Additionally, the intent-lead-form persists form data to sessionStorage on every change (lines 163-167), though it does not include TCKN (it uses fullName instead).",
+      "remediation": "Either: (a) Exclude the `tckn` field from the persisted object in FormStorage.save() by filtering it out before serialization. (b) Hash the TCKN client-side before storing in sessionStorage (though this defeats the purpose of restore). (c) Only persist non-sensitive fields (firstName, lastName, email, phone, notes) and skip TCKN and kvkkConsent. (d) Use a server-side session token approach where sensitive data is never cached on the client.",
+      "effort": "s",
+      "cross_refs": [
+        "SEC-005",
+        "SEC-007"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P2-02"
+    },
+    {
+      "id": "SEC-004",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "high",
+      "category": "data_security",
+      "title": "kvkkConsent not validated server-side for event registrations — processes PII without consent verification",
+      "file": "backend/src/api/registration/controllers/registration.ts",
+      "line_range": [
+        9,
+        31
+      ],
+      "description": "The event registration controller validates TCKN, required fields, and TCKN checksum, but does NOT check `kvkkConsent` server-side. The frontend enforces this conditionally (only for `egitim`/`kurs` event types in `use-event-registration-form.ts` lines 138-142), but the backend blindly accepts all registrations without verifying consent. An attacker can POST directly to /api/registrations/register bypassing the frontend consent check entirely, submitting PII (name, email, phone, TCKN) without consent. This is a KVKK compliance gap: personal data processing requires explicit consent under Turkish data protection law. Compare with contact-submission (controllers/contact-submission.ts lines 31-33) which correctly checks `kvkkConsent` server-side.",
+      "remediation": "Add a `kvkkConsent` boolean field to the registration request body validation in the controller or service. In the controller, add: `if (body.student?.kvkkConsent !== true && requiresKvkkForEventType(body.student?.eventType)) { throw new ValidationError('kvkkConsent must be true'); }`. Since the event type is passed from the frontend (eventType: egitim/kurs), the frontend already sends this via the `useEventRegistrationForm`. The backend should validate this independently. Alternatively, infer consent requirement from the event record (if the course/event type info is on the event content type). At minimum, add a `consents.kvkk` boolean field in the registration schema and enforce it server-side.",
+      "effort": "s",
+      "cross_refs": [
+        "SEC-003",
+        "SEC-007"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-02",
+      "implementation_notes": {
+        "estimated_effort_days": 0.5,
+        "files_to_modify": [
+          "backend/src/api/registration/controllers/registration.ts"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "SEC-005",
+      "agent": "security-audit-001",
+      "module": "FRONT-COMP",
+      "severity": "medium",
+      "category": "injection",
+      "title": "DOMPurify used without explicit allowlist configuration — relies on default rules",
+      "file": "frontend/src/components/content/rich-text-content.tsx",
+      "line_range": [
+        9,
+        22
+      ],
+      "description": "The `sanitizeHtml` function calls `DOMPurify.sanitize(html)` with no configuration object. DOMPurify's default configuration is permissive: it allows many HTML tags and attributes by default. Without an explicit ALLOWED_TAGS and ALLOWED_ATTR whitelist, the sanitization behavior depends on DOMPurify's built-in defaults which may change across versions. The HTML content originates from Strapi's rich-text editor (admin panel), where authorized editors could insert arbitrary HTML. If an editor account is compromised, an attacker could inject content that passes DOMPurify's defaults but still causes issues (e.g., `<base>`, `<form>`, `<object>`, `<embed>`, CSS-based exfiltration via `@import`). The component renders the sanitized output via `dangerouslySetInnerHTML` with no additional CSP headers.",
+      "remediation": "Pass an explicit configuration to DOMPurify.sanitize() with restrictive allowlists: `DOMPurify.sanitize(html, { ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sup', 'sub', 'hr'], ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'target', 'rel', 'class'], ALLOW_DATA_ATTR: false })`. Add `rel='noopener noreferrer'` to all `<a>` tags. Consider adding a Content-Security-Policy response header that disallows inline scripts regardless.",
+      "effort": "s",
+      "cross_refs": [
+        "SEC-006"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P2-01"
+    },
+    {
+      "id": "SEC-006",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "medium",
+      "category": "data_security",
+      "title": "Analytics PII sanitization only checks top-level property keys — nested PII passes through",
+      "file": "backend/src/api/analytics-event/lib/constants.ts",
+      "line_range": [
+        19,
+        33
+      ],
+      "description": "The `sanitizeProperties` function scans top-level keys of the `properties` JSON object for PII patterns (email, phone, name, tckn, address, password) and drops matching keys. However, it does NOT recursively sanitize nested objects or arrays. An analytics event with `properties: { user: { email: 'leak@example.com' }, items: [{ name: 'Alice', phone: '555-1234' }] }` would bypass the sanitization entirely, storing PII in the database. The analytics event endpoint is public (`auth: false` in custom-analytics-event.ts), so anyone can POST arbitrary JSON to `POST /api/analytics-events/capture` and have unfiltered nested PII persisted.",
+      "remediation": "Make `sanitizeProperties` recursive: iterate nested objects and arrays with the same `containsPII` check. Apply sanitization at every nesting level. Example: `function sanitizeProperties(properties) { if (!properties || typeof properties !== 'object') return {}; if (Array.isArray(properties)) return properties.map(sanitizeProperties); const result = {}; for (const [key, value] of Object.entries(properties)) { if (containsPII(key)) continue; result[key] = typeof value === 'object' && value !== null ? sanitizeProperties(value) : value; } return result; }`. Additionally, consider dropping the `properties` field entirely for anonymous users and only storing known top-level fields.",
+      "effort": "s",
+      "cross_refs": [
+        "SEC-001",
+        "SEC-005"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P2-01"
+    },
+    {
+      "id": "SEC-007",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "medium",
+      "category": "credential_exposure",
+      "title": "Generated secrets in backend/.env file — risk of accidental commit despite .gitignore",
+      "file": "backend/.env",
+      "line_range": [
+        1,
+        22
+      ],
+      "description": "The `backend/.env` file contains what appear to be auto-generated secret values (base64-encoded strings for APP_KEYS, ADMIN_JWT_SECRET, JWT_SECRET, API_TOKEN_SALT, TRANSFER_TOKEN_SALT, ENCRYPTION_KEY). While `backend/.gitignore` includes `.env` on line 124, the file exists in the working directory with non-trivial secret material. If a developer accidentally runs `git add -f backend/.env` or if the .gitignore rule is temporarily broken (e.g., by merging a branch that changes it), these secrets would be committed to version control history. Additionally, Docker Compose files (`docker-compose.yml` line 14-18, `docker-compose.deploy.yml` line 12-17) contain hardcoded placeholder secrets like `'change-admin-jwt-secret'` and `'app-key-1,app-key-2,app-key-3,app-key-4'` which must be overridden at deploy time.",
+      "remediation": "For the .env file: (1) Move actual secrets to a separate file outside the repo (e.g., `~/.netas-academy/.env`) and use `.env` only as a template. (2) Add `.env` to a global git exclude or use `git update-index --skip-worktree backend/.env` to prevent accidental staging. (3) Consider using a secrets manager (AWS Secrets Manager, HashiCorp Vault, or Doppler) for production. For Docker Compose: Replace hardcoded placeholders with `${VAR_NAME:-}` environment variable references and document required variables in a README or .env.example. Never commit actual secrets in Docker Compose files — even placeholders should reference env vars.",
+      "effort": "s",
+      "cross_refs": [
+        "SEC-008"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-05"
+    },
+    {
+      "id": "SEC-008",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "high",
+      "category": "dependency",
+      "title": "Backend has 14 HIGH severity npm vulnerabilities including prototype pollution in lodash (CVSS 8.1)",
+      "file": "backend/package.json",
+      "line_range": [
+        1,
+        1
+      ],
+      "description": "`npm audit` on the backend reports 31 total vulnerabilities: 14 HIGH, 15 MODERATE, 2 LOW. Critical HIGH findings include: (1) lodash prototype pollution (CWE-1321) and code injection via `_.template` (CWE-94, CVSS 8.1) affecting multiple @strapi/* packages via @strapi/design-system, (2) markdown-it ReDoS (CWE-1333) in @strapi/content-manager, (3) vite path traversal (CWE-22) in @strapi/strapi dev server, (4) esbuild dev server origin validation bypass (CWE-346). The lodash code injection vulnerability is the most severe — it allows arbitrary code execution through crafted template key names. Affected direct dependencies: @strapi/plugin-users-permissions, @strapi/plugin-cloud, strapi-plugin-csv-exporter. The frontend has 2 MODERATE vulnerabilities (postcss XSS via CSS stringify, CWE-79).",
+      "remediation": "Run `npm audit fix --force` in the backend directory and test thoroughly. Key upgrades needed: (1) @strapi/strapi from current to 4.26.1+ (or 5.9.0+ for the plugin ecosystem), (2) strapi-plugin-csv-exporter to 5.4.2+, (3) @strapi/plugin-users-permissions to 5.9.0+. The lodash prototype pollution fix requires updating @strapi/design-system to a version that pins lodash >= 4.17.24. If upgrading Strapi is blocked, add `lodash` to the `overrides` section of package.json: `\"lodash\": \"^4.17.24\"`. For the frontend, upgrade postcss via `npm update postcss`. Re-run `npm audit` after fixes to confirm zero vulnerabilities.",
+      "effort": "l",
+      "cross_refs": [
+        "SEC-001"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-04",
+      "implementation_notes": {
+        "estimated_effort_days": 3.5,
+        "files_to_modify": [
+          "backend/package.json"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "SEC-009",
+      "agent": "security-audit-001",
+      "module": "BACK-INT",
+      "severity": "low",
+      "category": "injection",
+      "title": "fast-xml-parser does not disable external entity processing — theoretical XXE risk",
+      "file": "backend/src/services/spl-check/xml.ts",
+      "line_range": [
+        38,
+        42
+      ],
+      "description": "The `soapXmlParser` instantiated in `xml.ts` uses `fast-xml-parser` with `ignoreAttributes: false`, `removeNSPrefix: false`, and `isArray: () => false`, but does NOT set `processEntities: false` or `allowBooleanAttributes: false`. While `fast-xml-parser` does not support DTD/DOCTYPE processing by default (unlike XML DOM parsers), the library's entity expansion behavior could theoretically be exploited if the upstream SOAP endpoint is compromised and returns a malicious XML response with entity expansions (billion laughs attack). The actual risk is low because: (1) the SOAP endpoint is a trusted SAP service, (2) fast-xml-parser is not a validating parser and typically ignores DTDs, (3) only `extractSoapStatus` and `extractSoapReference` consume the parsed XML (not the full body). However, if the SPL check endpoint URL is ever configurable by user input, the risk increases significantly.",
+      "remediation": "Explicitly set safe parsing options: add `processEntities: false`, `htmlEntities: false`, and `ignoreDeclaration: true` to the XMLParser constructor options. This ensures even if the upstream endpoint is compromised, crafted XML cannot cause entity expansion attacks. Additionally, add a maximum string length validation on the raw SOAP response before parsing (e.g., reject responses > 1MB).",
+      "effort": "xs",
+      "cross_refs": [
+        "SEC-001"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P7-06"
+    },
+    {
+      "id": "SEC-010",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "medium",
+      "category": "authorization",
+      "title": "send-registration-email endpoint lacks explicit authorization hardening and allows arbitrary sender spoofing",
+      "file": "backend/src/api/event/routes/custom-event.ts",
+      "line_range": [
+        1,
+        9
+      ],
+      "description": "The `POST /api/events/:documentId/send-registration-email` custom route does not have `auth: false` (defaulting to requiring authentication), but the controller accepts `from`, `replyTo`, `subject`, `text`, and `html` from the request body with no validation of sender identity. An authenticated user (not necessarily admin) could: (1) spoof the sender address to impersonate Netas Academy, (2) send arbitrary HTML emails (potential phishing) to all registered students of any event, (3) set malicious replyTo addresses that redirect responses. The `sendTemplatedEmail` call in the service passes these user-controlled values directly to the Strapi email service. The only validation is that `documentId`, `subject`, and text/html are non-empty — there is no check that the caller is an admin or that the sender address is authorized.",
+      "remediation": "Add explicit authorization checks: (1) Verify `ctx.state.user` is an admin role before processing (e.g., check for admin role using `ctx.state.user.roles`). (2) Validate `from` against a whitelist of allowed sender addresses configured in environment variables (e.g., `ALLOWED_EMAIL_FROM_ADDRESSES`). (3) Restrict `from` to only the configured `EMAIL_DEFAULT_FROM` unless the caller is a super-admin. (4) Add rate limiting — this endpoint sends real emails and should be limited to prevent email spam. (5) Sanitize `html` input to prevent XSS in email clients (use DOMPurify server-side or reject `<script>` tags).",
+      "effort": "s",
+      "cross_refs": [
+        "SEC-001",
+        "SEC-005"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-03"
+    },
+    {
+      "id": "SEC-011",
+      "agent": "security-audit-001",
+      "module": "FRONT-FORMS",
+      "severity": "low",
+      "category": "authorization",
+      "title": "No CSRF protection on any public POST endpoints — token-less JSON submission relies solely on CORS",
+      "file": "frontend/src/app/api/registrations/register/route.ts",
+      "line_range": [
+        1,
+        24
+      ],
+      "description": "All frontend POST API route handlers (registrations/register, contact-submissions/submit, analytics/events) proxy requests to the Strapi backend without CSRF tokens. While JSON POST with `Content-Type: application/json` triggers a CORS preflight in modern browsers, CSRF protection is defense-in-depth. If CORS is misconfigured on the Strapi backend (e.g., a wildcard origin or overly permissive origin list), cross-origin form submissions could succeed. The Strapi backend's CORS middleware (`config/middlewares.ts` line 6) uses default Strapi CORS settings, which may be permissive in development. Additionally, the newsletter subscription form calls Strapi directly from the browser without any token exchange, relying entirely on server-side CORS enforcement.",
+      "remediation": "Implement a CSRF token pattern: (1) Add a `GET /api/csrf-token` endpoint that returns a signed token. (2) Require the token as a custom header (`X-CSRF-Token`) on all mutating requests. (3) Validate the token in a Strapi middleware. Alternatively, enforce strict CORS origins on the Strapi backend by configuring `config/middlewares.ts`: `'strapi::cors': { origin: ['https://netas.academy'.trim()] }`. For production, ensure CORS origins are restricted to the specific frontend domain only (not wildcards).",
+      "effort": "m",
+      "cross_refs": [
+        "SEC-001"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-01"
+    },
+    {
+      "id": "SEC-012",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "medium",
+      "category": "data_security",
+      "title": "Event registration response leaks student PII in API response body",
+      "file": "backend/src/api/registration/services/registration.ts",
+      "line_range": [
+        57,
+        100
+      ],
+      "description": "The `registerStudentForEvent` service creates a registration with `populate: { event: true, student: true }` and returns the full populated object (line 100). The controller at `controllers/registration.ts` line 30 sends this directly as `ctx.body = { data: registration }`. This means the API response includes the student's full record (firstName, lastName, fullName, email, phone, id) in the response body. While the TCKN is not stored on the student record, the email and phone are PII under KVKK. Additionally, error messages like 'Student is already registered for this event' (line 54) confirm the existence of a student record for a given event — this is an enumeration vector: an attacker can probe email addresses by attempting registrations and checking if they get 'already registered' vs 'new registration' responses.",
+      "remediation": "Trim the response in the controller to only return non-PII fields: `ctx.body = { data: { id: registration.id, status: registration.status, event: { title: registration.event.title, documentId: registration.event.documentId }, createdAt: registration.createdAt } }`. Do not return the full student object. For the enumeration vector, use a generic error message ('Registration processed') regardless of whether it was a new or existing registration, and send a separate email to the student confirming their registration status. Alternatively, add a confirmation step (email verification link) before creating the actual registration.",
+      "effort": "s",
+      "cross_refs": [
+        "SEC-004",
+        "SEC-005"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-02"
+    },
+    {
+      "id": "SEC-013",
+      "agent": "security-audit-001",
+      "module": "FRONT-FORMS",
+      "severity": "low",
+      "category": "credential_exposure",
+      "title": "Frontend client-side code directly references Strapi URL via NEXT_PUBLIC_ environment variable",
+      "file": "frontend/src/components/newsletter-subscription-form.tsx",
+      "line_range": [
+        28,
+        28
+      ],
+      "description": "The NewsletterSubscriptionForm uses `process.env.NEXT_PUBLIC_STRAPI_URL` client-side to construct the subscription API URL. The `NEXT_PUBLIC_` prefix means this value is inlined at build time and exposed in browser JavaScript bundles — any user can view-source and discover the Strapi backend URL. While the Strapi URL itself is not a secret, exposing internal API URLs aids reconnaissance. Additionally, this bypasses the Next.js API proxy pattern used by other forms (registrations/register, contact-submissions/submit, analytics/events), creating an inconsistent architecture where some forms proxy through Next.js API routes and others call Strapi directly from the browser.",
+      "remediation": "Route the newsletter subscription through the Next.js API proxy layer (create `frontend/src/app/api/newsletter-subscriptions/subscribe/route.ts`) instead of calling Strapi directly. This keeps the Strapi URL server-side only, allows the proxy to add rate limiting and logging, and maintains architectural consistency with other form endpoints.",
+      "effort": "s",
+      "cross_refs": [
+        "SEC-001"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-03"
+    },
+    {
+      "id": "SEC-014",
+      "agent": "security-audit-001",
+      "module": "BACK-API",
+      "severity": "low",
+      "category": "data_security",
+      "title": "TCKN pepper environment variable default is empty string — weak hash without production config",
+      "file": "backend/src/utils/tckn.ts",
+      "line_range": [
+        55,
+        68
+      ],
+      "description": "The `hashTcknForStorage` function falls back to a no-pepper SHA-256 hash when `TCKN_STORAGE_PEPPER` is unset (line 62: `const pepper = process.env.TCKN_STORAGE_PEPPER ?? ''`). Without a pepper, TCKN hashes are deterministically computed SHA-256 hashes of the 11-digit number alone. Since TCKN space is only 10^11 possibilities (with checksum constraints, effectively ~10^9), a rainbow table attack can reverse the hashes. The backend `.env` file does not set `TCKN_STORAGE_PEPPER`, and neither does `.env.example` or `docker-compose.yml`. This function is only called from course-application services (line 201 of course-application.ts) where it stores `tcknHash` in `applicantSnapshot`, not from registration flows.",
+      "remediation": "Add `TCKN_STORAGE_PEPPER=<random-256-bit-base64-string>` to `.env.example` with documentation that production deployments MUST set this to a unique cryptographically random value. In the hash function, emit a warning via `strapi.log.warn()` if the pepper is empty to alert operators during startup. For defense-in-depth, consider using bcrypt/scrypt instead of plain SHA-256 to make rainbow table attacks computationally infeasible even without a pepper.",
+      "effort": "xs",
+      "cross_refs": [
+        "SEC-007"
+      ],
+      "timestamp": "2026-05-01T14:24:52+03:00",
+      "pr_group": "P1-05"
+    },
+    {
+      "id": "PP-001",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-ARCH",
+      "severity": "major",
+      "category": "runtime",
+      "title": "No loading.tsx or error.tsx in any route segment",
+      "file": "frontend/src/app/",
+      "line_range": [],
+      "description": "No route segment has loading.tsx or error.tsx. Users see frozen UI during page transitions. LCP increases by full server response time (500ms-2s).",
+      "remediation": "Add loading.tsx with skeleton/spinner per route group. Add error.tsx with retry boundary.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-01",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "frontend/src/app/"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "PP-002",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-DATA",
+      "severity": "major",
+      "category": "io_latency",
+      "title": "fetchStrapi() has zero retry/backoff logic",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        151,
+        162
+      ],
+      "description": "Any transient network failure causes pages to render empty arrays/null silently. No retry mechanism at all.",
+      "remediation": "Implement exponential backoff retry (3 attempts, 1s/2s/4s delays) in fetchStrapi.",
+      "effort": "m",
+      "cross_refs": [
+        "FRONT-ARCH",
+        "FRONT-COMP"
+      ],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-03",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "frontend/src/lib/strapi.ts"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "PP-003",
+      "agent": "performance-profiling-agent",
+      "module": "BACK-INT",
+      "severity": "major",
+      "category": "algorithmic",
+      "title": "Event emails sent sequentially (N × SMTP RTT)",
+      "file": "backend/src/services/internal-notifications/",
+      "line_range": [],
+      "description": "When sending registration confirmation emails, each email is sent sequentially. With 100+ registrations, the endpoint blocks for minutes.",
+      "remediation": "Use Promise.all or a queue-based approach (Bull/BullMQ) to send emails in parallel.",
+      "effort": "l",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P1-03",
+      "implementation_notes": {
+        "estimated_effort_days": 3.5,
+        "files_to_modify": [
+          "backend/src/services/internal-notifications/"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "PP-004",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-DATA",
+      "severity": "minor",
+      "category": "runtime",
+      "title": "getEvents fetches all events then filters client-side by eventType",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        284,
+        305
+      ],
+      "description": "getEvents fetches ALL events (pageSize=100) and then filters with normalizeEventType() client-side. The Strapi API supports server-side filtering with ?filters[eventType][$eq].",
+      "remediation": "Pass eventType filter to Strapi query parameter instead of client-side filter.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-03"
+    },
+    {
+      "id": "PP-005",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-COMP",
+      "severity": "major",
+      "category": "io_latency",
+      "title": "Blog card cover images request full-size originals without responsive formats",
+      "file": "frontend/src/components/blog-card.tsx",
+      "line_range": [],
+      "description": "Blog cards display cover images but only request the `url` field from Strapi (line 336 of strapi.ts), not the responsive formats (large, medium, small, thumbnail). Full-resolution images degrade LCP by 500ms-2s on blog listing pages.",
+      "remediation": "Add `&populate[coverImage][fields][0]=formats` or use the getStrapiMediaUrl function which already tries format fallbacks.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-02",
+      "implementation_notes": {
+        "estimated_effort_days": 0.5,
+        "files_to_modify": [
+          "frontend/src/components/blog-card.tsx"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "PP-006",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-DATA",
+      "severity": "minor",
+      "category": "algorithmic",
+      "title": "getCourseSlugs fetches 100 course records just to extract slugs",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        250,
+        261
+      ],
+      "description": "getCourseSlugs requests full records with pagination[pageSize]=100 but only needs slug field. Already uses fields[0]=slug which is correct, but still returns full StrapiListResponse objects.",
+      "remediation": "Already correctly uses field selection. Minor: consider a dedicated paginated slug endpoint.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-04"
+    },
+    {
+      "id": "PP-007",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-DATA",
+      "severity": "observation",
+      "category": "io_latency",
+      "title": "Multiple Strapi fetch functions use no-store, preventing HTTP-level caching",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [],
+      "description": "getCourses, getEvents, getBlogPosts, getTeachers, getLatestCourses all default to no-store, bypassing any CDN or browser caching.",
+      "remediation": "Evaluate which listing pages can use stale-while-revalidate or ISR with revalidation tags.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P3-03"
+    },
+    {
+      "id": "PP-008",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-COMP",
+      "severity": "minor",
+      "category": "memory",
+      "title": "CourseCatalogList renders all courses with no virtualization",
+      "file": "frontend/src/components/course-catalog-list.tsx",
+      "line_range": [],
+      "description": "All courses are rendered in a single list with no windowing/virtualization. With 100+ courses, this creates hundreds of DOM nodes.",
+      "remediation": "Add pagination or use react-window/react-virtuoso for large lists.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-03"
+    },
+    {
+      "id": "PP-009",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-DATA",
+      "severity": "minor",
+      "category": "io_latency",
+      "title": "getTeachers fetches no-store — teacher data likely changes rarely",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        377,
+        388
+      ],
+      "description": "Teacher profiles rarely change. Using no-store forces a database hit on every page view.",
+      "remediation": "Change to force-cache or add ISR revalidation.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P3-03"
+    },
+    {
+      "id": "PP-010",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-COMP",
+      "severity": "major",
+      "category": "bundle",
+      "title": "isomorphic-dompurify bundles 30KB+ gzipped into client-side code",
+      "file": "frontend/src/components/content/rich-text-content.tsx",
+      "line_range": [],
+      "description": "isomorphic-dompurify loads the full DOMPurify library (~30KB gzipped) into client bundles even though HTML sanitization only happens server-side in rich-text-content.",
+      "remediation": "Use dompurify only server-side. For client components, sanitize HTML at build time or in server components.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-02",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "frontend/src/components/content/rich-text-content.tsx"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "PP-011",
+      "agent": "performance-profiling-agent",
+      "module": "BACK-API",
+      "severity": "observation",
+      "category": "io_latency",
+      "title": "Strapi controllers use default populate which may over-fetch relations",
+      "file": "backend/src/api/course/controllers/course.ts",
+      "line_range": [],
+      "description": "Strapi core controllers use default populate behavior. Custom queries should specify exact populate needs.",
+      "remediation": "N/A — the frontend already uses field selection in strapi.ts queries.",
+      "effort": "observation only",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "PP-012",
+      "agent": "performance-profiling-agent",
+      "module": "BACK-INT",
+      "severity": "observation",
+      "category": "algorithmic",
+      "title": "SPL SOAP calls are synchronous and blocking",
+      "file": "backend/src/services/spl-check/",
+      "line_range": [],
+      "description": "SOAP HTTP requests to the SPL service are synchronous/blocking in the request cycle.",
+      "remediation": "If latency is an issue, move to a queue-based pattern. Currently acceptable for low-volume usage.",
+      "effort": "observation only",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "PP-013",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-COMP",
+      "severity": "minor",
+      "category": "runtime",
+      "title": "Blog search triggers full page navigation on every keystroke with no debounce",
+      "file": "frontend/src/components/content/blog-search.tsx",
+      "line_range": [],
+      "description": "Search input triggers server round-trips on every keystroke with no debounce. Adds 100-300ms latency per keystroke.",
+      "remediation": "Add 300ms debounce to the search input before triggering navigation/fetch.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-03"
+    },
+    {
+      "id": "PP-014",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-COMP",
+      "severity": "major",
+      "category": "io_latency",
+      "title": "No image optimization pipeline for Strapi assets — all images served at original resolution",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [],
+      "description": "While getStrapiMediaUrl checks format fallbacks (large/medium/small/thumbnail), the Strapi blog post queries (getBlogPosts, getBlogPostBySlug) only request `url` and `alternativeText` from coverImage, NOT the formats. This means the blog listing always loads full-resolution cover images.",
+      "remediation": "Add format field selection to coverImage populate in getBlogPosts and getBlogPostBySlug. Use Next.js Image component with proper sizes and quality props.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-02",
+      "implementation_notes": {
+        "estimated_effort_days": 0.5,
+        "files_to_modify": [
+          "frontend/src/lib/strapi.ts"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "PP-015",
+      "agent": "performance-profiling-agent",
+      "module": "BACK-API",
+      "severity": "observation",
+      "category": "memory",
+      "title": "Analytics event storage grows unboundedly with no retention policy",
+      "file": "backend/src/api/analytics-event/",
+      "line_range": [],
+      "description": "Analytics events are stored indefinitely with no TTL, cleanup, or archiving. Over time, this table will grow and degrade query performance.",
+      "remediation": "Add a retention policy (e.g., delete events older than 90 days). Consider moving to a dedicated analytics store.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-04"
+    },
+    {
+      "id": "PP-016",
+      "agent": "performance-profiling-agent",
+      "module": "FRONT-ARCH",
+      "severity": "minor",
+      "category": "algorithmic",
+      "title": "Home page fetches from 4 different Strapi collections without parallelization",
+      "file": "frontend/src/app/page.tsx",
+      "line_range": [],
+      "description": "The home page may fetch courses, events, blog posts, and teachers sequentially.",
+      "remediation": "Use Promise.all to parallelize independent fetches.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P3-03"
+    },
+    {
+      "id": "AR-001",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-DATA",
+      "severity": "critical",
+      "category": "modularity",
+      "title": "Monolithic strapi.ts (429 lines) serves as entire frontend data layer",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [
+        1,
+        429
+      ],
+      "description": "Every page depends on this single file. Changing any type or fetch function risks cascading breakage. Mixes type definitions, fetch infrastructure, per-content-type queries, and media utilities.",
+      "remediation": "Split into strapi-types.ts, strapi-client.ts, strapi-courses.ts, strapi-events.ts, strapi-blog.ts, strapi-teachers.ts, strapi-media.ts.",
+      "effort": "l",
+      "cross_refs": [
+        "FRONT-ARCH",
+        "FRONT-COMP"
+      ],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P3-01",
+      "implementation_notes": {
+        "estimated_effort_days": 3.5,
+        "files_to_modify": [
+          "frontend/src/lib/strapi.ts"
+        ],
+        "test_required": true,
+        "rollback_risk": "HIGH"
+      }
+    },
+    {
+      "id": "AR-002",
+      "agent": "architecture-refactoring-agent",
+      "module": "SHARED-UTIL",
+      "severity": "major",
+      "category": "dry",
+      "title": "TCKN validation logic duplicated byte-for-byte between frontend and backend",
+      "file": "frontend/src/lib/tckn.ts",
+      "line_range": [],
+      "description": "TCKN validation (checksum algorithm, format checking) is implemented identically in both stacks with no shared source of truth.",
+      "remediation": "Extract TCKN validation into a shared package or copy via build script. At minimum, add a comment cross-referencing both implementations.",
+      "effort": "m",
+      "cross_refs": [
+        "BACK-DOMAIN"
+      ],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P2-02",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "frontend/src/lib/tckn.ts"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "AR-003",
+      "agent": "architecture-refactoring-agent",
+      "module": "SHARED-UTIL",
+      "severity": "major",
+      "category": "dry",
+      "title": "Event registration window logic duplicated across stacks",
+      "file": "frontend/src/lib/event-registration.ts",
+      "line_range": [],
+      "description": "isRegistrationOpen, getRegistrationStatus logic exists in both frontend and backend with identical implementations.",
+      "remediation": "Make the backend the source of truth. Frontend should query event status endpoint rather than duplicating logic.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-02",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "frontend/src/lib/event-registration.ts"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "AR-004",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-FORMS",
+      "severity": "major",
+      "category": "dry",
+      "title": "IntentLeadForm is a 489-line god component with 3 layers of validation",
+      "file": "frontend/src/components/contact/intent-lead-form.tsx",
+      "line_range": [
+        1,
+        489
+      ],
+      "description": "Combines tab UI, form state, validation, analytics, localStorage persistence, and error handling. Validation exists in 3 layers: frontend Zod, backend controller, backend service. Adding a field touches ~5 files.",
+      "remediation": "Extract into composable hooks (useLeadForm, useLeadValidation, useLeadSubmission). Extract tab rendering and field sections into sub-components.",
+      "effort": "l",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-01",
+      "implementation_notes": {
+        "estimated_effort_days": 3.5,
+        "files_to_modify": [
+          "frontend/src/components/contact/intent-lead-form.tsx"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "AR-005",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-ARCH",
+      "severity": "minor",
+      "category": "dry",
+      "title": "Route detail pages duplicate hero + content layout markup",
+      "file": "frontend/src/app/egitimler/[slug]/page.tsx",
+      "line_range": [],
+      "description": "Each detail page repeats the same hero section + content body layout pattern with minor variations.",
+      "remediation": "Extract a ContentDetailPageShell component with slots for hero, body, and sidebar.",
+      "effort": "m",
+      "cross_refs": [
+        "FRONT-COMP"
+      ],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-01"
+    },
+    {
+      "id": "AR-006",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-ARCH",
+      "severity": "minor",
+      "category": "dry",
+      "title": "List pages duplicate the same 'fetch then render list' pattern",
+      "file": "frontend/src/app/egitimler/page.tsx",
+      "line_range": [],
+      "description": "Each list page fetches data, passes it to a list component, and renders an empty state. The pattern is identical across 3+ pages.",
+      "remediation": "Extract a ContentListPage component that accepts a fetcher function and a list component as props.",
+      "effort": "m",
+      "cross_refs": [
+        "FRONT-COMP",
+        "FRONT-DATA"
+      ],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-01"
+    },
+    {
+      "id": "AR-007",
+      "agent": "architecture-refactoring-agent",
+      "module": "BACK-API",
+      "severity": "minor",
+      "category": "consistency",
+      "title": "Strapi content types have inconsistent field naming conventions",
+      "file": "backend/src/api/",
+      "line_range": [],
+      "description": "Some content types use camelCase, others use snake_case in database columns. Field naming for similar concepts varies (summary vs excerpt, details vs description vs content).",
+      "remediation": "Audit and standardize field naming. Document the convention in AGENTS.md.",
+      "effort": "l",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-03"
+    },
+    {
+      "id": "AR-008",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-FORMS",
+      "severity": "minor",
+      "category": "dry",
+      "title": "FormStorage pattern duplicated across event registration and intent lead form",
+      "file": "frontend/src/lib/form-storage.ts",
+      "line_range": [],
+      "description": "Both useEventRegistrationForm and IntentLeadForm implement nearly identical localStorage/sessionStorage save/restore logic via FormStorage.",
+      "remediation": "Already partially centralized in FormStorage class. Consider a useFormPersistence hook.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P2-02"
+    },
+    {
+      "id": "AR-009",
+      "agent": "architecture-refactoring-agent",
+      "module": "BACK-DOMAIN",
+      "severity": "suggestion",
+      "category": "design_pattern",
+      "title": "internal-notifications service could be a Strapi plugin",
+      "file": "backend/src/services/internal-notifications/",
+      "line_range": [],
+      "description": "The notification routing and email delivery logic is self-contained and would benefit from plugin lifecycle hooks, admin UI configuration, and independent testability.",
+      "remediation": "Convert to a Strapi plugin with admin panel configuration for notification routing.",
+      "effort": "l",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-05"
+    },
+    {
+      "id": "AR-010",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-COMP",
+      "severity": "minor",
+      "category": "dry",
+      "title": "Content components (EventCard, CourseCard, BlogCard) share card layout pattern",
+      "file": "frontend/src/components/content/content-card-shell.tsx",
+      "line_range": [],
+      "description": "EventCard, CourseCard, BlogCard all use ContentCardShell but implement similar metadata rendering (date, author, topic area).",
+      "remediation": "ContentCardShell already exists. Extract metadata rendering into a ContentCardMetadata sub-component shared by all card types.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-04"
+    },
+    {
+      "id": "AR-011",
+      "agent": "architecture-refactoring-agent",
+      "module": "BACK-API",
+      "severity": "minor",
+      "category": "consistency",
+      "title": "seed-demo.js (714 lines) is a monolithic script with no modular structure",
+      "file": "backend/scripts/seed-demo.js",
+      "line_range": [
+        1,
+        714
+      ],
+      "description": "Single-file seed creates all content types and relations. Grows with each new content type. No reusable factory functions.",
+      "remediation": "Split into per-content-type seed modules (seed-courses.js, seed-events.js, etc.) with a shared factory library.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-03"
+    },
+    {
+      "id": "AR-012",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-ARCH",
+      "severity": "minor",
+      "category": "design_pattern",
+      "title": "No shared error boundary or error page component",
+      "file": "frontend/src/app/",
+      "line_range": [],
+      "description": "No error.tsx in any route segment. Errors propagate to Next.js default error page with no branded recovery UI.",
+      "remediation": "Add a root error.tsx with branded error UI and retry functionality.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P4-01"
+    },
+    {
+      "id": "AR-013",
+      "agent": "architecture-refactoring-agent",
+      "module": "BACK-API",
+      "severity": "suggestion",
+      "category": "modularity",
+      "title": "Course-application service is the most complex business logic but lives in a flat service structure",
+      "file": "backend/src/api/course-application/services/course-application.ts",
+      "line_range": [],
+      "description": "Course application logic (SPL checks, TCKN validation, event creation, notifications) is concentrated in one service with no sub-service decomposition.",
+      "remediation": "Extract SPL check orchestration into a dedicated sub-service. Extract notification logic.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-03"
+    },
+    {
+      "id": "AR-014",
+      "agent": "architecture-refactoring-agent",
+      "module": "BACK-INT",
+      "severity": "minor",
+      "category": "coupling",
+      "title": "Event controller directly imports and calls internal-notifications service",
+      "file": "backend/src/api/event/controllers/event.ts",
+      "line_range": [],
+      "description": "Event controller sends registration emails by directly importing the notification service. If the notification service changes, event controller breaks.",
+      "remediation": "Use Strapi's service layer to call notifications via `strapi.service('api::notification-routing.notification-routing')` instead of direct import.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-03"
+    },
+    {
+      "id": "AR-015",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-DATA",
+      "severity": "suggestion",
+      "category": "design_pattern",
+      "title": "No repository or data-access layer pattern — all pages import strapi.ts directly",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [],
+      "description": "Every page imports strapi.ts directly, creating tight coupling to the Strapi API shape. No intermediate repository or adapter layer.",
+      "remediation": "Consider adding a thin data-access layer that maps Strapi types to domain types, insulating pages from API changes.",
+      "effort": "l",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P3-01"
+    },
+    {
+      "id": "AR-016",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-ARCH",
+      "severity": "minor",
+      "category": "consistency",
+      "title": "Navigation items are hardcoded in site-header instead of a centralized config",
+      "file": "frontend/src/components/site-header.tsx",
+      "line_range": [],
+      "description": "Navigation links are defined inline in the header component. Adding a page requires code changes to site-header.",
+      "remediation": "Move navigation items to a shared config file (e.g., frontend/src/lib/navigation.ts) imported by both header and footer.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-04"
+    },
+    {
+      "id": "AR-017",
+      "agent": "architecture-refactoring-agent",
+      "module": "FRONT-FORMS",
+      "severity": "major",
+      "category": "separation_of_concerns",
+      "title": "Form validation exists in 3 separate layers with potential drift",
+      "file": "",
+      "line_range": [],
+      "description": "Contact form has Zod schema in frontend, manual validation in backend controller, and business logic validation in service. These 3 layers can drift independently.",
+      "remediation": "Make the backend the authoritative validator. Frontend Zod should mirror backend validation. Consider sharing validation rules via a JSON schema or generated types.",
+      "effort": "l",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P3-02",
+      "implementation_notes": {
+        "estimated_effort_days": 3.5,
+        "files_to_modify": [
+          ""
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "AR-018",
+      "agent": "architecture-refactoring-agent",
+      "module": "BACK-API",
+      "severity": "minor",
+      "category": "consistency",
+      "title": "Custom route registration patterns are inconsistent across content types",
+      "file": "backend/src/api/",
+      "line_range": [],
+      "description": "Some content types use custom-routes.ts, others use custom-event.ts, custom-registration.ts. No standard file naming convention.",
+      "remediation": "Standardize on custom.ts in each content type's routes directory.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-03"
+    },
+    {
+      "id": "AR-019",
+      "agent": "architecture-refactoring-agent",
+      "module": "BACK-API",
+      "severity": "major",
+      "category": "dry",
+      "title": "Duplicate error handling and response formatting across custom controllers",
+      "file": "backend/src/api/",
+      "line_range": [],
+      "description": "Custom controllers (registration, contact-submission, course-application, analytics-event) duplicate error response formatting, try-catch patterns, and validation error handling.",
+      "remediation": "Create a shared controller helper utility (formatError, formatSuccess, validateBody) used by all custom controllers.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-02",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "backend/src/api/"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "AR-020",
+      "agent": "architecture-refactoring-agent",
+      "module": "SHARED-UTIL",
+      "severity": "minor",
+      "category": "dry",
+      "title": "Date formatting and localization utilities duplicated between frontend and backend",
+      "file": "",
+      "line_range": [],
+      "description": "Date formatting (Turkish locale, relative time) is implemented on both sides.",
+      "remediation": "Consolidate date formatting in one shared utility. Prefer Intl.DateTimeFormat with tr-TR locale.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-02"
+    },
+    {
+      "id": "DM-001",
+      "agent": "dependency-mapping-agent",
+      "module": "SHARED-UTIL",
+      "severity": "info",
+      "category": "stability",
+      "title": "testids.ts has 23 fan-in, 0 fan-out — most stable module",
+      "file": "frontend/src/lib/testids.ts",
+      "line_range": [],
+      "description": "23 files import from testids.ts but it imports nothing itself. Critical stability point — changes break many tests.",
+      "remediation": "Document as a stable API. Add deprecation process for test ID changes.",
+      "effort": "observation",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "DM-002",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-DATA",
+      "severity": "warning",
+      "category": "coupling",
+      "title": "strapi.ts types consumed by all route pages — blast radius is entire frontend",
+      "file": "frontend/src/lib/strapi.ts",
+      "line_range": [],
+      "description": "StrapiCourse, StrapiEvent, StrapiBlogPost, StrapiTeacher types are imported by every route page. Type changes affect the entire frontend.",
+      "remediation": "Generate types from Strapi content-type schemas to ensure contract adherence.",
+      "effort": "l",
+      "cross_refs": [
+        "FRONT-ARCH",
+        "BACK-API"
+      ],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P3-01"
+    },
+    {
+      "id": "DM-003",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-COMP",
+      "severity": "warning",
+      "category": "coupling",
+      "title": "All route pages import strapi.ts directly — no intermediate data-access layer",
+      "file": "frontend/src/app/",
+      "line_range": [],
+      "description": "Every route page imports strapi.ts functions directly. This creates tight coupling to the Strapi API shape.",
+      "remediation": "Consider a data-access layer that isolates pages from the API client.",
+      "effort": "l",
+      "cross_refs": [
+        "FRONT-DATA"
+      ],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P3-01"
+    },
+    {
+      "id": "DM-004",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-FORMS",
+      "severity": "warning",
+      "category": "circular",
+      "title": "Type-only circular import between intent-field-sections.tsx and intent-lead-form.tsx",
+      "file": "frontend/src/components/contact/intent-field-sections.tsx",
+      "line_range": [],
+      "description": "intent-field-sections.tsx imports types from intent-lead-form.tsx, which imports components from intent-field-sections.tsx. Type-only cycle, not runtime-breaking but fragile.",
+      "remediation": "Extract shared types into a separate types.ts file in the contact/ directory.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-01"
+    },
+    {
+      "id": "DM-005",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-COMP",
+      "severity": "warning",
+      "category": "orphan",
+      "title": "blog-search.tsx has zero consumers — confirmed dead code",
+      "file": "frontend/src/components/content/blog-search.tsx",
+      "line_range": [],
+      "description": "No file in the entire frontend imports from blog-search.tsx. Author left a TODO to remove it.",
+      "remediation": "Delete the file. If search functionality is planned, recreate when implemented.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-04"
+    },
+    {
+      "id": "DM-006",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-COMP",
+      "severity": "info",
+      "category": "orphan",
+      "title": "separator.tsx has zero consumers across entire frontend",
+      "file": "frontend/src/components/ui/separator.tsx",
+      "line_range": [],
+      "description": "The Separator UI component is never imported by any page or component.",
+      "remediation": "Either use it (replace manual hr elements with Separator) or delete it.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-04"
+    },
+    {
+      "id": "DM-007",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-DATA",
+      "severity": "info",
+      "category": "coupling",
+      "title": "content-taxonomy.ts is consumed by 8+ components — shared enum of Turkish topic areas",
+      "file": "frontend/src/lib/content-taxonomy.ts",
+      "line_range": [],
+      "description": "High fan-in module for topic area labels. Stable but changes affect many components.",
+      "remediation": "Document as stable. Consider generating from Strapi topicArea enum values.",
+      "effort": "observation",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "DM-008",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-COMP",
+      "severity": "info",
+      "category": "stability",
+      "title": "content/ directory has clean layered architecture — shells → domain leaves, zero cycles",
+      "file": "frontend/src/components/content/",
+      "line_range": [],
+      "description": "Content component tree is well-structured with ContentCardShell and ContentPageShell at the top, domain-specific leaves (EventCard, BlogCard, CourseCard) at the bottom. No circular dependencies.",
+      "remediation": "None needed. This is a positive finding — the content component architecture is clean.",
+      "effort": "observation",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "DM-009",
+      "agent": "dependency-mapping-agent",
+      "module": "BACK-DOMAIN",
+      "severity": "info",
+      "category": "stability",
+      "title": "internal-notifications service scope is clean — consumed by exactly 3 services, no leaks",
+      "file": "backend/src/services/internal-notifications/",
+      "line_range": [],
+      "description": "Notification service is only imported by registration, course-application, and contact-submission services. No unauthorized consumers.",
+      "remediation": "None needed. Clean service boundary.",
+      "effort": "observation",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "DM-010",
+      "agent": "dependency-mapping-agent",
+      "module": "SHARED-UTIL",
+      "severity": "warning",
+      "category": "coupling",
+      "title": "event-registration.ts logic is duplicated identically in frontend and backend with separate import graphs",
+      "file": "frontend/src/lib/event-registration.ts",
+      "line_range": [],
+      "description": "Identical business logic exists in two separate files with no import relationship. Changes must be made in both places.",
+      "remediation": "Make backend the source of truth. Frontend should call an API endpoint.",
+      "effort": "m",
+      "cross_refs": [
+        "BACK-DOMAIN"
+      ],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-02"
+    },
+    {
+      "id": "DM-011",
+      "agent": "dependency-mapping-agent",
+      "module": "ALL",
+      "severity": "info",
+      "category": "boundary",
+      "title": "No cross-stack imports — frontend and backend separation via HTTP API proxies is clean",
+      "file": "",
+      "line_range": [],
+      "description": "Zero instances of frontend files importing from backend/ or vice versa. Clean monorepo boundary.",
+      "remediation": "None needed. Positive finding.",
+      "effort": "observation",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "DM-012",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-FORMS",
+      "severity": "info",
+      "category": "stability",
+      "title": "intent-lead-form.tsx has 10 imports — highest fan-out, complexity-justified",
+      "file": "frontend/src/components/contact/intent-lead-form.tsx",
+      "line_range": [],
+      "description": "Highest fan-out in the frontend at 10 imports. Justified by component complexity but reinforces the need to refactor.",
+      "remediation": "Refactoring (AR-004) will naturally reduce fan-out by splitting into sub-components.",
+      "effort": "covered by AR-004",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-01"
+    },
+    {
+      "id": "DM-013",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-COMP",
+      "severity": "info",
+      "category": "stability",
+      "title": "ContentCardShell has high fan-in (7+ consumers) — stable shared component",
+      "file": "frontend/src/components/content/content-card-shell.tsx",
+      "line_range": [],
+      "description": "Used by EventCard, CourseCard, BlogCard, NewsCard, and others. Changes propagate broadly.",
+      "remediation": "Treat as a stable public API. Add tests before modifying.",
+      "effort": "observation",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "DM-014",
+      "agent": "dependency-mapping-agent",
+      "module": "BACK-API",
+      "severity": "warning",
+      "category": "coupling",
+      "title": "Course-application controller has the most direct service imports in the backend",
+      "file": "backend/src/api/course-application/controllers/course-application.ts",
+      "line_range": [],
+      "description": "Imports from 4+ services (SPL check, notifications, event, course). Most complex orchestration in the backend.",
+      "remediation": "Consider a service orchestrator or saga pattern for the multi-step course application flow.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P5-03"
+    },
+    {
+      "id": "DM-015",
+      "agent": "dependency-mapping-agent",
+      "module": "FRONT-COMP",
+      "severity": "info",
+      "category": "stability",
+      "title": "Button and form UI components (shadcn) are stable with consistent import patterns",
+      "file": "frontend/src/components/ui/",
+      "line_range": [],
+      "description": "shadcn UI components follow consistent import patterns. No circular dependencies in the UI layer.",
+      "remediation": "None needed. Clean UI component architecture.",
+      "effort": "observation",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "OBSERVATION"
+    },
+    {
+      "id": "TC-001",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "critical",
+      "category": "coverage_gap",
+      "title": "Six backend service modules with zero test coverage",
+      "file": "backend/src/api/",
+      "line_range": [],
+      "description": "Course, event, blog-post, blog-author, student, and teacher content types have NO service-level tests. These are core content types serving the entire frontend.",
+      "remediation": "Add service-level tests for each. Start with course and event services (highest traffic).",
+      "effort": "l",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-03",
+      "implementation_notes": {
+        "estimated_effort_days": 3.5,
+        "files_to_modify": [
+          "backend/src/api/"
+        ],
+        "test_required": true,
+        "rollback_risk": "HIGH"
+      }
+    },
+    {
+      "id": "TC-002",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "high",
+      "category": "coverage_gap",
+      "title": "Zero runtime frontend tests — all 26 test files use readFileSync string matching, never render components",
+      "file": "frontend/src/__tests__/",
+      "line_range": [],
+      "description": "All frontend tests are Node.js scripts that read HTML output files and match strings. No component rendering, no user interaction testing, no state management testing.",
+      "remediation": "Add Vitest + @testing-library/react for component tests. Add Playwright or Cypress for E2E tests.",
+      "effort": "xl",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-04",
+      "implementation_notes": {
+        "estimated_effort_days": 6,
+        "files_to_modify": [
+          "frontend/src/__tests__/"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "TC-003",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "high",
+      "category": "test_architecture",
+      "title": "Zero E2E test infrastructure — no Playwright or Cypress installed",
+      "file": "frontend/package.json",
+      "line_range": [],
+      "description": "The most interactive user flows (event registration form, contact form, course browsing) have no E2E coverage. No testing framework for browser automation.",
+      "remediation": "Install Playwright and create E2E tests for critical paths: registration flow, contact form submission, course browsing, blog reading.",
+      "effort": "l",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-05",
+      "implementation_notes": {
+        "estimated_effort_days": 3.5,
+        "files_to_modify": [
+          "frontend/package.json"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "TC-004",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "high",
+      "category": "coverage_gap",
+      "title": "Two routes have zero test coverage: /kvkk and /haberler",
+      "file": "frontend/src/app/kvkk/page.tsx",
+      "line_range": [],
+      "description": "kvkk/page.tsx and haberler/page.tsx have no corresponding test files and are not covered by any tests.",
+      "remediation": "Add tests for both routes. /kvkk is a static legal page; /haberler is an empty placeholder that needs both data and tests.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P6-01",
+      "implementation_notes": {
+        "estimated_effort_days": 0.5,
+        "files_to_modify": [
+          "frontend/src/app/kvkk/page.tsx"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "TC-005",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "high",
+      "category": "coverage_gap",
+      "title": "No tests for [slug] detail pages in egitimler, etkinlikler, blog-yazilari",
+      "file": "frontend/src/app/egitimler/[slug]/page.tsx",
+      "line_range": [],
+      "description": "Detail/individual pages have no test coverage at all.",
+      "remediation": "Add tests for detail page rendering with mock Strapi data.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-04",
+      "implementation_notes": {
+        "estimated_effort_days": 1.5,
+        "files_to_modify": [
+          "frontend/src/app/egitimler/[slug]/page.tsx"
+        ],
+        "test_required": true,
+        "rollback_risk": "MEDIUM"
+      }
+    },
+    {
+      "id": "TC-006",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "medium",
+      "category": "coverage_gap",
+      "title": "Frontend lib files have no test coverage: form-storage.ts, utils.ts, content-taxonomy.ts, page-visual-sections.ts, tckn.ts",
+      "file": "frontend/src/lib/",
+      "line_range": [],
+      "description": "Core utility files have no test coverage. form-storage.ts is critical for form state persistence. tckn.ts handles PII validation.",
+      "remediation": "Add unit tests for all lib files. Prioritize tckn.ts and form-storage.ts.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-04"
+    },
+    {
+      "id": "TC-007",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "medium",
+      "category": "assertion_quality",
+      "title": "Tautological assertions found — tests that always pass regardless of code changes",
+      "file": "backend/tests/",
+      "line_range": [],
+      "description": "Some backend tests contain assertions like expect(true).toBe(true) or assert(true) that inflate coverage metrics without catching regressions.",
+      "remediation": "Audit all tests for meaningful assertions. Replace tautological assertions with behavior-verifying assertions.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-02"
+    },
+    {
+      "id": "TC-008",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "medium",
+      "category": "pre_existing_failure",
+      "title": "9 contact-submission tests fail due to missing kvkkConsent field in test data",
+      "file": "",
+      "line_range": [],
+      "description": "Contact submission tests fail because kvkkConsent is now required but test fixtures don't include it. >50% of service code untested due to pre-existing failures.",
+      "remediation": "Add kvkkConsent: true to all contact-submission test fixtures.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-01"
+    },
+    {
+      "id": "TC-009",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "medium",
+      "category": "pre_existing_failure",
+      "title": "3 TCKN masking tests fail due to expected value mismatch after hashing change",
+      "file": "",
+      "line_range": [],
+      "description": "TCKN masking assertion expected values don't match after hash format change. Low impact (single assertion per test).",
+      "remediation": "Update expected hash values in TCKN test assertions.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-01"
+    },
+    {
+      "id": "TC-010",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "medium",
+      "category": "pre_existing_failure",
+      "title": "4 SPL/SOAP XML parsing tests fail — likely related to fast-xml-parser v5 breaking changes",
+      "file": "",
+      "line_range": [],
+      "description": "SPL check tests fail due to XML parsing changes in fast-xml-parser v5. Medium impact on spl-check coverage.",
+      "remediation": "Investigate fast-xml-parser v5 migration. Update XML parsing test expectations.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-01"
+    },
+    {
+      "id": "TC-011",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "medium",
+      "category": "coverage_gap",
+      "title": "/iletisim route has only minimal test coverage — form interaction untested",
+      "file": "frontend/src/app/iletisim/page.tsx",
+      "line_range": [],
+      "description": "Contact page has a test but only checks basic rendering. Form submission, validation errors, and success states are untested.",
+      "remediation": "Add contact form interaction tests for submission, validation, and error states.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-03"
+    },
+    {
+      "id": "TC-012",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "low",
+      "category": "assertion_quality",
+      "title": "Backend tests use loose regex patterns that match unrelated strings",
+      "file": "",
+      "line_range": [],
+      "description": "Some test assertions use regex patterns like /success/i that could match false positives.",
+      "remediation": "Use exact string matching or more specific patterns.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-01"
+    },
+    {
+      "id": "TC-013",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "low",
+      "category": "test_architecture",
+      "title": "Frontend has no `test` script in package.json — only test:coverage",
+      "file": "frontend/package.json",
+      "line_range": [],
+      "description": "No standard `npm test` script exists. Only test:coverage is available.",
+      "remediation": "Add a `test` script that runs tests without coverage for faster feedback during development.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-02"
+    },
+    {
+      "id": "TC-014",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "low",
+      "category": "test_architecture",
+      "title": "Backend tests may have brittle test isolation — some tests depend on database state from previous tests",
+      "file": "",
+      "line_range": [],
+      "description": "Some backend tests may depend on database state setup by earlier tests in the same run.",
+      "remediation": "Use beforeEach/afterEach hooks to reset database state. Use transactional tests.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-01"
+    },
+    {
+      "id": "TC-015",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "low",
+      "category": "coverage_gap",
+      "title": "9 content-type schemas in backend have no schema validation tests",
+      "file": "backend/src/api/",
+      "line_range": [],
+      "description": "Content-type schema definitions are not validated in tests. Schema drift could break API responses.",
+      "remediation": "Add schema snapshot tests that validate each content-type schema.json against expected structure.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-03"
+    },
+    {
+      "id": "TC-016",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "low",
+      "category": "assertion_quality",
+      "title": "Notification service tests have inconsistent failure simulation — some test success but not failure paths",
+      "file": "",
+      "line_range": [],
+      "description": "Internal notifications tests verify success cases but don't consistently test failure scenarios (email provider down, invalid email addresses).",
+      "remediation": "Add failure scenario tests for notification delivery.",
+      "effort": "s",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-03"
+    },
+    {
+      "id": "TC-017",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "info",
+      "category": "test_architecture",
+      "title": "No CI pipeline configuration for automated test runs",
+      "file": "",
+      "line_range": [],
+      "description": "No GitHub Actions, GitLab CI, or other CI pipeline configuration for automated test execution.",
+      "remediation": "Add CI configuration to run tests on every push and PR.",
+      "effort": "m",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-02"
+    },
+    {
+      "id": "TC-018",
+      "agent": "test-coverage-agent",
+      "module": "TEST-QUALITY",
+      "severity": "info",
+      "category": "assertion_quality",
+      "title": "Frontend testids re-implementation in test files instead of importing from shared testids.ts",
+      "file": "",
+      "line_range": [],
+      "description": "Some frontend tests redefine test ID constants instead of importing from testids.ts.",
+      "remediation": "Import test IDs from the shared testids.ts module to ensure consistency.",
+      "effort": "xs",
+      "cross_refs": [],
+      "timestamp": "2026-05-01T14:42:10+03:00",
+      "pr_group": "P7-02"
+    }
+  ],
+  "conflicts": [],
+  "synthesis": {
+    "total_findings": 103,
+    "severity_breakdown": {
+      "critical": 4,
+      "high": 31,
+      "medium": 29,
+      "low": 39
+    },
+    "module_health_scores": {
+      "FRONT-ARCH": "D",
+      "FRONT-COMP": "D",
+      "FRONT-DATA": "D",
+      "FRONT-FORMS": "D",
+      "FRONT-STYLES": "A",
+      "BACK-API": "F",
+      "BACK-DOMAIN": "A",
+      "BACK-INT": "B",
+      "SHARED-UTIL": "C",
+      "TEST-QUALITY": "F"
+    },
+    "estimated_remediation_days": 78,
+    "generated_at": "2026-05-01T11:30:00Z",
+    "agents": {
+      "static-analysis-001": 20,
+      "perf-profiling-001": 16,
+      "architecture-refactor-001": 20,
+      "security-audit-001": 14,
+      "dependency-mapping-001": 15,
+      "test-coverage-001": 18
+    },
+    "conflicts_resolved": 0,
+    "tiebreakers": 0,
+    "circular_dependencies_found": 1,
+    "orphan_files_found": 2,
+    "monorepo_boundary_violations": 0,
+    "pre_existing_test_failures": 16,
+    "pr_groups": [
+      "P1-01",
+      "P1-02",
+      "P1-03",
+      "P1-04",
+      "P1-05",
+      "P2-01",
+      "P2-02",
+      "P3-01",
+      "P3-02",
+      "P3-03",
+      "P4-01",
+      "P4-02",
+      "P4-03",
+      "P4-04",
+      "P5-01",
+      "P5-02",
+      "P5-03",
+      "P5-04",
+      "P5-05",
+      "P6-01",
+      "P6-02",
+      "P7-01",
+      "P7-02",
+      "P7-03",
+      "P7-04",
+      "P7-05",
+      "P7-06"
+    ],
+    "total_prs": 27,
+    "observation_count": 9,
+    "unassigned_count": 0
+  }
+}

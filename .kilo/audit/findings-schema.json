@@ -1,0 +1,165 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Multi-Agent Audit Findings Ledger",
+  "description": "Shared findings ledger for the netas_academy multi-agent codebase audit framework. All agents write findings here; the Lead Architect Agent reads, resolves conflicts, and synthesizes.",
+  "type": "object",
+  "required": ["findings", "conflicts", "synthesis"],
+  "properties": {
+    "findings": {
+      "type": "array",
+      "description": "All findings from all agents",
+      "items": {
+        "$ref": "#/definitions/Finding"
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "description": "Conflicting findings escalated for human review",
+      "items": {
+        "$ref": "#/definitions/Conflict"
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "description": "Lead Architect's synthesis output",
+      "properties": {
+        "total_findings": { "type": "integer" },
+        "severity_breakdown": {
+          "type": "object",
+          "properties": {
+            "critical": { "type": "integer" },
+            "high": { "type": "integer" },
+            "medium": { "type": "integer" },
+            "low": { "type": "integer" }
+          }
+        },
+        "module_health_scores": {
+          "type": "object",
+          "patternProperties": {
+            "^(FRONT|BACK|SHARED|TEST)-[A-Z]+$": {
+              "type": "string",
+              "pattern": "^[A-F][+-]?$"
+            }
+          }
+        },
+        "estimated_remediation_days": { "type": "number" },
+        "generated_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "definitions": {
+    "Finding": {
+      "type": "object",
+      "required": [
+        "id", "agent", "module", "severity", "category",
+        "title", "file", "line_range", "description",
+        "remediation", "effort"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(SA|PP|AR|SEC|DM|TC)-\\d{3}$",
+          "description": "Unique finding ID: prefix indicates agent (SA=Static Analysis, PP=Performance Profiling, AR=Architecture & Refactoring, SEC=Security Audit, DM=Dependency Mapping, TC=Test Coverage)"
+        },
+        "agent": {
+          "type": "string",
+          "enum": [
+            "static-analysis-001",
+            "perf-profiling-001",
+            "architecture-refactor-001",
+            "security-audit-001",
+            "dependency-mapping-001",
+            "test-coverage-001"
+          ]
+        },
+        "module": {
+          "type": "string",
+          "enum": [
+            "FRONT-ARCH", "FRONT-COMP", "FRONT-DATA", "FRONT-FORMS",
+            "FRONT-STYLES", "BACK-API", "BACK-DOMAIN", "BACK-INT",
+            "SHARED-UTIL", "TEST-QUALITY"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "description": "Agent-specific severity (normalized by Lead Architect during synthesis)"
+        },
+        "category": {
+          "type": "string",
+          "description": "Analysis category within the agent's domain"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Concise finding title"
+        },
+        "file": {
+          "type": "string",
+          "description": "Relative path from repo root"
+        },
+        "line_range": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Detailed description of the finding"
+        },
+        "remediation": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Recommended fix or mitigation"
+        },
+        "effort": {
+          "type": "string",
+          "enum": ["xl", "l", "m", "s", "xs"],
+          "description": "Estimated remediation effort"
+        },
+        "cross_refs": {
+          "type": "array",
+          "description": "Cross-references to other modules affected by this finding",
+          "items": {
+            "type": "string",
+            "enum": [
+              "FRONT-ARCH", "FRONT-COMP", "FRONT-DATA", "FRONT-FORMS",
+              "FRONT-STYLES", "BACK-API", "BACK-DOMAIN", "BACK-INT",
+              "SHARED-UTIL", "TEST-QUALITY"
+            ]
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the finding was recorded"
+        }
+      }
+    },
+    "Conflict": {
+      "type": "object",
+      "required": ["finding_ids", "description", "resolution"],
+      "properties": {
+        "finding_ids": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "string" }
+        },
+        "description": {
+          "type": "string",
+          "description": "Nature of the conflict between findings"
+        },
+        "resolution": {
+          "type": "string",
+          "enum": ["resolved", "tiebreaker_needed"],
+          "description": "Resolution status"
+        },
+        "resolution_notes": {
+          "type": "string",
+          "description": "How the conflict was resolved or why tiebreaker is needed"
+        }
+      }
+    }
+  }
+}
