@@ -1,0 +1,130 @@
+export type StrapiListResponse<T> = {
+  data: T[];
+  meta?: {
+    pagination?: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+};
+
+export type FetchStrapiOptions = {
+  cache?: RequestCache;
+  next?: NextFetchRequestConfig;
+};
+
+export type StrapiCourse = {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  summary?: string | null;
+  description?: string | null;
+  /* ─── taxonomy fields ─── */
+  topicArea?: string | null;
+  level?: string | null;
+  targetAudience?: string | null;
+  /* ─── capability fields ─── */
+  businessValue?: string | null;
+  scopeSummary?: string | null;
+  outcomeBullets?: string | null;
+  teacher?: {
+    id: number;
+    documentId: string;
+    fullName: string;
+    slug: string;
+  } | null;
+  /* ─── related events ─── */
+  events?: Array<{
+    id: number;
+    documentId: string;
+    title: string;
+    slug: string;
+    summary?: string | null;
+    startsAt: string;
+    eventType: string;
+    topicArea?: string | null;
+  }> | null;
+};
+
+export type StrapiEventType = "etkinlik" | "egitim" | "kurs";
+export type StrapiEventSortOrder = "asc" | "desc";
+
+export type StrapiEvent = {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  summary?: string | null;
+  details?: string | null;
+  startsAt: string;
+  eventType: StrapiEventType;
+  endsAt?: string | null;
+  keepRegistrationsOpen?: boolean | null;
+  location?: string | null;
+  topicArea?: string | null;
+  course?: {
+    id: number;
+    documentId: string;
+    title: string;
+    slug: string;
+    topicArea?: string | null;
+  } | null;
+};
+
+export type StrapiMedia = {
+  id: number;
+  documentId: string;
+  url?: string | null;
+  alternativeText?: string | null;
+  data?: unknown;
+  attributes?: unknown;
+  formats?: Record<string, { url?: string | null }> | null;
+};
+
+export type StrapiBlogPost = {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  content?: string | null;
+  author?: {
+    id: number;
+    documentId: string;
+    displayName: string;
+    slug: string;
+    role?: string | null;
+    shortBio?: string | null;
+  } | null;
+  publishedDate?: string | null;
+  sourceNotes?: string | null;
+  coverImage?: StrapiMedia | null;
+};
+export type StrapiTeacher = {
+  id: number;
+  documentId: string;
+  fullName: string;
+  slug: string;
+  headline?: string | null;
+  bio?: string | null;
+  email?: string | null;
+  expertiseAreas?: string[] | null;
+  targetTeams?: string | null;
+  teachingApproach?: string | null;
+  profilePhoto?: StrapiMedia | null;
+  courses?: Array<{
+    id: number;
+    documentId: string;
+    title: string;
+    slug: string;
+  }>;
+};
+
+export type EventRegistrationStatus = {
+  isOpen: boolean;
+  startsAt: string;
+  keepRegistrationsOpen: boolean;
+};

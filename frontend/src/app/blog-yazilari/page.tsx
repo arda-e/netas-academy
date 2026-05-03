@@ -1,5 +1,6 @@
 import { ContentPageShell, BlogList, SearchField } from "@/components/content";
-import { getBlogPosts, getStrapiMediaUrl, getStrapiMediaAltText } from "@/lib/strapi";
+import { getBlogPosts } from "@/lib/strapi-blog";
+import { getStrapiMediaUrl, getStrapiMediaAltText } from "@/lib/strapi-media";
 
 export const dynamic = "force-dynamic";
 

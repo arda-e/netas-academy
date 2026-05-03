@@ -6,7 +6,9 @@ import { CourseCarousel } from "@/components/course-carousel";
 import { TeacherCarousel } from "@/components/teacher-carousel";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { hakkimizdaVisualSection } from "@/lib/page-visual-sections";
-import { getLatestCourses, getStrapiMediaAltText, getStrapiMediaUrl, getTeachers } from "@/lib/strapi";
+import { getLatestCourses } from "@/lib/strapi-courses";
+import { getStrapiMediaAltText, getStrapiMediaUrl } from "@/lib/strapi-media";
+import { getTeachers } from "@/lib/strapi-teachers";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {

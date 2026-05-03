@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ContentPageShell } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
-import { getCourseBySlug } from "@/lib/strapi";
+import { getCourseBySlug } from "@/lib/strapi-courses";
 import {
   normalizeTopicArea,
   getTopicAreaLabel,

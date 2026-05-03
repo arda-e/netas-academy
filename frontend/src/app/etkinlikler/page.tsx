@@ -7,9 +7,8 @@ import { join } from "@/lib/testids";
 import {
   getEvents,
   normalizeEventType,
-  type StrapiEventSortOrder,
-  type StrapiEventType,
-} from "@/lib/strapi";
+} from "@/lib/strapi-events";
+import type { StrapiEventSortOrder, StrapiEventType } from "@/lib/strapi-types";
 
 export const dynamic = "force-dynamic";
 

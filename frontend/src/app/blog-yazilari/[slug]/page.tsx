@@ -7,11 +7,10 @@ import { RichTextContent } from "@/components/content/rich-text-content";
 import {
   getBlogPostBySlug,
   getBlogPosts,
-  getStrapiMediaUrl,
-  getStrapiMediaAltText,
-  type StrapiBlogPost,
-} from "@/lib/strapi";
-import { formatLongDate } from "@/lib/date-formatting";
+} from "@/lib/strapi-blog";
+import { getStrapiMediaUrl, getStrapiMediaAltText } from "@/lib/strapi-media";
+import type { StrapiBlogPost } from "@/lib/strapi-types";
+import { formatLongDate as formatBlogDate } from "@/lib/date-formatting";
 
 type BlogDetailPageProps = {
   params: Promise<{

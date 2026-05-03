@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { EventRegistrationForm } from "@/components/event-registration-form";
 import { Button } from "@/components/ui/button";
-import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi";
+import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi-events";
 import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventRegistrationPageProps = {

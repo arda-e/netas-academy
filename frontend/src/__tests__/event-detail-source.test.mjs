@@ -14,7 +14,7 @@ test("Detail page imports getEventRegistrationStatus", () => {
   const source = readSource("app/etkinlikler/[slug]/page.tsx");
   assert.match(
     source,
-    /import\s*\{[^}]*\bgetEventRegistrationStatus\b[^}]*\}\s*from\s*"@\/lib\/strapi"/,
+    /import\s*\{[^}]*\bgetEventRegistrationStatus\b[^}]*\}\s*from\s*"@\/lib\/strapi-events"/,
     "Detail page should import getEventRegistrationStatus"
   );
 });

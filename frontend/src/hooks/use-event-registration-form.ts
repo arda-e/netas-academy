@@ -2,7 +2,7 @@
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
-import type { StrapiEventType } from "@/lib/strapi";
+import type { StrapiEventType } from "@/lib/strapi-types";
 import { isValidTckn, normalizeTcknValue } from "@/lib/tckn";
 import { useFormPersistence } from "@/hooks/use-form-persistence";
 

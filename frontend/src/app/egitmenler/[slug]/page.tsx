@@ -8,8 +8,8 @@ import { RichTextContent } from "@/components/content/rich-text-content";
 import {
   getStrapiMediaAltText,
   getStrapiMediaUrl,
-  getTeacherBySlug,
-} from "@/lib/strapi";
+} from "@/lib/strapi-media";
+import { getTeacherBySlug } from "@/lib/strapi-teachers";
 import { getInitials } from "@/lib/utils";
 import { join } from "@/lib/testids";
 

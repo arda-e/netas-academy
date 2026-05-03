@@ -4,8 +4,8 @@ import { responsiveLayoutClasses } from "@/components/content/responsive-layout"
 import {
   getStrapiMediaAltText,
   getStrapiMediaUrl,
-  type StrapiBlogPost,
-} from "@/lib/strapi";
+} from "@/lib/strapi-media";
+import type { StrapiBlogPost } from "@/lib/strapi-types";
 import { join } from "@/lib/testids";
 import { formatLongDate } from "@/lib/date-formatting";
 

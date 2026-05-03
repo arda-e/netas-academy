@@ -1,6 +1,7 @@
 import { ContentPageShell, ContentGrid } from "@/components/content";
 import { TeacherCard } from "@/components/teacher-card";
-import { getStrapiMediaUrl, getStrapiMediaAltText, getTeachers } from "@/lib/strapi";
+import { getStrapiMediaUrl, getStrapiMediaAltText } from "@/lib/strapi-media";
+import { getTeachers } from "@/lib/strapi-teachers";
 import { join } from "@/lib/testids";
 
 export const dynamic = "force-dynamic";
