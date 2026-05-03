@@ -18,6 +18,7 @@ type RegisterStudentInput = {
   };
   status?: 'pending' | 'confirmed' | 'cancelled' | 'waitlisted' | 'attended';
   notes?: string;
+  kvkkConsent?: boolean;
 };
 
 type SanitizedRegistration = {
@@ -35,7 +36,7 @@ export default factories.createCoreService('api::registration.registration' as a
 
     const event = await strapi.db.query('api::event.event').findOne({
       where: { documentId: input.eventDocumentId },
-      select: ['id', 'documentId', 'title', 'slug', 'startsAt', 'keepRegistrationsOpen'],
+      select: ['id', 'documentId', 'title', 'slug', 'startsAt', 'keepRegistrationsOpen', 'eventType'],
     });
 
     if (!event) {
@@ -44,6 +45,14 @@ export default factories.createCoreService('api::registration.registration' as a
 
     if (!isEventRegistrationOpen(event)) {
       throw new ValidationError('Event registration is closed');
+    }
+
+    // KVKK consent is required only for egitim/kurs events, not etkinlik
+    if (
+      (event.eventType === 'egitim' || event.eventType === 'kurs') &&
+      input.kvkkConsent !== true
+    ) {
+      throw new ValidationError('kvkkConsent must be true');
     }
 
     // Wrap the entire registration flow in a transaction to prevent race conditions.

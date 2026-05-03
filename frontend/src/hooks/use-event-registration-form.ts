@@ -69,6 +69,7 @@ function getErrorMessage(payload: unknown) {
 export function useEventRegistrationForm({
   eventDocumentId,
   eventTitle,
+  eventType,
 }: UseEventRegistrationFormOptions) {
   const { load, save: persistValues, clear: clearStorage } =
     useFormPersistence<EventRegistrationValues>(
@@ -76,7 +77,8 @@ export function useEventRegistrationForm({
       { sensitiveFields: ["tckn"] }
     );
 
-  const requiresKvkkConsent = true;
+  // KVKK consent is required only for egitim/kurs events, not etkinlik
+  const requiresKvkkConsent = eventType === "egitim" || eventType === "kurs";
   const [values, setValues] = useState<EventRegistrationValues>(() => {
     const saved = load();
     return saved ?? initialValues;

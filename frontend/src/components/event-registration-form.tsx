@@ -6,10 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useEventRegistrationForm } from "@/hooks/use-event-registration-form";
+import type { StrapiEventType } from "@/lib/strapi";
 
 type EventRegistrationFormProps = {
   eventDocumentId: string;
   eventTitle: string;
+  eventType: StrapiEventType;
 };
 
 const fieldClassName =
@@ -23,6 +25,7 @@ const fieldWrapperClassName = "space-y-2 md:space-y-3";
 export function EventRegistrationForm({
   eventDocumentId,
   eventTitle,
+  eventType,
 }: EventRegistrationFormProps) {
   const {
     values,
@@ -31,7 +34,8 @@ export function EventRegistrationForm({
     successMessage,
     handleChange,
     handleSubmit,
-  } = useEventRegistrationForm({ eventDocumentId, eventTitle });
+    requiresKvkkConsent,
+  } = useEventRegistrationForm({ eventDocumentId, eventTitle, eventType });
 
   return (
     <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit} data-testid="event-registration.form">
@@ -145,28 +149,30 @@ export function EventRegistrationForm({
         />
       </div>
 
-      <label className="rounded-sm border border-border/70 bg-card/55 p-4 text-sm leading-7 text-foreground/78 md:p-5 md:text-base">
-        <span className="flex items-start gap-3 md:gap-4">
-          <input
-            id="kvkkConsent"
-            name="kvkkConsent"
-            type="checkbox"
-            checked={values.kvkkConsent}
-            onChange={handleChange}
-            className="mt-1 size-5 shrink-0 rounded-sm border-2 border-gray-300 text-primary focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 md:size-6"
-            data-testid="event-registration.field.kvkk-consent"
-          />
-          <span className="space-y-1">
-            <span className="block font-medium text-foreground">
-              6698 Sayılı Kişisel Verileri Koruma Kanunu Uyarınca{" "}
-              <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80" data-testid="event-registration.link.kvkk-disclosure">
-                Aydınlatma Metni&apos;ni
-              </Link>{" "}
-              okudum ve anladım.
+      {requiresKvkkConsent ? (
+        <label className="rounded-sm border border-border/70 bg-card/55 p-4 text-sm leading-7 text-foreground/78 md:p-5 md:text-base">
+          <span className="flex items-start gap-3 md:gap-4">
+            <input
+              id="kvkkConsent"
+              name="kvkkConsent"
+              type="checkbox"
+              checked={values.kvkkConsent}
+              onChange={handleChange}
+              className="mt-1 size-5 shrink-0 rounded-sm border-2 border-gray-300 text-primary focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 md:size-6"
+              data-testid="event-registration.field.kvkk-consent"
+            />
+            <span className="space-y-1">
+              <span className="block font-medium text-foreground">
+                6698 Sayılı Kişisel Verileri Koruma Kanunu Uyarınca{" "}
+                <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80" data-testid="event-registration.link.kvkk-disclosure">
+                  Aydınlatma Metni&apos;ni
+                </Link>{" "}
+                okudum ve anladım.
+              </span>
             </span>
           </span>
-        </span>
-      </label>
+        </label>
+      ) : null}
 
       <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-center md:justify-between">
         <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
