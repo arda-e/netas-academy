@@ -50,7 +50,15 @@ const nextConfig: NextConfig = {
   output: "standalone",
   images: {
     dangerouslyAllowLocalIP: true,
-    remotePatterns: getStrapiImageRemotePatterns(),
+    remotePatterns: [
+      ...getStrapiImageRemotePatterns(),
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
   async rewrites() {
     return [
