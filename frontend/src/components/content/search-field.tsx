@@ -21,6 +21,7 @@ export function SearchField({
   const [value, setValue] = useState(initialValue);
   const [open, setOpen] = useState(Boolean(initialValue.trim()));
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setValue(initialValue);
@@ -32,6 +33,14 @@ export function SearchField({
       inputRef.current?.focus();
     }
   }, [open]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const updateSearchParam = (nextSearch: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -76,7 +85,14 @@ export function SearchField({
           onChange={(e) => {
             const nextSearch = e.target.value;
             setValue(nextSearch);
-            updateSearchParam(nextSearch);
+
+            if (debounceRef.current) {
+              clearTimeout(debounceRef.current);
+            }
+
+            debounceRef.current = setTimeout(() => {
+              updateSearchParam(nextSearch);
+            }, 300);
           }}
           onBlur={() => {
             if (!value.trim()) {

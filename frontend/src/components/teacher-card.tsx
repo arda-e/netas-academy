@@ -12,6 +12,7 @@ type TeacherCardProps = {
   targetTeams?: string | null;
   photoUrl?: string | null;
   photoAlt?: string | null;
+  photoBlurDataURL?: string | null;
 };
 
 export function TeacherCard({
@@ -22,6 +23,7 @@ export function TeacherCard({
   targetTeams,
   photoUrl,
   photoAlt,
+  photoBlurDataURL,
 }: TeacherCardProps) {
   const display = expertiseAreas?.slice(0, 3) ?? [];
   const displayTargetTeams = targetTeams?.trim();
@@ -45,6 +47,7 @@ export function TeacherCard({
               fill
               sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw"
               className="object-cover object-[center_20%]"
+              {...(photoBlurDataURL ? { placeholder: "blur" as const, blurDataURL: photoBlurDataURL } : {})}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,oklch(0.72_0.11_196_/_0.22)_0%,transparent_58%),linear-gradient(135deg,oklch(0.22_0.015_244)_0%,oklch(0.15_0.014_244)_100%)]">

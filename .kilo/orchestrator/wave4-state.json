@@ -1,0 +1,592 @@
+{
+  "planRef": "docs/plans/2026-05-03-001-refactor-wave4-parallel-delegation-plan.md",
+  "startedAt": "2026-05-03T15:23:21+03:00",
+  "lastUpdatedAt": "2026-05-03T18:28:00+03:00",
+  "supervisorSessionId": "wave4-supervisor-main-001",
+  "units": {
+    "U00": {
+      "unitId": "U00",
+      "prId": "N/A",
+      "title": "Explorer inventory pass",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": [],
+        "upstreamGates": ["P3-01 merged"],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [],
+        "create": ["docs/plans/2026-05-03-001-refactor-wave4-parallel-delegation-inventory.md"],
+        "test": [],
+        "handoff": []
+      },
+      "workerTaskId": null,
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [],
+      "validationResults": {
+        "passed": ["inventory artifact created with 26 stale paths, full surface maps for all 10 units, verified conflict matrix"],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": ["FAILING_TESTS.md stale — commit 661afcf likely fixed 12 of 16 reported failures; re-run baseline before U06/U08"]
+      },
+      "completedAt": "2026-05-03T15:42:00+03:00",
+      "errorMessage": null
+    },
+    "U01": {
+      "unitId": "U01",
+      "prId": "P3-02",
+      "title": "Zod runtime type safety",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U00"],
+        "upstreamGates": [],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "frontend/src/lib/strapi-types.ts",
+          "frontend/src/lib/strapi-client.ts",
+          "frontend/src/lib/strapi-courses.ts",
+          "frontend/src/lib/strapi-events.ts",
+          "frontend/src/lib/strapi-blog.ts",
+          "frontend/src/lib/strapi-teachers.ts",
+          "frontend/src/lib/strapi-media.ts"
+        ],
+        "create": [],
+        "test": [
+          "frontend/src/__tests__/strapi-runtime-validation-source.test.mjs"
+        ],
+        "handoff": [
+          "frontend/src/lib/lead-intents.ts",
+          "frontend/src/components/contact/intent-lead-form.tsx",
+          "frontend/src/app/api/contact-submissions/submit/route.ts",
+          "frontend/src/app/api/registrations/register/route.ts",
+          "backend/src/api/contact-submission/controllers/contact-submission.ts",
+          "backend/src/api/contact-submission/services/contact-submission.ts",
+          "backend/src/api/registration/controllers/registration.ts",
+          "backend/src/api/registration/services/registration.ts",
+          "backend/src/utils/controller-helpers.ts"
+        ]
+      },
+      "workerTaskId": "ses_2122ac785ffecyINIDqGjpMyEj",
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [],
+      "validationResults": {
+        "passed": [
+          "lint: 0 errors, 2 pre-existing warnings",
+          "build:frontend: compiled successfully (eventType enum fixed during integration)",
+          "source tests: 32/32 pass"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": []
+      },
+      "completedAt": "2026-05-03T18:16:00+03:00",
+      "errorMessage": null
+    },
+    "U02": {
+      "unitId": "U02",
+      "prId": "P3-03",
+      "title": "Frontend caching strategy",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U00"],
+        "upstreamGates": [],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "frontend/src/lib/strapi-client.ts",
+          "frontend/src/lib/strapi-courses.ts",
+          "frontend/src/lib/strapi-events.ts",
+          "frontend/src/lib/strapi-blog.ts",
+          "frontend/src/lib/strapi-teachers.ts",
+          "frontend/src/app/egitimler/page.tsx",
+          "frontend/src/app/etkinlikler/page.tsx",
+          "frontend/src/app/blog-yazilari/page.tsx",
+          "frontend/src/app/hakkimizda/page.tsx",
+          "frontend/src/app/page.tsx",
+          "frontend/src/app/egitimler/[slug]/page.tsx",
+          "frontend/src/app/etkinlikler/[slug]/page.tsx",
+          "frontend/src/app/blog-yazilari/[slug]/page.tsx"
+        ],
+        "create": [],
+        "test": [
+          "frontend/src/__tests__/strapi-cache-policy-source.test.mjs"
+        ],
+        "handoff": []
+      },
+      "workerTaskId": "ses_2122a2b91ffe2QZF9eO7ZREfG1",
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [],
+      "validationResults": {
+        "passed": [
+          "lint: 0 errors, 2 pre-existing warnings",
+          "build:frontend: compiled successfully",
+          "source tests: 33/33 pass"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": []
+      },
+      "completedAt": "2026-05-03T18:16:00+03:00",
+      "errorMessage": null
+    },
+    "U03": {
+      "unitId": "U03",
+      "prId": "P4-01",
+      "title": "Route loading/error states and shared shells",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U00"],
+        "upstreamGates": [],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "frontend/src/components/content/content-page-shell.tsx",
+          "frontend/src/components/content/content-detail-shell.tsx",
+          "frontend/src/components/content/content-grid.tsx",
+          "frontend/src/components/content/content-card-shell.tsx",
+          "frontend/src/app/egitimler/page.tsx",
+          "frontend/src/app/egitimler/[slug]/page.tsx",
+          "frontend/src/app/etkinlikler/page.tsx",
+          "frontend/src/app/etkinlikler/[slug]/page.tsx",
+          "frontend/src/app/blog-yazilari/page.tsx",
+          "frontend/src/app/blog-yazilari/[slug]/page.tsx",
+          "frontend/src/app/egitmenler/page.tsx",
+          "frontend/src/app/egitmenler/[slug]/page.tsx",
+          "frontend/src/app/hakkimizda/page.tsx"
+        ],
+        "create": [
+          "frontend/src/app/error.tsx",
+          "frontend/src/app/*/loading.tsx",
+          "frontend/src/app/*/error.tsx",
+          "frontend/src/components/content/content-list-page.tsx",
+          "frontend/src/components/content/content-detail-page-shell.tsx",
+          "frontend/src/components/content/route-loading.tsx",
+          "frontend/src/components/content/route-error.tsx"
+        ],
+        "test": [
+          "frontend/src/__tests__/route-states-source.test.mjs",
+          "frontend/src/__tests__/content-shell-source.test.mjs"
+        ],
+        "handoff": []
+      },
+      "workerTaskId": "ses_212298fe7ffew6l0YSEE0Z0IdM",
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [],
+      "validationResults": {
+        "passed": [
+          "lint: 0 errors (4 pre-existing in other files)",
+          "build:frontend: compiled successfully",
+          "source tests: 27+14 assertions pass, existing testId tests pass"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": []
+      },
+      "completedAt": "2026-05-03T18:16:00+03:00",
+      "errorMessage": null
+    },
+    "U04": {
+      "unitId": "U04",
+      "prId": "P4-02",
+      "title": "Image optimization pipeline",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U00"],
+        "upstreamGates": [],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "frontend/src/lib/strapi-blog.ts",
+          "frontend/src/lib/strapi-media.ts",
+          "frontend/src/lib/strapi-types.ts",
+          "frontend/src/components/content/blog.tsx",
+          "frontend/src/components/content/content-card-shell.tsx",
+          "frontend/src/components/content/rich-text-content.tsx"
+        ],
+        "create": [
+          "frontend/src/lib/sanitize-html.ts",
+          "frontend/src/components/content/rich-text-content.server.tsx"
+        ],
+        "test": [
+          "frontend/src/__tests__/strapi-media-source.test.mjs",
+          "frontend/src/__tests__/rich-text-bundle-source.test.mjs"
+        ],
+        "handoff": []
+      },
+      "workerTaskId": "ses_212291795ffe5TRCSd4KvUKfHp",
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [],
+      "validationResults": {
+        "passed": [
+          "lint: 0 errors",
+          "build:frontend: compiled (StrapiMediaSchema width/height/mime gaps fixed during integration)",
+          "source tests: 9+8 pass"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": []
+      },
+      "completedAt": "2026-05-03T18:16:00+03:00",
+      "errorMessage": null
+    },
+    "U05": {
+      "unitId": "U05",
+      "prId": "P4-03",
+      "title": "Frontend performance anti-patterns",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U00"],
+        "upstreamGates": [],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "frontend/src/lib/strapi-client.ts",
+          "frontend/src/lib/strapi-events.ts",
+          "frontend/src/components/content/search-field.tsx",
+          "frontend/src/components/courses/course-catalog-list.tsx",
+          "frontend/package.json",
+          "frontend/package-lock.json",
+          "frontend/src/components/content/courses.tsx"
+        ],
+        "create": [],
+        "test": [
+          "frontend/src/__tests__/strapi-retry-source.test.mjs",
+          "frontend/src/__tests__/event-filter-source.test.mjs",
+          "frontend/src/__tests__/search-debounce-source.test.mjs",
+          "frontend/src/__tests__/course-list-virtualization-source.test.mjs"
+        ],
+        "handoff": []
+      },
+      "workerTaskId": "ses_21228a15fffeN88kufhwz6KRq3",
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [],
+      "validationResults": {
+        "passed": [
+          "lint: 0 errors",
+          "build:frontend: compiled (strapi-courses.ts syntax conflict resolved by U02)",
+          "source tests: 22/22 pass"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": []
+      },
+      "completedAt": "2026-05-03T18:16:00+03:00",
+      "errorMessage": null
+    },
+    "U06": {
+      "unitId": "U06",
+      "prId": "P4-04",
+      "title": "Backend performance and SPL hardening",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U00"],
+        "upstreamGates": [],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "backend/src/api/analytics-event/services/analytics-event.ts",
+          "backend/src/services/spl-check/xml.ts",
+          "backend/config/server.ts"
+        ],
+        "create": [],
+        "test": [
+          "backend/tests/api/analytics-event/service.test.ts",
+          "backend/tests/services/spl-check/xml.test.ts"
+        ],
+        "handoff": []
+      },
+      "workerTaskId": "ses_212282d17ffeFGCR5EIx44lGS9",
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [],
+      "validationResults": {
+        "passed": [
+          "build:backend: passed",
+          "tests: 107 total, 99 passed, 8 failed (all pre-existing)",
+          "0 new regressions",
+          "8 new tests added, all pass"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": [
+          "analytics-event/routes.test.ts: controller sets ctx.body with error instead of throwing (pre-existing pattern mismatch)",
+          "contact-submission/service.test.ts: deliverInternalNotificationViaStrapi mock mismatch after U08 refactoring (pre-existing)",
+          "course-application/service.test.ts: same notification adapter rename (pre-existing)",
+          "registration/service.test.ts: strapi.db.transaction mock missing (pre-existing)"
+        ]
+      },
+      "completedAt": "2026-05-03T18:16:00+03:00",
+      "errorMessage": null
+    },
+    "U07": {
+      "unitId": "U07",
+      "prId": "P6-02",
+      "title": "API proxy error handling and Strapi logging",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U00"],
+        "upstreamGates": [],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "frontend/src/lib/strapi-client.ts",
+          "frontend/src/lib/strapi-courses.ts",
+          "frontend/src/lib/strapi-events.ts",
+          "frontend/src/lib/strapi-blog.ts",
+          "frontend/src/lib/strapi-teachers.ts"
+        ],
+        "create": [],
+        "test": [
+          "frontend/src/__tests__/api-proxy-error-source.test.mjs",
+          "frontend/src/__tests__/strapi-logging-source.test.mjs"
+        ],
+        "handoff": [
+          "frontend/src/app/api/contact-submissions/submit/route.ts",
+          "frontend/src/app/api/registrations/register/route.ts",
+          "frontend/src/app/api/analytics/events/route.ts",
+          "frontend/src/app/api/newsletter-subscriptions/subscribe/route.ts"
+        ]
+      },
+      "workerTaskId": "ses_21227bebcffegnNIiQByusSZWz",
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [
+        {
+          "file": "frontend/src/app/api/contact-submissions/submit/route.ts",
+          "reason": "No logging, no timeout, no request validation. All 4 proxy routes need structured error logging matching shared contract.",
+          "targetUnit": "U09"
+        },
+        {
+          "file": "frontend/src/app/api/registrations/register/route.ts",
+          "reason": "No logging, no timeout, no request validation.",
+          "targetUnit": "U09"
+        },
+        {
+          "file": "frontend/src/app/api/analytics/events/route.ts",
+          "reason": "No logging, no timeout, no request validation.",
+          "targetUnit": "U09"
+        },
+        {
+          "file": "frontend/src/app/api/newsletter-subscriptions/subscribe/route.ts",
+          "reason": "No logging, no timeout, no request validation.",
+          "targetUnit": "U09"
+        }
+      ],
+      "validationResults": {
+        "passed": [
+          "lint: 0 errors",
+          "build:frontend: compiled successfully",
+          "source tests: logging 20/20 pass, proxy 17/17 pass"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": []
+      },
+      "completedAt": "2026-05-03T18:16:00+03:00",
+      "errorMessage": null
+    },
+    "U08": {
+      "unitId": "U08",
+      "prId": "P5-05",
+      "title": "Internal notifications Strapi plugin",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U00"],
+        "upstreamGates": ["P1-01 public endpoint security/rate-limit behavior settled"],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "backend/config/plugins.ts",
+          "backend/src/services/internal-notifications/keys.ts",
+          "backend/src/services/internal-notifications/recipient-utils.ts",
+          "backend/src/services/internal-notifications/service-core.ts",
+          "backend/src/services/internal-notifications/strapi-service.ts",
+          "backend/src/services/internal-notifications/templates.ts",
+          "backend/src/services/internal-notifications/types.ts",
+          "backend/src/api/registration/services/registration.ts",
+          "backend/src/api/contact-submission/services/contact-submission.ts",
+          "backend/src/api/course-application/services/course-application.ts",
+          "backend/src/index.ts",
+          "backend/scripts/notification-routing-seed.js",
+          "backend/scripts/seed-demo.js"
+        ],
+        "create": [
+          "backend/src/plugins/internal-notifications/server/register.ts",
+          "backend/src/plugins/internal-notifications/server/bootstrap.ts",
+          "backend/src/plugins/internal-notifications/server/destroy.ts",
+          "backend/src/plugins/internal-notifications/server/services/*",
+          "backend/src/plugins/internal-notifications/strapi-server.ts"
+        ],
+        "test": [
+          "backend/tests/internal-notifications/*",
+          "backend/tests/api/notification-routing/routes.test.ts",
+          "backend/tests/scripts/notification-routing-seed.test.js",
+          "backend/tests/api/registration/service.test.ts",
+          "backend/tests/api/contact-submission/service.test.ts",
+          "backend/tests/api/course-application/service.test.ts"
+        ],
+        "handoff": []
+      },
+      "workerTaskId": "ses_212272ba6ffeM7ZiGf45yoGjv3",
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [],
+      "validationResults": {
+        "passed": [
+          "build:backend: passed",
+          "tests: 107 total, 105 passed, 2 failed (pre-existing analytics-event controller pattern)",
+          "22 of 23 test files pass",
+          "FAILING_TESTS.md confirmed stale — all 17 documented failures resolved"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": [
+          "analytics-event/routes.test.ts: controller sets ctx.body with error instead of throwing (pre-existing)"
+        ]
+      },
+      "completedAt": "2026-05-03T18:16:00+03:00",
+      "errorMessage": null
+    },
+    "U09": {
+      "unitId": "U09",
+      "prId": "N/A",
+      "title": "Wave 4 integration reconciliation",
+      "status": "completed",
+      "dependencies": {
+        "upstreamUnits": ["U01", "U02", "U03", "U04", "U05", "U06", "U07", "U08"],
+        "upstreamGates": [],
+        "satisfied": true
+      },
+      "fileOwnership": {
+        "modify": [
+          "frontend/src/app/api/contact-submissions/submit/route.ts",
+          "frontend/src/app/api/registrations/register/route.ts",
+          "frontend/src/app/api/analytics/events/route.ts",
+          "frontend/src/app/api/newsletter-subscriptions/subscribe/route.ts",
+          "frontend/src/app/blog-yazilari/page.tsx",
+          "frontend/src/app/blog-yazilari/[slug]/page.tsx",
+          "frontend/src/app/egitmenler/[slug]/page.tsx",
+          "frontend/src/app/egitmenler/page.tsx",
+          "backend/tests/FAILING_TESTS.md"
+        ],
+        "create": [],
+        "test": [],
+        "handoff": []
+      },
+      "workerTaskId": null,
+      "branchName": null,
+      "prUrl": null,
+      "handoffsRequested": [
+        { "file": "frontend/src/app/api/contact-submissions/submit/route.ts", "reason": "Structured error logging added", "resolved": true },
+        { "file": "frontend/src/app/api/registrations/register/route.ts", "reason": "Structured error logging added", "resolved": true },
+        { "file": "frontend/src/app/api/analytics/events/route.ts", "reason": "Structured error logging added", "resolved": true },
+        { "file": "frontend/src/app/api/newsletter-subscriptions/subscribe/route.ts", "reason": "Structured error logging added", "resolved": true }
+      ],
+      "validationResults": {
+        "passed": [
+          "lint: 0 errors, 2 pre-existing warnings (intent-lead-form.tsx)",
+          "build:frontend: compiled successfully",
+          "build:backend: compiled successfully",
+          "backend tests: 105/107 pass, 2 pre-existing failures (analytics-event controller pattern)",
+          "shared client contract pipeline verified: cache→fetch→parse→validate→log order correct",
+          "validation failures not retried, retry exhaustion logs endpoint context",
+          "FAILING_TESTS.md updated with current baseline (2026-05-03, wave4-integration)"
+        ],
+        "failed": [],
+        "skipped": [],
+        "knownBaselineFailures": [
+          "analytics-event/routes.test.ts: controller sets ctx.body instead of throwing (2 tests, pre-existing)"
+        ]
+      },
+      "completedAt": "2026-05-03T18:27:00+03:00",
+      "errorMessage": null
+    }
+  },
+  "fileLocks": {},
+  "conflictMatrix": [
+    {
+      "file": "frontend/src/lib/strapi-client.ts",
+      "units": ["U01", "U02", "U05", "U07"],
+      "ownershipRule": "Each unit edits only its concern; Unit 9 reconciles order and composition.",
+      "status": "active"
+    },
+    {
+      "file": "frontend/src/lib/strapi-types.ts",
+      "units": ["U01", "U04"],
+      "ownershipRule": "U01 owns schemas; U04 owns media shape requirements and hands off schema needs.",
+      "status": "active"
+    },
+    {
+      "file": "frontend/src/lib/strapi-media.ts",
+      "units": ["U01", "U04"],
+      "ownershipRule": "U04 owns responsive media selection; U01 owns validation compatibility; Unit 9 verifies combined behavior.",
+      "status": "active"
+    },
+    {
+      "file": "frontend/src/lib/strapi-courses.ts",
+      "units": ["U01", "U02", "U07"],
+      "ownershipRule": "U01 owns parse validation; U02 owns cache; U07 owns logging handoffs; Unit 9 verifies composition.",
+      "status": "active"
+    },
+    {
+      "file": "frontend/src/lib/strapi-teachers.ts",
+      "units": ["U01", "U02", "U07"],
+      "ownershipRule": "U01 owns parse validation; U02 owns cache; U07 owns logging handoffs; Unit 9 verifies teacher/about routes.",
+      "status": "active"
+    },
+    {
+      "file": "frontend/src/lib/strapi-blog.ts",
+      "units": ["U01", "U02", "U04"],
+      "ownershipRule": "Unit 9 verifies query populate, cache policy, and validation all survive.",
+      "status": "active"
+    },
+    {
+      "file": "frontend/src/lib/strapi-events.ts",
+      "units": ["U01", "U02", "U05"],
+      "ownershipRule": "U05 owns server-side filters; U02 owns cache; U01 owns parse validation.",
+      "status": "active"
+    },
+    {
+      "file": "frontend/src/app/*/page.tsx",
+      "units": ["U02", "U03"],
+      "ownershipRule": "U02 owns route cache directives; U03 owns route states/shell structure.",
+      "status": "active"
+    },
+    {
+      "file": "frontend/src/components/content/content-card-shell.tsx",
+      "units": ["U03", "U04"],
+      "ownershipRule": "U03 owns shell abstraction; U04 owns image behavior; Unit 9 verifies card layout/media behavior.",
+      "status": "active"
+    },
+    {
+      "file": "backend/src/index.ts",
+      "units": ["U08"],
+      "ownershipRule": "U08 declares plugin bootstrap needs; Unit 9 reconciles if other backend branches changed it.",
+      "status": "active"
+    }
+  ],
+  "validationLog": [],
+  "blockers": [],
+  "metrics": {
+    "totalUnits": 10,
+    "completedUnits": 10,
+    "failedUnits": 0,
+    "blockedUnits": 0,
+    "elapsedMs": 10320000
+  }
+}

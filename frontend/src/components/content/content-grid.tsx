@@ -6,7 +6,8 @@ type ContentGridProps = {
   itemsCount: number;
   emptyMessage: string;
   columnsClassName?: string;
-  children: ReactNode;
+  children?: ReactNode;
+  skeleton?: ReactNode;
   testId?: string;
 };
 
@@ -15,8 +16,12 @@ export function ContentGrid({
   emptyMessage,
   columnsClassName = "grid gap-4 sm:gap-6",
   children,
+  skeleton,
   testId,
 }: ContentGridProps) {
+
+  if (skeleton) return <div className={columnsClassName} data-testid={testId}>{skeleton}</div>;  
+  
   if (itemsCount === 0) {
     return (
       <p

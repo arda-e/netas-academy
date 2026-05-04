@@ -1,7 +1,7 @@
 import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
-import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
+
 
 const { ValidationError } = errors;
 
@@ -126,7 +126,8 @@ export default factories.createCoreService(
       const notificationPayload = buildNotificationPayload(leadType, submission);
 
       try {
-        await deliverInternalNotificationViaStrapi(strapi, {
+        const deliverNotification = strapi.plugin("internal-notifications").service("deliverInternalNotification") as (envelope: any) => Promise<any>;
+        await deliverNotification({
           key: notificationKey,
           payload: notificationPayload,
         });

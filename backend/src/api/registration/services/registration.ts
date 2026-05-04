@@ -3,7 +3,7 @@ import { errors } from '@strapi/utils';
 
 import { isEventRegistrationOpen } from '../../../utils/event-registration';
 import { normalizeTcknValue, maskTcknValue } from '../../../utils/tckn';
-import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
+
 
 const { NotFoundError, ValidationError } = errors;
 
@@ -92,7 +92,8 @@ export default factories.createCoreService('api::registration.registration' as a
 
     // Fire-and-forget notification (outside transaction)
     try {
-      await deliverInternalNotificationViaStrapi(strapi, {
+      const deliverNotification = strapi.plugin("internal-notifications").service("deliverInternalNotification") as (envelope: any) => Promise<any>;
+      await deliverNotification({
         key: 'event_registration',
         payload: {
           registrationId: registration.id,

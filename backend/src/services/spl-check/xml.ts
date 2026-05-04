@@ -46,6 +46,17 @@ const soapXmlParser = new XMLParser({
   ignoreDeclaration: true,
 });
 
+function logParseWarn(message: string, details?: Record<string, unknown>) {
+  try {
+    const s = (globalThis as Record<string, unknown>).strapi as { log?: { warn?: (msg: string, meta?: Record<string, unknown>) => void } } | undefined;
+    s?.log?.warn?.(message, details);
+  } catch {
+    // strapi global not available (e.g., in isolated tests)
+  }
+}
+
+const MAX_DEPTH = 20;
+
 /**
  * Deep-search a parsed SOAP XML object for a named element,
  * matching regardless of namespace prefix.
@@ -56,7 +67,9 @@ const soapXmlParser = new XMLParser({
 function findSoapElement(
   obj: Record<string, unknown>,
   localName: string,
+  depth: number = 0,
 ): string | null {
+  if (depth > MAX_DEPTH) return null;
   if (obj == null || typeof obj !== "object") return null;
 
   for (const key of Object.keys(obj)) {
@@ -77,7 +90,7 @@ function findSoapElement(
     }
 
     // Recurse into nested objects (handle SOAP Body → Response → element nesting)
-    const nested = findSoapElement(obj[key] as Record<string, unknown>, localName);
+    const nested = findSoapElement(obj[key] as Record<string, unknown>, localName, depth + 1);
     if (nested !== null) return nested;
   }
 
@@ -85,23 +98,43 @@ function findSoapElement(
 }
 
 export function extractSoapStatus(xml: string) {
-  if (xml.length > MAX_XML_SIZE) return null;
+  if (xml.length > MAX_XML_SIZE) {
+    logParseWarn("SOAP XML exceeds maximum size, rejecting", {
+      size: xml.length,
+      maxSize: MAX_XML_SIZE,
+    });
+    return null;
+  }
 
   try {
     const parsed = soapXmlParser.parse(xml) as Record<string, unknown>;
     return findSoapElement(parsed, "Status");
-  } catch {
+  } catch (err) {
+    logParseWarn("Failed to parse SOAP XML for Status extraction", {
+      error: String(err),
+      xmlPreview: xml.slice(0, 200),
+    });
     return null;
   }
 }
 
 export function extractSoapReference(xml: string) {
-  if (xml.length > MAX_XML_SIZE) return null;
+  if (xml.length > MAX_XML_SIZE) {
+    logParseWarn("SOAP XML exceeds maximum size, rejecting", {
+      size: xml.length,
+      maxSize: MAX_XML_SIZE,
+    });
+    return null;
+  }
 
   try {
     const parsed = soapXmlParser.parse(xml) as Record<string, unknown>;
     return findSoapElement(parsed, "Reference");
-  } catch {
+  } catch (err) {
+    logParseWarn("Failed to parse SOAP XML for Reference extraction", {
+      error: String(err),
+      xmlPreview: xml.slice(0, 200),
+    });
     return null;
   }
 }

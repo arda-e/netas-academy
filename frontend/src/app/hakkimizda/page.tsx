@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
-import { ContentPageShell, VisualStorySection } from "@/components/content";
+import { ContentPageShell, CourseListLoading, TeacherListLoading, VisualStorySection } from "@/components/content";
 import { CourseCarousel } from "@/components/course-carousel";
 import { TeacherCarousel } from "@/components/teacher-carousel";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
@@ -9,7 +10,6 @@ import { hakkimizdaVisualSection } from "@/lib/page-visual-sections";
 import { getLatestCourses } from "@/lib/strapi-courses";
 import { getStrapiMediaAltText, getStrapiMediaUrl } from "@/lib/strapi-media";
 import { getTeachers } from "@/lib/strapi-teachers";
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Hakkımızda | Netas Academy",
@@ -17,10 +17,44 @@ export const metadata: Metadata = {
     "Netaş teknoloji ve sektör deneyimiyle şekillenen, vaka ve senaryo tabanlı uygulamalı eğitim modelimizi, kurum ihtiyacına göre esnek program yapımızı ve saha deneyimi güçlü eğitmen kadromuzu keşfedin.",
 };
 
-export default async function HakkimizdaPage() {
+async function InstructorCarouselSection() {
   const teachers = await getTeachers();
+
+  return (
+    <TeacherCarousel
+      items={teachers.map((teacher) => ({
+        id: teacher.documentId,
+        slug: teacher.slug,
+        name: teacher.fullName,
+        imageUrl: getStrapiMediaUrl(teacher.profilePhoto),
+        imageAlt: getStrapiMediaAltText(teacher.profilePhoto) ?? teacher.fullName,
+      }))}
+      cardTestIdPrefix="page.hakkimizda.teacher-carousel.card"
+      prevButtonTestId="page.hakkimizda.teacher-carousel.prev"
+      nextButtonTestId="page.hakkimizda.teacher-carousel.next"
+    />
+  );
+}
+
+async function LatestCoursesSection() {
   const courses = await getLatestCourses(5);
 
+  return (
+    <CourseCarousel
+      items={courses.map((course) => ({
+        documentId: course.documentId,
+        slug: course.slug,
+        title: course.title,
+        summary: course.summary,
+        topicArea: course.topicArea,
+        level: course.level,
+      }))}
+      cardTestIdPrefix="page.hakkimizda.course-carousel.card"
+    />
+  );
+}
+
+export default async function HakkimizdaPage() {
   return (
     <ContentPageShell
       testId="page.hakkimizda"
@@ -97,18 +131,9 @@ export default async function HakkimizdaPage() {
             rehberlik ederken kendi tecrübelerinden somut örnekler sunar,
             kuramla pratik arasındaki köprüyü birlikte kurar.
           </p>
-          <TeacherCarousel
-            items={teachers.map((teacher) => ({
-              id: teacher.documentId,
-              slug: teacher.slug,
-              name: teacher.fullName,
-              imageUrl: getStrapiMediaUrl(teacher.profilePhoto),
-              imageAlt: getStrapiMediaAltText(teacher.profilePhoto) ?? teacher.fullName,
-            }))}
-            cardTestIdPrefix="page.hakkimizda.teacher-carousel.card"
-            prevButtonTestId="page.hakkimizda.teacher-carousel.prev"
-            nextButtonTestId="page.hakkimizda.teacher-carousel.next"
-          />
+          <Suspense fallback={<TeacherListLoading testId="loading.hakkimizda.teachers" />}>
+            <InstructorCarouselSection />
+          </Suspense>
         </div>
 
         {/* F — Participant Outcomes */}
@@ -136,17 +161,9 @@ export default async function HakkimizdaPage() {
             kanıtlanmış yöntemlerle kurumların dönüşüm ihtiyaçlarına yanıt
             verecek şekilde yapılandırılmıştır.
           </p>
-          <CourseCarousel
-            items={courses.map((course) => ({
-              documentId: course.documentId,
-              slug: course.slug,
-              title: course.title,
-              summary: course.summary,
-              topicArea: course.topicArea,
-              level: course.level,
-            }))}
-            cardTestIdPrefix="page.hakkimizda.course-carousel.card"
-          />
+          <Suspense fallback={<CourseListLoading testId="loading.hakkimizda.courses" />}>
+            <LatestCoursesSection />
+          </Suspense>
         </div>
 
         {/* H — CTAs */}

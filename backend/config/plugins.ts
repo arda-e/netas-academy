@@ -1,13 +1,14 @@
 import type { Core } from '@strapi/strapi';
 
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => {
+  const uploadProvider = env('UPLOAD_PROVIDER', 'local');
   const s3Bucket = env('AWS_BUCKET');
   const s3AccessKeyId = env('AWS_ACCESS_KEY_ID');
   const s3SecretAccessKey = env('AWS_ACCESS_SECRET', env('AWS_SECRET_ACCESS_KEY'));
   const s3Region = env('AWS_REGION');
 
   const upload =
-    s3Bucket && s3AccessKeyId && s3SecretAccessKey && s3Region
+    uploadProvider === 'aws-s3' && s3Bucket && s3AccessKeyId && s3SecretAccessKey && s3Region
       ? {
           upload: {
             config: {
@@ -54,6 +55,11 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
     },
     'csv-exporter': {
       enabled: true,
+      config: {},
+    },
+    'internal-notifications': {
+      enabled: true,
+      resolve: './src/plugins/internal-notifications',
       config: {},
     },
   };

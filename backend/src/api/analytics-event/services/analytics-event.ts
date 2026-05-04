@@ -64,6 +64,20 @@ export default factories.createCoreService(
           },
         });
 
+      try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        await strapi.db
+          .query('api::analytics-event.analytics-event')
+          .deleteMany({
+            filters: {
+              createdAt: { $lt: thirtyDaysAgo.toISOString() },
+            },
+          });
+      } catch (err) {
+        strapi.log.warn('Analytics retention cleanup failed', { error: String(err) });
+      }
+
       return {
         success: true,
         message: 'Event captured.',

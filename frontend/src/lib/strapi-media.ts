@@ -1,5 +1,14 @@
 import type { StrapiMedia } from "./strapi-types";
 
+export type StrapiMediaFormatSize = "thumbnail" | "small" | "medium" | "large";
+
+const FORMAT_SIZE_ORDER: StrapiMediaFormatSize[] = [
+  "large",
+  "medium",
+  "small",
+  "thumbnail",
+];
+
 function getNestedString(value: unknown, path: string[]) {
   let current: unknown = value;
 
@@ -36,23 +45,82 @@ export function toStrapiAssetUrl(path: string | null | undefined) {
   return path.startsWith("/") ? path : `/${path}`;
 }
 
-export function getStrapiMediaUrl(media?: StrapiMedia | null) {
+export function getStrapiMediaFormat(
+  media: StrapiMedia | null | undefined,
+  size: StrapiMediaFormatSize,
+): { url: string; width?: number; height?: number } | null {
   if (!media) {
     return null;
   }
 
+  const sizeIndex = FORMAT_SIZE_ORDER.indexOf(size);
+  const fallbackOrder =
+    sizeIndex >= 0
+      ? [
+          ...FORMAT_SIZE_ORDER.slice(sizeIndex),
+          ...FORMAT_SIZE_ORDER.slice(0, sizeIndex).reverse(),
+        ]
+      : FORMAT_SIZE_ORDER;
+
+  for (const formatSize of fallbackOrder) {
+    const format = media.formats?.[formatSize];
+    if (format?.url) {
+      return {
+        url: format.url,
+        width: format.width ?? undefined,
+        height: format.height ?? undefined,
+      };
+    }
+  }
+
+  const rawUrl = media.url ?? null;
+  if (rawUrl) {
+    return {
+      url: rawUrl,
+      width: media.width ?? undefined,
+      height: media.height ?? undefined,
+    };
+  }
+
+  return null;
+}
+
+export function getStrapiMediaUrl(
+  media?: StrapiMedia | null,
+  size?: StrapiMediaFormatSize,
+) {
+  if (!media) {
+    return null;
+  }
+
+  if (size) {
+    const formatUrl = getStrapiMediaFormat(media, size);
+    if (formatUrl) {
+      return toStrapiAssetUrl(formatUrl.url);
+    }
+  }
+
   const candidates = [
-    media.url,
-    getNestedString(media, ["data", "attributes", "url"]),
-    getNestedString(media, ["data", "url"]),
-    getNestedString(media, ["attributes", "url"]),
     getNestedString(media, ["formats", "large", "url"]),
     getNestedString(media, ["formats", "medium", "url"]),
     getNestedString(media, ["formats", "small", "url"]),
     getNestedString(media, ["formats", "thumbnail", "url"]),
+    media.url,
+    getNestedString(media, ["data", "attributes", "url"]),
+    getNestedString(media, ["data", "url"]),
+    getNestedString(media, ["attributes", "url"]),
   ];
 
-  return toStrapiAssetUrl(candidates.find((value) => typeof value === "string" && value.length > 0) ?? null);
+  return toStrapiAssetUrl(
+    candidates.find((value) => typeof value === "string" && value.length > 0) ??
+      null,
+  );
+}
+
+export function getStrapiMediaBlurDataUrl(media?: StrapiMedia | null) {
+  const thumbnail = getStrapiMediaFormat(media, "thumbnail");
+
+  return thumbnail?.url ? toStrapiAssetUrl(thumbnail.url) : null;
 }
 
 export function getStrapiMediaAltText(media?: StrapiMedia | null) {

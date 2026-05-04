@@ -1,0 +1,15 @@
+{
+  "name": "internal-notifications",
+  "version": "0.1.0",
+  "description": "Internal notification delivery and routing plugin for Strapi 5",
+  "strapi": {
+    "name": "internal-notifications",
+    "description": "Handles internal email notification delivery and routing configuration",
+    "kind": "plugin"
+  },
+  "private": true,
+  "main": "strapi-server.ts",
+  "exports": {
+    "./strapi-server": "./strapi-server.ts"
+  }
+}
