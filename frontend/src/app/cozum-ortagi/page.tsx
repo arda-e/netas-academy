@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { ContentPageShell } from "@/components/content";
+import { SiteBreadcrumbs } from "@/components/breadcrumbs";
+import { AccordionSection } from "@/components/uncode/AccordionSection";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
-import { join, normalizeKey } from "@/lib/testids";
+import { join } from "@/lib/testids";
 
 export const dynamic = "force-dynamic";
 
@@ -34,68 +35,52 @@ const collaborationAreas = [
 
 export default async function CozumOrtagiPage() {
   return (
-    <ContentPageShell
-      testId="page.cozum-ortagi"
-      eyebrow="Çözüm Ortaklığı"
-      title="Eğitim ve danışmanlık alanında birlikte yeni değer üretelim."
-    >
-      <div className="space-y-12 sm:space-y-16">
-        <p className="max-w-4xl page-body-text">
-          Netaş Academy olarak eğitim ve danışmanlık ekosisteminde birlikte
-          çalışabileceğimiz çözüm ortakları arıyoruz. Uzmanlığınızı
-          programlarımıza taşıyarak daha geniş kitlelere ulaşmanız için
-          destek olmaya hazırız.
-        </p>
+    <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.cozum-ortagi">
+      {/* Hero */}
+      <section className="relative isolate overflow-hidden border-b border-white/10 bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]">
+        <div className="page-container relative flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">
+          <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
+            <SiteBreadcrumbs items={[{ label: "Çözüm Ortaklığı" }]} />
+          </div>
 
-        <div className="grid gap-6 sm:gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.65fr)] xl:items-start xl:gap-10">
-          <aside className="panel-surface rounded-sm p-4 sm:p-6">
-            <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
-              Hangi Alanlarda Çözüm Ortaklığı Yapabiliriz
+          <h1
+            className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl"
+            data-testid="page.cozum-ortagi.title"
+          >
+            Çözüm Ortaklığı
+          </h1>
+        </div>
+      </section>
+
+      {/* Accordion — collaboration areas */}
+      <AccordionSection
+        heading="Hangi Alanlarda Çözüm Ortaklığı Yapabiliriz"
+        items={collaborationAreas.map((a) => ({ q: a.title, a: a.body }))}
+        className="bg-background"
+      />
+
+      {/* CTA */}
+      <section className="page-section">
+        <div data-testid="page.cozum-ortagi.content">
+          <div className="space-y-4 sm:space-y-5">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+              Başvurunuzu İnceleyelim
+            </h2>
+            <p className="max-w-3xl text-[15px] leading-7 text-foreground/72 sm:text-lg sm:leading-8">
+              Eğitim, danışmanlık, workshop veya sektörel uzmanlık alanlarında
+              Netaş Academy ile olası iş birliği fikrinizi bizimle
+              paylaşabilirsiniz.
             </p>
-            <ul className="mt-4 space-y-3 text-[15px] leading-7 text-foreground/80 sm:mt-5 sm:space-y-4 sm:text-base sm:leading-8">
-              <li>Eğitim programları</li>
-              <li>Danışmanlık hizmetleri</li>
-              <li>Workshop ve fasilitasyon</li>
-              <li>Sektörel / konu bazlı uzmanlık</li>
-            </ul>
-          </aside>
-
-          <div className="grid gap-4 sm:gap-6">
-            {collaborationAreas.map((area) => (
-              <article
-                key={area.title}
-                className="panel-surface rounded-sm p-5 sm:p-8"
-                data-testid={join('page', 'cozum-ortagi', 'area-card', normalizeKey(area.title))}
-              >
-                <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-                  {area.title}
-                </h2>
-                <p className="mt-3 max-w-4xl page-body-text sm:mt-4">
-                  {area.body}
-                </p>
-              </article>
-            ))}
+            <Link
+              href={buildIntentLeadUrl("solution_partner_application")}
+              className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
+              data-testid={join("page", "cozum-ortagi", "cta", "apply")}
+            >
+              Çözüm Ortağı Başvurusu
+            </Link>
           </div>
         </div>
-
-        <div className="space-y-4 sm:space-y-5">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-            Başvurunuzu İnceleyelim
-          </h2>
-          <p className="max-w-3xl text-[15px] leading-7 text-foreground/72 sm:text-lg sm:leading-8">
-            Eğitim, danışmanlık, workshop veya sektörel uzmanlık alanlarında
-            Netaş Academy ile olası iş birliği fikrinizi bizimle
-            paylaşabilirsiniz.
-          </p>
-          <Link
-            href={buildIntentLeadUrl("solution_partner_application")}
-            className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
-            data-testid="page.cozum-ortagi.cta.apply"
-          >
-            Çözüm Ortağı Başvurusu
-          </Link>
-        </div>
-      </div>
-    </ContentPageShell>
+      </section>
+    </main>
   );
 }

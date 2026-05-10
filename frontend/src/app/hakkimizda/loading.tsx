@@ -4,7 +4,6 @@ export default function HakkimizdaLoading() {
   return (
     <ContentPageShell
       testId="page.hakkimizda"
-      eyebrow="Hakkımızda"
       title="Netaş Academy: Uygulamalı Eğitim Deneyimiyle Kurumsal Gelişimde Fark Yaratıyoruz"
       description={
         <p>

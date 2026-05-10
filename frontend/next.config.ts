@@ -56,6 +56,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "d3f86pfw66amx.cloudfront.net",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async rewrites() {
