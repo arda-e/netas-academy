@@ -1,0 +1,19 @@
+{
+  "name": "iletisim-merkezi",
+  "version": "0.1.0",
+  "description": "Event email management plugin for Strapi 5 — auto-confirmation and manual email sending",
+  "strapi": {
+    "name": "iletisim-merkezi",
+    "description": "Etkinlik e-posta yönetimi — otomatik onay ve manuel e-posta gönderimi",
+    "kind": "plugin"
+  },
+  "private": true,
+  "main": "strapi-server.js",
+  "exports": {
+    "./strapi-server": "./strapi-server.js",
+    "./strapi-admin": {
+      "import": "./strapi-admin.ts",
+      "default": "./strapi-admin.ts"
+    }
+  }
+}
