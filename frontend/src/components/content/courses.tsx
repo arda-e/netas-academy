@@ -30,7 +30,6 @@ type CourseListProps = {
 };
 
 type CourseDetailProps = {
-  eyebrow?: string;
   title: string;
   summary?: string | null;
   meta?: ReactNode;
@@ -116,7 +115,6 @@ export function CourseList({
 }
 
 export function CourseDetail({
-  eyebrow,
   title,
   summary,
   meta,
@@ -126,7 +124,6 @@ export function CourseDetail({
   return (
     <ContentDetailShell
       testId="egitimler.detail"
-      eyebrow={eyebrow}
       title={title}
       summary={summary ?? undefined}
       meta={meta}

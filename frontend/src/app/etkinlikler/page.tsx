@@ -1,16 +1,13 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { Filter } from "lucide-react";
 import { SortAscending, SortDescending } from "@phosphor-icons/react/dist/ssr";
 
-import { ContentPageShell, EventList } from "@/components/content";
+import { ContentPageShell, EventList, EventListLoading } from "@/components/content";
 import { join } from "@/lib/testids";
-import {
-  getEvents,
-  normalizeEventType,
-} from "@/lib/strapi-events";
+import { cn } from "@/lib/utils";
+import { getEvents, normalizeEventType } from "@/lib/strapi-events";
 import type { StrapiEventSortOrder, StrapiEventType } from "@/lib/strapi-types";
-
-export const dynamic = "force-dynamic";
 
 type EtkinliklerPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -29,6 +26,7 @@ function resolveEventTypeFilter(
   value: string | string[] | undefined
 ): StrapiEventType | null {
   const rawValue = Array.isArray(value) ? value[0] : value;
+
   return normalizeEventType(rawValue);
 }
 
@@ -82,31 +80,65 @@ function getSortLabel(sortOrder: StrapiEventSortOrder) {
   return sortOrder === "asc" ? "Önce yeni" : "Önce eski";
 }
 
-export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageProps) {
+async function EventResults({
+  selectedType,
+  selectedSort,
+}: {
+  selectedType: StrapiEventType | null;
+  selectedSort: StrapiEventSortOrder;
+}) {
+  const events = await getEvents(selectedType, selectedSort);
+
+  return (
+    <EventList
+      emptyMessage={
+        selectedType
+          ? `${getEventTypeLabel(selectedType)} türünde gösterilecek etkinlik bulunamadı.`
+          : "Gösterilecek etkinlik verisi şu an kullanılabilir değil."
+      }
+      items={events.map((event) => ({
+        id: event.documentId,
+        slug: event.slug,
+        title: event.title,
+        summary: event.summary,
+        eventType: normalizeEventType(event.eventType) ?? "etkinlik",
+        startsAt: event.startsAt,
+        endsAt: event.endsAt,
+        location: event.location,
+        topicArea: event.topicArea,
+      }))}
+    />
+  );
+}
+
+export default async function EtkinliklerPage({
+  searchParams,
+}: EtkinliklerPageProps) {
   const resolvedSearchParams = await searchParams;
   const selectedType = resolveEventTypeFilter(resolvedSearchParams.type);
   const selectedSort = resolveEventSortOrder(resolvedSearchParams.sort);
-  const events = await getEvents(selectedType, selectedSort);
 
   return (
     <ContentPageShell
       title="Etkinlikler"
       description={
-        <>
-          <p>
-            <strong className="text-white">
-              Yaklaşan buluşmaları, webinarları ve özel oturumları
-            </strong>{" "}
-            takip edin; <span className="hidden sm:inline"><br /></span>
-            katılım için gerekli detaylara tek ekrandan ulaşın.
-          </p>
-        </>
+        <p>
+          <strong className="text-white">
+            Yaklaşan buluşmaları, webinarları ve özel oturumları
+          </strong>{" "}
+          takip edin;{" "}
+          <span className="hidden sm:inline">
+            <br />
+          </span>
+          katılım için gerekli detaylara tek ekrandan ulaşın.
+        </p>
       }
       testId="page.etkinlikler"
     >
       <div className="mt-2 mb-6 flex flex-col gap-3 sm:mt-4 sm:mb-8 sm:gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
           <Filter className="size-4 text-gray-800" aria-hidden="true" />
+
           {eventTypeFilters.map((filter) => {
             const active = selectedType === filter.value;
 
@@ -119,18 +151,19 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
                   type: active ? null : filter.value,
                   sort: selectedSort,
                 })}
-                className={[
+                className={cn(
                   "rounded-full border px-3 py-1.5 text-xs transition-colors sm:text-sm",
                   active
                     ? "border-[#009ca6] bg-[#009ca6] text-white shadow-sm"
-                    : "border-border/70 bg-white/70 text-foreground/74 hover:bg-white hover:text-foreground",
-                ].join(" ")}
+                    : "border-border/70 bg-white/70 text-foreground/74 hover:bg-white hover:text-foreground"
+                )}
               >
                 {filter.label}
               </Link>
             );
           })}
         </div>
+
         <Link
           aria-label={
             selectedSort === "asc" ? "Sırala: önce yeni" : "Sırala: önce eski"
@@ -140,34 +173,27 @@ export default async function EtkinliklerPage({ searchParams }: EtkinliklerPageP
             type: selectedType,
             sort: getToggledSortOrder(selectedSort),
           })}
-          className="inline-flex h-10 self-start items-center justify-center gap-2 rounded-full border border-border/70 bg-white px-4 text-gray-800 transition-colors hover:text-[#009ca6] md:self-auto"
+          className={cn(
+            "inline-flex h-10 self-start items-center justify-center gap-2 rounded-full border",
+            "border-border/70 bg-white px-4 text-gray-800 transition-colors",
+            "hover:text-[#009ca6] md:self-auto"
+          )}
         >
           {selectedSort === "asc" ? (
             <SortAscending className="size-4" aria-hidden="true" />
           ) : (
             <SortDescending className="size-4" aria-hidden="true" />
           )}
-          <span className="text-sm font-medium">Sırala: {getSortLabel(selectedSort)}</span>
+
+          <span className="text-sm font-medium">
+            Sırala: {getSortLabel(selectedSort)}
+          </span>
         </Link>
       </div>
-      <EventList
-        emptyMessage={
-          selectedType
-            ? `${getEventTypeLabel(selectedType)} türünde gösterilecek etkinlik bulunamadı.`
-            : "Gösterilecek etkinlik verisi şu an kullanılabilir değil."
-        }
-        items={events.map((event) => ({
-          id: event.documentId,
-          slug: event.slug,
-          title: event.title,
-          summary: event.summary,
-          eventType: normalizeEventType(event.eventType) ?? "etkinlik",
-          startsAt: event.startsAt,
-          endsAt: event.endsAt,
-          location: event.location,
-          topicArea: event.topicArea,
-        }))}
-      />
+
+      <Suspense fallback={<EventListLoading testId="loading.etkinlikler" />}>
+        <EventResults selectedType={selectedType} selectedSort={selectedSort} />
+      </Suspense>
     </ContentPageShell>
   );
 }

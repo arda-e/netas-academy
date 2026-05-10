@@ -38,18 +38,15 @@ export default async function CozumOrtagiPage() {
       testId="page.cozum-ortagi"
       eyebrow="Çözüm Ortaklığı"
       title="Eğitim ve danışmanlık alanında birlikte yeni değer üretelim."
-      description={
-        <>
-          <p>
-            Netaş Academy olarak eğitim ve danışmanlık ekosisteminde birlikte
-            çalışabileceğimiz çözüm ortakları arıyoruz. Uzmanlığınızı
-            programlarımıza taşıyarak daha geniş kitlelere ulaşmanız için
-            destek olmaya hazırız.
-          </p>
-        </>
-      }
     >
       <div className="space-y-12 sm:space-y-16">
+        <p className="max-w-4xl page-body-text">
+          Netaş Academy olarak eğitim ve danışmanlık ekosisteminde birlikte
+          çalışabileceğimiz çözüm ortakları arıyoruz. Uzmanlığınızı
+          programlarımıza taşıyarak daha geniş kitlelere ulaşmanız için
+          destek olmaya hazırız.
+        </p>
+
         <div className="grid gap-6 sm:gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.65fr)] xl:items-start xl:gap-10">
           <aside className="panel-surface rounded-sm p-4 sm:p-6">
             <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">

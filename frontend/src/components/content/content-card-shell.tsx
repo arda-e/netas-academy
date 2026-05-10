@@ -17,6 +17,9 @@ type ContentCardShellProps = {
   className?: string;
   imageUrl?: string | null;
   imageAlt?: string;
+  imageSize?: "small" | "medium" | "large";
+  blurDataURL?: string;
+  skeleton?: ReactNode;
   testId?: string;
 };
 
@@ -30,10 +33,31 @@ export function ContentCardShell({
   className,
   imageUrl,
   imageAlt,
+  imageSize,
+  blurDataURL,
+  skeleton,
   testId,
 }: ContentCardShellProps) {
+  if (skeleton) {
+    return (
+      <Card
+        className={cn(
+          "h-full rounded-sm bg-slate-100 py-5 backdrop-blur sm:pb-6 gap-0 pt-0",
+          className
+        )}
+        data-testid={testId}
+      >
+        {skeleton}
+      </Card>
+    );
+  }
   const hasImage = Boolean(imageUrl);
-  const safeUrl = imageUrl ?? '';
+  const safeUrl = imageUrl ?? "";
+
+  const imageSizes =
+    imageSize === "small"
+      ? "(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 100vw"
+      : "(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw";
 
   const card = (
     <Card
@@ -44,17 +68,21 @@ export function ContentCardShell({
       )}
       data-testid={href ? undefined : testId}
     >
-      {hasImage ? (
-        <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-t-sm" data-testid={testId && join(testId, 'image')}>
+      {hasImage && (
+        <div
+          className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-t-sm"
+          data-testid={testId && join(testId, "image")}
+        >
           <Image
             src={safeUrl}
             alt={imageAlt ?? title}
             fill
-            sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+            sizes={imageSizes}
             className="object-cover"
+            {...(blurDataURL ? { placeholder: "blur" as const, blurDataURL } : {})}
           />
         </div>
-      ) : null}
+      )}
       <CardHeader
         className={cn(
           "flex flex-row items-start justify-between gap-4 px-5 sm:px-6",
@@ -63,30 +91,47 @@ export function ContentCardShell({
         )}
       >
         <div className="min-w-0 space-y-1.5">
-          {kicker ? (
-            <ContentSuperheading className="group-hover/card-link:text-[#009ca6]" data-testid={testId && join(testId, 'kicker')}>
+          {kicker && (
+            <ContentSuperheading
+              className="group-hover/card-link:text-[#009ca6]"
+              data-testid={testId && join(testId, "kicker")}
+            >
               {kicker}
             </ContentSuperheading>
-          ) : null}
-          <CardTitle className="text-xl leading-6 text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-2xl sm:leading-tight" data-testid={testId && join(testId, 'title')}>
+          )}
+          <CardTitle
+            className="text-xl leading-6 text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-2xl sm:leading-tight"
+            data-testid={testId && join(testId, "title")}
+          >
             <span>{title}</span>
           </CardTitle>
         </div>
-        {headerAddon ? <div className="shrink-0 pt-1" data-testid={testId && join(testId, 'header-addon')}>{headerAddon}</div> : null}
+        {headerAddon && (
+          <div className="shrink-0 pt-1" data-testid={testId && join(testId, "header-addon")}>
+            {headerAddon}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="flex flex-1 flex-col justify-between gap-5 px-5 sm:px-6">
         <div className="space-y-3 sm:space-y-4">
-          {summary ? (
+          {summary && (
             typeof summary === "string" ? (
-              <p className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7" data-testid={testId && join(testId, 'summary')}>
+              <p
+                className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7"
+                data-testid={testId && join(testId, "summary")}
+              >
                 {summary}
               </p>
             ) : (
               summary
             )
-          ) : null}
+          )}
         </div>
-        {meta ? <div className="space-y-1 text-sm text-foreground/62" data-testid={testId && join(testId, 'meta')}>{meta}</div> : null}
+        {meta && (
+          <div className="space-y-1 text-sm text-foreground/62" data-testid={testId && join(testId, "meta")}>
+            {meta}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

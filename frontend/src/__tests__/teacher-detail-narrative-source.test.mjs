@@ -99,7 +99,7 @@ test("Detail page uses getStrapiMediaUrl for teacher.profilePhoto", () => {
   const source = readSource("app/egitmenler/[slug]/page.tsx");
   assert.match(
     source,
-    /getStrapiMediaUrl\(teacher\.profilePhoto\)/,
+    /getStrapiMediaUrl\(teacher\.profilePhoto(?:,\s*['"]small['"])?\)/,
     "Detail page should call getStrapiMediaUrl with teacher.profilePhoto"
   );
 });

@@ -46,7 +46,8 @@ export default factories.createCoreController('api::event.event', () => ({
 
     const { isEventRegistrationOpen } = require('../../../utils/event-registration');
     const isOpen = isEventRegistrationOpen(event);
+    const keepRegistrationsOpen = event.keepRegistrationsOpen ?? false;
 
-    ctx.body = { data: { isOpen, startsAt: event.startsAt, keepRegistrationsOpen: event.keepRegistrationsOpen } };
+    ctx.body = { data: { isOpen, startsAt: event.startsAt, keepRegistrationsOpen } };
   },
 }));

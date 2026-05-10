@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const strapiUrl = process.env.STRAPI_URL ?? "http://127.0.0.1:1337";
-const mediaPublicUrl =
-  process.env.MEDIA_PUBLIC_URL ??
-  "https://netas-academy-media-540713960950-eu-central-1.s3.eu-central-1.amazonaws.com";
+const mediaPublicUrl = process.env.MEDIA_PUBLIC_URL;
 
 const strapiImageOrigins = [
   mediaPublicUrl,

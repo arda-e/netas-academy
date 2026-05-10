@@ -28,6 +28,13 @@ const normalizeStatuses = (statuses?: string[]) =>
   Array.isArray(statuses) && statuses.length > 0 ? statuses : ['confirmed', 'pending'];
 
 export default factories.createCoreService('api::event.event', () => ({
+  /**
+   * Send a registration email to filtered event participants.
+   *
+   * @deprecated Use `iletisim-merkezi.manualEmailService.sendManualEmail` instead.
+   *   This endpoint is preserved for backward compatibility and will be removed
+   *   in a future version.
+   */
   async sendRegistrationEmail(documentId: string, input: SendRegistrationEmailInput) {
     const event = await strapi.db.query('api::event.event').findOne({
       where: { documentId },
