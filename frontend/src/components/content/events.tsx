@@ -25,7 +25,6 @@ type EventListProps = {
 };
 
 type EventDetailProps = {
-  eyebrow: string;
   title: string;
   summary?: string | null;
   startsAt: string;
@@ -83,7 +82,6 @@ export function EventList({
 }
 
 export function EventDetail({
-  eyebrow,
   title,
   summary,
   startsAt,
@@ -95,7 +93,6 @@ export function EventDetail({
   return (
     <ContentDetailShell
       testId="etkinlikler.detail"
-      eyebrow={eyebrow}
       title={title}
       summary={summary ?? undefined}
       meta={

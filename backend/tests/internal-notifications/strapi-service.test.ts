@@ -27,60 +27,51 @@ const eventRegistrationEnvelope: InternalNotificationEnvelope<"event_registratio
 };
 
 describe("deliverInternalNotificationViaStrapi", () => {
-  it("queries routing with the expected shape and sends the mapped email payload", async () => {
-    const findOne = vi.fn().mockResolvedValue({
-      key: "event_registration",
-      label: "Etkinlik Kayit Bildirimi",
-      enabled: true,
-      customEmails: ["events@netas.com.tr"],
-      adminRoles: [
-        {
-          users: {
-            data: [{ email: "ops@netas.com.tr" }],
-          },
-        },
-      ],
-    });
-    const send = vi.fn().mockResolvedValue(undefined);
-    const query = vi.fn().mockReturnValue({ findOne });
-    const service = vi.fn().mockReturnValue({ send });
-    const plugin = vi.fn().mockReturnValue({ service });
-    const warn = vi.fn();
-    const error = vi.fn();
-    const strapi = {
-      db: { query },
-      plugin,
-      log: { warn, error },
-    } as any;
-
-    await expect(deliverInternalNotificationViaStrapi(strapi, eventRegistrationEnvelope)).resolves.toEqual({
+  it("delegates to the internal-notifications plugin service and returns structured result", async () => {
+    const deliverFn = vi.fn().mockResolvedValue({
       status: "sent",
       key: "event_registration",
       recipients: ["events@netas.com.tr", "ops@netas.com.tr"],
     });
 
-    expect(query).toHaveBeenCalledWith("api::notification-routing.notification-routing");
-    expect(findOne).toHaveBeenCalledWith({
-      where: { key: "event_registration" },
-      select: ["key", "label", "enabled", "customEmails"],
-      populate: {
-        adminRoles: {
-          populate: {
-            users: {
-              fields: ["email"],
-            },
-          },
-        },
-      },
+    const pluginServiceFn = vi.fn().mockReturnValue(deliverFn);
+    const pluginFn = vi.fn().mockReturnValue({ service: pluginServiceFn });
+    const warn = vi.fn();
+    const error = vi.fn();
+    const strapi = {
+      plugin: pluginFn,
+      log: { warn, error },
+    } as any;
+
+    await expect(
+      deliverInternalNotificationViaStrapi(strapi, eventRegistrationEnvelope)
+    ).resolves.toEqual({
+      status: "sent",
+      key: "event_registration",
+      recipients: ["events@netas.com.tr", "ops@netas.com.tr"],
     });
-    expect(plugin).toHaveBeenCalledWith("email");
-    expect(service).toHaveBeenCalledWith("email");
-    expect(send).toHaveBeenCalledWith({
-      to: ["events@netas.com.tr", "ops@netas.com.tr"],
-      subject: "Etkinlik Kayit Bildirimi - Demo Etkinlik",
-      text: expect.stringContaining("Yeni bir etkinlik kayit talebi olusturuldu."),
-    });
-    expect(warn).not.toHaveBeenCalled();
-    expect(error).not.toHaveBeenCalled();
+
+    expect(pluginFn).toHaveBeenCalledWith("internal-notifications");
+    expect(pluginServiceFn).toHaveBeenCalledWith("deliverInternalNotification");
+    expect(deliverFn).toHaveBeenCalledWith(eventRegistrationEnvelope);
+  });
+
+  it("propagates errors from the plugin service", async () => {
+    const deliverFn = vi.fn().mockRejectedValue(new Error("SMTP timeout"));
+    const pluginServiceFn = vi.fn().mockReturnValue(deliverFn);
+    const pluginFn = vi.fn().mockReturnValue({ service: pluginServiceFn });
+    const warn = vi.fn();
+    const error = vi.fn();
+    const strapi = {
+      plugin: pluginFn,
+      log: { warn, error },
+    } as any;
+
+    await expect(
+      deliverInternalNotificationViaStrapi(strapi, eventRegistrationEnvelope)
+    ).rejects.toThrow("SMTP timeout");
+
+    expect(pluginFn).toHaveBeenCalledWith("internal-notifications");
+    expect(deliverFn).toHaveBeenCalledWith(eventRegistrationEnvelope);
   });
 });

@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 
 type SearchFieldProps = {
   initialValue?: string;
+  expandedWidthClassName?: string;
   /** Reserved for future use — when true, hides any non-search filter UI.
    *  Currently the component is search-only by design. Use _searchOnly convention. */
   searchOnly?: boolean;
@@ -13,6 +14,7 @@ type SearchFieldProps = {
 
 export function SearchField({
   initialValue = "",
+  expandedWidthClassName = "lg:w-[420px]",
   searchOnly: _searchOnly = true,
 }: SearchFieldProps) {
   const router = useRouter();
@@ -21,6 +23,7 @@ export function SearchField({
   const [value, setValue] = useState(initialValue);
   const [open, setOpen] = useState(Boolean(initialValue.trim()));
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setValue(initialValue);
@@ -32,6 +35,14 @@ export function SearchField({
       inputRef.current?.focus();
     }
   }, [open]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const updateSearchParam = (nextSearch: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -52,7 +63,7 @@ export function SearchField({
       className={`flex items-center overflow-hidden border border-border/70 bg-white/70 transition-all duration-200 ease-out ${
         open ? "w-full rounded-sm" : "w-10 rounded-full"
       } ${open ? "" : "cursor-pointer"} lg:flex-none lg:transition-[width] lg:duration-200 ${
-        open ? "lg:w-[420px]" : "lg:w-10"
+        open ? expandedWidthClassName : "lg:w-10"
       }`}
     >
       <button
@@ -76,7 +87,14 @@ export function SearchField({
           onChange={(e) => {
             const nextSearch = e.target.value;
             setValue(nextSearch);
-            updateSearchParam(nextSearch);
+
+            if (debounceRef.current) {
+              clearTimeout(debounceRef.current);
+            }
+
+            debounceRef.current = setTimeout(() => {
+              updateSearchParam(nextSearch);
+            }, 300);
           }}
           onBlur={() => {
             if (!value.trim()) {

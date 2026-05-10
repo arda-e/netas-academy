@@ -18,6 +18,7 @@ export type BlogListItem = {
   authorName?: string | null;
   coverImageUrl?: string | null;
   coverImageAlt?: string | null;
+  coverImageBlurDataURL?: string | null;
 };
 
 type BlogListProps = {
@@ -32,6 +33,7 @@ type BlogDetailProps = {
   excerpt?: string | null;
   coverImageUrl?: string | null;
   coverImageAlt?: string | null;
+  coverImageBlurDataURL?: string | null;
   meta?: ReactNode;
   children: ReactNode;
   afterContent?: ReactNode;
@@ -54,6 +56,13 @@ export function BlogList({
       {items.map((post) => {
         const hasMeta = post.publishedDate || post.authorName;
 
+        const meta = hasMeta ? (
+          <div className="space-y-1.5 text-sm leading-6 text-foreground/62">
+            {post.publishedDate ? <p>{formatLongDate(post.publishedDate)}</p> : null}
+            {post.authorName ? <p>{post.authorName}</p> : null}
+          </div>
+        ) : undefined;
+
         return (
           <ContentCardShell
             key={post.id}
@@ -61,17 +70,12 @@ export function BlogList({
             title={post.title}
             summary={post.excerpt ?? "Bu yazı için özet yakında eklenecek."}
             testId={join("blog-yazilari", "card", post.slug)}
-            className="bg-white"
+            className="bg-white gap-6 sm:gap-7"
             imageUrl={post.coverImageUrl ?? null}
             imageAlt={post.coverImageAlt ?? undefined}
-            meta={
-              hasMeta ? (
-                <div className="space-y-1.5 text-sm leading-6 text-foreground/62">
-                  {post.publishedDate ? <p>{formatLongDate(post.publishedDate)}</p> : null}
-                  {post.authorName ? <p>{post.authorName}</p> : null}
-                </div>
-              ) : undefined
-            }
+            blurDataURL={post.coverImageBlurDataURL ?? undefined}
+            imageSize="small"
+            meta={meta}
           />
         );
       })}
@@ -85,6 +89,7 @@ export function BlogDetail({
   excerpt,
   coverImageUrl,
   coverImageAlt,
+  coverImageBlurDataURL,
   meta,
   children,
   afterContent,
@@ -110,6 +115,7 @@ export function BlogDetail({
                 priority
                 sizes="100vw"
                 className="object-cover"
+                {...(coverImageBlurDataURL ? { placeholder: "blur" as const, blurDataURL: coverImageBlurDataURL } : {})}
               />
             </div>
             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
@@ -128,17 +134,9 @@ export function BlogDetail({
             />
           </div>
           <div className="max-w-3xl space-y-3 sm:space-y-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/82">
-              Blog
-            </p>
             <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl" data-testid="blog-yazilari.detail.title">
               {title}
             </h1>
-            {excerpt ? (
-              <p className="max-w-2xl text-[15px] leading-7 text-white/76 sm:text-lg sm:leading-8" data-testid="blog-yazilari.detail.excerpt">
-                {excerpt}
-              </p>
-            ) : null}
             {meta ? (
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-sm leading-6 text-white/76 sm:text-base" data-testid="blog-yazilari.detail.meta">
                 {meta}
@@ -150,6 +148,11 @@ export function BlogDetail({
 
       <section className="page-section pt-8 sm:pt-10 lg:pt-12">
         <article className="max-w-4xl" data-testid="blog-yazilari.detail.body">
+          {excerpt ? (
+            <p className="mb-8 max-w-3xl text-[17px] leading-8 text-foreground/76 sm:mb-10 sm:text-xl sm:leading-9" data-testid="blog-yazilari.detail.excerpt">
+              {excerpt}
+            </p>
+          ) : null}
           <div className="max-w-3xl">
             <div className="prose prose-invert max-w-none whitespace-pre-wrap text-base leading-7 prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary prose-li:text-foreground/80 sm:leading-8">
               {children}

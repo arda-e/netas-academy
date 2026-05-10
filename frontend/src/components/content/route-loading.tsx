@@ -1,0 +1,89 @@
+import type { ReactNode } from "react";
+
+type SkeletonBoxProps = {
+  className?: string;
+};
+
+function SkeletonBox({ className }: SkeletonBoxProps) {
+  return (
+    <div
+      className={`animate-pulse rounded-sm bg-slate-200 ${className ?? ""}`}
+      role="presentation"
+    />
+  );
+}
+
+type RouteLoadingProps = {
+  testId?: string;
+  children?: ReactNode;
+};
+
+export function RouteLoading({ testId, children }: RouteLoadingProps) {
+  return (
+    <div data-testid={testId}>
+      {children ?? (
+        <div className="space-y-6">
+          <SkeletonBox className="h-8 w-48" />
+          <SkeletonBox className="h-4 w-full" />
+          <SkeletonBox className="h-4 w-3/4" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <SkeletonBox className="h-48" />
+            <SkeletonBox className="h-48" />
+            <SkeletonBox className="h-48" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function CourseListLoading({ testId }: { testId?: string }) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6" data-testid={testId}>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <SkeletonBox key={index} className="h-72" />
+      ))}
+    </div>
+  );
+}
+
+export function EventListLoading({ testId }: { testId?: string }) {
+  return (
+    <div className="space-y-4" data-testid={testId}>
+      {Array.from({ length: 4 }).map((_, index) => (
+        <SkeletonBox key={index} className="h-40" />
+      ))}
+    </div>
+  );
+}
+
+export function BlogListLoading({ testId }: { testId?: string }) {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-testid={testId}>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div key={index} className="space-y-3">
+          <SkeletonBox className="aspect-[16/9]" />
+          <SkeletonBox className="h-6 w-3/4" />
+          <SkeletonBox className="h-4 w-full" />
+          <SkeletonBox className="h-4 w-2/3" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function TeacherListLoading({ testId }: { testId?: string }) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-6" data-testid={testId}>
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div key={index} className="space-y-4 rounded-sm bg-slate-50 p-5 sm:p-6">
+          <SkeletonBox className="mx-auto h-24 w-24 rounded-full sm:h-28 sm:w-28" />
+          <div className="space-y-2 text-center">
+            <SkeletonBox className="mx-auto h-5 w-2/3" />
+            <SkeletonBox className="mx-auto h-4 w-1/2" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

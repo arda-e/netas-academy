@@ -13,6 +13,8 @@ export type StrapiListResponse<T> = {
 export type FetchStrapiOptions = {
   cache?: RequestCache;
   next?: NextFetchRequestConfig;
+  timeout?: number;
+  retries?: number;
 };
 
 export type StrapiCourse = {
@@ -74,14 +76,24 @@ export type StrapiEvent = {
   } | null;
 };
 
+export type StrapiMediaFormat = {
+  url?: string | null;
+  width?: number | null;
+  height?: number | null;
+  mime?: string | null;
+};
+
 export type StrapiMedia = {
   id: number;
   documentId: string;
   url?: string | null;
   alternativeText?: string | null;
+  width?: number | null;
+  height?: number | null;
+  mime?: string | null;
   data?: unknown;
   attributes?: unknown;
-  formats?: Record<string, { url?: string | null }> | null;
+  formats?: Record<string, StrapiMediaFormat> | null;
 };
 
 export type StrapiBlogPost = {
@@ -128,3 +140,4 @@ export type EventRegistrationStatus = {
   startsAt: string;
   keepRegistrationsOpen: boolean;
 };
+

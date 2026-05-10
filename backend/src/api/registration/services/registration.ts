@@ -2,8 +2,8 @@ import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
 import { isEventRegistrationOpen } from '../../../utils/event-registration';
-import { normalizeTcknValue, maskTcknValue } from '../../../utils/tckn';
-import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
+import { isValidTckn, normalizeTcknValue, maskTcknValue } from '../../../utils/tckn';
+
 
 const { NotFoundError, ValidationError } = errors;
 
@@ -14,7 +14,7 @@ type RegisterStudentInput = {
     lastName?: string;
     email: string;
     phone?: string;
-    tckn: string;
+    tckn?: string;
   };
   status?: 'pending' | 'confirmed' | 'cancelled' | 'waitlisted' | 'attended';
   notes?: string;
@@ -45,6 +45,14 @@ export default factories.createCoreService('api::registration.registration' as a
 
     if (!isEventRegistrationOpen(event)) {
       throw new ValidationError('Event registration is closed');
+    }
+
+    // TCKN is required only for egitim/kurs events, not etkinlik
+    if (event.eventType !== 'etkinlik') {
+      const tckn = typeof input.student.tckn === 'string' ? input.student.tckn : '';
+      if (!isValidTckn(tckn)) {
+        throw new ValidationError('Invalid TCKN');
+      }
     }
 
     // KVKK consent is required only for egitim/kurs events, not etkinlik
@@ -92,7 +100,8 @@ export default factories.createCoreService('api::registration.registration' as a
 
     // Fire-and-forget notification (outside transaction)
     try {
-      await deliverInternalNotificationViaStrapi(strapi, {
+      const deliverNotification = strapi.plugin("internal-notifications").service("deliverInternalNotification") as (envelope: any) => Promise<any>;
+      await deliverNotification({
         key: 'event_registration',
         payload: {
           registrationId: registration.id,

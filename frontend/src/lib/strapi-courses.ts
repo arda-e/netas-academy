@@ -1,6 +1,8 @@
 import type { StrapiCourse, StrapiListResponse } from "./strapi-types";
 import { fetchStrapi } from "./strapi-client";
 
+const COURSES_TAG = "strapi-courses";
+
 export async function getCourses() {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
@@ -9,11 +11,17 @@ export async function getCourses() {
       '&fields[3]=topicArea&fields[4]=level&fields[5]=targetAudience' +
       '&fields[6]=businessValue&fields[7]=scopeSummary' +
       '&fields[8]=description&fields[9]=outcomeBullets' +
-      '&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug'
+      '&populate[teacher][fields][0]=fullName&populate[teacher][fields][1]=slug',
+      { next: { tags: [COURSES_TAG] } }
     );
 
     return response.data;
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'courses',
+      function: 'getCourses',
+      message: `Error fetching courses: ${error instanceof Error ? error.message : String(error)}`,
+    }));
     return [];
   }
 }
@@ -22,11 +30,16 @@ export async function getCourseSlugs() {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
       '/api/courses?pagination[pageSize]=100&sort[0]=title:asc&fields[0]=slug',
-      { cache: 'force-cache' }
+      { next: { tags: [COURSES_TAG] } }
     );
 
     return response.data.map((course) => course.slug);
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'courses',
+      function: 'getCourseSlugs',
+      message: `Error fetching course slugs: ${error instanceof Error ? error.message : String(error)}`,
+    }));
     return [];
   }
 }
@@ -43,11 +56,16 @@ export async function getCourseBySlug(slug: string) {
       '&populate[events][fields][2]=summary&populate[events][fields][3]=startsAt' +
       '&populate[events][fields][4]=eventType&populate[events][fields][5]=topicArea' +
       '&populate[events][sort][0]=startsAt:asc',
-      { cache: 'force-cache' }
+      { next: { tags: [COURSES_TAG] } }
     );
 
     return response.data[0] ?? null;
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'courses',
+      function: 'getCourseBySlug',
+      message: `Error fetching course by slug: ${error instanceof Error ? error.message : String(error)}`,
+    }));
     return null;
   }
 }
@@ -57,11 +75,17 @@ export async function getLatestCourses(limit = 5) {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
       `/api/courses?pagination[pageSize]=${limit}&sort[0]=createdAt:desc` +
       '&fields[0]=title&fields[1]=slug&fields[2]=summary' +
-      '&fields[3]=topicArea&fields[4]=level'
+      '&fields[3]=topicArea&fields[4]=level',
+      { next: { tags: [COURSES_TAG] } }
     );
 
     return response.data;
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'courses',
+      function: 'getLatestCourses',
+      message: `Error fetching latest courses: ${error instanceof Error ? error.message : String(error)}`,
+    }));
     return [];
   }
 }

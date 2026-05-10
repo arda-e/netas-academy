@@ -37,12 +37,12 @@ export function SiteBreadcrumbs({
         className
       )}
     >
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <ol className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
         {allItems.map((item, index) => {
           const isCurrent = index === lastIndex;
 
           return (
-            <li key={`${item.label}-${index}`} className="flex min-w-0 items-center gap-2">
+            <li key={`${item.label}-${index}`} className="flex min-w-0 max-w-full items-center gap-2">
               {index > 0 ? (
                 <span aria-hidden="true" className="opacity-[0.46]">
                   /
@@ -66,7 +66,7 @@ export function SiteBreadcrumbs({
                   aria-current={isCurrent ? "page" : undefined}
                   data-testid="breadcrumbs.current"
                   className={cn(
-                    "truncate",
+                    "block max-w-[min(68vw,32rem)] truncate",
                     isCurrent
                       ? variant === "light"
                         ? "text-white/86"

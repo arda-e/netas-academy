@@ -1,0 +1,329 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://netas-academy.local/.kilo/orchestrator/wave4-state.schema.json",
+  "title": "Wave4ExecutionState",
+  "description": "Execution state ledger for the Wave 4 parallel refactor orchestration harness. This is the single source of truth for the supervisor agent.",
+  "type": "object",
+  "required": [
+    "planRef",
+    "startedAt",
+    "lastUpdatedAt",
+    "units",
+    "fileLocks",
+    "conflictMatrix",
+    "validationLog",
+    "blockers",
+    "metrics"
+  ],
+  "properties": {
+    "planRef": {
+      "type": "string",
+      "description": "Path to the plan document that this execution state derives from.",
+      "examples": ["docs/plans/2026-05-03-001-refactor-wave4-parallel-delegation-plan.md"]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 datetime when the supervisor began execution."
+    },
+    "lastUpdatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 datetime of the last state mutation."
+    },
+    "supervisorSessionId": {
+      "type": "string",
+      "description": "Task ID of the supervisor agent session, enabling resumption after interruption."
+    },
+    "units": {
+      "type": "object",
+      "description": "Map of unitId → UnitState for all 10 Wave 4 units (U00–U09).",
+      "minProperties": 10,
+      "additionalProperties": {
+        "$ref": "#/definitions/UnitState"
+      }
+    },
+    "fileLocks": {
+      "type": "object",
+      "description": "Map of repo-relative file path → owning unitId. Empty object means no locks held.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^U[0-9]{2}$"
+      }
+    },
+    "conflictMatrix": {
+      "type": "array",
+      "description": "Shared file conflict matrix transcribed from the plan document.",
+      "items": {
+        "$ref": "#/definitions/ConflictEntry"
+      }
+    },
+    "validationLog": {
+      "type": "array",
+      "description": "Ordered log of all validation checks run during execution.",
+      "items": {
+        "$ref": "#/definitions/ValidationLogEntry"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "description": "List of active blockers that prevent units from proceeding.",
+      "items": {
+        "$ref": "#/definitions/Blocker"
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Execution metrics for reporting.",
+      "required": ["totalUnits", "completedUnits", "failedUnits", "blockedUnits", "elapsedMs"],
+      "properties": {
+        "totalUnits": { "type": "integer", "minimum": 10, "maximum": 10 },
+        "completedUnits": { "type": "integer", "minimum": 0 },
+        "failedUnits": { "type": "integer", "minimum": 0 },
+        "blockedUnits": { "type": "integer", "minimum": 0 },
+        "elapsedMs": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "definitions": {
+    "UnitState": {
+      "type": "object",
+      "description": "State of a single execution unit.",
+      "required": [
+        "unitId", "prId", "title", "status", "dependencies",
+        "fileOwnership", "validationResults"
+      ],
+      "properties": {
+        "unitId": {
+          "type": "string",
+          "pattern": "^U[0-9]{2}$",
+          "description": "Unit identifier, e.g. U00, U01."
+        },
+        "prId": {
+          "type": "string",
+          "description": "PR identifier from the strategy document, e.g. P3-02.",
+          "examples": ["P3-02", "P4-01", "P5-05"]
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable title of the unit."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "ready", "in_progress", "completed", "blocked", "failed"],
+          "description": "Current execution status. See state transition diagram in the supervisor agent."
+        },
+        "dependencies": {
+          "type": "object",
+          "required": ["upstreamUnits", "upstreamGates", "satisfied"],
+          "properties": {
+            "upstreamUnits": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^U[0-9]{2}$" },
+              "description": "Unit IDs that must complete before this unit can start."
+            },
+            "upstreamGates": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "External gates (e.g. PR merges, policy decisions) that must be satisfied."
+            },
+            "satisfied": {
+              "type": "boolean",
+              "description": "Whether all upstream dependencies and gates are currently satisfied."
+            }
+          }
+        },
+        "fileOwnership": {
+          "type": "object",
+          "description": "Files this unit owns for modification, creation, testing, and handoff.",
+          "required": ["modify", "create", "test", "handoff"],
+          "properties": {
+            "modify": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Repo-relative paths this unit may edit."
+            },
+            "create": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Repo-relative paths this unit may create."
+            },
+            "test": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Test files this unit creates or modifies."
+            },
+            "handoff": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Files this unit may discover need changes but does not own."
+            }
+          }
+        },
+        "workerTaskId": {
+          "type": "string",
+          "description": "Task ID of the dispatched worker subagent, for session resumption."
+        },
+        "branchName": {
+          "type": "string",
+          "description": "Git branch name created for this unit's work."
+        },
+        "prUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the pull request for this unit, if created."
+        },
+        "handoffsRequested": {
+          "type": "array",
+          "description": "Handoffs this unit has requested during execution.",
+          "items": {
+            "$ref": "#/definitions/HandoffRequest"
+          }
+        },
+        "validationResults": {
+          "type": "object",
+          "required": ["passed", "failed", "skipped", "knownBaselineFailures"],
+          "properties": {
+            "passed": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Validation rule IDs that passed."
+            },
+            "failed": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Validation rule IDs that failed."
+            },
+            "skipped": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Validation rule IDs that were skipped."
+            },
+            "knownBaselineFailures": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Known pre-existing test failures from FAILING_TESTS.md that are unrelated to this unit."
+            }
+          }
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 datetime when this unit was marked completed."
+        },
+        "errorMessage": {
+          "type": "string",
+          "description": "Error message if the unit is in failed or blocked status."
+        }
+      }
+    },
+    "ConflictEntry": {
+      "type": "object",
+      "description": "An entry in the shared file conflict matrix.",
+      "required": ["file", "units", "ownershipRule", "status"],
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "Repo-relative path of the shared file."
+        },
+        "units": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^U[0-9]{2}$" },
+          "description": "Unit IDs that touch this file."
+        },
+        "ownershipRule": {
+          "type": "string",
+          "description": "Description of how ownership is divided among units."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "resolved", "deferred"],
+          "description": "Current resolution status of this conflict."
+        }
+      }
+    },
+    "ValidationLogEntry": {
+      "type": "object",
+      "description": "A single validation check result.",
+      "required": ["timestamp", "unitId", "checkType", "command", "exitCode", "summary"],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the check was run."
+        },
+        "unitId": {
+          "type": "string",
+          "pattern": "^U[0-9]{2}$",
+          "description": "Unit being validated."
+        },
+        "checkType": {
+          "type": "string",
+          "enum": ["build", "lint", "test", "schema", "manual", "cross-cutting"],
+          "description": "Category of validation check."
+        },
+        "command": {
+          "type": "string",
+          "description": "The bash command or manual check description."
+        },
+        "exitCode": {
+          "type": "integer",
+          "description": "Exit code of the command. 0 = pass, non-zero = fail. null for manual checks."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Human-readable summary of the result."
+        }
+      }
+    },
+    "Blocker": {
+      "type": "object",
+      "description": "A blocker preventing one or more units from proceeding.",
+      "required": ["unitId", "description", "blockingUnits", "resolution"],
+      "properties": {
+        "unitId": {
+          "type": "string",
+          "pattern": "^U[0-9]{2}$",
+          "description": "The unit that is blocked."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the blocking condition."
+        },
+        "blockingUnits": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^U[0-9]{2}$" },
+          "description": "Unit IDs that are causing the block."
+        },
+        "resolution": {
+          "type": "string",
+          "description": "How to resolve this blocker, or 'human_review' if escalation is needed."
+        }
+      }
+    },
+    "HandoffRequest": {
+      "type": "object",
+      "description": "A handoff requested by a worker when it needs to touch a file outside its write boundary.",
+      "required": ["file", "reason", "targetUnit", "resolved"],
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "Repo-relative path of the file needing changes."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Why the worker needs this file changed."
+        },
+        "targetUnit": {
+          "type": "string",
+          "pattern": "^U[0-9]{2}$",
+          "description": "Which unit should handle this handoff."
+        },
+        "resolved": {
+          "type": "boolean",
+          "description": "Whether this handoff has been resolved."
+        }
+      }
+    }
+  }
+}

@@ -1,8 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { InternalNotificationEnvelope } from "../../../src/services/internal-notifications/types";
-
-const deliverInternalNotificationViaStrapi = vi.fn();
+const deliverFn = vi.fn();
 
 vi.mock("@strapi/strapi", () => ({
   factories: {
@@ -17,15 +15,29 @@ vi.mock("@strapi/utils", () => ({
   },
 }));
 
-vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
-  deliverInternalNotificationViaStrapi,
-}));
-
 describe("registration service", () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllGlobals();
   });
+
+  function createStrapiMock(overrides: Record<string, unknown> = {}) {
+    return {
+      db: {
+        transaction: vi.fn((fn: () => unknown) => fn()),
+      },
+      plugin: vi.fn((name: string) => {
+        if (name === "internal-notifications") {
+          return { service: vi.fn().mockReturnValue(deliverFn) };
+        }
+        return {};
+      }),
+      log: {
+        error: vi.fn(),
+      },
+      ...overrides,
+    };
+  }
 
   it("persists first, then triggers event routing without failing when notification delivery rejects", async () => {
     const events: string[] = [];
@@ -61,7 +73,7 @@ describe("registration service", () => {
     });
     const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
 
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::event.event") {
@@ -77,14 +89,12 @@ describe("registration service", () => {
 
           throw new Error(`Unexpected query uid: ${uid}`);
         }),
+        transaction: vi.fn((fn: () => unknown) => fn()),
       },
       service: vi.fn().mockReturnValue({ upsertByEmail }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
-    deliverInternalNotificationViaStrapi.mockImplementation(async () => {
+    deliverFn.mockImplementation(async () => {
       events.push("notify");
       throw new Error("SMTP timeout");
     });
@@ -103,7 +113,7 @@ describe("registration service", () => {
           tckn: string;
         };
         notes?: string;
-      }) => Promise<typeof createdRegistration>;
+      }) => Promise<{ id: number; status: string; event: { documentId: string; title: string } }>;
     };
 
     await expect(
@@ -118,30 +128,14 @@ describe("registration service", () => {
         },
         notes: "Sertifika talebi var",
       }),
-    ).resolves.toEqual(createdRegistration);
-
-    const expectedEnvelope: InternalNotificationEnvelope<"event_registration"> = {
-      key: "event_registration",
-      payload: {
-        registrationId: 42,
-        status: "pending",
-        notes: "Sertifika talebi var",
-        event: {
-          documentId: "evt_123",
-          title: "Demo Etkinlik",
-          slug: "demo-etkinlik",
-          startsAt: "2026-04-22T09:00:00.000Z",
-          location: "Istanbul Campus",
-        },
-        student: {
-          firstName: "Ada",
-          lastName: "Kaya",
-          email: "ada@example.com",
-          phone: "+90 555 111 2233",
-          tckn: "*******8901",
-        },
+    ).resolves.toEqual({
+      id: 42,
+      status: "pending",
+      event: {
+        documentId: "evt_123",
+        title: "Demo Etkinlik",
       },
-    };
+    });
 
     expect(registrationCreate).toHaveBeenCalledWith({
       data: {
@@ -155,7 +149,17 @@ describe("registration service", () => {
         student: true,
       },
     });
-    expect(deliverInternalNotificationViaStrapi).toHaveBeenCalledWith(strapi, expectedEnvelope);
+    expect(deliverFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        key: "event_registration",
+        payload: expect.objectContaining({
+          registrationId: 42,
+          student: expect.objectContaining({
+            tckn: "*******8901",
+          }),
+        }),
+      }),
+    );
     expect(strapi.log.error).toHaveBeenCalledWith(
       "Event registration notification delivery failed",
       expect.objectContaining({
@@ -194,7 +198,7 @@ describe("registration service", () => {
     const registrationFindOne = vi.fn().mockResolvedValue(null);
     const registrationCreate = vi.fn().mockResolvedValue(createdRegistration);
     const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::event.event") {
@@ -210,14 +214,12 @@ describe("registration service", () => {
 
           throw new Error(`Unexpected query uid: ${uid}`);
         }),
+        transaction: vi.fn((fn: () => unknown) => fn()),
       },
       service: vi.fn().mockReturnValue({ upsertByEmail }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
-    deliverInternalNotificationViaStrapi.mockResolvedValue({
+    deliverFn.mockResolvedValue({
       status: "sent",
       key: "event_registration",
       recipients: ["events@netas.com.tr"],
@@ -236,7 +238,7 @@ describe("registration service", () => {
           phone?: string;
           tckn: string;
         };
-      }) => Promise<typeof createdRegistration>;
+      }) => Promise<{ id: number; status: string; event: { documentId: string; title: string } }>;
     };
 
     await expect(
@@ -250,10 +252,16 @@ describe("registration service", () => {
           tckn: "*******8901",
         },
       }),
-    ).resolves.toEqual(createdRegistration);
+    ).resolves.toEqual({
+      id: 43,
+      status: "pending",
+      event: {
+        documentId: "evt_123",
+        title: "Demo Etkinlik",
+      },
+    });
 
-    expect(deliverInternalNotificationViaStrapi).toHaveBeenCalledWith(
-      strapi,
+    expect(deliverFn).toHaveBeenCalledWith(
       expect.objectContaining({
         key: "event_registration",
         payload: expect.objectContaining({
@@ -272,7 +280,7 @@ describe("registration service", () => {
     const registrationFindOne = vi.fn();
     const registrationCreate = vi.fn();
     const upsertByEmail = vi.fn();
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::event.event") {
@@ -288,12 +296,10 @@ describe("registration service", () => {
 
           throw new Error(`Unexpected query uid: ${uid}`);
         }),
+        transaction: vi.fn((fn: () => unknown) => fn()),
       },
       service: vi.fn().mockReturnValue({ upsertByEmail }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
     vi.stubGlobal("strapi", strapi);
 
@@ -323,23 +329,32 @@ describe("registration service", () => {
     expect(upsertByEmail).not.toHaveBeenCalled();
     expect(registrationFindOne).not.toHaveBeenCalled();
     expect(registrationCreate).not.toHaveBeenCalled();
-    expect(deliverInternalNotificationViaStrapi).not.toHaveBeenCalled();
+    expect(deliverFn).not.toHaveBeenCalled();
   });
 
-  it("keeps duplicate-registration behavior and does not create or notify", async () => {
-    const eventFindOne = vi.fn().mockResolvedValue({
+  it("keeps duplicate-registration behavior and returns idempotent success without creating", async () => {
+    const eventRecord = {
       id: 10,
       documentId: "evt_123",
       title: "Demo Etkinlik",
       slug: "demo-etkinlik",
       startsAt: "2026-04-22T09:00:00.000Z",
       keepRegistrationsOpen: true,
-    });
-    const registrationFindOne = vi.fn().mockResolvedValue({ id: 99 });
+      location: "Istanbul Campus",
+    };
+    const existingReg = {
+      id: 99,
+      status: "confirmed",
+      notes: null,
+      event: eventRecord,
+      student: { id: 20, firstName: "Ada", lastName: null, email: "ada@example.com", phone: null },
+    };
+    const eventFindOne = vi.fn().mockResolvedValue(eventRecord);
+    const registrationFindOne = vi.fn().mockResolvedValue(existingReg);
     const registrationCreate = vi.fn();
     const upsertByEmail = vi.fn().mockResolvedValue({ id: 20 });
 
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::event.event") {
@@ -355,13 +370,12 @@ describe("registration service", () => {
 
           throw new Error(`Unexpected query uid: ${uid}`);
         }),
+        transaction: vi.fn((fn: () => unknown) => fn()),
       },
       service: vi.fn().mockReturnValue({ upsertByEmail }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
+    deliverFn.mockResolvedValue(undefined);
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/registration/services/registration");
@@ -373,7 +387,7 @@ describe("registration service", () => {
           email: string;
           tckn: string;
         };
-      }) => Promise<unknown>;
+      }) => Promise<{ id: number; status: string; event: { documentId: string; title: string } }>;
     };
 
     await expect(
@@ -385,10 +399,25 @@ describe("registration service", () => {
           tckn: "12345678901",
         },
       }),
-    ).rejects.toThrow("Student is already registered for this event");
+    ).resolves.toEqual({
+      id: 99,
+      status: "confirmed",
+      event: {
+        documentId: "evt_123",
+        title: "Demo Etkinlik",
+      },
+    });
 
     expect(registrationCreate).not.toHaveBeenCalled();
-    expect(deliverInternalNotificationViaStrapi).not.toHaveBeenCalled();
+    expect(deliverFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        key: "event_registration",
+        payload: expect.objectContaining({
+          registrationId: 99,
+          status: "confirmed",
+        }),
+      }),
+    );
   });
 
   it("keeps closed-registration behavior and does not upsert, create, or notify", async () => {
@@ -404,7 +433,7 @@ describe("registration service", () => {
     const registrationCreate = vi.fn();
     const upsertByEmail = vi.fn();
 
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::event.event") {
@@ -420,12 +449,10 @@ describe("registration service", () => {
 
           throw new Error(`Unexpected query uid: ${uid}`);
         }),
+        transaction: vi.fn((fn: () => unknown) => fn()),
       },
       service: vi.fn().mockReturnValue({ upsertByEmail }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
     vi.stubGlobal("strapi", strapi);
 
@@ -455,6 +482,6 @@ describe("registration service", () => {
     expect(upsertByEmail).not.toHaveBeenCalled();
     expect(registrationFindOne).not.toHaveBeenCalled();
     expect(registrationCreate).not.toHaveBeenCalled();
-    expect(deliverInternalNotificationViaStrapi).not.toHaveBeenCalled();
+    expect(deliverFn).not.toHaveBeenCalled();
   });
 });

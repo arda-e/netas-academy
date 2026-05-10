@@ -3,7 +3,7 @@ import { errors } from "@strapi/utils";
 import { randomUUID } from "node:crypto";
 
 import { normalizeTcknValue, isValidTckn, maskTcknValue, hashTcknForStorage } from "../../../utils/tckn";
-import { deliverInternalNotificationViaStrapi } from "../../../services/internal-notifications/strapi-service";
+
 import { runSplCheck } from "../../../services/spl-check/service";
 import { resolveCourseApplicationOutcomeFromSplResult } from "../../../services/course-application/domain/course-application-status";
 import type { CourseApplicationNotificationPayload } from "../../../services/internal-notifications/types";
@@ -117,7 +117,8 @@ const notifyApplicationResult = async (
         : "course_application_submitted";
 
   try {
-    await deliverInternalNotificationViaStrapi(strapi, {
+    const deliverNotification = strapi.plugin("internal-notifications").service("deliverInternalNotification") as (envelope: any) => Promise<any>;
+    await deliverNotification({
       key: notificationKey,
       payload: toApplicationNotificationPayload(application, nextAction, paymentUrl),
     });

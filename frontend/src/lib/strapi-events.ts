@@ -1,6 +1,8 @@
 import type { StrapiEvent, StrapiEventType, StrapiEventSortOrder, StrapiListResponse, EventRegistrationStatus } from "./strapi-types";
 import { fetchStrapi } from "./strapi-client";
 
+const EVENTS_TAG = "strapi-events";
+
 export function normalizeEventType(
   value: string | null | undefined
 ): StrapiEventType | null {
@@ -32,18 +34,24 @@ export async function getEvents(
   try {
     const eventSort = sortOrder === "desc" ? "startsAt:desc" : "startsAt:asc";
 
+    const appliedEventType = eventType ? normalizeEventType(eventType) : null;
+
+    const eventTypeFilter = appliedEventType
+      ? `&filters[eventType][$eq]=${encodeURIComponent(appliedEventType)}`
+      : "";
+
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=topicArea&fields[9]=details&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea`
+      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=topicArea&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea${eventTypeFilter}`,
+      { next: { tags: [EVENTS_TAG] } }
     );
 
-    if (!eventType) {
-      return response.data;
-    }
-
-    return response.data.filter(
-      (event) => normalizeEventType(event.eventType) === eventType
-    );
-  } catch {
+    return response.data;
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'events',
+      function: 'getEvents',
+      message: `Error fetching events: ${error instanceof Error ? error.message : String(error)}`,
+    }));
     return [];
   }
 }
@@ -52,11 +60,16 @@ export async function getEventSlugs() {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
       '/api/events?pagination[pageSize]=100&sort[0]=startsAt:asc&fields[0]=slug',
-      { cache: 'force-cache' }
+      { next: { tags: [EVENTS_TAG] } }
     );
 
     return response.data.map((event) => event.slug);
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'events',
+      function: 'getEventSlugs',
+      message: `Error fetching event slugs: ${error instanceof Error ? error.message : String(error)}`,
+    }));
     return [];
   }
 }
@@ -65,24 +78,39 @@ export async function getEventBySlug(slug: string) {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
       `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=details&fields[9]=topicArea&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea`,
-      { cache: 'force-cache' }
+      { next: { tags: [EVENTS_TAG] } }
     );
 
     return response.data[0] ?? null;
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'events',
+      function: 'getEventBySlug',
+      message: `Error fetching event by slug: ${error instanceof Error ? error.message : String(error)}`,
+    }));
     return null;
   }
 }
 
+/**
+ * Registration status depends on the current wall-clock time
+ * (startsAt vs now()). Cannot be cached with force-cache.
+ */
 export async function getEventRegistrationStatus(
   documentId: string
 ): Promise<EventRegistrationStatus | null> {
   try {
     const data = await fetchStrapi<{ data: EventRegistrationStatus }>(
-      `/api/events/${documentId}/registration-status`
+      `/api/events/${documentId}/registration-status`,
+      { cache: "no-store" }
     );
     return data?.data ?? null;
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'events',
+      function: 'getEventRegistrationStatus',
+      message: `Error fetching event registration status: ${error instanceof Error ? error.message : String(error)}`,
+    }));
     return null;
   }
 }

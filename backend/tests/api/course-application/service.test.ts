@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const runSplCheck = vi.fn();
-const deliverInternalNotificationViaStrapi = vi.fn();
+const deliverFn = vi.fn();
 
 vi.mock("@strapi/strapi", () => ({
   factories: {
@@ -20,15 +20,26 @@ vi.mock("../../../src/services/spl-check/service", () => ({
   runSplCheck,
 }));
 
-vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
-  deliverInternalNotificationViaStrapi,
-}));
-
 describe("course-application service", () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllGlobals();
   });
+
+  function createStrapiMock(overrides: Record<string, unknown> = {}) {
+    return {
+      plugin: vi.fn((name: string) => {
+        if (name === "internal-notifications") {
+          return { service: vi.fn().mockReturnValue(deliverFn) };
+        }
+        return {};
+      }),
+      log: {
+        error: vi.fn(),
+      },
+      ...overrides,
+    };
+  }
 
   it("creates an application, maps an accepted SPL result, and resolves payment state", async () => {
     const events: string[] = [];
@@ -78,7 +89,7 @@ describe("course-application service", () => {
     });
     const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
 
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::course.course") {
@@ -103,10 +114,7 @@ describe("course-application service", () => {
 
         throw new Error(`Unexpected service uid: ${uid}`);
       }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
     runSplCheck.mockResolvedValue({
       provider: "sap_soap",
@@ -115,7 +123,7 @@ describe("course-application service", () => {
       rawResponse: "<Status>10</Status>",
     });
 
-    deliverInternalNotificationViaStrapi.mockResolvedValue({
+    deliverFn.mockResolvedValue({
       status: "sent",
       key: "course_payment_pending",
       recipients: ["ops@netas.com.tr"],
@@ -200,8 +208,7 @@ describe("course-application service", () => {
       tckn: "10000000146",
       courseDocumentId: "course_123",
     });
-    expect(deliverInternalNotificationViaStrapi).toHaveBeenCalledWith(
-      strapi,
+    expect(deliverFn).toHaveBeenCalledWith(
       expect.objectContaining({
         key: "course_payment_pending",
         payload: expect.objectContaining({
@@ -258,7 +265,7 @@ describe("course-application service", () => {
     const update = vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) =>
       data.status === "integration_pending" ? draftApplication : finalApplication,
     );
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::course.course") {
@@ -277,10 +284,7 @@ describe("course-application service", () => {
         }),
       },
       service: vi.fn().mockReturnValue({ upsertByEmail: vi.fn().mockResolvedValue(studentRecord) }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
     runSplCheck.mockResolvedValue({
       provider: "sap_soap",
@@ -288,7 +292,7 @@ describe("course-application service", () => {
       statusCode: "10",
       rawResponse: "<Status>10</Status>",
     });
-    deliverInternalNotificationViaStrapi.mockRejectedValue(new Error("SMTP timeout"));
+    deliverFn.mockRejectedValue(new Error("SMTP timeout"));
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/course-application/services/course-application");
@@ -350,7 +354,7 @@ describe("course-application service", () => {
       phone: "+90 555 111 2233",
     };
 
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::course.course") {
@@ -372,10 +376,7 @@ describe("course-application service", () => {
       service: vi.fn().mockReturnValue({
         upsertByEmail: vi.fn().mockResolvedValue(studentRecord),
       }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
     vi.stubGlobal("strapi", strapi);
 
@@ -420,7 +421,7 @@ describe("course-application service", () => {
       .mockResolvedValueOnce({ id: 99, activeApplicationKey: "10:20" });
     const create = vi.fn().mockRejectedValue(new Error("UNIQUE constraint failed: course_applications.active_application_key"));
 
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::course.course") {
@@ -440,10 +441,7 @@ describe("course-application service", () => {
       service: vi.fn().mockReturnValue({
         upsertByEmail: vi.fn().mockResolvedValue(studentRecord),
       }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
     vi.stubGlobal("strapi", strapi);
 
@@ -519,7 +517,7 @@ describe("course-application service", () => {
     });
     const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
 
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::course.course") {
@@ -538,10 +536,7 @@ describe("course-application service", () => {
         }),
       },
       service: vi.fn().mockReturnValue({ upsertByEmail }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
     runSplCheck.mockResolvedValue({
       provider: "sap_soap",
@@ -551,7 +546,7 @@ describe("course-application service", () => {
       errorReason: "SOAP response did not contain a Status value",
     });
 
-    deliverInternalNotificationViaStrapi.mockResolvedValue({
+    deliverFn.mockResolvedValue({
       status: "sent",
       key: "course_application_manual_review",
       recipients: ["ops@netas.com.tr"],
@@ -633,7 +628,7 @@ describe("course-application service", () => {
       return finalApplication;
     });
 
-    const strapi = {
+    const strapi = createStrapiMock({
       db: {
         query: vi.fn((uid: string) => {
           if (uid === "api::course.course") {
@@ -652,10 +647,7 @@ describe("course-application service", () => {
         }),
       },
       service: vi.fn().mockReturnValue({ upsertByEmail: vi.fn().mockResolvedValue(studentRecord) }),
-      log: {
-        error: vi.fn(),
-      },
-    };
+    });
 
     runSplCheck.mockResolvedValue({
       provider: "sap_soap",
@@ -664,7 +656,7 @@ describe("course-application service", () => {
       rawResponse: "<Status>42</Status>",
       errorReason: "Business status 42",
     });
-    deliverInternalNotificationViaStrapi.mockResolvedValue({
+    deliverFn.mockResolvedValue({
       status: "sent",
       key: "course_application_submitted",
       recipients: ["ops@netas.com.tr"],

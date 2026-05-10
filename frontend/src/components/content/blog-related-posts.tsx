@@ -3,6 +3,7 @@ import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import {
   getStrapiMediaAltText,
+  getStrapiMediaBlurDataUrl,
   getStrapiMediaUrl,
 } from "@/lib/strapi-media";
 import type { StrapiBlogPost } from "@/lib/strapi-types";
@@ -69,6 +70,7 @@ export function RelatedPostsSection({ relatedPosts }: RelatedPostsSectionProps) 
             className="bg-white"
             imageUrl={getStrapiMediaUrl(relatedPost.coverImage) ?? null}
             imageAlt={getStrapiMediaAltText(relatedPost.coverImage) ?? undefined}
+            blurDataURL={getStrapiMediaBlurDataUrl(relatedPost.coverImage) ?? undefined}
             meta={
               <RelatedPostMeta
                 publishedDate={relatedPost.publishedDate}

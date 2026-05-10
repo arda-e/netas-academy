@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { Download, Filter } from "lucide-react";
-import { ContentPageShell, SearchField } from "@/components/content";
+import { ContentPageShell, CourseListLoading, SearchField } from "@/components/content";
 import { CourseCatalogList } from "@/components/courses/course-catalog-list";
 import { getCourses } from "@/lib/strapi-courses";
 import {
@@ -8,20 +9,50 @@ import {
   resolveTopicFilter,
   buildTopicFilterHrefWithSearch,
   getTopicAreaLabel,
+  type TopicArea,
 } from "@/lib/content-taxonomy";
 import { join, normalizeKey } from "@/lib/testids";
-
-export const dynamic = "force-dynamic";
+import { cn } from "@/lib/utils"
 
 type EgitimlerPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
+async function CourseCatalogResults({
+  activeTopic,
+  search,
+}: {
+  activeTopic: TopicArea | "all";
+  search: string;
+}) {
+  const courses = await getCourses();
+
+  return (
+    <CourseCatalogList
+      activeTopic={activeTopic === "all" ? null : activeTopic}
+      search={search}
+      items={courses.map((course) => ({
+        id: course.documentId,
+        slug: course.slug,
+        title: course.title,
+        summary: course.summary,
+        description: course.description,
+        topicArea: course.topicArea,
+        level: course.level,
+        targetAudience: course.targetAudience,
+        businessValue: course.businessValue,
+        scopeSummary: course.scopeSummary,
+        outcomeBullets: course.outcomeBullets,
+        teacherName: course.teacher?.fullName ?? null,
+      }))}
+    />
+  );
+}
+
 export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps) {
   const params = await searchParams;
   const activeTopic = resolveTopicFilter(params.topic);
   const search = Array.isArray(params.search) ? params.search[0] ?? "" : params.search ?? "";
-  const courses = await getCourses();
 
   return (
     <ContentPageShell
@@ -85,11 +116,12 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
                   aria-current={isActive ? "page" : undefined}
                   data-testid={join("page", "egitimler", "filter", "topic", normalizeKey(area))}
                   href={href}
-                  className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
+                  className={cn(
+                    "cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm",
                     isActive
                       ? "border-[#009ca6] bg-[#009ca6] text-white shadow-sm"
                       : "border-border/70 bg-white/70 text-foreground/74 hover:border-[#009ca6] hover:bg-white/70 hover:text-[#009ca6]"
-                  }`}
+                  )}
                 >
                   {getTopicAreaLabel(area)}
                 </Link>
@@ -98,24 +130,9 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
           </div>
         </div>
 
-        <CourseCatalogList
-          activeTopic={activeTopic === "all" ? null : activeTopic}
-          search={search}
-          items={courses.map((course) => ({
-            id: course.documentId,
-            slug: course.slug,
-            title: course.title,
-            summary: course.summary,
-            description: course.description,
-            topicArea: course.topicArea,
-            level: course.level,
-            targetAudience: course.targetAudience,
-            businessValue: course.businessValue,
-            scopeSummary: course.scopeSummary,
-            outcomeBullets: course.outcomeBullets,
-            teacherName: course.teacher?.fullName ?? null,
-          }))}
-        />
+        <Suspense fallback={<CourseListLoading testId="loading.egitimler" />}>
+          <CourseCatalogResults activeTopic={activeTopic} search={search} />
+        </Suspense>
       </div>
     </ContentPageShell>
   );

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const deliverInternalNotificationViaStrapi = vi.fn();
+const deliverFn = vi.fn();
 
 vi.mock("@strapi/strapi", () => ({
   factories: {
@@ -12,10 +12,6 @@ vi.mock("@strapi/utils", () => ({
   errors: {
     ValidationError: class ValidationError extends Error {},
   },
-}));
-
-vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
-  deliverInternalNotificationViaStrapi,
 }));
 
 describe("contact-submission service", () => {
@@ -30,6 +26,12 @@ describe("contact-submission service", () => {
       db: {
         query: vi.fn().mockReturnValue({ create }),
       },
+      plugin: vi.fn((name: string) => {
+        if (name === "internal-notifications") {
+          return { service: vi.fn().mockReturnValue(deliverFn) };
+        }
+        return {};
+      }),
       log: {
         error: vi.fn(),
       },
@@ -54,7 +56,7 @@ describe("contact-submission service", () => {
       status: "new",
     };
     const strapi = createStrapiMock(submission);
-    deliverInternalNotificationViaStrapi.mockResolvedValue(undefined);
+    deliverFn.mockResolvedValue(undefined);
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
@@ -93,8 +95,7 @@ describe("contact-submission service", () => {
       },
     });
 
-    expect(deliverInternalNotificationViaStrapi).toHaveBeenCalledWith(
-      strapi,
+    expect(deliverFn).toHaveBeenCalledWith(
       expect.objectContaining({
         key: "lead_corporate_training",
         payload: expect.objectContaining({
@@ -123,7 +124,7 @@ describe("contact-submission service", () => {
       status: "new",
     };
     const strapi = createStrapiMock(submission);
-    deliverInternalNotificationViaStrapi.mockResolvedValue(undefined);
+    deliverFn.mockResolvedValue(undefined);
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
@@ -143,8 +144,7 @@ describe("contact-submission service", () => {
       }),
     ).resolves.toEqual(submission);
 
-    expect(deliverInternalNotificationViaStrapi).toHaveBeenCalledWith(
-      strapi,
+    expect(deliverFn).toHaveBeenCalledWith(
       expect.objectContaining({
         key: "lead_instructor_application",
         payload: expect.objectContaining({
@@ -171,7 +171,7 @@ describe("contact-submission service", () => {
       status: "new",
     };
     const strapi = createStrapiMock(submission);
-    deliverInternalNotificationViaStrapi.mockResolvedValue(undefined);
+    deliverFn.mockResolvedValue(undefined);
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
@@ -307,7 +307,7 @@ describe("contact-submission service", () => {
     ).rejects.toThrow("partnershipDetails must be at most 4000 characters");
 
     expect(strapi.create).not.toHaveBeenCalled();
-    expect(deliverInternalNotificationViaStrapi).not.toHaveBeenCalled();
+    expect(deliverFn).not.toHaveBeenCalled();
   });
 
   it("logs notification delivery error but does not fail lead persistence", async () => {
@@ -327,7 +327,7 @@ describe("contact-submission service", () => {
       status: "new",
     };
     const strapi = createStrapiMock(submission);
-    deliverInternalNotificationViaStrapi.mockRejectedValue(new Error("SMTP timeout"));
+    deliverFn.mockRejectedValue(new Error("SMTP timeout"));
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");

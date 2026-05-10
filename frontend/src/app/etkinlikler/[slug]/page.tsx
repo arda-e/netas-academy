@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
+import { RouteLoading } from "@/components/content";
 import { Button } from "@/components/ui/button";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { NewsletterSubscriptionForm } from "@/components/newsletter-subscription-form";
@@ -40,9 +42,9 @@ function EventInformationPanel({
         <p className="font-bold text-lg text-gray-700">{title}</p>
         <div className="space-y-0.5">
           <p className="font-bold text-gray-700">{formatEventDateTime(startsAt)}</p>
-          {endsAt ? <p className="font-bold text-gray-700">{formatEventDateTime(endsAt)}</p> : null}
+          {endsAt && <p className="font-bold text-gray-700">{formatEventDateTime(endsAt)}</p>}
         </div>
-        {location ? <p>{location}</p> : null}
+        {location && <p>{location}</p>}
       </div>
 
       {registrationOpen ? (
@@ -67,8 +69,6 @@ function EventInformationPanel({
     </aside>
   );
 }
-
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -101,8 +101,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.event-detail">
-      <section className="sticky top-[81px] border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
-        <div className="relative mx-auto flex min-h-[320px] w-full max-w-7xl items-end px-6 py-10 md:px-10 lg:px-12">
+      <section className="relative border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
+        <div className="relative mx-auto flex min-h-[360px] w-full max-w-7xl items-end px-6 py-10 sm:min-h-[400px] md:px-10 lg:px-12">
           <div className="absolute left-6 right-6 top-10 md:left-10 md:right-10 lg:left-12 lg:right-12">
             <SiteBreadcrumbs
               items={[
@@ -112,44 +112,41 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             />
           </div>
           <div className="max-w-3xl space-y-5">
-            <p className="text-sm font-medium uppercase tracking-[0.34em] text-white/88">
-              {event.course?.title ?? "Etkinlik"}
-            </p>
             <h1 className="text-balance text-4xl font-semibold tracking-tight text-white md:text-6xl">
               {event.title}
             </h1>
-            {event.summary ? (
+            {event.summary && (
               <p className="max-w-2xl text-lg leading-8 text-white/78">{event.summary}</p>
-            ) : null}
+            )}
           </div>
         </div>
       </section>
 
-      <section className="relative z-10 mx-auto w-full max-w-7xl bg-background px-4 py-14 md:px-10 md:py-18 lg:px-12">
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,0.72fr)_minmax(300px,0.42fr)]">
-          <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
-            {event.summary ? (
-              <div className="mb-8 pb-8 border-b border-white/8">
-                <p className="page-body-text">
-                  {event.summary}
-                </p>
-              </div>
-            ) : null}
-            <RichTextContent
-              content={event.details ?? "Bu etkinlik için detaylı içerik yakında eklenecek."}
+      <Suspense fallback={<RouteLoading testId="loading.event-detail" />}>
+        <section className="relative z-10 mx-auto w-full max-w-7xl bg-background px-4 py-14 md:px-10 md:py-18 lg:px-12">
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,0.72fr)_minmax(300px,0.42fr)]">
+            <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
+              {event.summary && (
+                <div className="mb-8 border-b border-white/8 pb-8">
+                  <p className="page-body-text">{event.summary}</p>
+                </div>
+              )}
+              <RichTextContent
+                content={event.details ?? "Bu etkinlik için detaylı içerik yakında eklenecek."}
+              />
+            </div>
+
+            <EventInformationPanel
+              title={event.title}
+              startsAt={event.startsAt}
+              endsAt={event.endsAt}
+              location={event.location}
+              slug={event.slug}
+              registrationOpen={registrationOpen}
             />
           </div>
-
-          <EventInformationPanel
-            title={event.title}
-            startsAt={event.startsAt}
-            endsAt={event.endsAt}
-            location={event.location}
-            slug={event.slug}
-            registrationOpen={registrationOpen}
-          />
-        </div>
-      </section>
+        </section>
+      </Suspense>
     </main>
   );
 }

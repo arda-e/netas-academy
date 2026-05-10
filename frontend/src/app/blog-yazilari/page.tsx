@@ -1,16 +1,17 @@
-import { ContentPageShell, BlogList, SearchField } from "@/components/content";
+import { Suspense } from "react";
+import { ContentPageShell, BlogList, BlogListLoading, SearchField } from "@/components/content";
 import { getBlogPosts } from "@/lib/strapi-blog";
-import { getStrapiMediaUrl, getStrapiMediaAltText } from "@/lib/strapi-media";
-
-export const dynamic = "force-dynamic";
+import {
+  getStrapiMediaAltText,
+  getStrapiMediaBlurDataUrl,
+  getStrapiMediaUrl,
+} from "@/lib/strapi-media";
 
 type BlogYazilariPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function BlogYazilariPage({ searchParams }: BlogYazilariPageProps) {
-  const params = await searchParams;
-  const search = Array.isArray(params.search) ? params.search[0] ?? "" : params.search ?? "";
+async function BlogResults({ search }: { search: string }) {
   const posts = await getBlogPosts(search);
 
   const mappedPosts = posts.map((post) => ({
@@ -20,9 +21,23 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
     excerpt: post.excerpt,
     publishedDate: post.publishedDate,
     authorName: post.author?.displayName ?? null,
-    coverImageUrl: getStrapiMediaUrl(post.coverImage),
+    coverImageUrl: getStrapiMediaUrl(post.coverImage, 'small'),
     coverImageAlt: getStrapiMediaAltText(post.coverImage) ?? undefined,
+    coverImageBlurDataURL: getStrapiMediaBlurDataUrl(post.coverImage) ?? undefined,
   }));
+
+  return (
+    <BlogList
+      items={mappedPosts}
+      emptyMessage="Aramanızla eşleşen blog yazısı bulunamadı."
+      testId="page.blog"
+    />
+  );
+}
+
+export default async function BlogYazilariPage({ searchParams }: BlogYazilariPageProps) {
+  const params = await searchParams;
+  const search = Array.isArray(params.search) ? params.search[0] ?? "" : params.search ?? "";
 
   return (
     <ContentPageShell
@@ -36,12 +51,14 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
       testId="page.blog"
     >
       <div className="space-y-4 sm:space-y-8">
-        <SearchField initialValue={search} searchOnly />
-        <BlogList
-          items={mappedPosts}
-          emptyMessage="Aramanızla eşleşen blog yazısı bulunamadı."
-          testId="page.blog"
+        <SearchField
+          initialValue={search}
+          searchOnly
+          expandedWidthClassName="lg:w-[560px]"
         />
+        <Suspense fallback={<BlogListLoading testId="loading.blog" />}>
+          <BlogResults search={search} />
+        </Suspense>
       </div>
     </ContentPageShell>
   );
