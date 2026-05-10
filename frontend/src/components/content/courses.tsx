@@ -27,6 +27,8 @@ type CourseListItem = {
 type CourseListProps = {
   items: CourseListItem[];
   emptyMessage?: string;
+  t_taxonomy?: (key: string) => string;
+  t_courses?: (key: string) => string;
 };
 
 type CourseDetailProps = {
@@ -41,6 +43,8 @@ type CourseDetailProps = {
 export function CourseList({
   items,
   emptyMessage = "Gösterilecek eğitim verisi şu an kullanılabilir değil.",
+  t_taxonomy,
+  t_courses,
 }: CourseListProps) {
   return (
     <ContentGrid
@@ -53,19 +57,33 @@ export function CourseList({
         const topicAreaNormalized = course.topicArea
           ? normalizeTopicArea(course.topicArea)
           : null;
-        const topicAreaLabel = topicAreaNormalized
-          ? getTopicAreaLabel(topicAreaNormalized)
-          : null;
+        const topicAreaLabel =
+          topicAreaNormalized && t_taxonomy
+            ? getTopicAreaLabel(topicAreaNormalized, t_taxonomy)
+            : null;
 
         const levelNormalized = course.level
           ? normalizeCourseLevel(course.level)
           : null;
-        const levelLabel = levelNormalized
-          ? getCourseLevelLabel(levelNormalized)
-          : null;
+        const levelLabel =
+          levelNormalized && t_taxonomy
+            ? getCourseLevelLabel(levelNormalized, t_taxonomy)
+            : null;
 
         const hasMeta =
           levelLabel || course.targetAudience || course.teacherName;
+
+        const noSummaryFallback = t_courses
+          ? t_courses("card.no_summary")
+          : "Bu kurs için özet yakında eklenecek.";
+
+        const audienceLabel = t_courses
+          ? t_courses("card.audience_label")
+          : "Kimler için:";
+
+        const teacherLabel = t_courses
+          ? t_courses("card.teacher_label")
+          : "Eğitmen:";
 
         return (
           <ContentCardShell
@@ -85,7 +103,7 @@ export function CourseList({
               <p className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
                 {course.businessValue ??
                   course.summary ??
-                  "Bu kurs için özet yakında eklenecek."}
+                  noSummaryFallback}
               </p>
             }
             className="bg-white"
@@ -94,13 +112,13 @@ export function CourseList({
                 <div className="space-y-2 text-sm leading-6 text-foreground/62 sm:text-base">
                   {course.targetAudience ? (
                     <p>
-                      <span className="font-medium text-foreground/78">Kimler için:</span>{" "}
+                      <span className="font-medium text-foreground/78">{audienceLabel}</span>{" "}
                       {course.targetAudience}
                     </p>
                   ) : null}
                   {course.teacherName ? (
                     <p>
-                      <span className="font-medium text-foreground/78">Eğitmen:</span>{" "}
+                      <span className="font-medium text-foreground/78">{teacherLabel}</span>{" "}
                       {course.teacherName}
                     </p>
                   ) : null}

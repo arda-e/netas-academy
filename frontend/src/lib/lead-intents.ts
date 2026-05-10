@@ -9,37 +9,50 @@ export const LEAD_TYPES = [
 
 export type LeadType = (typeof LEAD_TYPES)[number];
 
-/* ─── Zod schemas per lead type ─── */
+/* ─── Translation function type ─── */
 
-const baseSchema = z.object({
-  fullName: z.string().min(1, "Ad Soyad zorunludur"),
-  email: z.string().email("Geçerli bir e-posta adresi girin"),
-  phone: z.string().min(1, "Telefon numarası zorunludur"),
-  company: z.string().optional(),
-  message: z.string().min(1, "Mesaj alanı zorunludur"),
-  kvkkConsent: z.boolean().refine((val) => val === true, {
-    message: "KVKK metnini onaylamanız gerekmektedir",
-  }),
-});
+type TFunc = (key: string) => string;
 
-export const intentSchemas: Record<LeadType, z.ZodType> = {
-  corporate_training_request: baseSchema.extend({
-    interestTopic: z.string().min(1, "İlgi duyulan eğitim/konu zorunludur"),
-  }),
-  instructor_application: baseSchema.extend({
-    expertiseAreas: z.string().min(1, "Uzmanlık alanlarınız zorunludur"),
-  }),
-  solution_partner_application: baseSchema.extend({
-    companySize: z.string().min(1, "Şirket büyüklüğü zorunludur"),
-  }),
-  general_contact: baseSchema,
-};
+/* ─── Zod schemas per lead type (factored to accept t for dynamic locale) ─── */
 
-export function getSchemaForLeadType(leadType: LeadType): z.ZodType {
-  return intentSchemas[leadType];
+export function getIntentSchemas(t: TFunc): Record<LeadType, z.ZodType> {
+  const baseSchema = z.object({
+    fullName: z.string().min(1, t("contact.validation.full_name_required")),
+    email: z.string().email(t("contact.validation.email_invalid")),
+    phone: z.string().min(1, t("contact.validation.phone_required")),
+    company: z.string().optional(),
+    message: z.string().min(1, t("contact.validation.message_required")),
+    kvkkConsent: z.boolean().refine((val) => val === true, {
+      message: t("contact.validation.kvkk_required"),
+    }),
+  });
+
+  return {
+    corporate_training_request: baseSchema.extend({
+      interestTopic: z.string().min(1, t("contact.validation.interest_topic_required")),
+    }),
+    instructor_application: baseSchema.extend({
+      expertiseAreas: z.string().min(1, t("contact.validation.expertise_areas_required")),
+    }),
+    solution_partner_application: baseSchema.extend({
+      companySize: z.string().min(1, t("contact.validation.company_size_required")),
+    }),
+    general_contact: baseSchema,
+  };
 }
 
-export const LEAD_INTENTS: Record<
+export function getSchemaForLeadType(
+  t: TFunc,
+  leadType: LeadType
+): z.ZodType {
+  return getIntentSchemas(t)[leadType];
+}
+
+/* ─── Lead intent metadata (factored to accept t for dynamic locale) ─── */
+
+export function getLeadIntents(
+  t: TFunc
+): Record<
   LeadType,
   {
     label: string;
@@ -48,35 +61,33 @@ export const LEAD_INTENTS: Record<
     successCtaLabel?: string;
     successCtaHref?: string;
   }
-> = {
-  corporate_training_request: {
-    label: "Kurumsal Eğitim Talebi",
-    description:
-      "Ekibiniz için özelleştirilmiş eğitim programları talep edin.",
-    successMessage:
-      "Kurumsal eğitim talebiniz alınmıştır. Eğitim kataloğumuza göz atabilir veya ekibinizle iletişime geçeceğiz.",
-    successCtaLabel: "Eğitim Kataloğunu İncele",
-    successCtaHref: "/katalog",
-  },
-  instructor_application: {
-    label: "Eğitmen Başvurusu",
-    description: "Uzmanlık alanınızda eğitmen olarak başvurun.",
-    successMessage:
-      "Eğitmen başvurunuz alınmıştır. Uzmanlık alanınıza uygun fırsatlar için sizinle iletişime geçeceğiz.",
-  },
-  solution_partner_application: {
-    label: "Çözüm Ortağı Başvurusu",
-    description: "Çözüm ortaklığı için başvurun.",
-    successMessage:
-      "Çözüm ortaklığı başvurunuz alınmıştır. İş geliştirme ekibimiz sizinle iletişime geçecektir.",
-  },
-  general_contact: {
-    label: "Genel İletişim",
-    description: "Bize genel bir mesaj gönderin.",
-    successMessage:
-      "Mesajınız alınmıştır. En kısa sürede sizinle iletişime geçeceğiz.",
-  },
-};
+> {
+  return {
+    corporate_training_request: {
+      label: t("contact.tab.corporate"),
+      description:
+        "Ekibiniz için özelleştirilmiş eğitim programları talep edin.",
+      successMessage: t("contact.success.corporate"),
+      successCtaLabel: t("contact.success.corporate_cta"),
+      successCtaHref: "/katalog",
+    },
+    instructor_application: {
+      label: t("contact.tab.instructor"),
+      description: "Uzmanlık alanınızda eğitmen olarak başvurun.",
+      successMessage: t("contact.success.instructor"),
+    },
+    solution_partner_application: {
+      label: t("contact.tab.partner"),
+      description: "Çözüm ortaklığı için başvurun.",
+      successMessage: t("contact.success.partner"),
+    },
+    general_contact: {
+      label: t("contact.tab.general"),
+      description: "Bize genel bir mesaj gönderin.",
+      successMessage: t("contact.success.general"),
+    },
+  };
+}
 
 export function buildIntentLeadUrl(
   intent: LeadType,

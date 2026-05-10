@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,16 +41,17 @@ export function CourseCarousel({
   prevButtonTestId,
   nextButtonTestId,
 }: CourseCarouselProps) {
+  const t_taxonomy = useTranslations("taxonomy");
+  const t_common = useTranslations("common");
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-
-  // Calculate the scroll amount based on viewport width or a minimum threshold
-  const SCROLL_AMOUNT = Math.max(
-    scrollAreaRef.current?.clientWidth * 0.8 ?? 0,
-    320
-  );
 
   const handleScroll = (direction: "left" | "right") => {
     if (!scrollAreaRef.current) return;
+
+    const SCROLL_AMOUNT = Math.max(
+      (scrollAreaRef.current.clientWidth ?? 0) * 0.8,
+      320
+    );
 
     const delta = direction === "left" ? -SCROLL_AMOUNT : SCROLL_AMOUNT;
     scrollAreaRef.current.scroll({
@@ -74,7 +76,7 @@ export function CourseCarousel({
           type="button"
           size="icon-sm"
           variant="outline"
-          aria-label="Onceki egitimler"
+          aria-label={t_common("course_carousel.prev")}
           data-testid={prevButtonTestId}
           onClick={() => handleScroll("left")}
         >
@@ -85,7 +87,7 @@ export function CourseCarousel({
           type="button"
           size="icon-sm"
           variant="outline"
-          aria-label="Sonraki egitimler"
+          aria-label={t_common("course_carousel.next")}
           data-testid={nextButtonTestId}
           onClick={() => handleScroll("right")}
         >
@@ -113,12 +115,12 @@ export function CourseCarousel({
               <div className="flex flex-wrap gap-1.5">
                 {topicSlug && (
                   <Badge variant="secondary" className="text-[11px]">
-                    {getTopicAreaLabel(topicSlug)}
+                    {getTopicAreaLabel(topicSlug, t_taxonomy)}
                   </Badge>
                 )}
                 {levelSlug && (
                   <Badge variant="outline" className="text-[11px]">
-                    {getCourseLevelLabel(levelSlug)}
+                    {getCourseLevelLabel(levelSlug, t_taxonomy)}
                   </Badge>
                 )}
               </div>

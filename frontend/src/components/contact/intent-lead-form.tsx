@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import {
   useCallback,
   useEffect,
@@ -13,7 +14,7 @@ import { useForm } from "react-hook-form";
 
 import type { LeadType } from "@/lib/lead-intents";
 import {
-  LEAD_INTENTS,
+  getLeadIntents,
   LEAD_TYPES,
   buildIntentLeadUrl,
   getSchemaForLeadType,
@@ -68,6 +69,8 @@ type IntentLeadFormProps = {
 type FieldErrors = Partial<Record<keyof FormValues, string>>;
 
 export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFormProps) {
+  const t = useTranslations("contact");
+  const leadIntents = getLeadIntents(t);
   const [leadType, setLeadType] = useState<LeadType>(initialLeadType);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -101,7 +104,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     }
   }, [leadType]);
 
-  const schema = getSchemaForLeadType(leadType);
+  const schema = getSchemaForLeadType(t, leadType);
   const {
     register,
     getValues,
@@ -221,7 +224,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           const result = (await response.json().catch(() => null)) as unknown;
 
           if (!response.ok) {
-            const reason = getErrorMessage(result);
+            const reason = getErrorMessage(result, t);
             setErrorMessage(reason);
             emitLeadSubmitFail(leadType, reason);
             return;
@@ -232,13 +235,13 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           clearStorage();
           reset();
         } catch {
-          const reason = "Form gönderilemedi. Lütfen tekrar deneyin.";
+          const reason = t("contact.error.submit_failed");
           setErrorMessage(reason);
           emitLeadSubmitFail(leadType, reason);
         }
       });
     },
-    [leadType, reset, clearStorage]
+    [leadType, reset, clearStorage, t]
   );
 
   const handleFormSubmit = useCallback(
@@ -270,7 +273,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   );
 
   if (success) {
-    const intent = LEAD_INTENTS[leadType];
+    const intent = leadIntents[leadType];
     return (
       <div className="space-y-6" data-testid="contact-lead.success">
         <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100">
@@ -298,7 +301,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           className="h-12 rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg"
           data-testid="contact-lead.new-submission"
         >
-          Yeni Başvuru Yap
+          {t("contact.new_submission")}
         </Button>
       </div>
     );
@@ -330,7 +333,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
                   : "text-foreground/60 hover:text-foreground/80"
               }`}
             >
-              {LEAD_INTENTS[type].label}
+              {leadIntents[type].label}
             </button>
           );
         })}
@@ -345,8 +348,8 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       {/* Common fields */}
       <div className="grid gap-4 md:gap-6 md:grid-cols-2">
         <div className={fieldWrapperClassName}>
-          <label htmlFor="fullName" className={labelClassName}>
-            Ad Soyad*
+            <label htmlFor="fullName" className={labelClassName}>
+            {t("contact.field.full_name.label")}
           </label>
           <Input
             id="fullName"
@@ -361,8 +364,8 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         </div>
 
         <div className={fieldWrapperClassName}>
-          <label htmlFor="email" className={labelClassName}>
-            E-Posta*
+            <label htmlFor="email" className={labelClassName}>
+            {t("contact.field.email.label")}
           </label>
           <Input
             id="email"
@@ -376,8 +379,8 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         </div>
 
         <div className={fieldWrapperClassName}>
-          <label htmlFor="phone" className={labelClassName}>
-            Telefon*
+            <label htmlFor="phone" className={labelClassName}>
+            {t("contact.field.phone.label")}
           </label>
           <Input
             id="phone"
@@ -391,8 +394,8 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         </div>
 
         <div className={fieldWrapperClassName}>
-          <label htmlFor="company" className={labelClassName}>
-            Şirket
+            <label htmlFor="company" className={labelClassName}>
+            {t("contact.field.company.label")}
           </label>
           <Input
             id="company"
@@ -415,7 +418,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       {/* Message */}
       <div className={fieldWrapperClassName}>
         <label htmlFor="message" className={labelClassName}>
-          Mesajınız*
+          {t("contact.field.message.label")}
         </label>
         <Textarea
           id="message"
@@ -439,16 +442,16 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             data-testid="contact-lead.field.kvkk-consent"
           />
           <label htmlFor="kvkkConsent" className="cursor-pointer text-sm leading-6 text-muted-foreground">
-            Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır.{" "}
+            {t("contact.kvkk.text")}{" "}
             <Link
               href={`/kvkk?returnTo=${encodeURIComponent(kvkkReturnTo)}`}
               onClick={persistCurrentValues}
               className="text-primary transition-colors hover:text-primary/80"
               data-testid="contact-lead.link.kvkk-disclosure"
             >
-              Aydınlatma Metni
+              {t("contact.kvkk.link")}
             </Link>
-            &apos;ni okudum, onaylıyorum.*
+            {t("contact.kvkk.suffix")}
           </label>
         </div>
         {fieldErrors.kvkkConsent ? (
@@ -461,7 +464,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         <div className="flex-1" />
 
         <Button type="submit" disabled={isPending} className="h-12 w-full rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg" data-testid="contact-lead.submit">
-          {isPending ? "Gönderiliyor..." : "Gönder"}
+          {isPending ? t("contact.submit.pending") : t("contact.submit.idle")}
         </Button>
       </div>
     </form>
@@ -500,7 +503,7 @@ function normalizeFormValues(values: Partial<FormValues>): FormValues {
   };
 }
 
-function getErrorMessage(payload: unknown): string {
+function getErrorMessage(payload: unknown, t: (key: string) => string): string {
   if (
     payload &&
     typeof payload === "object" &&
@@ -515,18 +518,18 @@ function getErrorMessage(payload: unknown): string {
       message ===
       "leadType is required and must be one of: corporate_training_request, instructor_application, solution_partner_application, general_contact"
     ) {
-      return "Geçersiz başvuru türü. Lütfen sayfayı yenileyip tekrar deneyin.";
+      return t("contact.error.invalid_lead_type");
     }
     if (
       message ===
       "fullName, email, phone, and message are required"
     ) {
-      return "Lütfen zorunlu alanların tamamını doldurun.";
+      return t("contact.error.required_fields");
     }
     if (message === "kvkkConsent must be true") {
-      return "KVKK metnini onaylamanız gerekmektedir.";
+      return t("contact.error.kvkk_consent");
     }
     return message;
   }
-  return "Form gönderilemedi. Lütfen tekrar deneyin.";
+  return t("contact.error.submit_failed");
 }

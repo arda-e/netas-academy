@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
@@ -31,6 +32,8 @@ const mobileNavigationLinkInactiveClassName =
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const t = useTranslations('nav');
+  const ht = useTranslations('header');
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-2xl">
@@ -38,7 +41,7 @@ export function SiteHeader() {
         <Link
           href="/"
           className="flex items-center py-4"
-          aria-label="Netas Academy ana sayfası"
+          aria-label={ht('logo.aria_label')}
           data-testid="site-header.logo-link"
         >
           <Image
@@ -56,11 +59,11 @@ export function SiteHeader() {
           className="my-3 inline-flex items-center rounded-sm border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted/70 md:hidden"
           aria-expanded={isMobileMenuOpen}
           aria-controls="site-mobile-navigation"
-          aria-label={isMobileMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+          aria-label={isMobileMenuOpen ? ht('mobile_menu.toggle_label_close') : ht('mobile_menu.toggle_label_open')}
           data-testid="site-header.mobile-menu.toggle"
           onClick={() => setIsMobileMenuOpen((open) => !open)}
         >
-          Menü
+          {ht('mobile_menu.button_text')}
         </button>
 
         <nav className="hidden flex-wrap items-stretch justify-end gap-0 md:flex" data-testid="site-header.desktop-nav">
@@ -80,7 +83,7 @@ export function SiteHeader() {
                     : desktopNavigationLinkInactiveClassName
                 )}
               >
-                {item.label}
+                {t(item.routeKey)}
               </Link>
             );
           })}
@@ -115,7 +118,7 @@ export function SiteHeader() {
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {item.label}
+                {t(item.routeKey)}
               </Link>
             );
           })}

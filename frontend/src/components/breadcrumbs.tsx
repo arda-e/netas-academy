@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
@@ -24,12 +27,13 @@ export function SiteBreadcrumbs({
   variant = "light",
   className,
 }: SiteBreadcrumbsProps) {
+  const t = useTranslations('common');
   const allItems: BreadcrumbItem[] = [{ label: "Ana Sayfa", href: "/" }, ...items];
   const lastIndex = allItems.length - 1;
 
   return (
     <nav
-      aria-label="Sayfa yolu"
+      aria-label={t('common.breadcrumbs.aria_label')}
       data-testid="breadcrumbs.nav"
       className={cn(
         "text-xs font-semibold uppercase tracking-[0.22em]",

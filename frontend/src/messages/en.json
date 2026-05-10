@@ -1,0 +1,427 @@
+{
+  "site": {
+    "meta": {
+      "title": "Netas Academy",
+      "description": "Course, event, teacher, and editorial portal for Netas Academy."
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "events": "Events",
+    "courses": "Course Catalog",
+    "teachers": "Instructors",
+    "solution_partner": "Solution Partner",
+    "blog": "Blog",
+    "news": "News",
+    "contact": "Contact"
+  },
+  "header": {
+    "logo": {
+      "aria_label": "Netas Academy home page"
+    },
+    "mobile_menu": {
+      "toggle_label_open": "Open menu",
+      "toggle_label_close": "Close menu",
+      "button_text": "Menu"
+    }
+  },
+  "footer": {
+    "brand": {
+      "name": "Netas Academy",
+      "tagline": "Training, events and corporate development content."
+    },
+    "site_plan": {
+      "heading": "Site Plan",
+      "aria_label": "Site plan"
+    },
+    "legal": {
+      "aria_label": "Legal and corporate links",
+      "kvkk": "KVKK",
+      "netas_website": "Netaş Website"
+    }
+  },
+  "common": {
+    "carousel": {
+      "prev": "Previous content",
+      "next": "Next content"
+    },
+    "breadcrumbs": {
+      "aria_label": "Page path"
+    },
+    "search": {
+      "aria_label": "Search",
+      "placeholder": "Search..."
+    },
+    "teacher_carousel": {
+      "prev": "Previous instructors",
+      "next": "Next instructors"
+    },
+    "course_carousel": {
+      "prev": "Previous courses",
+      "next": "Next courses"
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "[EN] Netas Academy | Kurumsal Eğitim ve Hakkımızda",
+      "description": "[EN] Netaş Akademi'nin ana sayfası ve hakkımızda anlatısı tek bir akışta; kurumsal eğitim yaklaşımımızı, uygulamalı öğrenme modelimizi ve öne çıkan programlarımızı keşfedin."
+    },
+    "hero": {
+      "title": "Accelerate corporate transformation with field expertise.",
+      "description": "Netas Academy helps teams adapt to change faster by transforming technology knowledge and field experience into corporate learning.",
+      "cta_primary": "Discover More"
+    },
+    "about": {
+      "eyebrow": "About Us",
+      "heading": "[EN] Kurumsal dönüşümü öğrenme deneyimine çeviren tek sayfalık bir anlatı sunar.",
+      "body": "Programs shaped by Netas' technology and industry experience are redesigned according to each organization's needs. Our goal is not just to provide knowledge, but to instill a work culture that adapts to change more quickly.",
+      "cta_corporate": "Request Corporate Training",
+      "cta_catalog": "Browse Course Catalog",
+      "card_proven": {
+        "title": "Field-Proven",
+        "body": "Training content built from years of industry experience, spanning from theory to practice."
+      },
+      "card_custom": {
+        "title": "Tailored to Your Organization",
+        "body": "Flexible program structure and customizable content shaped to each organization's needs."
+      },
+      "card_transform": {
+        "title": "Transformation-Focused",
+        "body": "Programs that go beyond individual learning, strengthening team dynamics and enhancing collaboration."
+      },
+      "card_netas": {
+        "title": "Backed by Netas",
+        "body": "Corporate training programs transform technology and industry expertise into a learning model with real-world impact."
+      },
+      "card_applied": {
+        "title": "Applied Model",
+        "heading": "[EN] Gerçek iş problemleri üzerinden ilerleyen öğrenme tasarımı",
+        "body": "[EN] Vaka, senaryo ve etkileşimli çalışma biçimleriyle teori ve pratiği aynı akışta buluşturuyoruz. Katılımcıların öğrendiklerini kendi iş bağlamlarına taşımasını hedefliyoruz."
+      },
+      "card_impact": {
+        "title": "Training Impact",
+        "body": "The program targets faster adaptation, stronger teamwork, and measurable learning outcomes."
+      },
+      "card_flexible": {
+        "title": "Flexible Structure",
+        "body": "Open class, closed circuit, hybrid and remote formats can be reconfigured for the same corporate goal."
+      }
+    },
+    "teachers": {
+      "eyebrow": "Instructor Team",
+      "heading": "[EN] Saha deneyimi güçlü eğitmenlerimiz",
+      "body": "[EN] Eğitmenlerimiz yalnızca anlatıcı değil, sahada dönüşüm projelerinde yer almış uzmanlardır. Katılımcılara örnekler, yöntemler ve uygulanabilir çerçeveler sunarak kuram ile pratik arasındaki köprüyü birlikte kurar."
+    },
+    "courses": {
+      "eyebrow": "Featured Courses",
+      "heading": "[EN] Programlarımızı tek bir akışta keşfedin",
+      "body": "[EN] En güncel eğitim programlarımızı inceleyin. Her program, kurumların dönüşüm ihtiyaçlarına yanıt verecek şekilde yapılandırılır."
+    },
+    "contact_cta": {
+      "eyebrow": "Contact",
+      "heading": "[EN] Kurumsal eğitim ihtiyacınızı birlikte şekillendirelim",
+      "body": "[EN] Eğitim kapsamını, ekip yapınızı ve hedeflediğiniz çıktıları paylaşın. İhtiyacınıza uygun bir kurumsal program kurgulayalım.",
+      "button": "Corporate Training Request"
+    }
+  },
+  "courses": {
+    "meta": {
+      "not_found": "Course Not Found"
+    },
+    "hero": {
+      "title": "Course Catalog",
+      "description_strong": "[EN] Uzman eğitmenlerin hazırladığı programları",
+      "description_rest": "[EN] inceleyin, kurumunuza en uygun öğrenme yolunu seçin.",
+      "chip_corporate": "Corporate programs",
+      "chip_live": "Live sessions",
+      "chip_applied": "Applied learning",
+      "pdf_label": "Download Catalog PDF",
+      "pdf_status": "Coming soon"
+    },
+    "list": {
+      "empty": "No courses found matching these criteria.",
+      "empty_default": "Course data is currently unavailable."
+    },
+    "card": {
+      "no_summary": "[EN] Bu kurs için özet yakında eklenecek.",
+      "audience_label": "Target Audience:",
+      "teacher_label": "Instructor:"
+    },
+    "detail": {
+      "no_summary": "[EN] Kurumunuza uygun, uygulama odaklı ve detaylı eğitim içeriği.",
+      "teacher_label": "Instructor",
+      "breadcrumb": "Course Catalog",
+      "corporate_cta_label": "Request This Course for Your Organization",
+      "corporate_cta_sub": "Go to request form",
+      "section": {
+        "description": "Course Description",
+        "description_empty": "Detailed content for this course will be added soon.",
+        "business_value": "Business Value",
+        "business_value_empty": "Business value information for this course will be added soon.",
+        "outcomes": "Expected Outcomes",
+        "scope": "Scope and Content",
+        "related_events": "Related Events"
+      }
+    }
+  },
+  "events": {
+    "hero": {
+      "title": "Events",
+      "description_strong": "[EN] Yaklaşan buluşmaları, webinarları ve özel oturumları",
+      "description_rest": "[EN] takip edin; katılım için gerekli detaylara tek ekrandan ulaşın."
+    },
+    "filters": {
+      "type": {
+        "etkinlik": "Event",
+        "egitim": "Training",
+        "kurs": "Course"
+      }
+    },
+    "sort": {
+      "label_asc": "Newest first",
+      "label_desc": "Oldest first",
+      "aria_label_asc": "Sort: newest first",
+      "aria_label_desc": "Sort: oldest first",
+      "prefix": "Sort:"
+    },
+    "card": {
+      "summary_empty": "Description for this event will be added soon."
+    },
+    "list": {
+      "empty": "Event data is currently unavailable."
+    }
+  },
+  "event_reg": {
+    "field": {
+      "first_name": {
+        "label": "First Name*"
+      },
+      "last_name": {
+        "label": "Last Name*"
+      },
+      "email": {
+        "label": "Email*"
+      },
+      "phone": {
+        "label": "Phone"
+      },
+      "tckn": {
+        "label": "TCKN*",
+        "placeholder": "11-digit ID number"
+      },
+      "notes": {
+        "label": "Additional Notes",
+        "placeholder": "[EN] Katılım beklentiniz, kurumunuz veya iletmek istediginiz notlar..."
+      }
+    },
+    "kvkk": {
+      "law_reference": "Pursuant to Law No. 6698 on the Protection of Personal Data",
+      "link": "[EN] Aydınlatma Metni'ni",
+      "suffix": "I have read and understood."
+    },
+    "footer_note": "[EN] Kaydınız tamamlandığında durum bilgisi bu form üzerinde gösterilir. Gerekli durumlarda sizinle paylaştığınız iletişim bilgileri üzerinden iletişime geçilebilir.",
+    "error": {
+      "event_closed": "Registration for this event is closed. Registration closes automatically 24 hours before the event starts.",
+      "event_not_found": "Event not found.",
+      "invalid_tckn": "Please enter a valid TCKN.",
+      "kvkk_not_approved": "You must approve the KVKK disclosure statement.",
+      "unexpected": "An unexpected error occurred during registration.",
+      "request_failed": "Registration request could not be sent. Please try again."
+    },
+    "validation": {
+      "first_name_required": "First name is required.",
+      "last_name_required": "Last name is required.",
+      "kvkk_required": "Please confirm that you have read the KVKK disclosure statement."
+    },
+    "submit": {
+      "idle": "Complete Registration",
+      "pending": "Sending Registration..."
+    },
+    "success": {
+      "with_title": "Your registration for {title} has been received. Our team will contact you shortly."
+    }
+  },
+  "teachers": {
+    "hero": {
+      "title": "Our Instructors",
+      "description_strong": "[EN] Alanında uzman eğitmen kadromuzla",
+      "description_rest": "[EN] tanışın. Her biri saha deneyimini sınıfa taşıyan, sektörün önde gelen profesyonellerinden oluşan ekibimizle öğrenme yolculuğunuza yön verin."
+    },
+    "list": {
+      "empty": "No instructor profiles have been added yet."
+    }
+  },
+  "blog": {
+    "hero": {
+      "title": "Blog",
+      "description": "[EN] Sektörel bakış açıları, uygulama notları ve eğitim odaklı içgörülerle hazırlanan yazı arşivini keşfedin."
+    },
+    "list": {
+      "empty": "No blog posts matched your search."
+    },
+    "related_posts": {
+      "heading": "Related Posts",
+      "summary_empty": "Summary for this post will be added soon."
+    }
+  },
+  "news": {
+    "hero": {
+      "title": "News",
+      "description": "[EN] Akademi gündemini, yeni duyuruları ve öne çıkan gelişmeleri takip edebileceğiniz kurumsal haber alanı."
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Contact",
+      "breadcrumb": "Contact",
+      "description": "[EN] Eğitim kataloğu, etkinlikler ve kurumsal iş birlikleri hakkında bize yazın."
+    },
+    "tab": {
+      "corporate": "Corporate Training Request",
+      "instructor": "Instructor Application",
+      "partner": "Solution Partner Application",
+      "general": "General Contact"
+    },
+    "success": {
+      "corporate": "[EN] Kurumsal eğitim talebiniz alınmıştır. Eğitim kataloğumuza göz atabilir veya ekibinizle iletişime geçeceğiz.",
+      "corporate_cta": "Browse Course Catalog",
+      "instructor": "[EN] Eğitmen başvurunuz alınmıştır. Uzmanlık alanınıza uygun fırsatlar için sizinle iletişime geçeceğiz.",
+      "partner": "[EN] Çözüm ortaklığı başvurunuz alınmıştır. İş geliştirme ekibimiz sizinle iletişime geçecektir.",
+      "general": "[EN] Mesajınız alınmıştır. En kısa sürede sizinle iletişime geçeceğiz."
+    },
+    "field": {
+      "full_name": {
+        "label": "Full Name*"
+      },
+      "email": {
+        "label": "Email*"
+      },
+      "phone": {
+        "label": "Phone*"
+      },
+      "company": {
+        "label": "Company"
+      },
+      "message": {
+        "label": "Your Message*"
+      },
+      "interest_topic": {
+        "label": "Course/Topic of Interest*",
+        "placeholder": "e.g. Data Science, Leadership, Cybersecurity"
+      },
+      "expertise_areas": {
+        "label": "Areas of Expertise*",
+        "placeholder": "e.g. Python, Machine Learning, Deep Learning"
+      },
+      "company_size": {
+        "label": "Company Size*",
+        "placeholder": "e.g. 10-50, 50-100, 100+"
+      },
+      "partnership_details": {
+        "label": "Partnership Details",
+        "placeholder": "Briefly share your partnership motivation and expectations."
+      }
+    },
+    "kvkk": {
+      "text": "Your personal data is collected to contact you.",
+      "link": "Privacy Notice",
+      "suffix": "I have read and agree.*"
+    },
+    "submit": {
+      "idle": "Submit",
+      "pending": "Submitting..."
+    },
+    "new_submission": "New Submission",
+    "validation": {
+      "full_name_required": "Full name is required",
+      "email_invalid": "Please enter a valid email address",
+      "phone_required": "Phone number is required",
+      "message_required": "Message is required",
+      "kvkk_required": "You must accept the privacy notice",
+      "interest_topic_required": "Course/topic of interest is required",
+      "expertise_areas_required": "Areas of expertise are required",
+      "company_size_required": "Company size is required"
+    },
+    "error": {
+      "invalid_lead_type": "Invalid submission type. Please refresh the page and try again.",
+      "required_fields": "Please fill in all required fields.",
+      "kvkk_consent": "You must accept the privacy notice.",
+      "submit_failed": "Form could not be submitted. Please try again."
+    }
+  },
+  "solution_partner": {
+    "meta": {
+      "title": "Solution Partner | Netas Academy",
+      "description": "Apply to partner with Netas Academy in training, consulting, workshops, and sectoral expertise areas."
+    },
+    "hero": {
+      "title": "Solution Partnership",
+      "breadcrumb": "Solution Partnership"
+    },
+    "accordion": {
+      "heading": "Areas Where We Can Partner",
+      "training": {
+        "title": "Training Programs",
+        "body": "[EN] Kurumların ihtiyaçlarına göre şekillendirilen açık ve kapalı devre eğitim programlarının tasarımı ve uygulanması süreçlerinde iş birliği yapabiliriz."
+      },
+      "consulting": {
+        "title": "Consulting Services",
+        "body": "[EN] Kurumsal gelişim, organizasyonel dönüşüm ve insan kaynakları stratejileri alanlarında danışmanlık hizmetlerini birlikte yürütebiliriz."
+      },
+      "workshop": {
+        "title": "Workshops and Facilitation",
+        "body": "[EN] Takım çalıştayları, strateji atölyeleri ve yaratıcı problem çözme oturumlarının fasilitasyonu konusunda ortak çalışmalar gerçekleştirebiliriz."
+      },
+      "expertise": {
+        "title": "Sectoral / Topic-Based Expertise",
+        "body": "[EN] Belirli bir sektör veya konu alanındaki derin uzmanlığınızı Netaş Academy çatısı altında eğitim ve içerik programlarına dönüştürebiliriz."
+      }
+    },
+    "cta": {
+      "heading": "Let's Review Your Application",
+      "body": "[EN] Eğitim, danışmanlık, workshop veya sektörel uzmanlık alanlarında Netaş Academy ile olası iş birliği fikrinizi bizimle paylaşabilirsiniz.",
+      "button": "Solution Partner Application"
+    }
+  },
+  "kvkk": {
+    "back_button": "Go Back"
+  },
+  "newsletter": {
+    "field": {
+      "email": {
+        "label": "Your email address",
+        "placeholder": "Your email address"
+      }
+    },
+    "submit": {
+      "idle": "Subscribe",
+      "pending": "Submitting..."
+    },
+    "success": "Your subscription has been received. Thank you!",
+    "error": {
+      "generic": "An error occurred during subscription.",
+      "unexpected": "An unexpected error occurred."
+    }
+  },
+  "taxonomy": {
+    "topic": {
+      "siber_guvenlik": "Cybersecurity",
+      "yazilim_gelistirme": "Software Development",
+      "veri_bilimi": "Data Analytics",
+      "bulut_altyapi": "Cloud",
+      "is_surecleri": "Processes",
+      "yapay_zeka": "Artificial Intelligence"
+    },
+    "level": {
+      "temel": "Beginner",
+      "orta": "Intermediate",
+      "ileri": "Advanced"
+    },
+    "event_type": {
+      "etkinlik": "Event",
+      "egitim": "Training",
+      "kurs": "Course"
+    }
+  }
+}

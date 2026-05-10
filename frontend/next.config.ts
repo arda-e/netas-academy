@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const strapiUrl = process.env.STRAPI_URL ?? "http://127.0.0.1:1337";
 const mediaPublicUrl = process.env.MEDIA_PUBLIC_URL;
@@ -77,4 +78,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin();
+export default withNextIntl(nextConfig);
+
