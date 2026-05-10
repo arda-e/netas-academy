@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "iletisim_merkezi_confirmation_templates",
+  "info": {
+    "singularName": "confirmation-template",
+    "pluralName": "confirmation-templates",
+    "displayName": "Onay E-posta Şablonu",
+    "description": "Etkinlik kaydı sonrası otomatik gönderilen onay e-postası şablonu"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "htmlBody": {
+      "type": "text",
+      "required": true,
+      "default": ""
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}
