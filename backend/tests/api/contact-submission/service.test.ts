@@ -353,4 +353,46 @@ describe("contact-submission service", () => {
       }),
     );
   });
+
+  it("rejects with combined required-field message (no leadType prefix) when fullName is empty", async () => {
+    const strapi = createStrapiMock({});
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
+    const service = serviceModule.default as {
+      createSubmission: (input: Record<string, string>) => Promise<unknown>;
+    };
+
+    await expect(
+      service.createSubmission({
+        leadType: "general_contact",
+        fullName: "",
+        email: "a@b.com",
+        phone: "x",
+        message: "m",
+        kvkkConsent: true,
+      }),
+    ).rejects.toThrow("fullName, email, phone, and message are required");
+  });
+
+  it("rejects with combined required-field message when fullName is whitespace-only", async () => {
+    const strapi = createStrapiMock({});
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
+    const service = serviceModule.default as {
+      createSubmission: (input: Record<string, string>) => Promise<unknown>;
+    };
+
+    await expect(
+      service.createSubmission({
+        leadType: "general_contact",
+        fullName: "   ",
+        email: "a@b.com",
+        phone: "x",
+        message: "m",
+        kvkkConsent: true,
+      }),
+    ).rejects.toThrow("fullName, email, phone, and message are required");
+  });
 });

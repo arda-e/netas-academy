@@ -73,7 +73,7 @@ export default factories.createCoreService(
 
       if (!leadType || !fullName || !email || !phone || !message) {
         throw new ValidationError(
-          'leadType, fullName, email, phone, and message are required'
+          'fullName, email, phone, and message are required'
         );
       }
 

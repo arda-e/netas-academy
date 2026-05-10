@@ -17,9 +17,10 @@ type IntentFieldSectionsProps = {
   leadType: LeadType;
   register: UseFormRegister<IntentLeadFormValues>;
   errors: Record<string, string | undefined>;
+  onFieldFocus?: () => void;
 };
 
-export function IntentFieldSections({ leadType, register, errors }: IntentFieldSectionsProps) {
+export function IntentFieldSections({ leadType, register, errors, onFieldFocus }: IntentFieldSectionsProps) {
   switch (leadType) {
     case "corporate_training_request":
       return (
@@ -32,6 +33,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
             placeholder="Örn. Veri Bilimi, Liderlik, Siber Güvenlik"
             className={fieldClassName}
             {...register("interestTopic")}
+            onFocus={onFieldFocus}
             data-testid="contact-lead.field.interest-topic"
           />
           {errors.interestTopic && (
@@ -51,6 +53,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
             placeholder="Örn. Python, Makine Öğrenmesi, Derin Öğrenme"
             className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
             {...register("expertiseAreas")}
+            onFocus={onFieldFocus}
             data-testid="contact-lead.field.expertise-areas"
           />
           {errors.expertiseAreas && (
@@ -71,6 +74,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
               placeholder="Örn. 10-50, 50-100, 100+"
               className={fieldClassName}
               {...register("companySize")}
+              onFocus={onFieldFocus}
               data-testid="contact-lead.field.company-size"
             />
             {errors.companySize && (
@@ -86,6 +90,7 @@ export function IntentFieldSections({ leadType, register, errors }: IntentFieldS
               placeholder="Ortaklık motivasyonunuzu ve beklentilerinizi kısaca paylaşın."
               className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
               {...register("partnershipDetails")}
+              onFocus={onFieldFocus}
               data-testid="contact-lead.field.partnership-details"
             />
           </div>

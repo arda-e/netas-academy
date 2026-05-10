@@ -1,5 +1,8 @@
-export function formatError(message: string, status = 400): { error: string; status: number } {
-  return { error: message, status };
+export function formatError(
+  message: string,
+  status = 400
+): { error: { message: string }; status: number } {
+  return { error: { message }, status };
 }
 
 export function formatSuccess<T>(data: T): { data: T } {
@@ -9,7 +12,7 @@ export function formatSuccess<T>(data: T): { data: T } {
 export function validateBody(
   body: Record<string, unknown>,
   requiredFields: string[]
-): { error: string; status: number } | null {
+): { error: { message: string }; status: number } | null {
   for (const field of requiredFields) {
     const parts = field.split('.');
     let value: unknown = body;
@@ -19,7 +22,12 @@ export function validateBody(
       }
       value = (value as Record<string, unknown>)[part];
     }
-    if (value === null || value === undefined || value === '') {
+    if (
+      value === null ||
+      value === undefined ||
+      value === '' ||
+      (typeof value === 'string' && value.trim() === '')
+    ) {
       return formatError(`${field} is required`);
     }
   }

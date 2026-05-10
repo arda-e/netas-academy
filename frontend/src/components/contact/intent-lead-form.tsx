@@ -153,6 +153,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     if (previousLeadTypeRef.current === leadType) {
       return;
     }
+    const previousLeadType = previousLeadTypeRef.current;
     previousLeadTypeRef.current = leadType;
 
     reset({
@@ -168,8 +169,8 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       kvkkConsent: false,
     });
     hasEmittedStartRef.current = false;
-    clearStorage();
-  }, [leadType, reset, prefilledTopic, clearStorage]);
+    new FormStorage(`contact-form-${previousLeadType}`).clear();
+  }, [leadType, reset, prefilledTopic]);
 
   const kvkkReturnTo = buildIntentLeadUrl(
     leadType,
@@ -290,6 +291,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           variant="outline"
           onClick={() => {
             emitLeadRelatedContentClick(leadType);
+            hasEmittedStartRef.current = false;
             clearStorage();
             setSuccess(false);
           }}
@@ -407,6 +409,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         leadType={leadType}
         register={register}
         errors={getSectionErrors(fieldErrors, leadType)}
+        onFieldFocus={handleFieldInteraction}
       />
 
       {/* Message */}
@@ -519,6 +522,9 @@ function getErrorMessage(payload: unknown): string {
       "fullName, email, phone, and message are required"
     ) {
       return "Lütfen zorunlu alanların tamamını doldurun.";
+    }
+    if (message === "kvkkConsent must be true") {
+      return "KVKK metnini onaylamanız gerekmektedir.";
     }
     return message;
   }
