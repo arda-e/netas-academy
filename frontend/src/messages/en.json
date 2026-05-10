@@ -166,10 +166,20 @@
     }
   },
   "events": {
+    "meta": {
+      "not_found": "Event Not Found"
+    },
     "hero": {
       "title": "Events",
       "description_strong": "[EN] Yaklaşan buluşmaları, webinarları ve özel oturumları",
       "description_rest": "[EN] takip edin; katılım için gerekli detaylara tek ekrandan ulaşın."
+    },
+    "detail": {
+      "info_panel_heading": "Event Information",
+      "register_cta": "Register for Event",
+      "contact_cta": "Contact Us",
+      "registration_closed_notice": "Registration for this event is currently closed. Subscribe to our newsletter to be notified about new events.",
+      "content_empty": "Detailed content for this event will be added soon."
     },
     "filters": {
       "type": {

@@ -15,6 +15,7 @@ import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventDetailPageProps = {
   params: Promise<{
+    locale: string;
     slug: string;
   }>;
 };
@@ -26,6 +27,10 @@ function EventInformationPanel({
   location,
   slug,
   registrationOpen,
+  infoPanelHeading,
+  registerCta,
+  contactCta,
+  registrationClosedNotice,
 }: {
   title: string;
   startsAt: string;
@@ -33,11 +38,15 @@ function EventInformationPanel({
   location?: string | null;
   slug: string;
   registrationOpen: boolean;
+  infoPanelHeading: string;
+  registerCta: string;
+  contactCta: string;
+  registrationClosedNotice: string;
 }) {
   return (
     <aside className="panel-surface rounded-sm p-6 md:p-8" data-testid="page.event-detail.info-panel">
       <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
-        Etkinlik Bilgileri
+        {infoPanelHeading}
       </p>
       <div className="mt-5 space-y-4 text-base leading-7 text-foreground/78">
         <p className="font-bold text-lg text-gray-700">{title}</p>
@@ -51,16 +60,16 @@ function EventInformationPanel({
       {registrationOpen ? (
         <>
           <Button asChild className="mt-6 w-full rounded-sm" data-testid="page.event-detail.register-cta">
-            <Link href={`/etkinlikler/${slug}/kayit`}>Etkinliğe Kayıt Ol</Link>
+            <Link href={`/etkinlikler/${slug}/kayit`}>{registerCta}</Link>
           </Button>
           <Button asChild variant="outline" className="mt-3 w-full rounded-sm" data-testid="page.event-detail.contact-cta">
-            <Link href={buildIntentLeadUrl("general_contact")}>İletişime Geç</Link>
+            <Link href={buildIntentLeadUrl("general_contact")}>{contactCta}</Link>
           </Button>
         </>
       ) : (
         <div className="mt-6 space-y-4" data-testid="page.event-detail.registration-closed.notice">
           <p className="text-sm font-medium text-foreground/72">
-            Bu etkinliğin kayıtları şu an kapalı. Yeni etkinliklerden haberdar olmak için bültenimize abone olun.
+            {registrationClosedNotice}
           </p>
           <div data-testid="page.event-detail.registration-closed.newsletter">
             <NewsletterSubscriptionForm source="event_closed_registration" />
@@ -75,11 +84,12 @@ export async function generateMetadata({
   params,
 }: EventDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const t = await getTranslations("events");
   const event = await getEventBySlug(slug);
 
   if (!event) {
     return {
-      title: "Etkinlik Bulunamadı",
+      title: t("meta.not_found"),
     };
   }
 
@@ -134,7 +144,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                 </div>
               )}
               <RichTextContent
-                content={event.details ?? "Bu etkinlik için detaylı içerik yakında eklenecek."}
+                content={event.details ?? t("detail.content_empty")}
               />
             </div>
 
@@ -145,6 +155,10 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               location={event.location}
               slug={event.slug}
               registrationOpen={registrationOpen}
+              infoPanelHeading={t("detail.info_panel_heading")}
+              registerCta={t("detail.register_cta")}
+              contactCta={t("detail.contact_cta")}
+              registrationClosedNotice={t("detail.registration_closed_notice")}
             />
           </div>
         </section>

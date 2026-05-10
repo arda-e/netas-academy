@@ -166,10 +166,20 @@
     }
   },
   "events": {
+    "meta": {
+      "not_found": "Etkinlik Bulunamadı"
+    },
     "hero": {
       "title": "Etkinlikler",
       "description_strong": "Yaklaşan buluşmaları, webinarları ve özel oturumları",
       "description_rest": "takip edin; katılım için gerekli detaylara tek ekrandan ulaşın."
+    },
+    "detail": {
+      "info_panel_heading": "Etkinlik Bilgileri",
+      "register_cta": "Etkinliğe Kayıt Ol",
+      "contact_cta": "İletişime Geç",
+      "registration_closed_notice": "Bu etkinliğin kayıtları şu an kapalı. Yeni etkinliklerden haberdar olmak için bültenimize abone olun.",
+      "content_empty": "Bu etkinlik için detaylı içerik yakında eklenecek."
     },
     "filters": {
       "type": {

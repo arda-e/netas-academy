@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
@@ -34,6 +34,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const t = useTranslations('nav');
   const ht = useTranslations('header');
+  const locale = useLocale();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-2xl">
@@ -88,6 +89,35 @@ export function SiteHeader() {
             );
           })}
         </nav>
+
+        <div className="hidden items-center gap-0 border-l border-border/70 pl-4 md:flex" data-testid="site-header.locale-switcher">
+          <Link
+            href={pathname}
+            aria-label="Türkçe"
+            data-testid="site-header.locale-switcher.tr"
+            className={cn(
+              "rounded-l-sm px-2 py-1 text-sm font-medium transition-colors",
+              locale === 'tr'
+                ? "bg-primary/10 text-[#0f4c81]"
+                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+            )}
+          >
+            TR
+          </Link>
+          <Link
+            href={`/en${pathname}`}
+            aria-label="English"
+            data-testid="site-header.locale-switcher.en"
+            className={cn(
+              "rounded-r-sm px-2 py-1 text-sm font-medium transition-colors",
+              locale === 'en'
+                ? "bg-primary/10 text-[#0f4c81]"
+                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+            )}
+          >
+            EN
+          </Link>
+        </div>
       </div>
 
       <div

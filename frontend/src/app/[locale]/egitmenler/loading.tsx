@@ -1,16 +1,18 @@
 import { ContentPageShell, TeacherListLoading } from "@/components/content";
+import { getTranslations } from "next-intl/server";
 
-export default function EgitmenlerLoading() {
+export default async function EgitmenlerLoading() {
+  const t = await getTranslations("teachers");
+
   return (
     <ContentPageShell
       testId="page.egitmenler"
-      title="Eğitmenlerimiz"
+      title={t("hero.title")}
       descriptionClassName="max-w-3xl text-balance"
       description={
         <p>
-          <strong className="text-white">Alanında uzman eğitmen kadromuzla</strong>{" "}
-          tanışın. Her biri saha deneyimini sınıfa taşıyan, sektörün önde gelen
-          profesyonellerinden oluşan ekibimizle öğrenme yolculuğunuza yön verin.
+          <strong className="text-white">{t("hero.description_strong")}</strong>{" "}
+          {t("hero.description_rest")}
         </p>
       }
     >
