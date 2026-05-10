@@ -19,11 +19,11 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
-    "@strapi/plugin-cloud": "5.44.0",
-    "@strapi/plugin-users-permissions": "5.44.0",
-    "@strapi/provider-email-nodemailer": "^5.44.0",
-    "@strapi/provider-upload-aws-s3": "^5.44.0",
-    "@strapi/strapi": "5.44.0",
+    "@strapi/plugin-cloud": "5.45.0",
+    "@strapi/plugin-users-permissions": "5.45.0",
+    "@strapi/provider-email-nodemailer": "^5.45.0",
+    "@strapi/provider-upload-aws-s3": "^5.45.0",
+    "@strapi/strapi": "5.45.0",
     "better-sqlite3": "12.8.0",
     "fast-xml-parser": "^5.7.2",
     "react": "^18.0.0",
