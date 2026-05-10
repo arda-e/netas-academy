@@ -10,12 +10,12 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
-test("Page contains main message 'Eğitim ve danışmanlık alanında birlikte yeni değer üretelim'", () => {
+test("Page contains accordion heading 'Hangi Alanlarda Çözüm Ortaklığı Yapabiliriz'", () => {
   const source = readSource("app/cozum-ortagi/page.tsx");
   assert.match(
     source,
-    /Eğitim ve danışmanlık alanında birlikte yeni değer üretelim/i,
-    "Page should contain the main collaboration value message"
+    /Hangi Alanlarda Çözüm Ortaklığı Yapabiliriz/i,
+    "Page should contain the accordion section heading"
   );
 });
 

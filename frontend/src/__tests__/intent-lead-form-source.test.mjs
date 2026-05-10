@@ -135,3 +135,63 @@ test("submitted payload includes leadType and excludes frontend-only attribution
     "payload must not include contextSlug"
   );
 });
+
+test("contact form persistence subscribes to field changes after restore", () => {
+  const source = readSource("components/contact/intent-lead-form.tsx");
+
+  assert.match(
+    source,
+    /const subscription\s*=\s*watch\(\(values\)\s*=>\s*\{[\s\S]*persistValues\(normalizeFormValues\(values as Partial<FormValues>\)\)/,
+    "form should persist from a watch subscription instead of render-time watched values"
+  );
+  assert.match(
+    source,
+    /return \(\) => subscription\.unsubscribe\(\)/,
+    "form should clean up the watch subscription"
+  );
+  assert.doesNotMatch(
+    source,
+    /const watchedValues\s*=\s*watch\(\)/,
+    "form should not persist render-time watch() values because that can overwrite restored storage"
+  );
+});
+
+test("KVKK disclosure link preserves current form state and return intent", () => {
+  const source = readSource("components/contact/intent-lead-form.tsx");
+
+  assert.match(
+    source,
+    /const persistCurrentValues\s*=\s*useCallback\(\(\)\s*=>\s*\{[\s\S]*persistValues\(getValues\(\)\)/,
+    "KVKK link should synchronously persist current form values before navigation"
+  );
+  assert.match(
+    source,
+    /href=\{`\/kvkk\?returnTo=\$\{encodeURIComponent\(kvkkReturnTo\)\}`\}/,
+    "KVKK link should include a returnTo URL"
+  );
+  assert.match(
+    source,
+    /onClick=\{persistCurrentValues\}/,
+    "KVKK link should save current values on click"
+  );
+});
+
+test("contact form only clears storage on real lead type changes", () => {
+  const source = readSource("components/contact/intent-lead-form.tsx");
+
+  assert.match(
+    source,
+    /previousLeadTypeRef\s*=\s*useRef<LeadType>\(leadType\)/,
+    "form should track the previous lead type"
+  );
+  assert.match(
+    source,
+    /if\s*\(previousLeadTypeRef\.current === leadType\)\s*\{[\s\S]*return;[\s\S]*\}[\s\S]*previousLeadTypeRef\.current = leadType;[\s\S]*clearStorage\(\)/,
+    "form should clear storage only after the lead type actually changes"
+  );
+  assert.doesNotMatch(
+    source,
+    /mountedRef/,
+    "form should not use mount state to decide tab resets because route back can replay effects"
+  );
+});

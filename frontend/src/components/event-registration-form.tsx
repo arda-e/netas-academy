@@ -35,16 +35,19 @@ export function EventRegistrationForm({
     handleChange,
     handleSubmit,
     requiresKvkkConsent,
+    requiresTckn,
   } = useEventRegistrationForm({ eventDocumentId, eventTitle, eventType });
+
+  if (successMessage) {
+    return (
+      <div className="rounded-sm border border-border/70 bg-card/55 px-5 py-4 text-base text-foreground" data-testid="event-registration.success">
+        {successMessage}
+      </div>
+    );
+  }
 
   return (
     <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit} data-testid="event-registration.form">
-      {successMessage ? (
-        <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100" data-testid="event-registration.success">
-          {successMessage}
-        </div>
-      ) : null}
-
       {errorMessage ? (
         <div className="rounded-sm border border-destructive/40 bg-destructive/10 px-5 py-4 text-base text-destructive" data-testid="event-registration.error">
           {errorMessage}
@@ -113,25 +116,27 @@ export function EventRegistrationForm({
           />
         </div>
 
-        <div className={`${fieldWrapperClassName} md:col-span-2`}>
-          <label htmlFor="tckn" className={labelClassName}>
-            TCKN*
-          </label>
-          <Input
-            id="tckn"
-            name="tckn"
-            type="text"
-            inputMode="numeric"
-            autoComplete="off"
-            maxLength={11}
-            value={values.tckn}
-            onChange={handleChange}
-            className={fieldClassName}
-            required
-            placeholder="11 haneli kimlik numarası"
-            data-testid="event-registration.field.tckn"
-          />
-        </div>
+        {requiresTckn ? (
+          <div className={`${fieldWrapperClassName} md:col-span-2`}>
+            <label htmlFor="tckn" className={labelClassName}>
+              TCKN*
+            </label>
+            <Input
+              id="tckn"
+              name="tckn"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              maxLength={11}
+              value={values.tckn}
+              onChange={handleChange}
+              className={fieldClassName}
+              required
+              placeholder="11 haneli kimlik numarası"
+              data-testid="event-registration.field.tckn"
+            />
+          </div>
+        ) : null}
       </div>
 
       <div className={fieldWrapperClassName}>
