@@ -1,13 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
 export function KvkkBackButton() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   function handleBack() {
+    const returnTo = searchParams.get("returnTo");
+    if (returnTo?.startsWith("/") && !returnTo.startsWith("//")) {
+      router.push(returnTo);
+      return;
+    }
+
     try {
       const referrer = document.referrer;
       if (referrer && new URL(referrer).origin === window.location.origin) {

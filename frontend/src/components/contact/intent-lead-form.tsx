@@ -12,7 +12,12 @@ import {
 import { useForm } from "react-hook-form";
 
 import type { LeadType } from "@/lib/lead-intents";
-import { LEAD_INTENTS, LEAD_TYPES, getSchemaForLeadType } from "@/lib/lead-intents";
+import {
+  LEAD_INTENTS,
+  LEAD_TYPES,
+  buildIntentLeadUrl,
+  getSchemaForLeadType,
+} from "@/lib/lead-intents";
 import { FormStorage } from "@/lib/form-storage";
 import { useFormPersistence } from "@/hooks/use-form-persistence";
 import {
@@ -69,7 +74,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [isPending, startTransition] = useTransition();
   const hasEmittedStartRef = useRef(false);
-  const mountedRef = useRef(false);
+  const previousLeadTypeRef = useRef<LeadType>(leadType);
 
   const { save: persistValues, clear: clearStorage } =
     useFormPersistence<FormValues>(`contact-form-${leadType}`, {
@@ -142,12 +147,14 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Reset form when switching tabs (skip on initial mount)
+  // Reset form only when switching tabs. Route back/forward can remount or
+  // replay effects without a real lead type change, so do not key this to mount.
   useEffect(() => {
-    if (!mountedRef.current) {
-      mountedRef.current = true;
+    if (previousLeadTypeRef.current === leadType) {
       return;
     }
+    previousLeadTypeRef.current = leadType;
+
     reset({
       fullName: "",
       email: "",
@@ -162,13 +169,26 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     });
     hasEmittedStartRef.current = false;
     clearStorage();
-  }, [leadType, reset, prefilledTopic]);
+  }, [leadType, reset, prefilledTopic, clearStorage]);
 
-  // Persist form values to sessionStorage on every change
-  const watchedValues = watch();
+  const kvkkReturnTo = buildIntentLeadUrl(
+    leadType,
+    prefilledTopic ? { topic: prefilledTopic } : undefined
+  );
+
+  // Persist only after real form changes so the first render cannot overwrite
+  // restored sessionStorage values with empty defaults.
   useEffect(() => {
-    persistValues(watchedValues as FormValues);
-  }, [watchedValues, persistValues]);
+    const subscription = watch((values) => {
+      persistValues(normalizeFormValues(values as Partial<FormValues>));
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, persistValues]);
+
+  const persistCurrentValues = useCallback(() => {
+    persistValues(getValues());
+  }, [getValues, persistValues]);
 
   const onSubmit = useCallback(
     (data: FormValues) => {
@@ -217,7 +237,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         }
       });
     },
-    [leadType, reset]
+    [leadType, reset, clearStorage]
   );
 
   const handleFormSubmit = useCallback(
@@ -417,7 +437,12 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           />
           <label htmlFor="kvkkConsent" className="cursor-pointer text-sm leading-6 text-muted-foreground">
             Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır.{" "}
-            <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80" data-testid="contact-lead.link.kvkk-disclosure">
+            <Link
+              href={`/kvkk?returnTo=${encodeURIComponent(kvkkReturnTo)}`}
+              onClick={persistCurrentValues}
+              className="text-primary transition-colors hover:text-primary/80"
+              data-testid="contact-lead.link.kvkk-disclosure"
+            >
               Aydınlatma Metni
             </Link>
             &apos;ni okudum, onaylıyorum.*
@@ -426,13 +451,6 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         {fieldErrors.kvkkConsent ? (
           <p className="pl-7 text-sm text-destructive">{fieldErrors.kvkkConsent}</p>
         ) : null}
-        <div className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-          Kişisel verilerinizin işlenmesi ile ilgili Aydınlatma Metnine{" "}
-          <Link href="/kvkk" className="text-primary transition-colors hover:text-primary/80">
-            buradan
-          </Link>{" "}
-          erişebilirsiniz.
-        </div>
       </div>
 
       {/* Submit Button */}
@@ -462,6 +480,21 @@ function getSectionErrors(
     result[field] = errors[field];
   }
   return result;
+}
+
+function normalizeFormValues(values: Partial<FormValues>): FormValues {
+  return {
+    fullName: values.fullName ?? "",
+    email: values.email ?? "",
+    phone: values.phone ?? "",
+    company: values.company ?? "",
+    message: values.message ?? "",
+    interestTopic: values.interestTopic ?? "",
+    expertiseAreas: values.expertiseAreas ?? "",
+    companySize: values.companySize ?? "",
+    partnershipDetails: values.partnershipDetails ?? "",
+    kvkkConsent: values.kvkkConsent ?? false,
+  };
 }
 
 function getErrorMessage(payload: unknown): string {

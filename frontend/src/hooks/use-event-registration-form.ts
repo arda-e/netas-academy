@@ -79,6 +79,9 @@ export function useEventRegistrationForm({
 
   // KVKK consent is required only for egitim/kurs events, not etkinlik
   const requiresKvkkConsent = eventType === "egitim" || eventType === "kurs";
+
+  // TCKN is required only for egitim/kurs events, not etkinlik
+  const requiresTckn = eventType !== "etkinlik";
   const [values, setValues] = useState<EventRegistrationValues>(() => {
     const saved = load();
     return saved ?? initialValues;
@@ -129,9 +132,9 @@ export function useEventRegistrationForm({
       return;
     }
 
-    const normalizedTckn = normalizeTcknValue(values.tckn);
+    const normalizedTckn = requiresTckn ? normalizeTcknValue(values.tckn) : "";
 
-    if (!isValidTckn(normalizedTckn)) {
+    if (requiresTckn && !isValidTckn(normalizedTckn)) {
       setErrorMessage("Gecerli bir TCKN girin.");
       setIsSubmitting(false);
       return;
@@ -156,7 +159,7 @@ export function useEventRegistrationForm({
             lastName: values.lastName.trim(),
             email: values.email.trim(),
             phone: values.phone.trim(),
-            tckn: normalizedTckn,
+            ...(requiresTckn ? { tckn: normalizedTckn } : {}),
           },
           notes: values.notes.trim() || undefined,
           kvkkConsent: values.kvkkConsent,
@@ -190,5 +193,6 @@ export function useEventRegistrationForm({
     handleChange,
     handleSubmit,
     requiresKvkkConsent,
+    requiresTckn,
   };
 }
