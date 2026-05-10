@@ -765,6 +765,8 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    autoConfirmationEnabled: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -780,6 +782,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;
     location: Schema.Attribute.String;
+    meetingLink: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     registrations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1151,6 +1154,41 @@ export interface PluginI18NLocale extends Struct.CollectionTypeSchema {
         },
         number
       >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface PluginIletisimMerkeziConfirmationTemplate
+  extends Struct.SingleTypeSchema {
+  collectionName: 'iletisim_merkezi_confirmation_templates';
+  info: {
+    description: 'Etkinlik kayd\u0131 sonras\u0131 otomatik g\u00F6nderilen onay e-postas\u0131 \u015Fablonu';
+    displayName: 'Onay E-posta \u015Eablonu';
+    pluralName: 'confirmation-templates';
+    singularName: 'confirmation-template';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    enabled: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<true>;
+    htmlBody: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<''>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::iletisim-merkezi.confirmation-template'
+    > &
+      Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1545,6 +1583,7 @@ declare module '@strapi/strapi' {
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
+      'plugin::iletisim-merkezi.confirmation-template': PluginIletisimMerkeziConfirmationTemplate;
       'plugin::review-workflows.workflow': PluginReviewWorkflowsWorkflow;
       'plugin::review-workflows.workflow-stage': PluginReviewWorkflowsWorkflowStage;
       'plugin::upload.file': PluginUploadFile;

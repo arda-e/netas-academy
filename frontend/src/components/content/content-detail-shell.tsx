@@ -10,9 +10,11 @@ import { join } from "@/lib/testids";
 type ContentDetailShellProps = {
   breadcrumbItems?: BreadcrumbItem[];
   leadMedia?: ReactNode;
-  eyebrow?: string;
   title: string;
   summary?: string;
+  titleClassName?: string;
+  headerMeta?: ReactNode;
+  headerClassName?: string;
   meta?: ReactNode;
   children?: ReactNode;
   afterContent?: ReactNode;
@@ -23,9 +25,11 @@ type ContentDetailShellProps = {
 export function ContentDetailShell({
   breadcrumbItems,
   leadMedia,
-  eyebrow,
   title,
   summary,
+  titleClassName,
+  headerMeta,
+  headerClassName,
   meta,
   children,
   afterContent,
@@ -38,14 +42,14 @@ export function ContentDetailShell({
   const hasBody = Boolean(children);
   const hasSkeleton = Boolean(skeleton);
 
-  const bodyContent = hasBody ? (
+  const bodyContent = hasBody && (
     <div
       className="prose prose-invert max-w-none whitespace-pre-wrap text-base leading-7 prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary prose-li:text-foreground/80 sm:leading-8"
       data-testid={testId && join(testId, "body")}
     >
       {children}
     </div>
-  ) : null;
+  );
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid={testId}>
@@ -58,6 +62,7 @@ export function ContentDetailShell({
 
         <header
           className={cn(
+            headerClassName,
             hasLeadMedia &&
               "flex flex-col gap-5 sm:gap-8 md:flex-row md:items-start md:gap-10",
           )}
@@ -72,17 +77,11 @@ export function ContentDetailShell({
           )}
 
           <div className="max-w-3xl space-y-3 sm:space-y-4">
-            {eyebrow && (
-              <p
-                className="text-sm font-semibold uppercase tracking-[0.34em] text-primary/76"
-                data-testid={testId && join(testId, "eyebrow")}
-              >
-                {eyebrow}
-              </p>
-            )}
-
             <h1
-              className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-6xl"
+              className={cn(
+                "text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-6xl",
+                titleClassName,
+              )}
               data-testid={testId && join(testId, "title")}
             >
               {title}
@@ -95,6 +94,15 @@ export function ContentDetailShell({
               >
                 {summary}
               </p>
+            )}
+
+            {headerMeta && (
+              <div
+                className="space-y-4 pt-2 text-sm text-foreground/72 sm:text-base"
+                data-testid={testId && join(testId, "header-meta")}
+              >
+                {headerMeta}
+              </div>
             )}
           </div>
         </header>

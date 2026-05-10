@@ -7,12 +7,7 @@ import { ContentPageShell, RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { getCourseBySlug } from "@/lib/strapi-courses";
-import {
-  normalizeTopicArea,
-  getTopicAreaLabel,
-  normalizeCourseLevel,
-  getCourseLevelLabel,
-} from "@/lib/content-taxonomy";
+import { normalizeCourseLevel, getCourseLevelLabel } from "@/lib/content-taxonomy";
 import { join } from "@/lib/testids";
 import { formatEventDateTime } from "@/lib/date-formatting";
 
@@ -25,15 +20,6 @@ function parseOutcomeBullets(value?: string | null) {
     .split(/[\n;]+/)
     .map((item) => item.trim())
     .filter(Boolean);
-}
-
-function getCourseEyebrow(course: NonNullable<Awaited<ReturnType<typeof getCourseBySlug>>>) {
-  if (!course.topicArea) {
-    return course.teacher?.fullName ?? undefined;
-  }
-
-  const topicArea = normalizeTopicArea(course.topicArea);
-  return topicArea ? getTopicAreaLabel(topicArea) : course.teacher?.fullName ?? undefined;
 }
 
 function getCourseLevel(course: NonNullable<Awaited<ReturnType<typeof getCourseBySlug>>>) {
@@ -78,7 +64,6 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   }
 
   const outcomeBullets = parseOutcomeBullets(course.outcomeBullets);
-  const topicAreaLabel = getCourseEyebrow(course);
   const levelLabel = getCourseLevel(course);
 
   return (
@@ -88,7 +73,6 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         { label: "Eğitim Kataloğu", href: "/egitimler" },
         { label: course.title },
       ]}
-      eyebrow={topicAreaLabel}
       title={course.title}
       description={
         <div className="flex w-full flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
@@ -112,7 +96,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                 {course.targetAudience && <span>{course.targetAudience}</span>}
               </div>
               {course.teacher && (
-                <p>
+                <p className="mt-3 sm:mt-4">
                   <span className="font-medium text-white/86">Eğitmen:</span>{" "}
                   <Link
                     className="font-medium text-white underline decoration-white/28 decoration-2 underline-offset-4 transition-colors hover:text-white/90"

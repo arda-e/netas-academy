@@ -68,58 +68,62 @@ export default async function TeacherDetailPage({
       leadMedia={<TeacherProfilePhoto teacher={teacher} />}
       title={teacher.fullName}
       summary={teacher.headline ?? undefined}
+      headerClassName="mt-6 sm:mt-8"
+      titleClassName="text-xl sm:text-2xl lg:text-4xl"
+      headerMeta={
+        <div className="space-y-4">
+          {teacher.expertiseAreas?.length && (
+            <div
+              className="flex flex-wrap gap-2"
+              data-testid="page.teacher-detail.section.expertise-areas"
+            >
+              {teacher.expertiseAreas.map((area) => (
+                <span
+                  key={area}
+                  className="inline-flex items-center rounded-full border border-[#009ca6]/30 bg-[#009ca6]/10 px-3 py-1 text-sm font-medium text-[#009ca6]"
+                >
+                  {area}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      }
     >
       <Suspense fallback={<RouteLoading testId="loading.teacher-detail" />}>
         <div className="max-w-3xl space-y-5 sm:space-y-6">
-          {teacher.email ? (
-            <DetailSection title="E-posta">
-              <a
-                href={`mailto:${teacher.email}`}
-                data-testid="page.teacher-detail.email"
-                className="break-all text-[15px] leading-7 text-primary hover:underline sm:text-base sm:leading-8"
-              >
-                {teacher.email}
-              </a>
-            </DetailSection>
-          ) : null}
-
-          {teacher.expertiseAreas?.length ? (
+          {teacher.bio ? (
             <DetailSection
-              title="Uzmanlık Alanları"
-              testId="page.teacher-detail.section.expertise-areas"
+              title="Hakkında"
+              testId="page.teacher-detail.section.bio"
             >
-              <div className="flex flex-wrap gap-2">
-                {teacher.expertiseAreas.map((area) => (
-                  <span
-                    key={area}
-                    className="inline-flex items-center rounded-full border border-[#009ca6]/30 bg-[#009ca6]/10 px-3 py-1 text-sm font-medium text-[#009ca6]"
-                  >
-                    {area}
-                  </span>
-                ))}
-              </div>
+              <RichTextContent content={teacher.bio} />
             </DetailSection>
-          ) : null}
+          ) : (
+            <BodyText className="md:text-lg">
+              Bu eğitmen için detaylı profil içeriği yakında eklenecek.
+            </BodyText>
+          )}
 
-          {teacher.targetTeams ? (
+          {teacher.targetTeams && (
             <DetailSection
               title="Hedef Kitle / Ekipler"
               testId="page.teacher-detail.section.target-teams"
             >
               <BodyText>{teacher.targetTeams}</BodyText>
             </DetailSection>
-          ) : null}
+          )}
 
-          {teacher.teachingApproach ? (
+          {teacher.teachingApproach && (
             <DetailSection
               title="Eğitim Yaklaşımı"
               testId="page.teacher-detail.section.teaching-approach"
             >
               <BodyText>{teacher.teachingApproach}</BodyText>
             </DetailSection>
-          ) : null}
+          )}
 
-          {teacher.courses?.length ? (
+          {teacher.courses?.length && (
             <DetailSection title="Eğitimleri">
               <ul className="grid gap-2 sm:grid-cols-2 sm:gap-3">
                 {teacher.courses.map((course) => (
@@ -140,19 +144,6 @@ export default async function TeacherDetailPage({
                 ))}
               </ul>
             </DetailSection>
-          ) : null}
-
-          {teacher.bio ? (
-            <DetailSection
-              title="Hakkında"
-              testId="page.teacher-detail.section.bio"
-            >
-              <RichTextContent content={teacher.bio} />
-            </DetailSection>
-          ) : (
-            <BodyText className="md:text-lg">
-              Bu eğitmen için detaylı profil içeriği yakında eklenecek.
-            </BodyText>
           )}
         </div>
       </Suspense>
@@ -218,7 +209,7 @@ function TeacherProfilePhoto({ teacher }: { teacher: Teacher }) {
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,oklch(0.72_0.11_196_/_0.22)_0%,transparent_58%),linear-gradient(135deg,oklch(0.22_0.015_244)_0%,oklch(0.15_0.014_244)_100%)]">
-          <span className="text-6xl font-semibold tracking-tight text-foreground/70 md:text-8xl">
+          <span className="text-6xl font-semibold tracking-tight text-white md:text-8xl">
             {getInitials(teacher.fullName)}
           </span>
         </div>

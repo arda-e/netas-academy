@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 
 type ContentPageShellProps = {
   breadcrumbItems?: BreadcrumbItem[];
-  eyebrow?: string;
   title: string;
   description?: ReactNode;
   descriptionClassName?: string;
@@ -22,7 +21,6 @@ type ContentPageShellProps = {
 
 export function ContentPageShell({
   breadcrumbItems,
-  eyebrow,
   title,
   description,
   descriptionClassName,
@@ -35,7 +33,7 @@ export function ContentPageShell({
   testId,
 }: ContentPageShellProps) {
   const resolvedBreadcrumbItems = breadcrumbItems ?? [
-    { label: eyebrow ?? title },
+    { label: title },
   ];
 
   const renderDescription = () => {
@@ -43,14 +41,16 @@ export function ContentPageShell({
       return null;
     }
 
+    const baseDescriptionClass = cn(
+      "max-w-2xl space-y-3 text-[15px] leading-7 text-white/76 sm:space-y-4 sm:text-lg sm:leading-8",
+      descriptionClassName,
+    );
+
     if (descriptionTrailing) {
       return (
         <div className="flex w-full flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <div
-            className={cn(
-              "max-w-2xl space-y-3 text-[15px] leading-7 text-white/76 sm:space-y-4 sm:text-lg sm:leading-8",
-              descriptionClassName,
-            )}
+            className={baseDescriptionClass}
             data-testid={testId && join(testId, "description")}
           >
             {description}
@@ -120,14 +120,6 @@ export function ContentPageShell({
               descriptionTrailing ? "w-full" : "max-w-3xl",
             )}
           >
-            {eyebrow && (
-              <p
-                className="text-sm font-semibold uppercase tracking-[0.34em] text-white/82"
-                data-testid={testId && join(testId, "eyebrow")}
-              >
-                {eyebrow}
-              </p>
-            )}
             <h1
               className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl"
               data-testid={testId && join(testId, "title")}

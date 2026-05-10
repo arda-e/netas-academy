@@ -1,4 +1,4 @@
-import revalidateTag from "../../../../../utils/revalidate-frontend";
+import revalidateTag from "../../../../utils/revalidate-frontend";
 
 export default {
   afterCreate() {

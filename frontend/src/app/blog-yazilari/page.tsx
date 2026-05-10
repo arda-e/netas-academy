@@ -42,14 +42,20 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
   return (
     <ContentPageShell
       title="Blog"
-      testId="page.blog"
-    >
-      <div className="space-y-4 sm:space-y-8">
-        <p className="max-w-3xl page-body-text">
+      description={
+        <p>
           Sektörel bakış açıları, uygulama notları ve eğitim odaklı
           içgörülerle hazırlanan yazı arşivini keşfedin.
         </p>
-        <SearchField initialValue={search} searchOnly />
+      }
+      testId="page.blog"
+    >
+      <div className="space-y-4 sm:space-y-8">
+        <SearchField
+          initialValue={search}
+          searchOnly
+          expandedWidthClassName="lg:w-[560px]"
+        />
         <Suspense fallback={<BlogListLoading testId="loading.blog" />}>
           <BlogResults search={search} />
         </Suspense>

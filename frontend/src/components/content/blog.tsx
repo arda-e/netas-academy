@@ -70,7 +70,7 @@ export function BlogList({
             title={post.title}
             summary={post.excerpt ?? "Bu yazı için özet yakında eklenecek."}
             testId={join("blog-yazilari", "card", post.slug)}
-            className="bg-white"
+            className="bg-white gap-6 sm:gap-7"
             imageUrl={post.coverImageUrl ?? null}
             imageAlt={post.coverImageAlt ?? undefined}
             blurDataURL={post.coverImageBlurDataURL ?? undefined}
@@ -134,9 +134,6 @@ export function BlogDetail({
             />
           </div>
           <div className="max-w-3xl space-y-3 sm:space-y-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/82">
-              Blog
-            </p>
             <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl" data-testid="blog-yazilari.detail.title">
               {title}
             </h1>

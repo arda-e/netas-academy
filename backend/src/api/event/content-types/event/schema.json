@@ -47,6 +47,15 @@
     "location": {
       "type": "string"
     },
+    "meetingLink": {
+      "type": "string",
+      "description": "Meeting link (e.g., Zoom URL) included in event emails and ICS attachments"
+    },
+    "autoConfirmationEnabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "When enabled, a confirmation email is automatically sent to students upon registration"
+    },
     "topicArea": {
       "type": "enumeration",
       "enum": [

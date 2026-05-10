@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 
 type SearchFieldProps = {
   initialValue?: string;
+  expandedWidthClassName?: string;
   /** Reserved for future use — when true, hides any non-search filter UI.
    *  Currently the component is search-only by design. Use _searchOnly convention. */
   searchOnly?: boolean;
@@ -13,6 +14,7 @@ type SearchFieldProps = {
 
 export function SearchField({
   initialValue = "",
+  expandedWidthClassName = "lg:w-[420px]",
   searchOnly: _searchOnly = true,
 }: SearchFieldProps) {
   const router = useRouter();
@@ -61,7 +63,7 @@ export function SearchField({
       className={`flex items-center overflow-hidden border border-border/70 bg-white/70 transition-all duration-200 ease-out ${
         open ? "w-full rounded-sm" : "w-10 rounded-full"
       } ${open ? "" : "cursor-pointer"} lg:flex-none lg:transition-[width] lg:duration-200 ${
-        open ? "lg:w-[420px]" : "lg:w-10"
+        open ? expandedWidthClassName : "lg:w-10"
       }`}
     >
       <button

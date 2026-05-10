@@ -102,7 +102,6 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       <ContentPageShell
         testId="page.blog-detail"
         breadcrumbItems={breadcrumbItems}
-        eyebrow="Blog"
         title={post.title}
         heroImageUrl={getStrapiMediaUrl(post.coverImage, "large")}
         heroImageAlt={getStrapiMediaAltText(post.coverImage) ?? post.title}

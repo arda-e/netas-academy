@@ -1,22 +1,13 @@
 import { factories } from '@strapi/strapi';
 
-import { isValidTckn } from '../../../utils/tckn';
-import { formatError, formatSuccess, validateBody } from '../../../utils/controller-helpers';
+import { formatSuccess, validateBody } from '../../../utils/controller-helpers';
 
 export default factories.createCoreController('api::registration.registration' as any, () => ({
   async register(ctx) {
     const body = ctx.request.body ?? {};
-    const tckn = typeof body.student?.tckn === 'string' ? body.student.tckn : '';
 
-    const err = validateBody(body, ['eventDocumentId', 'student.firstName', 'student.lastName', 'student.email', 'student.tckn']);
+    const err = validateBody(body, ['eventDocumentId', 'student.firstName', 'student.lastName', 'student.email']);
     if (err) {
-      ctx.body = err;
-      ctx.status = err.status;
-      return;
-    }
-
-    if (!isValidTckn(tckn)) {
-      const err = formatError('Invalid TCKN');
       ctx.body = err;
       ctx.status = err.status;
       return;
