@@ -10,47 +10,45 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
+// Hero CTA strings live in HomeHeroSection.tsx (not page.tsx) after the unified redesign.
+const heroSource = readSource("components/home/HomeHeroSection.tsx");
+
 test("Hero contains 'Kurumsal Eğitim Talep Et' as primary CTA label", () => {
-  const source = readSource("app/page.tsx");
   assert.match(
-    source,
+    heroSource,
     /Kurumsal Eğitim Talep Et/i,
     "Hero should have 'Kurumsal Eğitim Talep Et' as primary CTA label"
   );
 });
 
-test("Hero contains 'Eğitim Kataloğunu İncele' as secondary CTA label", () => {
-  const source = readSource("app/page.tsx");
+test("Hero contains 'Eğitimleri İncele' as secondary CTA label", () => {
   assert.match(
-    source,
-    /Eğitim Kataloğunu İncele/i,
-    "Hero should have 'Eğitim Kataloğunu İncele' as secondary CTA label"
+    heroSource,
+    /Eğitimleri İncele/i,
+    "Hero should have 'Eğitimleri İncele' as secondary CTA label"
   );
 });
 
 test("Primary CTA uses buildIntentLeadUrl('corporate_training_request')", () => {
-  const source = readSource("app/page.tsx");
   assert.match(
-    source,
+    heroSource,
     /buildIntentLeadUrl\("corporate_training_request"\)/,
     "Primary CTA should use buildIntentLeadUrl with corporate_training_request"
   );
 });
 
 test("Secondary CTA href is /egitimler", () => {
-  const source = readSource("app/page.tsx");
   assert.match(
-    source,
-    /href:\s*"\/egitimler"/,
+    heroSource,
+    /href="\/egitimler"/,
     "Secondary CTA href should be /egitimler"
   );
 });
 
 test("Hero title mentions team transformation/adaptation (not portal management)", () => {
-  const source = readSource("app/page.tsx");
   assert.match(
-    source,
-    /dönüşüm|adaptasyon|ekiplerinizi/i,
-    "Hero title should mention team transformation/adaptation, not portal management"
+    heroSource,
+    /dönüşüm|adaptasyon|uyum/i,
+    "Hero slides should mention team transformation/adaptation"
   );
 });
