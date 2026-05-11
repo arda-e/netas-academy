@@ -370,6 +370,9 @@
       "title": "Çözüm Ortaklığı",
       "breadcrumb": "Çözüm Ortaklığı"
     },
+    "intro": {
+      "paragraph": "Netaş Academy ile kurumların gelişim hedeflerine, sektör ihtiyaçlarına ve uzmanlık alanlarına uygun çözümler tasarlayabilir; eğitimden danışmanlığa uzanan iş birliklerini birlikte kurgulayabiliriz."
+    },
     "accordion": {
       "heading": "Hangi Alanlarda Çözüm Ortaklığı Yapabiliriz",
       "training": {
@@ -390,9 +393,9 @@
       }
     },
     "cta": {
-      "heading": "Başvurunuzu İnceleyelim",
+      "heading": "Başvurunuzu gönderin",
       "body": "Eğitim, danışmanlık, workshop veya sektörel uzmanlık alanlarında Netaş Academy ile olası iş birliği fikrinizi bizimle paylaşabilirsiniz.",
-      "button": "Çözüm Ortağı Başvurusu"
+      "button": "Çözüm Ortağı Başvurusu Yap"
     }
   },
   "kvkk": {

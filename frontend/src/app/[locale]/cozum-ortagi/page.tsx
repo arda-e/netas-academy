@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { AccordionSection } from "@/components/uncode/AccordionSection";
+import { IntroSection } from "@/components/uncode/IntroSection";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { join } from "@/lib/testids";
 
@@ -56,14 +57,17 @@ export default async function CozumOrtagiPage() {
           </h1>
         </div>
       </section>
-
-      {/* Accordion — collaboration areas */}
+      <IntroSection
+        title={t('intro.paragraph')}
+        columns={[]}
+        className="bg-gray-50"
+        //contentClassName="py-8 sm:py-10 lg:py-12"
+      />
       <AccordionSection
         heading={t('accordion.heading')}
         items={collaborationAreas.map((a) => ({ q: a.title, a: a.body }))}
         className="bg-background"
       />
-
       {/* CTA */}
       <section className="page-section">
         <div data-testid="page.cozum-ortagi.content">

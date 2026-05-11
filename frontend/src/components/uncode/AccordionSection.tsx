@@ -17,14 +17,16 @@ export function AccordionSection({ heading, items, className }: AccordionSection
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className={`bg-white py-24 px-4 sm:px-6 lg:px-10 xl:px-12 ${className ?? ''}`}>
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16">
-        <div className="lg:w-5/12">
-          <h2 className="text-3xl md:text-4xl font-normal text-[#303133] leading-snug">
-            {heading}
-          </h2>
+    <section className={`bg-white ${className ?? ''}`}>
+      <div className="page-section flex flex-col gap-12 lg:flex-row lg:gap-16">
+        <div className="lg:w-[38%] lg:shrink-0">
+          <div className="max-w-3xl">
+            <h2 className="text-3xl font-semibold text-[#303133] md:text-4xl">
+              {heading}
+            </h2>
+          </div>
         </div>
-        <div className="lg:w-7/12">
+        <div className="lg:min-w-0 lg:flex-1">
           <div className="divide-y divide-[#d6d7d9]">
             {items.map((item, i) => (
               <div key={i}>

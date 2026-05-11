@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
+import { Link, usePathname } from "@/i18n/navigation";
 
 import { headerNavigationItems } from "@/config/navigation";
 
@@ -93,6 +92,7 @@ export function SiteHeader() {
         <div className="hidden items-center gap-0 border-l border-border/70 pl-4 md:flex" data-testid="site-header.locale-switcher">
           <Link
             href={pathname}
+            locale="tr"
             aria-label="Türkçe"
             data-testid="site-header.locale-switcher.tr"
             className={cn(
@@ -105,7 +105,8 @@ export function SiteHeader() {
             TR
           </Link>
           <Link
-            href={`/en${pathname}`}
+            href={pathname}
+            locale="en"
             aria-label="English"
             data-testid="site-header.locale-switcher.en"
             className={cn(

@@ -370,28 +370,31 @@
       "title": "Solution Partnership",
       "breadcrumb": "Solution Partnership"
     },
+    "intro": {
+      "paragraph": "With Netaş Academy, we can design solutions aligned with organizational growth goals, sector needs, and areas of expertise, and shape collaborations that span from training to consulting."
+    },
     "accordion": {
       "heading": "Areas Where We Can Partner",
       "training": {
         "title": "Training Programs",
-        "body": "[EN] Kurumların ihtiyaçlarına göre şekillendirilen açık ve kapalı devre eğitim programlarının tasarımı ve uygulanması süreçlerinde iş birliği yapabiliriz."
+        "body": "We can collaborate on the design and delivery of open-enrollment and closed-group training programs tailored to organizational needs."
       },
       "consulting": {
         "title": "Consulting Services",
-        "body": "[EN] Kurumsal gelişim, organizasyonel dönüşüm ve insan kaynakları stratejileri alanlarında danışmanlık hizmetlerini birlikte yürütebiliriz."
+        "body": "We can work together on consulting services in corporate development, organizational transformation, and human resources strategy."
       },
       "workshop": {
         "title": "Workshops and Facilitation",
-        "body": "[EN] Takım çalıştayları, strateji atölyeleri ve yaratıcı problem çözme oturumlarının fasilitasyonu konusunda ortak çalışmalar gerçekleştirebiliriz."
+        "body": "We can partner on facilitating team workshops, strategy sessions, and creative problem-solving forums."
       },
       "expertise": {
         "title": "Sectoral / Topic-Based Expertise",
-        "body": "[EN] Belirli bir sektör veya konu alanındaki derin uzmanlığınızı Netaş Academy çatısı altında eğitim ve içerik programlarına dönüştürebiliriz."
+        "body": "We can turn your deep expertise in a specific sector or subject area into training and content programs under Netaş Academy."
       }
     },
     "cta": {
-      "heading": "Let's Review Your Application",
-      "body": "[EN] Eğitim, danışmanlık, workshop veya sektörel uzmanlık alanlarında Netaş Academy ile olası iş birliği fikrinizi bizimle paylaşabilirsiniz.",
+      "heading": "Apply",
+      "body": "You can share your ideas for potential collaboration with Netaş Academy in training, consulting, workshops, or sector-specific expertise.",
       "button": "Solution Partner Application"
     }
   },
