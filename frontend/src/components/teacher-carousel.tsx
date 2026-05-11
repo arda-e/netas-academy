@@ -75,7 +75,7 @@ export function TeacherCarousel({
           type="button"
           size="icon-sm"
           variant="outline"
-          aria-label={t('common.teacher_carousel.prev')}
+          aria-label={t('teacher_carousel.prev')}
           data-testid={prevButtonTestId}
           onClick={() => scrollByPage("left")}
         >
@@ -85,7 +85,7 @@ export function TeacherCarousel({
           type="button"
           size="icon-sm"
           variant="outline"
-          aria-label={t('common.teacher_carousel.next')}
+          aria-label={t('teacher_carousel.next')}
           data-testid={nextButtonTestId}
           onClick={() => scrollByPage("right")}
         >

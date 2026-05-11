@@ -235,7 +235,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           clearStorage();
           reset();
         } catch {
-          const reason = t("contact.error.submit_failed");
+          const reason = t("error.submit_failed");
           setErrorMessage(reason);
           emitLeadSubmitFail(leadType, reason);
         }
@@ -301,7 +301,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           className="h-12 rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg"
           data-testid="contact-lead.new-submission"
         >
-          {t("contact.new_submission")}
+          {t("new_submission")}
         </Button>
       </div>
     );
@@ -349,7 +349,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       <div className="grid gap-4 md:gap-6 md:grid-cols-2">
         <div className={fieldWrapperClassName}>
             <label htmlFor="fullName" className={labelClassName}>
-            {t("contact.field.full_name.label")}
+            {t("field.full_name.label")}
           </label>
           <Input
             id="fullName"
@@ -365,7 +365,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
 
         <div className={fieldWrapperClassName}>
             <label htmlFor="email" className={labelClassName}>
-            {t("contact.field.email.label")}
+            {t("field.email.label")}
           </label>
           <Input
             id="email"
@@ -380,7 +380,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
 
         <div className={fieldWrapperClassName}>
             <label htmlFor="phone" className={labelClassName}>
-            {t("contact.field.phone.label")}
+            {t("field.phone.label")}
           </label>
           <Input
             id="phone"
@@ -395,7 +395,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
 
         <div className={fieldWrapperClassName}>
             <label htmlFor="company" className={labelClassName}>
-            {t("contact.field.company.label")}
+            {t("field.company.label")}
           </label>
           <Input
             id="company"
@@ -418,7 +418,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
       {/* Message */}
       <div className={fieldWrapperClassName}>
         <label htmlFor="message" className={labelClassName}>
-          {t("contact.field.message.label")}
+          {t("field.message.label")}
         </label>
         <Textarea
           id="message"
@@ -442,16 +442,16 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             data-testid="contact-lead.field.kvkk-consent"
           />
           <label htmlFor="kvkkConsent" className="cursor-pointer text-sm leading-6 text-muted-foreground">
-            {t("contact.kvkk.text")}{" "}
+            {t("kvkk.text")}{" "}
             <Link
               href={`/kvkk?returnTo=${encodeURIComponent(kvkkReturnTo)}`}
               onClick={persistCurrentValues}
               className="text-primary transition-colors hover:text-primary/80"
               data-testid="contact-lead.link.kvkk-disclosure"
             >
-              {t("contact.kvkk.link")}
+              {t("kvkk.link")}
             </Link>
-            {t("contact.kvkk.suffix")}
+            {t("kvkk.suffix")}
           </label>
         </div>
         {fieldErrors.kvkkConsent ? (
@@ -464,7 +464,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         <div className="flex-1" />
 
         <Button type="submit" disabled={isPending} className="h-12 w-full rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg" data-testid="contact-lead.submit">
-          {isPending ? t("contact.submit.pending") : t("contact.submit.idle")}
+          {isPending ? t("submit.pending") : t("submit.idle")}
         </Button>
       </div>
     </form>
@@ -518,18 +518,18 @@ function getErrorMessage(payload: unknown, t: (key: string) => string): string {
       message ===
       "leadType is required and must be one of: corporate_training_request, instructor_application, solution_partner_application, general_contact"
     ) {
-      return t("contact.error.invalid_lead_type");
+      return t("error.invalid_lead_type");
     }
     if (
       message ===
       "fullName, email, phone, and message are required"
     ) {
-      return t("contact.error.required_fields");
+      return t("error.required_fields");
     }
     if (message === "kvkkConsent must be true") {
-      return t("contact.error.kvkk_consent");
+      return t("error.kvkk_consent");
     }
     return message;
   }
-  return t("contact.error.submit_failed");
+  return t("error.submit_failed");
 }

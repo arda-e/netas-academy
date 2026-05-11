@@ -28,11 +28,11 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
       return (
         <div className={fieldWrapperClassName}>
           <label htmlFor="interestTopic" className={labelClassName}>
-            {t("contact.field.interest_topic.label")}
+            {t("field.interest_topic.label")}
           </label>
           <Input
             id="interestTopic"
-            placeholder={t("contact.field.interest_topic.placeholder")}
+            placeholder={t("field.interest_topic.placeholder")}
             className={fieldClassName}
             {...register("interestTopic")}
             onFocus={onFieldFocus}
@@ -48,11 +48,11 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
       return (
         <div className={fieldWrapperClassName}>
           <label htmlFor="expertiseAreas" className={labelClassName}>
-            {t("contact.field.expertise_areas.label")}
+            {t("field.expertise_areas.label")}
           </label>
           <Textarea
             id="expertiseAreas"
-            placeholder={t("contact.field.expertise_areas.placeholder")}
+            placeholder={t("field.expertise_areas.placeholder")}
             className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
             {...register("expertiseAreas")}
             onFocus={onFieldFocus}
@@ -69,11 +69,11 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
         <>
           <div className={fieldWrapperClassName}>
             <label htmlFor="companySize" className={labelClassName}>
-              {t("contact.field.company_size.label")}
+              {t("field.company_size.label")}
             </label>
             <Input
               id="companySize"
-              placeholder={t("contact.field.company_size.placeholder")}
+              placeholder={t("field.company_size.placeholder")}
               className={fieldClassName}
               {...register("companySize")}
               onFocus={onFieldFocus}
@@ -85,11 +85,11 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
           </div>
           <div className={fieldWrapperClassName}>
             <label htmlFor="partnershipDetails" className={labelClassName}>
-              {t("contact.field.partnership_details.label")}
+              {t("field.partnership_details.label")}
             </label>
             <Textarea
               id="partnershipDetails"
-              placeholder={t("contact.field.partnership_details.placeholder")}
+              placeholder={t("field.partnership_details.placeholder")}
               className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
               {...register("partnershipDetails")}
               onFocus={onFieldFocus}

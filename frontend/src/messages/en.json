@@ -59,7 +59,8 @@
     },
     "course_carousel": {
       "prev": "Previous courses",
-      "next": "Next courses"
+      "next": "Next courses",
+      "examine": "Examine course"
     }
   },
   "home": {

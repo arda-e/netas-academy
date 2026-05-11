@@ -139,7 +139,7 @@ export function CourseCarousel({
 
               {/* Footer Action */}
               <p className="mt-auto pt-3 text-xs font-medium text-foreground/50 transition-colors group-hover/card-link:text-[#009ca6]">
-                Egitimi incele
+                {t_common('course_carousel.examine')}
               </p>
             </Link>
           );

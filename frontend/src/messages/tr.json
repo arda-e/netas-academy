@@ -59,7 +59,8 @@
     },
     "course_carousel": {
       "prev": "Onceki egitimler",
-      "next": "Sonraki egitimler"
+      "next": "Sonraki egitimler",
+      "examine": "Egitimi incele"
     }
   },
   "home": {

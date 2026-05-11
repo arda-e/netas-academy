@@ -15,7 +15,7 @@ export function getTopicAreaLabel(
   slug: TopicArea,
   t: (key: string) => string
 ): string {
-  return t(`taxonomy.topic.${slug.replace(/-/g, "_")}`);
+  return t(`topic.${slug.replace(/-/g, "_")}`);
 }
 
 export function normalizeTopicArea(
@@ -42,7 +42,7 @@ export function getCourseLevelLabel(
   level: CourseLevel,
   t: (key: string) => string
 ): string {
-  return t(`taxonomy.level.${level}`);
+  return t(`level.${level}`);
 }
 
 export function normalizeCourseLevel(
@@ -104,7 +104,7 @@ export type EventTypeKey = (typeof EVENT_TYPES)[number];
 export type TranslateFn = (key: string) => string;
 
 export function getEventTypeLabel(t: TranslateFn, eventType: string): string {
-  if (eventType === "egitim") return t("taxonomy.event_type.egitim");
-  if (eventType === "kurs") return t("taxonomy.event_type.kurs");
-  return t("taxonomy.event_type.etkinlik");
+  if (eventType === "egitim") return t("event_type.egitim");
+  if (eventType === "kurs") return t("event_type.kurs");
+  return t("event_type.etkinlik");
 }

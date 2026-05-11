@@ -37,7 +37,7 @@ export function KvkkBackButton() {
       className="h-10 rounded-sm px-5 text-sm font-medium"
       data-testid="kvkk.back-button"
     >
-      {t('kvkk.back_button')}
+      {t('back_button')}
     </Button>
   );
 }

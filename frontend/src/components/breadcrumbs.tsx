@@ -33,7 +33,7 @@ export function SiteBreadcrumbs({
 
   return (
     <nav
-      aria-label={t('common.breadcrumbs.aria_label')}
+      aria-label={t('breadcrumbs.aria_label')}
       data-testid="breadcrumbs.nav"
       className={cn(
         "text-xs font-semibold uppercase tracking-[0.22em]",

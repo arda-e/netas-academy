@@ -70,7 +70,7 @@ export function SearchField({
     >
       <button
         type="button"
-        aria-label={t('common.search.aria_label')}
+        aria-label={t('search.aria_label')}
         data-testid="search-field.toggle"
         onClick={() => setOpen(true)}
         className={`inline-flex h-9 shrink-0 items-center justify-center text-gray-800 transition-all duration-200 hover:bg-[#009ca6]/10 hover:text-[#009ca6] ${
@@ -103,7 +103,7 @@ export function SearchField({
               setOpen(false);
             }
           }}
-          placeholder={t('common.search.placeholder')}
+          placeholder={t('search.placeholder')}
           data-testid="search-field.input"
           className="h-9 w-full bg-transparent py-2 pl-8 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
         />

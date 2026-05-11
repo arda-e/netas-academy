@@ -17,25 +17,25 @@ type TFunc = (key: string) => string;
 
 export function getIntentSchemas(t: TFunc): Record<LeadType, z.ZodType> {
   const baseSchema = z.object({
-    fullName: z.string().min(1, t("contact.validation.full_name_required")),
-    email: z.string().email(t("contact.validation.email_invalid")),
-    phone: z.string().min(1, t("contact.validation.phone_required")),
-    company: z.string().optional(),
-    message: z.string().min(1, t("contact.validation.message_required")),
-    kvkkConsent: z.boolean().refine((val) => val === true, {
-      message: t("contact.validation.kvkk_required"),
-    }),
+      fullName: z.string().min(1, t("validation.full_name_required")),
+      email: z.string().email(t("validation.email_invalid")),
+      phone: z.string().min(1, t("validation.phone_required")),
+      company: z.string().optional(),
+      message: z.string().min(1, t("validation.message_required")),
+      kvkkConsent: z.boolean().refine((val) => val === true, {
+        message: t("validation.kvkk_required"),
+      }),
   });
 
   return {
     corporate_training_request: baseSchema.extend({
-      interestTopic: z.string().min(1, t("contact.validation.interest_topic_required")),
+        interestTopic: z.string().min(1, t("validation.interest_topic_required")),
     }),
     instructor_application: baseSchema.extend({
-      expertiseAreas: z.string().min(1, t("contact.validation.expertise_areas_required")),
+        expertiseAreas: z.string().min(1, t("validation.expertise_areas_required")),
     }),
     solution_partner_application: baseSchema.extend({
-      companySize: z.string().min(1, t("contact.validation.company_size_required")),
+        companySize: z.string().min(1, t("validation.company_size_required")),
     }),
     general_contact: baseSchema,
   };
@@ -64,27 +64,27 @@ export function getLeadIntents(
 > {
   return {
     corporate_training_request: {
-      label: t("contact.tab.corporate"),
+      label: t("tab.corporate"),
       description:
         "Ekibiniz için özelleştirilmiş eğitim programları talep edin.",
-      successMessage: t("contact.success.corporate"),
-      successCtaLabel: t("contact.success.corporate_cta"),
+      successMessage: t("success.corporate"),
+      successCtaLabel: t("success.corporate_cta"),
       successCtaHref: "/katalog",
     },
     instructor_application: {
-      label: t("contact.tab.instructor"),
+      label: t("tab.instructor"),
       description: "Uzmanlık alanınızda eğitmen olarak başvurun.",
-      successMessage: t("contact.success.instructor"),
+      successMessage: t("success.instructor"),
     },
     solution_partner_application: {
-      label: t("contact.tab.partner"),
+      label: t("tab.partner"),
       description: "Çözüm ortaklığı için başvurun.",
-      successMessage: t("contact.success.partner"),
+      successMessage: t("success.partner"),
     },
     general_contact: {
-      label: t("contact.tab.general"),
+      label: t("tab.general"),
       description: "Bize genel bir mesaj gönderin.",
-      successMessage: t("contact.success.general"),
+      successMessage: t("success.general"),
     },
   };
 }

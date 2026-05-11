@@ -98,14 +98,14 @@ export function HeroOverlay({
           <div className="absolute bottom-8 left-4 flex items-center gap-3 sm:bottom-10 sm:left-10 lg:left-16">
             <button
               type="button"
-              aria-label={t('common.carousel.prev')}
+              aria-label={t('carousel.prev')}
               className="flex h-12 w-12 items-center justify-center rounded-full bg-white/26 text-white backdrop-blur-sm transition-colors hover:bg-white/36"
             >
               <ArrowLeft size={22} strokeWidth={1.8} />
             </button>
             <button
               type="button"
-              aria-label={t('common.carousel.next')}
+              aria-label={t('carousel.next')}
               className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-900 transition-colors hover:bg-white/92"
             >
               <ArrowRight size={22} strokeWidth={1.8} />

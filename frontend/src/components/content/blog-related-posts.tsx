@@ -55,7 +55,7 @@ export function RelatedPostsSection({ relatedPosts }: RelatedPostsSectionProps) 
       data-testid="page.blog-detail.related-posts"
     >
       <h2 className="mb-6 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-        {t('blog.related_posts.heading')}
+        {t('related_posts.heading')}
       </h2>
       <ContentGrid
         itemsCount={relatedPosts.length}
@@ -68,7 +68,7 @@ export function RelatedPostsSection({ relatedPosts }: RelatedPostsSectionProps) 
             key={relatedPost.documentId}
             href={`/blog-yazilari/${relatedPost.slug}`}
             title={relatedPost.title}
-            summary={relatedPost.excerpt ?? t('blog.related_posts.summary_empty')}
+            summary={relatedPost.excerpt ?? t('related_posts.summary_empty')}
             testId={join("page", "blog-detail", "related-posts", "card", relatedPost.slug)}
             className="bg-white"
             imageUrl={getStrapiMediaUrl(relatedPost.coverImage) ?? null}
