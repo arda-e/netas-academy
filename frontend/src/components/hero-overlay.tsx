@@ -1,6 +1,9 @@
+"use client";
+
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
@@ -41,6 +44,8 @@ export function HeroOverlay({
   primaryCtaTestId,
   secondaryCtaTestId,
 }: HeroOverlayProps) {
+  const t = useTranslations('common');
+
   if (variant === "home") {
     return (
       <section className="relative isolate overflow-hidden bg-slate-950">
@@ -93,14 +98,14 @@ export function HeroOverlay({
           <div className="absolute bottom-8 left-4 flex items-center gap-3 sm:bottom-10 sm:left-10 lg:left-16">
             <button
               type="button"
-              aria-label="Önceki içerik"
+              aria-label={t('carousel.prev')}
               className="flex h-12 w-12 items-center justify-center rounded-full bg-white/26 text-white backdrop-blur-sm transition-colors hover:bg-white/36"
             >
               <ArrowLeft size={22} strokeWidth={1.8} />
             </button>
             <button
               type="button"
-              aria-label="Sonraki içerik"
+              aria-label={t('carousel.next')}
               className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-900 transition-colors hover:bg-white/92"
             >
               <ArrowRight size={22} strokeWidth={1.8} />

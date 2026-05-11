@@ -68,8 +68,7 @@ Default URLs:
 Notes:
 
 - The compose file keeps Strapi SQLite data in `./.docker-data/strapi`
-- Without S3 upload env vars, uploaded files persist in `./.docker-data/uploads`
-- If `AWS_BUCKET`, `AWS_ACCESS_KEY_ID`, `AWS_ACCESS_SECRET`, and `AWS_REGION` are set, Strapi uploads media to S3 instead of local disk. Keep `MEDIA_PUBLIC_URL` pointed at the public media origin, such as an S3 bucket URL or a future CDN/custom domain.
+- Uploaded files persist in `./.docker-data/uploads`
 - The single container starts Strapi first, then boots Next.js on port `3000`
 - Local compose defaults to `netas-academy:local`; EC2 deploy overrides this with the GHCR image
 - Server-to-server calls use `STRAPI_URL`; Strapi uploads are exposed through the frontend `/uploads/*` rewrite so browser image URLs stay same-origin

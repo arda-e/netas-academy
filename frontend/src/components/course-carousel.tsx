@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,7 +40,9 @@ export function CourseCarousel({
   cardTestIdPrefix,
   prevButtonTestId,
   nextButtonTestId,
-  }: CourseCarouselProps) {
+}: CourseCarouselProps) {
+  const t_taxonomy = useTranslations("taxonomy");
+  const t_common = useTranslations("common");
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
   const handleScroll = (direction: "left" | "right") => {
@@ -49,6 +52,7 @@ export function CourseCarousel({
       scrollAreaRef.current.clientWidth * 0.8,
       320
     );
+
     const delta = direction === "left" ? -SCROLL_AMOUNT : SCROLL_AMOUNT;
     scrollAreaRef.current.scroll({
       left: scrollAreaRef.current.scrollLeft + delta,
@@ -80,18 +84,20 @@ export function CourseCarousel({
               key={course.documentId}
               href={`/egitimler/${course.slug}`}
               className="group/card-link flex min-w-[260px] snap-start cursor-pointer flex-col rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[300px]"
-              data-testid={cardTestIdPrefix ? `${cardTestIdPrefix}.${course.slug}` : undefined}
+              data-testid={
+                cardTestIdPrefix ? `${cardTestIdPrefix}.${course.slug}` : undefined
+              }
             >
               {/* Badges Row */}
               <div className="flex flex-wrap gap-1.5">
                 {topicSlug && (
                   <Badge variant="secondary" className="text-[11px]">
-                    {getTopicAreaLabel(topicSlug)}
+                    {getTopicAreaLabel(topicSlug, t_taxonomy)}
                   </Badge>
                 )}
                 {levelSlug && (
                   <Badge variant="outline" className="text-[11px]">
-                    {getCourseLevelLabel(levelSlug)}
+                    {getCourseLevelLabel(levelSlug, t_taxonomy)}
                   </Badge>
                 )}
               </div>
@@ -110,7 +116,7 @@ export function CourseCarousel({
 
               {/* Footer Action */}
               <p className="mt-auto pt-3 text-xs font-medium text-foreground/50 transition-colors group-hover/card-link:text-[#009ca6]">
-                Egitimi incele
+                {t_common("course_carousel.examine")}
               </p>
             </Link>
           );
@@ -123,7 +129,7 @@ export function CourseCarousel({
           type="button"
           size="icon-sm"
           variant="outline"
-          aria-label="Onceki egitimler"
+          aria-label={t_common("course_carousel.prev")}
           data-testid={prevButtonTestId}
           onClick={() => handleScroll("left")}
         >
@@ -134,7 +140,7 @@ export function CourseCarousel({
           type="button"
           size="icon-sm"
           variant="outline"
-          aria-label="Sonraki egitimler"
+          aria-label={t_common("course_carousel.next")}
           data-testid={nextButtonTestId}
           onClick={() => handleScroll("right")}
         >

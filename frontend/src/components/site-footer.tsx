@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { join } from "@/lib/testids";
 import { footerSitePlanItems } from "@/config/navigation";
@@ -6,22 +7,24 @@ import { footerSitePlanItems } from "@/config/navigation";
 const footerLinkClassName =
   "rounded-sm border border-transparent text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const t = await getTranslations('footer');
+  const nt = await getTranslations('nav');
   return (
     <footer className="border-t border-border/80 bg-white/95 backdrop-blur-2xl">
       <div className="page-container grid gap-6 py-6 text-sm text-muted-foreground lg:grid-cols-[1fr_1fr_auto] lg:items-start">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-foreground/72">
-            Netas Academy
+            {t('brand.name')}
           </p>
           <p className="max-w-80 text-sm leading-6">
-            Eğitim, etkinlik ve kurumsal gelişim içerikleri.
+            {t('brand.tagline')}
           </p>
         </div>
 
-        <nav aria-label="Site planı" className="space-y-2" data-testid="site-footer.site-plan">
+        <nav aria-label={t('site_plan.aria_label')} className="space-y-2" data-testid="site-footer.site-plan">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/72">
-            Site Planı
+            {t('site_plan.heading')}
           </p>
           <div className="grid grid-cols-1 gap-x-4 gap-y-1 sm:grid-cols-2">
             {footerSitePlanItems.map((item) => {
@@ -32,7 +35,7 @@ export function SiteFooter() {
                   data-testid={join("site-footer", "site-plan", item.routeKey)}
                   className={`${footerLinkClassName} block truncate py-1.5 pl-0 pr-3`}
                 >
-                  {item.label}
+                  {nt(item.routeKey)}
                 </Link>
               );
             })}
@@ -40,7 +43,7 @@ export function SiteFooter() {
         </nav>
 
         <nav
-          aria-label="Yasal ve kurumsal bağlantılar"
+          aria-label={t('legal.aria_label')}
           className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end"
           data-testid="site-footer.legal"
         >
@@ -49,7 +52,7 @@ export function SiteFooter() {
             data-testid="site-footer.legal.kvkk"
             className={`${footerLinkClassName} px-3 py-2`}
           >
-            KVKK
+            {t('legal.kvkk')}
           </Link>
           <a
             href="https://netas.com.tr/"
@@ -58,7 +61,7 @@ export function SiteFooter() {
             data-testid="site-footer.legal.netas-website"
             className={`${footerLinkClassName} px-3 py-2`}
           >
-            Netaş Web Sitesi
+            {t('legal.netas_website')}
           </a>
         </nav>
       </div>

@@ -1,4 +1,7 @@
+"use client";
+
 import { ContentCardShell } from "@/components/content/content-card-shell";
+import { useTranslations } from "next-intl";
 import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import {
@@ -9,8 +12,6 @@ import {
 import type { StrapiBlogPost } from "@/lib/strapi-types";
 import { join } from "@/lib/testids";
 import { formatLongDate } from "@/lib/date-formatting";
-
-const EMPTY_RELATED_POST_SUMMARY = "Bu yazı için özet yakında eklenecek.";
 
 type RelatedPostMetaProps = {
   publishedDate?: string | null;
@@ -42,6 +43,8 @@ type RelatedPostsSectionProps = {
 };
 
 export function RelatedPostsSection({ relatedPosts }: RelatedPostsSectionProps) {
+  const t = useTranslations('blog');
+
   if (relatedPosts.length === 0) {
     return null;
   }
@@ -52,7 +55,7 @@ export function RelatedPostsSection({ relatedPosts }: RelatedPostsSectionProps) 
       data-testid="page.blog-detail.related-posts"
     >
       <h2 className="mb-6 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-        İlgili Yazılar
+        {t('related_posts.heading')}
       </h2>
       <ContentGrid
         itemsCount={relatedPosts.length}
@@ -65,7 +68,7 @@ export function RelatedPostsSection({ relatedPosts }: RelatedPostsSectionProps) 
             key={relatedPost.documentId}
             href={`/blog-yazilari/${relatedPost.slug}`}
             title={relatedPost.title}
-            summary={relatedPost.excerpt ?? EMPTY_RELATED_POST_SUMMARY}
+            summary={relatedPost.excerpt ?? t('related_posts.summary_empty')}
             testId={join("page", "blog-detail", "related-posts", "card", relatedPost.slug)}
             className="bg-white"
             imageUrl={getStrapiMediaUrl(relatedPost.coverImage) ?? null}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ type FormState = "idle" | "loading" | "success" | "error";
 export function NewsletterSubscriptionForm({
   source,
 }: NewsletterSubscriptionFormProps) {
+  const t = useTranslations('newsletter');
   const [email, setEmail] = useState("");
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -36,7 +38,7 @@ export function NewsletterSubscriptionForm({
       if (!response.ok) {
         const body = await response.json().catch(() => null);
         throw new Error(
-          body?.error?.message ?? "Abonelik sırasında bir hata oluştu."
+          body?.error?.message ?? t('error.generic')
         );
       }
 
@@ -45,7 +47,7 @@ export function NewsletterSubscriptionForm({
     } catch (err) {
       setState("error");
       setErrorMessage(
-        err instanceof Error ? err.message : "Beklenmeyen bir hata oluştu."
+          err instanceof Error ? err.message : t('error.unexpected')
       );
     }
   }
@@ -54,17 +56,17 @@ export function NewsletterSubscriptionForm({
     <div className="space-y-4">
       {state === "success" ? (
         <p className="text-sm text-green-600 font-medium" data-testid="newsletter.success">
-          Aboneliğiniz başarıyla alındı. Teşekkür ederiz!
+          {t('success')}
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row" data-testid="newsletter.form">
           <label htmlFor="newsletter-email" className="sr-only">
-            E-posta adresiniz
+            {t('field.email.label')}
           </label>
           <Input
             id="newsletter-email"
             type="email"
-            placeholder="E-posta adresiniz"
+            placeholder={t('field.email.placeholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -78,7 +80,7 @@ export function NewsletterSubscriptionForm({
             className="shrink-0"
             data-testid="newsletter.submit"
           >
-            {state === "loading" ? "Gönderiliyor..." : "Abone Ol"}
+            {state === "loading" ? t('submit.pending') : t('submit.idle')}
           </Button>
         </form>
       )}

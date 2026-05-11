@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { CourseList } from "@/components/content";
 import {
   getCourseLevelLabel,
@@ -54,7 +55,10 @@ function normalizeSearchText(value: string) {
     .trim();
 }
 
-function getCourseSearchText(course: CourseCatalogListItem) {
+function getCourseSearchText(
+  course: CourseCatalogListItem,
+  t_taxonomy: (key: string) => string
+) {
   const topicArea = normalizeTopicArea(course.topicArea ?? null);
   const level = normalizeCourseLevel(course.level ?? null);
 
@@ -69,8 +73,8 @@ function getCourseSearchText(course: CourseCatalogListItem) {
       course.outcomeBullets,
       course.targetAudience,
       course.teacherName,
-      topicArea ? getTopicAreaLabel(topicArea) : course.topicArea,
-      level ? getCourseLevelLabel(level) : course.level,
+      topicArea ? getTopicAreaLabel(topicArea, t_taxonomy) : course.topicArea,
+      level ? getCourseLevelLabel(level, t_taxonomy) : course.level,
     ]
       .filter(Boolean)
       .join(" ")
@@ -79,10 +83,17 @@ function getCourseSearchText(course: CourseCatalogListItem) {
 
 export function CourseCatalogList({
   items,
-  emptyMessage = "Bu kriterlere uygun eğitim bulunamadı.",
+  emptyMessage,
   activeTopic,
   search = "",
 }: CourseCatalogListProps) {
+  const t = useTranslations("courses");
+  const tt = useTranslations("taxonomy");
+
+  const resolvedEmptyMessage =
+    emptyMessage ??
+    (search || activeTopic ? t("list.empty") : t("list.empty_default"));
+
   const filtered = useMemo(() => {
     const terms = normalizeSearchText(search).split(" ").filter(Boolean);
 
@@ -96,22 +107,22 @@ export function CourseCatalogList({
 
     if (terms.length > 0) {
       result = result.filter((c) => {
-        const courseSearchText = getCourseSearchText(c);
+        const courseSearchText = getCourseSearchText(c, tt);
         return terms.every((term) => courseSearchText.includes(term));
       });
     }
 
     return result;
-  }, [items, search, activeTopic]);
+  }, [items, search, activeTopic, tt]);
 
   return (
     <div>
       {filtered.length === 0 ? (
         <p className="py-12 text-center text-sm text-muted-foreground">
-          {emptyMessage}
+          {resolvedEmptyMessage}
         </p>
       ) : (
-        <CourseList items={filtered} />
+        <CourseList items={filtered} emptyMessage={resolvedEmptyMessage} t_taxonomy={tt} t_courses={t} />
       )}
     </div>
   );

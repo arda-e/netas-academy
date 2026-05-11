@@ -11,17 +11,11 @@ export const TOPIC_AREAS = [
 
 export type TopicArea = (typeof TOPIC_AREAS)[number];
 
-const topicAreaLabels: Record<TopicArea, string> = {
-  "siber-guvenlik": "Siber Güvenlik",
-  "yazilim-gelistirme": "Yazılım",
-  "veri-bilimi": "Veri Analitiği",
-  "bulut-altyapi": "Bulut",
-  "is-surecleri": "Süreçler",
-  "yapay-zeka": "Yapay Zeka",
-};
-
-export function getTopicAreaLabel(slug: TopicArea): string {
-  return topicAreaLabels[slug];
+export function getTopicAreaLabel(
+  slug: TopicArea,
+  t: (key: string) => string
+): string {
+  return t(`topic.${slug.replace(/-/g, "_")}`);
 }
 
 export function normalizeTopicArea(
@@ -44,14 +38,11 @@ export const COURSE_LEVELS = ["temel", "orta", "ileri"] as const;
 
 export type CourseLevel = (typeof COURSE_LEVELS)[number];
 
-const courseLevelLabels: Record<CourseLevel, string> = {
-  temel: "Temel",
-  orta: "Orta",
-  ileri: "İleri",
-};
-
-export function getCourseLevelLabel(level: CourseLevel): string {
-  return courseLevelLabels[level];
+export function getCourseLevelLabel(
+  level: CourseLevel,
+  t: (key: string) => string
+): string {
+  return t(`level.${level}`);
 }
 
 export function normalizeCourseLevel(
@@ -102,4 +93,18 @@ export function buildTopicFilterHrefWithSearch(
 
   const query = params.toString();
   return query ? `/egitimler?${query}` : "/egitimler";
+}
+
+/* ─── Event types ─── */
+
+export const EVENT_TYPES = ["etkinlik", "egitim", "kurs"] as const;
+
+export type EventTypeKey = (typeof EVENT_TYPES)[number];
+
+export type TranslateFn = (key: string) => string;
+
+export function getEventTypeLabel(t: TranslateFn, eventType: string): string {
+  if (eventType === "egitim") return t("event_type.egitim");
+  if (eventType === "kurs") return t("event_type.kurs");
+  return t("event_type.etkinlik");
 }

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:undsgn.com)",
+      "Bash(python3 *)",
+      "Bash(mkdir -p /Users/arda/Desktop/development/netas_academy/frontend/src/components/uncode)",
+      "Bash(mkdir -p /Users/arda/Desktop/development/netas_academy/frontend/src/app/uncode)",
+      "Bash(grep -n \"color\\\\|background\\\\|#[0-9a-fA-F]\\\\{3,6\\\\}\\\\|rgb\\\\|style=\" /tmp/uncode_sections/hero.html)",
+      "Bash(mkdir -p /Users/arda/Desktop/development/netas_academy/.compound-engineering)",
+      "Bash(cp /Users/arda/.claude/plugins/cache/compound-engineering-plugin/compound-engineering/3.7.0/skills/ce-setup/references/config-template.yaml /Users/arda/Desktop/development/netas_academy/.compound-engineering/config.local.example.yaml)",
+      "Bash(command -v ast-grep)",
+      "mcp__plugin_context7_context7__query-docs",
+      "WebFetch(domain:docs.iyzico.com)"
+    ]
+  }
+}

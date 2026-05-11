@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type SearchFieldProps = {
   initialValue?: string;
@@ -17,6 +18,7 @@ export function SearchField({
   expandedWidthClassName = "lg:w-[420px]",
   searchOnly: _searchOnly = true,
 }: SearchFieldProps) {
+  const t = useTranslations('common');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -68,7 +70,7 @@ export function SearchField({
     >
       <button
         type="button"
-        aria-label="Ara"
+        aria-label={t('search.aria_label')}
         data-testid="search-field.toggle"
         onClick={() => setOpen(true)}
         className={`inline-flex h-9 shrink-0 items-center justify-center text-gray-800 transition-all duration-200 hover:bg-[#009ca6]/10 hover:text-[#009ca6] ${
@@ -101,7 +103,7 @@ export function SearchField({
               setOpen(false);
             }
           }}
-          placeholder="Ara..."
+          placeholder={t('search.placeholder')}
           data-testid="search-field.input"
           className="h-9 w-full bg-transparent py-2 pl-8 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
         />

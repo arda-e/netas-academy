@@ -1,0 +1,441 @@
+{
+  "site": {
+    "meta": {
+      "title": "Netas Academy",
+      "description": "Course, event, teacher, and editorial portal for Netas Academy."
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "events": "Events",
+    "courses": "Course Catalog",
+    "teachers": "Instructors",
+    "solution_partner": "Solution Partner",
+    "blog": "Blog",
+    "news": "News",
+    "contact": "Contact"
+  },
+  "header": {
+    "logo": {
+      "aria_label": "Netas Academy home page"
+    },
+    "mobile_menu": {
+      "toggle_label_open": "Open menu",
+      "toggle_label_close": "Close menu",
+      "button_text": "Menu"
+    }
+  },
+  "footer": {
+    "brand": {
+      "name": "Netas Academy",
+      "tagline": "Training, events and corporate development content."
+    },
+    "site_plan": {
+      "heading": "Site Plan",
+      "aria_label": "Site plan"
+    },
+    "legal": {
+      "aria_label": "Legal and corporate links",
+      "kvkk": "KVKK",
+      "netas_website": "Netaş Website"
+    }
+  },
+  "common": {
+    "carousel": {
+      "prev": "Previous content",
+      "next": "Next content"
+    },
+    "breadcrumbs": {
+      "aria_label": "Page path"
+    },
+    "search": {
+      "aria_label": "Search",
+      "placeholder": "Search..."
+    },
+    "teacher_carousel": {
+      "prev": "Previous instructors",
+      "next": "Next instructors"
+    },
+    "course_carousel": {
+      "prev": "Previous courses",
+      "next": "Next courses",
+      "examine": "Examine course"
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "Netas Academy | Corporate Training and About Us",
+      "description": "Discover Netaş Academy’s homepage and about us narrative in a single flow; explore our corporate training approach, applied learning model, and featured programs."
+    },
+    "hero": {
+      "title": "Accelerate corporate transformation with field expertise.",
+      "description": "Netas Academy helps teams adapt to change faster by transforming technology knowledge and field experience into corporate learning.",
+      "cta_primary": "Discover More"
+    },
+    "about": {
+      "eyebrow": "About Us",
+      "heading": "Offers a one-page narrative that turns corporate transformation into a learning experience.",
+      "body": "Programs shaped by Netas' technology and industry experience are redesigned according to each organization's needs. Our goal is not just to provide knowledge, but to instill a work culture that adapts to change more quickly.",
+      "cta_corporate": "Request Corporate Training",
+      "cta_catalog": "Browse Course Catalog",
+      "card_proven": {
+        "title": "Field-Proven",
+        "body": "Training content built from years of industry experience, spanning from theory to practice."
+      },
+      "card_custom": {
+        "title": "Tailored to Your Organization",
+        "body": "Flexible program structure and customizable content shaped to each organization's needs."
+      },
+      "card_transform": {
+        "title": "Transformation-Focused",
+        "body": "Programs that go beyond individual learning, strengthening team dynamics and enhancing collaboration."
+      },
+      "card_netas": {
+        "title": "Backed by Netas",
+        "body": "Corporate training programs transform technology and industry expertise into a learning model with real-world impact."
+      },
+      "card_applied": {
+        "title": "Applied Model",
+        "heading": "Learning design built around real business problems",
+        "body": "We bring theory and practice together in the same flow through cases, scenarios, and interactive ways of working. We aim to help participants transfer what they learn into their own business contexts."
+      },
+      "card_impact": {
+        "title": "Training Impact",
+        "body": "The program targets faster adaptation, stronger teamwork, and measurable learning outcomes."
+      },
+      "card_flexible": {
+        "title": "Flexible Structure",
+        "body": "Open class, closed circuit, hybrid and remote formats can be reconfigured for the same corporate goal."
+      }
+    },
+    "teachers": {
+      "eyebrow": "Instructor Team",
+      "heading": "Our instructors with strong field experience",
+      "body": "Our instructors are not merely presenters; they are experts who have taken part in transformation projects in the field. They help build the bridge between theory and practice by offering participants examples, methods, and applicable frameworks."
+    },
+    "courses": {
+      "eyebrow": "Featured Courses",
+      "heading": "Discover our programs in a single flow",
+      "body": "Explore our most up-to-date training programs. Each program is structured to address organizations’ transformation needs."
+    },
+    "contact_cta": {
+      "eyebrow": "Contact",
+      "heading": "Let’s shape your corporate training needs together",
+      "body": "Share the training scope, your team structure, and your target outcomes. Let’s design a corporate program tailored to your needs.",
+      "button": "Corporate Training Request"
+    }
+  },
+  "courses": {
+    "meta": {
+      "not_found": "Course Not Found"
+    },
+    "hero": {
+      "title": "Course Catalog",
+      "description_strong": "Explore the programs prepared by expert instructors",
+      "description_rest": "and choose the learning path best suited to your organization.",
+      "chip_corporate": "Corporate programs",
+      "chip_live": "Live sessions",
+      "chip_applied": "Applied learning",
+      "pdf_label": "Download Catalog PDF",
+      "pdf_status": "Coming soon"
+    },
+    "list": {
+      "empty": "No courses found matching these criteria.",
+      "empty_default": "Course data is currently unavailable."
+    },
+    "card": {
+      "no_summary": "A summary for this course will be added soon.",
+      "audience_label": "Target Audience:",
+      "teacher_label": "Instructor:"
+    },
+    "detail": {
+      "no_summary": "Practical, application-focused, and detailed training content tailored to your organization.",
+      "teacher_label": "Instructor",
+      "breadcrumb": "Course Catalog",
+      "corporate_cta_label": "Request This Course for Your Organization",
+      "corporate_cta_sub": "Go to request form",
+      "section": {
+        "description": "Course Description",
+        "description_empty": "Detailed content for this course will be added soon.",
+        "business_value": "Business Value",
+        "business_value_empty": "Business value information for this course will be added soon.",
+        "outcomes": "Expected Outcomes",
+        "scope": "Scope and Content",
+        "related_events": "Related Events"
+      }
+    }
+  },
+  "events": {
+    "meta": {
+      "not_found": "Event Not Found"
+    },
+    "hero": {
+      "title": "Events",
+      "description_strong": "Follow upcoming gatherings, webinars, and special sessions",
+      "description_rest": "and access all the details required for participation on a single screen."
+    },
+    "detail": {
+      "info_panel_heading": "Event Information",
+      "register_cta": "Register for Event",
+      "contact_cta": "Contact Us",
+      "registration_closed_notice": "Registration for this event is currently closed. Subscribe to our newsletter to be notified about new events.",
+      "content_empty": "Detailed content for this event will be added soon."
+    },
+    "filters": {
+      "type": {
+        "etkinlik": "Event",
+        "egitim": "Training",
+        "kurs": "Course"
+      }
+    },
+    "sort": {
+      "label_asc": "Newest first",
+      "label_desc": "Oldest first",
+      "aria_label_asc": "Sort: newest first",
+      "aria_label_desc": "Sort: oldest first",
+      "prefix": "Sort:"
+    },
+    "card": {
+      "summary_empty": "Description for this event will be added soon."
+    },
+    "list": {
+      "empty": "Event data is currently unavailable."
+    }
+  },
+  "event_reg": {
+    "field": {
+      "first_name": {
+        "label": "First Name*"
+      },
+      "last_name": {
+        "label": "Last Name*"
+      },
+      "email": {
+        "label": "Email*"
+      },
+      "phone": {
+        "label": "Phone"
+      },
+      "tckn": {
+        "label": "TCKN*",
+        "placeholder": "11-digit ID number"
+      },
+      "notes": {
+        "label": "Additional Notes",
+        "placeholder": "Your participation expectations, organization, or any notes you would like to share…"
+      }
+    },
+    "kvkk": {
+      "law_reference": "Pursuant to Law No. 6698 on the Protection of Personal Data",
+      "link": "Privacy Notice",
+      "suffix": "I have read and understood."
+    },
+    "footer_note": "Once your registration is complete, the status information will be displayed on this form. When necessary, we may contact you through the contact details you shared.",
+    "error": {
+      "event_closed": "Registration for this event is closed. Registration closes automatically 24 hours before the event starts.",
+      "event_not_found": "Event not found.",
+      "invalid_tckn": "Please enter a valid TCKN.",
+      "kvkk_not_approved": "You must approve the KVKK disclosure statement.",
+      "unexpected": "An unexpected error occurred during registration.",
+      "request_failed": "Registration request could not be sent. Please try again."
+    },
+    "validation": {
+      "first_name_required": "First name is required.",
+      "last_name_required": "Last name is required.",
+      "kvkk_required": "Please confirm that you have read the KVKK disclosure statement."
+    },
+    "submit": {
+      "idle": "Complete Registration",
+      "pending": "Sending Registration..."
+    },
+    "success": {
+      "with_title": "Your registration for {title} has been received. Our team will contact you shortly."
+    }
+  },
+  "teachers": {
+    "hero": {
+      "title": "Our Instructors",
+      "description_strong": "Meet our team of expert instructors",
+      "description_rest": "in their fields. Shape your learning journey with our team of leading industry professionals, each bringing field experience into the classroom."
+    },
+    "list": {
+      "empty": "No instructor profiles have been added yet."
+    }
+  },
+  "blog": {
+    "hero": {
+      "title": "Blog",
+      "description": "Explore our archive of articles featuring sectoral perspectives, practical notes, and education-focused insights."
+    },
+    "list": {
+      "empty": "No blog posts matched your search."
+    },
+    "related_posts": {
+      "heading": "Related Posts",
+      "summary_empty": "Summary for this post will be added soon."
+    }
+  },
+  "news": {
+    "hero": {
+      "title": "News",
+      "description": "A corporate news area where you can follow the Academy agenda, new announcements, and featured developments."
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Contact",
+      "breadcrumb": "Contact",
+      "description": "Contact us about the training catalog, events, and corporate partnerships."
+    },
+    "tab": {
+      "corporate": "Corporate Training Request",
+      "instructor": "Instructor Application",
+      "partner": "Solution Partner Application",
+      "general": "General Contact"
+    },
+    "success": {
+      "corporate": "Your corporate training request has been received. You can browse our training catalog, or we will contact your team.",
+      "corporate_cta": "Browse Course Catalog",
+      "instructor": "Your instructor application has been received. We will contact you about opportunities suited to your area of expertise.",
+      "partner": "Your solution partnership application has been received. Our business development team will contact you.",
+      "general": "Your message has been received. We will contact you as soon as possible."
+    },
+    "field": {
+      "full_name": {
+        "label": "Full Name*"
+      },
+      "email": {
+        "label": "Email*"
+      },
+      "phone": {
+        "label": "Phone*"
+      },
+      "company": {
+        "label": "Company"
+      },
+      "message": {
+        "label": "Your Message*"
+      },
+      "interest_topic": {
+        "label": "Course/Topic of Interest*",
+        "placeholder": "e.g. Data Science, Leadership, Cybersecurity"
+      },
+      "expertise_areas": {
+        "label": "Areas of Expertise*",
+        "placeholder": "e.g. Python, Machine Learning, Deep Learning"
+      },
+      "company_size": {
+        "label": "Company Size*",
+        "placeholder": "e.g. 10-50, 50-100, 100+"
+      },
+      "partnership_details": {
+        "label": "Partnership Details",
+        "placeholder": "Briefly share your partnership motivation and expectations."
+      }
+    },
+    "kvkk": {
+      "text": "Your personal data is collected to contact you.",
+      "link": "Privacy Notice",
+      "suffix": "I have read and agree.*"
+    },
+    "submit": {
+      "idle": "Submit",
+      "pending": "Submitting..."
+    },
+    "new_submission": "New Submission",
+    "validation": {
+      "full_name_required": "Full name is required",
+      "email_invalid": "Please enter a valid email address",
+      "phone_required": "Phone number is required",
+      "message_required": "Message is required",
+      "kvkk_required": "You must accept the privacy notice",
+      "interest_topic_required": "Course/topic of interest is required",
+      "expertise_areas_required": "Areas of expertise are required",
+      "company_size_required": "Company size is required"
+    },
+    "error": {
+      "invalid_lead_type": "Invalid submission type. Please refresh the page and try again.",
+      "required_fields": "Please fill in all required fields.",
+      "kvkk_consent": "You must accept the privacy notice.",
+      "submit_failed": "Form could not be submitted. Please try again."
+    }
+  },
+  "solution_partner": {
+    "meta": {
+      "title": "Solution Partner | Netas Academy",
+      "description": "Apply to partner with Netas Academy in training, consulting, workshops, and sectoral expertise areas."
+    },
+    "hero": {
+      "title": "Solution Partnership",
+      "breadcrumb": "Solution Partnership"
+    },
+    "intro": {
+      "paragraph": "With Netaş Academy, we can design solutions aligned with organizational growth goals, sector needs, and areas of expertise, and shape collaborations that span from training to consulting."
+    },
+    "accordion": {
+      "heading": "Areas Where We Can Partner",
+      "training": {
+        "title": "Training Programs",
+        "body": "We can collaborate on the design and delivery of open-enrollment and closed-group training programs tailored to organizational needs."
+      },
+      "consulting": {
+        "title": "Consulting Services",
+        "body": "We can work together on consulting services in corporate development, organizational transformation, and human resources strategy."
+      },
+      "workshop": {
+        "title": "Workshops and Facilitation",
+        "body": "We can partner on facilitating team workshops, strategy sessions, and creative problem-solving forums."
+      },
+      "expertise": {
+        "title": "Sectoral / Topic-Based Expertise",
+        "body": "We can turn your deep expertise in a specific sector or subject area into training and content programs under Netaş Academy."
+      }
+    },
+    "cta": {
+      "heading": "Apply",
+      "body": "You can share your ideas for potential collaboration with Netaş Academy in training, consulting, workshops, or sector-specific expertise.",
+      "button": "Solution Partner Application"
+    }
+  },
+  "kvkk": {
+    "back_button": "Go Back"
+  },
+  "newsletter": {
+    "field": {
+      "email": {
+        "label": "Your email address",
+        "placeholder": "Your email address"
+      }
+    },
+    "submit": {
+      "idle": "Subscribe",
+      "pending": "Submitting..."
+    },
+    "success": "Your subscription has been received. Thank you!",
+    "error": {
+      "generic": "An error occurred during subscription.",
+      "unexpected": "An unexpected error occurred."
+    }
+  },
+  "taxonomy": {
+    "topic": {
+      "siber_guvenlik": "Cybersecurity",
+      "yazilim_gelistirme": "Software Development",
+      "veri_bilimi": "Data Analytics",
+      "bulut_altyapi": "Cloud",
+      "is_surecleri": "Processes",
+      "yapay_zeka": "Artificial Intelligence"
+    },
+    "level": {
+      "temel": "Beginner",
+      "orta": "Intermediate",
+      "ileri": "Advanced"
+    },
+    "event_type": {
+      "etkinlik": "Event",
+      "egitim": "Training",
+      "kurs": "Course"
+    }
+  }
+}

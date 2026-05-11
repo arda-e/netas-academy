@@ -1,0 +1,441 @@
+{
+  "site": {
+    "meta": {
+      "title": "Netas Academy",
+      "description": "Course, event, teacher, and editorial portal for Netas Academy."
+    }
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkımızda",
+    "events": "Etkinlikler",
+    "courses": "Eğitim Kataloğu",
+    "teachers": "Eğitmenler",
+    "solution_partner": "Çözüm Ortağı",
+    "blog": "Blog",
+    "news": "Haberler",
+    "contact": "İletişim"
+  },
+  "header": {
+    "logo": {
+      "aria_label": "Netas Academy ana sayfası"
+    },
+    "mobile_menu": {
+      "toggle_label_open": "Menüyü aç",
+      "toggle_label_close": "Menüyü kapat",
+      "button_text": "Menü"
+    }
+  },
+  "footer": {
+    "brand": {
+      "name": "Netas Academy",
+      "tagline": "Eğitim, etkinlik ve kurumsal gelişim içerikleri."
+    },
+    "site_plan": {
+      "heading": "Site Planı",
+      "aria_label": "Site planı"
+    },
+    "legal": {
+      "aria_label": "Yasal ve kurumsal bağlantılar",
+      "kvkk": "KVKK",
+      "netas_website": "Netaş Web Sitesi"
+    }
+  },
+  "common": {
+    "carousel": {
+      "prev": "Önceki içerik",
+      "next": "Sonraki içerik"
+    },
+    "breadcrumbs": {
+      "aria_label": "Sayfa yolu"
+    },
+    "search": {
+      "aria_label": "Ara",
+      "placeholder": "Ara..."
+    },
+    "teacher_carousel": {
+      "prev": "Onceki egitmenler",
+      "next": "Sonraki egitmenler"
+    },
+    "course_carousel": {
+      "prev": "Onceki egitimler",
+      "next": "Sonraki egitimler",
+      "examine": "Egitimi incele"
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "Netas Academy | Kurumsal Eğitim ve Hakkımızda",
+      "description": "Netaş Akademi'nin ana sayfası ve hakkımızda anlatısı tek bir akışta; kurumsal eğitim yaklaşımımızı, uygulamalı öğrenme modelimizi ve öne çıkan programlarımızı keşfedin."
+    },
+    "hero": {
+      "title": "Kurumsal dönüşümü saha tecrübesiyle hızlandırın.",
+      "description": "Netaş Akademi, teknoloji birikimi ve saha deneyimini kurumsal öğrenmeye dönüştürerek ekiplerin değişime daha hızlı uyum sağlamasına yardımcı olur.",
+      "cta_primary": "Daha Fazla Keşfet"
+    },
+    "about": {
+      "eyebrow": "Hakkımızda",
+      "heading": "Kurumsal dönüşümü öğrenme deneyimine çeviren tek sayfalık bir anlatı sunar.",
+      "body": "Netaş'ın teknoloji ve sektör tecrübesiyle şekillenen programlar, kurumların kendi ihtiyaçlarına göre yeniden kurgulanır. Amacımız, ekiplerinize yalnızca bilgi vermek değil, değişime daha hızlı uyum sağlayan bir çalışma kültürü kazandırmaktır.",
+      "cta_corporate": "Kurumsal Eğitim Talep Et",
+      "cta_catalog": "Eğitim Kataloğunu İncele",
+      "card_proven": {
+        "title": "Sahada Kanıtlanmış",
+        "body": "Yılların sektör deneyimiyle oluşturulmuş, teoriden pratiğe uzanan eğitim içerikleri."
+      },
+      "card_custom": {
+        "title": "Kuruma Özel",
+        "body": "Her kurumun ihtiyacına göre şekillenen esnek program yapısı ve özelleştirilebilir içerikler."
+      },
+      "card_transform": {
+        "title": "Dönüşüm Odaklı",
+        "body": "Bireysel öğrenmenin ötesinde, takım dinamiklerini güçlendiren ve iş birliğini artıran programlar."
+      },
+      "card_netas": {
+        "title": "Netaş Güvencesi",
+        "body": "Kurumsal eğitim programları, teknoloji ve sektör birikiminin sahada karşılık bulan bir öğrenme modeline dönüşür."
+      },
+      "card_applied": {
+        "title": "Uygulamalı Model",
+        "heading": "Gerçek iş problemleri üzerinden ilerleyen öğrenme tasarımı",
+        "body": "Vaka, senaryo ve etkileşimli çalışma biçimleriyle teori ve pratiği aynı akışta buluşturuyoruz. Katılımcıların öğrendiklerini kendi iş bağlamlarına taşımasını hedefliyoruz."
+      },
+      "card_impact": {
+        "title": "Eğitim Etkisi",
+        "body": "Program sonunda daha hızlı adaptasyon, daha güçlü takım çalışması ve ölçülebilir öğrenme çıktıları hedeflenir."
+      },
+      "card_flexible": {
+        "title": "Esnek Yapı",
+        "body": "Açık sınıf, kapalı devre, hibrit ve uzaktan formatlar aynı kurumsal hedef için yeniden kurgulanabilir."
+      }
+    },
+    "teachers": {
+      "eyebrow": "Eğitmen Kadrosu",
+      "heading": "Saha deneyimi güçlü eğitmenlerimiz",
+      "body": "Eğitmenlerimiz yalnızca anlatıcı değil, sahada dönüşüm projelerinde yer almış uzmanlardır. Katılımcılara örnekler, yöntemler ve uygulanabilir çerçeveler sunarak kuram ile pratik arasındaki köprüyü birlikte kurar."
+    },
+    "courses": {
+      "eyebrow": "Öne Çıkan Eğitimler",
+      "heading": "Programlarımızı tek bir akışta keşfedin",
+      "body": "En güncel eğitim programlarımızı inceleyin. Her program, kurumların dönüşüm ihtiyaçlarına yanıt verecek şekilde yapılandırılır."
+    },
+    "contact_cta": {
+      "eyebrow": "İletişim",
+      "heading": "Kurumsal eğitim ihtiyacınızı birlikte şekillendirelim",
+      "body": "Eğitim kapsamını, ekip yapınızı ve hedeflediğiniz çıktıları paylaşın. İhtiyacınıza uygun bir kurumsal program kurgulayalım.",
+      "button": "Kurumsal Eğitim Talebi"
+    }
+  },
+  "courses": {
+    "meta": {
+      "not_found": "Egitim Bulunamadi"
+    },
+    "hero": {
+      "title": "Eğitim Kataloğu",
+      "description_strong": "Uzman eğitmenlerin hazırladığı programları",
+      "description_rest": "inceleyin, kurumunuza en uygun öğrenme yolunu seçin.",
+      "chip_corporate": "Kurumsal programlar",
+      "chip_live": "Canlı oturumlar",
+      "chip_applied": "Uygulamalı öğrenme",
+      "pdf_label": "Katalog PDF indir",
+      "pdf_status": "Yakında aktif"
+    },
+    "list": {
+      "empty": "Bu kriterlere uygun eğitim bulunamadı.",
+      "empty_default": "Gösterilecek eğitim verisi şu an kullanılabilir değil."
+    },
+    "card": {
+      "no_summary": "Bu kurs için özet yakında eklenecek.",
+      "audience_label": "Kimler için:",
+      "teacher_label": "Eğitmen:"
+    },
+    "detail": {
+      "no_summary": "Kurumunuza uygun, uygulama odaklı ve detaylı eğitim içeriği.",
+      "teacher_label": "Eğitmen",
+      "breadcrumb": "Eğitim Kataloğu",
+      "corporate_cta_label": "Bu Eğitimi Kurumsal Olarak Talep Et",
+      "corporate_cta_sub": "Talep formuna git",
+      "section": {
+        "description": "Eğitim Açıklaması",
+        "description_empty": "Bu eğitim için detaylı içerik yakında eklenecek.",
+        "business_value": "Kurumsal Değer",
+        "business_value_empty": "Bu eğitimin kurumsal değer bilgisi yakında eklenecek.",
+        "outcomes": "Beklenen Çıktılar",
+        "scope": "Kapsam ve İçerik",
+        "related_events": "İlişkili Etkinlikler"
+      }
+    }
+  },
+  "events": {
+    "meta": {
+      "not_found": "Etkinlik Bulunamadı"
+    },
+    "hero": {
+      "title": "Etkinlikler",
+      "description_strong": "Yaklaşan buluşmaları, webinarları ve özel oturumları",
+      "description_rest": "takip edin; katılım için gerekli detaylara tek ekrandan ulaşın."
+    },
+    "detail": {
+      "info_panel_heading": "Etkinlik Bilgileri",
+      "register_cta": "Etkinliğe Kayıt Ol",
+      "contact_cta": "İletişime Geç",
+      "registration_closed_notice": "Bu etkinliğin kayıtları şu an kapalı. Yeni etkinliklerden haberdar olmak için bültenimize abone olun.",
+      "content_empty": "Bu etkinlik için detaylı içerik yakında eklenecek."
+    },
+    "filters": {
+      "type": {
+        "etkinlik": "Etkinlik",
+        "egitim": "Eğitim",
+        "kurs": "Kurs"
+      }
+    },
+    "sort": {
+      "label_asc": "Önce yeni",
+      "label_desc": "Önce eski",
+      "aria_label_asc": "Sırala: önce yeni",
+      "aria_label_desc": "Sırala: önce eski",
+      "prefix": "Sırala:"
+    },
+    "card": {
+      "summary_empty": "Bu etkinlik icin aciklama yakinda eklenecek."
+    },
+    "list": {
+      "empty": "Gosterilecek etkinlik verisi su an kullanilabilir degil."
+    }
+  },
+  "event_reg": {
+    "field": {
+      "first_name": {
+        "label": "Adınız*"
+      },
+      "last_name": {
+        "label": "Soyadınız*"
+      },
+      "email": {
+        "label": "E-Posta*"
+      },
+      "phone": {
+        "label": "Telefon"
+      },
+      "tckn": {
+        "label": "TCKN*",
+        "placeholder": "11 haneli kimlik numarası"
+      },
+      "notes": {
+        "label": "Ek Notlar",
+        "placeholder": "Katılım beklentiniz, kurumunuz veya iletmek istediginiz notlar..."
+      }
+    },
+    "kvkk": {
+      "law_reference": "6698 Sayılı Kişisel Verileri Koruma Kanunu Uyarınca",
+      "link": "Aydınlatma Metni'ni",
+      "suffix": "okudum ve anladım."
+    },
+    "footer_note": "Kaydınız tamamlandığında durum bilgisi bu form üzerinde gösterilir. Gerekli durumlarda sizinle paylaştığınız iletişim bilgileri üzerinden iletişime geçilebilir.",
+    "error": {
+      "event_closed": "Bu etkinlik icin kayitlar kapandi. Kayitlar etkinlik baslangicindan 24 saat once otomatik olarak kapanir.",
+      "event_not_found": "Etkinlik bulunamadi.",
+      "invalid_tckn": "Gecerli bir TCKN girin.",
+      "kvkk_not_approved": "KVKK aydinlatma metnini onaylamaniz gerekmektedir.",
+      "unexpected": "Kayit sirasinda beklenmeyen bir sorun olustu.",
+      "request_failed": "Kayit istegi gonderilemedi. Lutfen tekrar deneyin."
+    },
+    "validation": {
+      "first_name_required": "Ad alani zorunludur.",
+      "last_name_required": "Soyad alani zorunludur.",
+      "kvkk_required": "Lutfen KVKK aydinlatma metnini okudugunuzu onaylayin."
+    },
+    "submit": {
+      "idle": "Kaydi Tamamla",
+      "pending": "Kayit Gonderiliyor..."
+    },
+    "success": {
+      "with_title": "{title} etkinligi icin kaydiniz alindi. Ekibimiz kisa sure icinde sizinle iletisime gececek."
+    }
+  },
+  "teachers": {
+    "hero": {
+      "title": "Eğitmenlerimiz",
+      "description_strong": "Alanında uzman eğitmen kadromuzla",
+      "description_rest": "tanışın. Her biri saha deneyimini sınıfa taşıyan, sektörün önde gelen profesyonellerinden oluşan ekibimizle öğrenme yolculuğunuza yön verin."
+    },
+    "list": {
+      "empty": "Henüz eğitmen profili eklenmemiş."
+    }
+  },
+  "blog": {
+    "hero": {
+      "title": "Blog",
+      "description": "Sektörel bakış açıları, uygulama notları ve eğitim odaklı içgörülerle hazırlanan yazı arşivini keşfedin."
+    },
+    "list": {
+      "empty": "Aramanızla eşleşen blog yazısı bulunamadı."
+    },
+    "related_posts": {
+      "heading": "İlgili Yazılar",
+      "summary_empty": "Bu yazı için özet yakında eklenecek."
+    }
+  },
+  "news": {
+    "hero": {
+      "title": "Haberler",
+      "description": "Akademi gündemini, yeni duyuruları ve öne çıkan gelişmeleri takip edebileceğiniz kurumsal haber alanı."
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "İletişim",
+      "breadcrumb": "İletişim",
+      "description": "Eğitim kataloğu, etkinlikler ve kurumsal iş birlikleri hakkında bize yazın."
+    },
+    "tab": {
+      "corporate": "Kurumsal Eğitim Talebi",
+      "instructor": "Eğitmen Başvurusu",
+      "partner": "Çözüm Ortağı Başvurusu",
+      "general": "Genel İletişim"
+    },
+    "success": {
+      "corporate": "Kurumsal eğitim talebiniz alınmıştır. Eğitim kataloğumuza göz atabilir veya ekibinizle iletişime geçeceğiz.",
+      "corporate_cta": "Eğitim Kataloğunu İncele",
+      "instructor": "Eğitmen başvurunuz alınmıştır. Uzmanlık alanınıza uygun fırsatlar için sizinle iletişime geçeceğiz.",
+      "partner": "Çözüm ortaklığı başvurunuz alınmıştır. İş geliştirme ekibimiz sizinle iletişime geçecektir.",
+      "general": "Mesajınız alınmıştır. En kısa sürede sizinle iletişime geçeceğiz."
+    },
+    "field": {
+      "full_name": {
+        "label": "Ad Soyad*"
+      },
+      "email": {
+        "label": "E-Posta*"
+      },
+      "phone": {
+        "label": "Telefon*"
+      },
+      "company": {
+        "label": "Şirket"
+      },
+      "message": {
+        "label": "Mesajınız*"
+      },
+      "interest_topic": {
+        "label": "İlgi Duyulan Eğitim / Konu*",
+        "placeholder": "Örn. Veri Bilimi, Liderlik, Siber Güvenlik"
+      },
+      "expertise_areas": {
+        "label": "Uzmanlık Alanlarınız*",
+        "placeholder": "Örn. Python, Makine Öğrenmesi, Derin Öğrenme"
+      },
+      "company_size": {
+        "label": "Şirket Büyüklüğü*",
+        "placeholder": "Örn. 10-50, 50-100, 100+"
+      },
+      "partnership_details": {
+        "label": "Ortaklık Detayları",
+        "placeholder": "Ortaklık motivasyonunuzu ve beklentilerinizi kısaca paylaşın."
+      }
+    },
+    "kvkk": {
+      "text": "Kişisel verileriniz sizinle iletişime geçmek amacıyla alınmaktadır.",
+      "link": "Aydınlatma Metni",
+      "suffix": "'ni okudum, onaylıyorum.*"
+    },
+    "submit": {
+      "idle": "Gönder",
+      "pending": "Gönderiliyor..."
+    },
+    "new_submission": "Yeni Başvuru Yap",
+    "validation": {
+      "full_name_required": "Ad Soyad zorunludur",
+      "email_invalid": "Geçerli bir e-posta adresi girin",
+      "phone_required": "Telefon numarası zorunludur",
+      "message_required": "Mesaj alanı zorunludur",
+      "kvkk_required": "KVKK metnini onaylamanız gerekmektedir",
+      "interest_topic_required": "İlgi duyulan eğitim/konu zorunludur",
+      "expertise_areas_required": "Uzmanlık alanlarınız zorunludur",
+      "company_size_required": "Şirket büyüklüğü zorunludur"
+    },
+    "error": {
+      "invalid_lead_type": "Geçersiz başvuru türü. Lütfen sayfayı yenileyip tekrar deneyin.",
+      "required_fields": "Lütfen zorunlu alanların tamamını doldurun.",
+      "kvkk_consent": "KVKK metnini onaylamanız gerekmektedir.",
+      "submit_failed": "Form gönderilemedi. Lütfen tekrar deneyin."
+    }
+  },
+  "solution_partner": {
+    "meta": {
+      "title": "Çözüm Ortağı | Netaş Academy",
+      "description": "Netaş Academy ile eğitim, danışmanlık, workshop ve sektörel uzmanlık alanlarında çözüm ortaklığı yapmak için başvurun."
+    },
+    "hero": {
+      "title": "Çözüm Ortaklığı",
+      "breadcrumb": "Çözüm Ortaklığı"
+    },
+    "intro": {
+      "paragraph": "Netaş Academy ile kurumların gelişim hedeflerine, sektör ihtiyaçlarına ve uzmanlık alanlarına uygun çözümler tasarlayabilir; eğitimden danışmanlığa uzanan iş birliklerini birlikte kurgulayabiliriz."
+    },
+    "accordion": {
+      "heading": "Hangi Alanlarda Çözüm Ortaklığı Yapabiliriz",
+      "training": {
+        "title": "Eğitim Programları",
+        "body": "Kurumların ihtiyaçlarına göre şekillendirilen açık ve kapalı devre eğitim programlarının tasarımı ve uygulanması süreçlerinde iş birliği yapabiliriz."
+      },
+      "consulting": {
+        "title": "Danışmanlık Hizmetleri",
+        "body": "Kurumsal gelişim, organizasyonel dönüşüm ve insan kaynakları stratejileri alanlarında danışmanlık hizmetlerini birlikte yürütebiliriz."
+      },
+      "workshop": {
+        "title": "Workshop ve Fasilitasyon",
+        "body": "Takım çalıştayları, strateji atölyeleri ve yaratıcı problem çözme oturumlarının fasilitasyonu konusunda ortak çalışmalar gerçekleştirebiliriz."
+      },
+      "expertise": {
+        "title": "Sektörel / Konu Bazlı Uzmanlık",
+        "body": "Belirli bir sektör veya konu alanındaki derin uzmanlığınızı Netaş Academy çatısı altında eğitim ve içerik programlarına dönüştürebiliriz."
+      }
+    },
+    "cta": {
+      "heading": "Başvurunuzu gönderin",
+      "body": "Eğitim, danışmanlık, workshop veya sektörel uzmanlık alanlarında Netaş Academy ile olası iş birliği fikrinizi bizimle paylaşabilirsiniz.",
+      "button": "Çözüm Ortağı Başvurusu Yap"
+    }
+  },
+  "kvkk": {
+    "back_button": "Geri Dön"
+  },
+  "newsletter": {
+    "field": {
+      "email": {
+        "label": "E-posta adresiniz",
+        "placeholder": "E-posta adresiniz"
+      }
+    },
+    "submit": {
+      "idle": "Abone Ol",
+      "pending": "Gönderiliyor..."
+    },
+    "success": "Aboneliğiniz başarıyla alındı. Teşekkür ederiz!",
+    "error": {
+      "generic": "Abonelik sırasında bir hata oluştu.",
+      "unexpected": "Beklenmeyen bir hata oluştu."
+    }
+  },
+  "taxonomy": {
+    "topic": {
+      "siber_guvenlik": "Siber Güvenlik",
+      "yazilim_gelistirme": "Yazılım",
+      "veri_bilimi": "Veri Analitiği",
+      "bulut_altyapi": "Bulut",
+      "is_surecleri": "Süreçler",
+      "yapay_zeka": "Yapay Zeka"
+    },
+    "level": {
+      "temel": "Temel",
+      "orta": "Orta",
+      "ileri": "İleri"
+    },
+    "event_type": {
+      "etkinlik": "Etkinlik",
+      "egitim": "Eğitim",
+      "kurs": "Kurs"
+    }
+  }
+}

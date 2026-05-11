@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +28,7 @@ export function EventRegistrationForm({
   eventTitle,
   eventType,
 }: EventRegistrationFormProps) {
+  const t = useTranslations('event_reg');
   const {
     values,
     isSubmitting,
@@ -57,7 +59,7 @@ export function EventRegistrationForm({
       <div className="grid gap-4 md:gap-6 md:grid-cols-2">
         <div className={fieldWrapperClassName}>
           <label htmlFor="firstName" className={labelClassName}>
-            Adınız*
+            {t('field.first_name.label')}
           </label>
           <Input
             id="firstName"
@@ -72,7 +74,7 @@ export function EventRegistrationForm({
 
         <div className={fieldWrapperClassName}>
           <label htmlFor="lastName" className={labelClassName}>
-            Soyadınız*
+            {t('field.last_name.label')}
           </label>
           <Input
             id="lastName"
@@ -87,7 +89,7 @@ export function EventRegistrationForm({
 
         <div className={fieldWrapperClassName}>
           <label htmlFor="email" className={labelClassName}>
-            E-Posta*
+            {t('field.email.label')}
           </label>
           <Input
             id="email"
@@ -103,7 +105,7 @@ export function EventRegistrationForm({
 
         <div className={fieldWrapperClassName}>
           <label htmlFor="phone" className={labelClassName}>
-            Telefon
+            {t('field.phone.label')}
           </label>
           <Input
             id="phone"
@@ -119,7 +121,7 @@ export function EventRegistrationForm({
         {requiresTckn ? (
           <div className={`${fieldWrapperClassName} md:col-span-2`}>
             <label htmlFor="tckn" className={labelClassName}>
-              TCKN*
+              {t('field.tckn.label')}
             </label>
             <Input
               id="tckn"
@@ -132,7 +134,7 @@ export function EventRegistrationForm({
               onChange={handleChange}
               className={fieldClassName}
               required
-              placeholder="11 haneli kimlik numarası"
+              placeholder={t('field.tckn.placeholder')}
               data-testid="event-registration.field.tckn"
             />
           </div>
@@ -141,7 +143,7 @@ export function EventRegistrationForm({
 
       <div className={fieldWrapperClassName}>
         <label htmlFor="notes" className={labelClassName}>
-          Ek Notlar
+          {t('field.notes.label')}
         </label>
         <Textarea
           id="notes"
@@ -149,7 +151,7 @@ export function EventRegistrationForm({
           value={values.notes}
           onChange={handleChange}
           className="min-h-[9rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:px-5 md:text-base"
-          placeholder="Katılım beklentiniz, kurumunuz veya iletmek istediginiz notlar..."
+          placeholder={t('field.notes.placeholder')}
           data-testid="event-registration.field.notes"
         />
       </div>
@@ -168,11 +170,11 @@ export function EventRegistrationForm({
             />
             <span className="space-y-1">
               <span className="block font-medium text-foreground">
-                6698 Sayılı Kişisel Verileri Koruma Kanunu Uyarınca{" "}
+                {t('kvkk.law_reference')}{" "}
                 <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80" data-testid="event-registration.link.kvkk-disclosure">
-                  Aydınlatma Metni&apos;ni
+                  {t('kvkk.link')}
                 </Link>{" "}
-                okudum ve anladım.
+                {t('kvkk.suffix')}
               </span>
             </span>
           </span>
@@ -181,8 +183,7 @@ export function EventRegistrationForm({
 
       <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-center md:justify-between">
         <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-          Kaydınız tamamlandığında durum bilgisi bu form üzerinde gösterilir. Gerekli durumlarda sizinle
-          paylaştığınız iletişim bilgileri üzerinden iletişime geçilebilir.
+          {t('footer_note')}
         </p>
 
         <Button
@@ -191,7 +192,7 @@ export function EventRegistrationForm({
           className="h-12 w-full rounded-sm px-7 text-base font-semibold sm:w-auto md:h-14 md:text-lg"
           data-testid="event-registration.submit"
         >
-          {isSubmitting ? "Kayit Gonderiliyor..." : "Kaydi Tamamla"}
+          {isSubmitting ? t('submit.pending') : t('submit.idle')}
         </Button>
       </div>
     </form>

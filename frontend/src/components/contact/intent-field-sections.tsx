@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { LeadType } from "@/lib/lead-intents";
 import type { UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -21,16 +22,17 @@ type IntentFieldSectionsProps = {
 };
 
 export function IntentFieldSections({ leadType, register, errors, onFieldFocus }: IntentFieldSectionsProps) {
+  const t = useTranslations("contact");
   switch (leadType) {
     case "corporate_training_request":
       return (
         <div className={fieldWrapperClassName}>
           <label htmlFor="interestTopic" className={labelClassName}>
-            İlgi Duyulan Eğitim / Konu*
+            {t("field.interest_topic.label")}
           </label>
           <Input
             id="interestTopic"
-            placeholder="Örn. Veri Bilimi, Liderlik, Siber Güvenlik"
+            placeholder={t("field.interest_topic.placeholder")}
             className={fieldClassName}
             {...register("interestTopic")}
             onFocus={onFieldFocus}
@@ -46,11 +48,11 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
       return (
         <div className={fieldWrapperClassName}>
           <label htmlFor="expertiseAreas" className={labelClassName}>
-            Uzmanlık Alanlarınız*
+            {t("field.expertise_areas.label")}
           </label>
           <Textarea
             id="expertiseAreas"
-            placeholder="Örn. Python, Makine Öğrenmesi, Derin Öğrenme"
+            placeholder={t("field.expertise_areas.placeholder")}
             className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
             {...register("expertiseAreas")}
             onFocus={onFieldFocus}
@@ -67,11 +69,11 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
         <>
           <div className={fieldWrapperClassName}>
             <label htmlFor="companySize" className={labelClassName}>
-              Şirket Büyüklüğü*
+              {t("field.company_size.label")}
             </label>
             <Input
               id="companySize"
-              placeholder="Örn. 10-50, 50-100, 100+"
+              placeholder={t("field.company_size.placeholder")}
               className={fieldClassName}
               {...register("companySize")}
               onFocus={onFieldFocus}
@@ -83,11 +85,11 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
           </div>
           <div className={fieldWrapperClassName}>
             <label htmlFor="partnershipDetails" className={labelClassName}>
-              Ortaklık Detayları
+              {t("field.partnership_details.label")}
             </label>
             <Textarea
               id="partnershipDetails"
-              placeholder="Ortaklık motivasyonunuzu ve beklentilerinizi kısaca paylaşın."
+              placeholder={t("field.partnership_details.placeholder")}
               className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
               {...register("partnershipDetails")}
               onFocus={onFieldFocus}

@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import type { StrapiEventType } from "@/lib/strapi-types";
 import { isValidTckn, normalizeTcknValue } from "@/lib/tckn";
@@ -32,45 +33,47 @@ const initialValues: EventRegistrationValues = {
   kvkkConsent: false,
 };
 
-function getErrorMessage(payload: unknown) {
-  if (
-    payload &&
-    typeof payload === "object" &&
-    "error" in payload &&
-    payload.error &&
-    typeof payload.error === "object" &&
-    "message" in payload.error &&
-    typeof payload.error.message === "string"
-  ) {
-    const message = payload.error.message;
-
-    if (message === "Event registration is closed") {
-      return "Bu etkinlik icin kayitlar kapandi. Kayitlar etkinlik baslangicindan 24 saat once otomatik olarak kapanir.";
-    }
-
-    if (message === "Event not found") {
-      return "Etkinlik bulunamadi.";
-    }
-
-    if (message === "Invalid TCKN") {
-      return "Gecerli bir TCKN girin.";
-    }
-
-    if (message === "kvkkConsent must be true") {
-      return "KVKK aydinlatma metnini onaylamaniz gerekmektedir.";
-    }
-
-    return message;
-  }
-
-  return "Kayit sirasinda beklenmeyen bir sorun olustu.";
-}
-
 export function useEventRegistrationForm({
   eventDocumentId,
   eventTitle,
   eventType,
 }: UseEventRegistrationFormOptions) {
+  const t = useTranslations('event_reg');
+
+  function getErrorMessage(payload: unknown) {
+    if (
+      payload &&
+      typeof payload === "object" &&
+      "error" in payload &&
+      payload.error &&
+      typeof payload.error === "object" &&
+      "message" in payload.error &&
+      typeof payload.error.message === "string"
+    ) {
+      const message = payload.error.message;
+
+      if (message === "Event registration is closed") {
+        return t('error.event_closed');
+      }
+
+      if (message === "Event not found") {
+        return t('error.event_not_found');
+      }
+
+      if (message === "Invalid TCKN") {
+        return t('error.invalid_tckn');
+      }
+
+      if (message === "kvkkConsent must be true") {
+        return t('error.kvkk_not_approved');
+      }
+
+      return message;
+    }
+
+    return t('error.unexpected');
+  }
+
   const { load, save: persistValues, clear: clearStorage } =
     useFormPersistence<EventRegistrationValues>(
       `event-registration-${eventDocumentId}`,
@@ -121,13 +124,13 @@ export function useEventRegistrationForm({
     setSuccessMessage(null);
 
     if (!values.firstName.trim()) {
-      setErrorMessage("Ad alani zorunludur.");
+      setErrorMessage(t('validation.first_name_required'));
       setIsSubmitting(false);
       return;
     }
 
     if (!values.lastName.trim()) {
-      setErrorMessage("Soyad alani zorunludur.");
+      setErrorMessage(t('validation.last_name_required'));
       setIsSubmitting(false);
       return;
     }
@@ -135,13 +138,13 @@ export function useEventRegistrationForm({
     const normalizedTckn = requiresTckn ? normalizeTcknValue(values.tckn) : "";
 
     if (requiresTckn && !isValidTckn(normalizedTckn)) {
-      setErrorMessage("Gecerli bir TCKN girin.");
+      setErrorMessage(t('error.invalid_tckn'));
       setIsSubmitting(false);
       return;
     }
 
     if (requiresKvkkConsent && !values.kvkkConsent) {
-      setErrorMessage("Lutfen KVKK aydinlatma metnini okudugunuzu onaylayin.");
+      setErrorMessage(t('validation.kvkk_required'));
       setIsSubmitting(false);
       return;
     }
@@ -174,12 +177,12 @@ export function useEventRegistrationForm({
       }
 
       setSuccessMessage(
-        `${eventTitle} etkinligi icin kaydiniz alindi. Ekibimiz kisa sure icinde sizinle iletisime gececek.`
+        t('success.with_title', { title: eventTitle })
       );
       clearStorage();
       setValues(initialValues);
     } catch {
-      setErrorMessage("Kayit istegi gonderilemedi. Lutfen tekrar deneyin.");
+      setErrorMessage(t('error.request_failed'));
     } finally {
       setIsSubmitting(false);
     }

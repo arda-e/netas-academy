@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { getTranslations } from "next-intl/server";
 
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
@@ -6,6 +7,7 @@ import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import { join } from "@/lib/testids";
 import { formatEventDateTime } from "@/lib/date-formatting";
+import { getEventTypeLabel } from "@/lib/content-taxonomy";
 
 type EventListItem = {
   topicArea?: string | null;
@@ -34,26 +36,19 @@ type EventDetailProps = {
   afterContent?: ReactNode;
 };
 
-const formatEventType = (eventType: string) => {
-  switch (eventType) {
-    case "egitim":
-      return "Eğitim";
-    case "kurs":
-      return "Kurs";
-    case "etkinlik":
-    default:
-      return "Etkinlik";
-  }
-};
-
-export function EventList({
+export async function EventList({
   items,
-  emptyMessage = "Gosterilecek etkinlik verisi su an kullanilabilir degil.",
+  emptyMessage,
 }: EventListProps) {
+  const t = await getTranslations("events");
+  const tx = await getTranslations("taxonomy");
+
+  const effectiveEmptyMessage = emptyMessage ?? t("list.empty");
+
   return (
     <ContentGrid
       itemsCount={items.length}
-      emptyMessage={emptyMessage}
+      emptyMessage={effectiveEmptyMessage}
       columnsClassName={responsiveLayoutClasses.eventListGrid}
       testId="etkinlikler.list"
     >
@@ -63,8 +58,8 @@ export function EventList({
           testId={join("etkinlikler", "card", event.slug)}
           href={`/etkinlikler/${event.slug}`}
           title={event.title}
-          kicker={formatEventType(event.eventType)}
-          summary={event.summary ?? "Bu etkinlik icin aciklama yakinda eklenecek."}
+          kicker={getEventTypeLabel(tx, event.eventType)}
+          summary={event.summary ?? t("card.summary_empty")}
           className="bg-white"
           meta={
             <div className="space-y-1.5 break-words">

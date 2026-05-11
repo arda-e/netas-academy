@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
+import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ export function TeacherCarousel({
   prevButtonTestId,
   nextButtonTestId,
 }: TeacherCarouselProps) {
+  const t = useTranslations('common');
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
   const scrollByPage = (direction: "left" | "right") => {
@@ -73,7 +75,7 @@ export function TeacherCarousel({
           type="button"
           size="icon-sm"
           variant="outline"
-          aria-label="Onceki egitmenler"
+          aria-label={t('teacher_carousel.prev')}
           data-testid={prevButtonTestId}
           onClick={() => scrollByPage("left")}
         >
@@ -83,7 +85,7 @@ export function TeacherCarousel({
           type="button"
           size="icon-sm"
           variant="outline"
-          aria-label="Sonraki egitmenler"
+          aria-label={t('teacher_carousel.next')}
           data-testid={nextButtonTestId}
           onClick={() => scrollByPage("right")}
         >
