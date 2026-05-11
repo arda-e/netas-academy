@@ -1,24 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
 
 const slides = [
   {
-    headline: 'Ekibinizin değişime uyum hızını artırın',
+    headline: 'Kurumsal öğrenmeyi iş bağlamına taşıyan programlar',
     subtitle:
-      'Teknoloji ve sektör birikimini uygulamalı öğrenmeye dönüştüren programlarla kurumsal dönüşümü hızlandırıyoruz.',
+      'Netaş Academy, teknoloji ve sektör deneyimini kurumunuza özel, uygulamalı öğrenme programlarına dönüştürür.',
   },
   {
-    headline: 'Beceri açığını kapatın, adaptasyon kültürü inşa edin',
+    headline: 'Kurumunuza göre tasarlanan, sahada uygulanabilen eğitimler',
     subtitle:
-      'Kurumun kendi iş bağlamına göre kurgulanmış eğitimler, ekiplerin değişime daha hazır hale gelmesini sağlar.',
+      'Her program, ekibin ihtiyaçlarına ve iş önceliklerine göre yeniden kurgulanır; hazır paket değil, gerçek kullanım için öğrenme tasarımı sunar.',
   },
   {
-    headline: 'Değişim yönetimini ekibinizin içinden başlatın',
+    headline: 'Değişimi ekibin içinden başlatan öğrenme yaklaşımı',
     subtitle:
-      'Sahada denenmiş yöntemler ve gerçek iş problemleri üzerinden ilerleyen öğrenme tasarımı ile fark yaratın.',
+      'Sahada denenmiş yöntemler, vaka çalışmaları ve pratik uygulamalarla ekiplerin değişime daha hızlı uyum sağlamasına yardımcı olur.',
   },
 ];
 
@@ -29,36 +29,34 @@ export function HomeHeroSection() {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 5000);
+
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="relative flex min-h-[clamp(640px,90svh,1000px)] items-center justify-center overflow-hidden bg-slate-950">
-      {/* Gradient overlay */}
+    <section className="relative flex min-h-[clamp(300px,44svh,680px)] items-center justify-center overflow-hidden bg-slate-950">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,oklch(0.65_0.12_205.25/0.25),transparent_60%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,oklch(0.65_0.12_205.25/0.12),transparent_50%)]" />
 
-      <div className="relative z-10 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 xl:px-12 pb-20">
-        <div className="relative w-full min-h-[20rem]">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-10 xl:px-12">
+        <div className="relative w-full min-h-[8rem]">
           {slides.map((slide, index) => (
             <div
-              key={index}
-              className={`flex flex-col lg:flex-row items-end transition-opacity duration-700 ease-in-out ${
+              key={slide.headline}
+              className={`flex flex-col items-center text-center transition-opacity duration-700 ease-in-out ${
                 index === current
-                  ? 'opacity-100 pointer-events-auto relative'
-                  : 'opacity-0 pointer-events-none absolute inset-x-0'
+                  ? 'relative pointer-events-auto opacity-100'
+                  : 'absolute inset-x-0 top-0 pointer-events-none opacity-0'
               }`}
             >
-              <div className="lg:w-2/3">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-normal text-white leading-tight">
+              <div className="mx-auto flex w-full max-w-5xl flex-col items-center">
+                <h1 className="text-3xl font-normal leading-tight text-white md:text-5xl lg:text-6xl">
                   {slide.headline}
                 </h1>
-              </div>
-              <div className="lg:w-1/3 lg:pl-8 mt-6 lg:mt-0">
-                <p className="text-base text-white/75 leading-relaxed max-w-sm">
+                <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/75 md:text-lg">
                   {slide.subtitle}
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row lg:flex-col gap-3">
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Link
                     href={buildIntentLeadUrl("corporate_training_request")}
                     data-measurement-id="home_hero_corporate_cta"
@@ -80,20 +78,19 @@ export function HomeHeroSection() {
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Dot navigation */}
-      <div className="absolute bottom-8 left-4 sm:left-6 lg:left-10 xl:left-12 z-10 flex gap-2.5">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrent(index)}
-            aria-label={`${index + 1}. slayta git`}
-            className={`w-2.5 h-2.5 rounded-full border-0 p-0 cursor-pointer transition-colors duration-300 ${
-              index === current ? 'bg-white' : 'bg-white/35'
-            }`}
-          />
-        ))}
+        <div className="mt-6 flex justify-center gap-2.5">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrent(index)}
+              aria-label={`${index + 1}. slayta git`}
+              className={`h-2.5 w-2.5 rounded-full border-0 p-0 cursor-pointer transition-colors duration-300 ${
+                index === current ? 'bg-white' : 'bg-white/35'
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

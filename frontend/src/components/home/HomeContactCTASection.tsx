@@ -3,7 +3,7 @@ import { buildIntentLeadUrl } from '@/lib/lead-intents';
 
 export function HomeContactCTASection() {
   return (
-    <section className="w-full h-[400px] bg-gradient-to-br from-slate-950 via-primary to-slate-950 flex flex-col items-center justify-center px-4 text-center">
+    <section className="w-full min-h-[220px] bg-gradient-to-br from-slate-950 via-primary to-slate-950 flex flex-col items-center justify-center px-4 py-10 text-center">
       <h2 className="text-3xl md:text-4xl font-normal text-white leading-snug max-w-2xl">
         İhtiyacınıza uygun eğitim yolculuğunu birlikte kuralım
       </h2>
@@ -15,7 +15,7 @@ export function HomeContactCTASection() {
         href={buildIntentLeadUrl("corporate_training_request")}
         data-measurement-id="home_contact_cta"
         data-testid="page.home.cta.contact"
-        className="mt-8 inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-white/90"
+        className="mt-6 inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-white/90"
       >
         Kurumsal Eğitim Talep Et
       </Link>

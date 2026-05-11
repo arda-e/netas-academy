@@ -39,18 +39,16 @@ export function CourseCarousel({
   cardTestIdPrefix,
   prevButtonTestId,
   nextButtonTestId,
-}: CourseCarouselProps) {
+  }: CourseCarouselProps) {
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-
-  // Calculate the scroll amount based on viewport width or a minimum threshold
-  const SCROLL_AMOUNT = Math.max(
-    scrollAreaRef.current?.clientWidth * 0.8 ?? 0,
-    320
-  );
 
   const handleScroll = (direction: "left" | "right") => {
     if (!scrollAreaRef.current) return;
 
+    const SCROLL_AMOUNT = Math.max(
+      scrollAreaRef.current.clientWidth * 0.8,
+      320
+    );
     const delta = direction === "left" ? -SCROLL_AMOUNT : SCROLL_AMOUNT;
     scrollAreaRef.current.scroll({
       left: scrollAreaRef.current.scrollLeft + delta,
@@ -67,32 +65,7 @@ export function CourseCarousel({
   }
 
   return (
-    <section className={cn("space-y-5", className)}>
-      {/* Navigation Buttons */}
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          type="button"
-          size="icon-sm"
-          variant="outline"
-          aria-label="Onceki egitimler"
-          data-testid={prevButtonTestId}
-          onClick={() => handleScroll("left")}
-        >
-          <CaretLeft className="size-4" weight="bold" />
-        </Button>
-
-        <Button
-          type="button"
-          size="icon-sm"
-          variant="outline"
-          aria-label="Sonraki egitimler"
-          data-testid={nextButtonTestId}
-          onClick={() => handleScroll("right")}
-        >
-          <CaretRight className="size-4" weight="bold" />
-        </Button>
-      </div>
-
+    <section className={cn("space-y-3", className)}>
       {/* Scrollable Content Area */}
       <div
         ref={scrollAreaRef}
@@ -142,6 +115,31 @@ export function CourseCarousel({
             </Link>
           );
         })}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex items-center justify-end gap-1.5">
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="outline"
+          aria-label="Onceki egitimler"
+          data-testid={prevButtonTestId}
+          onClick={() => handleScroll("left")}
+        >
+          <CaretLeft className="size-4" weight="bold" />
+        </Button>
+
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="outline"
+          aria-label="Sonraki egitimler"
+          data-testid={nextButtonTestId}
+          onClick={() => handleScroll("right")}
+        >
+          <CaretRight className="size-4" weight="bold" />
+        </Button>
       </div>
     </section>
   );
