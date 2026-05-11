@@ -65,8 +65,8 @@
   },
   "home": {
     "meta": {
-      "title": "[EN] Netas Academy | Kurumsal Eğitim ve Hakkımızda",
-      "description": "[EN] Netaş Akademi'nin ana sayfası ve hakkımızda anlatısı tek bir akışta; kurumsal eğitim yaklaşımımızı, uygulamalı öğrenme modelimizi ve öne çıkan programlarımızı keşfedin."
+      "title": "Netas Academy | Corporate Training and About Us",
+      "description": "Discover Netaş Academy’s homepage and about us narrative in a single flow; explore our corporate training approach, applied learning model, and featured programs."
     },
     "hero": {
       "title": "Accelerate corporate transformation with field expertise.",
@@ -75,7 +75,7 @@
     },
     "about": {
       "eyebrow": "About Us",
-      "heading": "[EN] Kurumsal dönüşümü öğrenme deneyimine çeviren tek sayfalık bir anlatı sunar.",
+      "heading": "Offers a one-page narrative that turns corporate transformation into a learning experience.",
       "body": "Programs shaped by Netas' technology and industry experience are redesigned according to each organization's needs. Our goal is not just to provide knowledge, but to instill a work culture that adapts to change more quickly.",
       "cta_corporate": "Request Corporate Training",
       "cta_catalog": "Browse Course Catalog",
@@ -97,8 +97,8 @@
       },
       "card_applied": {
         "title": "Applied Model",
-        "heading": "[EN] Gerçek iş problemleri üzerinden ilerleyen öğrenme tasarımı",
-        "body": "[EN] Vaka, senaryo ve etkileşimli çalışma biçimleriyle teori ve pratiği aynı akışta buluşturuyoruz. Katılımcıların öğrendiklerini kendi iş bağlamlarına taşımasını hedefliyoruz."
+        "heading": "Learning design built around real business problems",
+        "body": "We bring theory and practice together in the same flow through cases, scenarios, and interactive ways of working. We aim to help participants transfer what they learn into their own business contexts."
       },
       "card_impact": {
         "title": "Training Impact",
@@ -111,18 +111,18 @@
     },
     "teachers": {
       "eyebrow": "Instructor Team",
-      "heading": "[EN] Saha deneyimi güçlü eğitmenlerimiz",
-      "body": "[EN] Eğitmenlerimiz yalnızca anlatıcı değil, sahada dönüşüm projelerinde yer almış uzmanlardır. Katılımcılara örnekler, yöntemler ve uygulanabilir çerçeveler sunarak kuram ile pratik arasındaki köprüyü birlikte kurar."
+      "heading": "Our instructors with strong field experience",
+      "body": "Our instructors are not merely presenters; they are experts who have taken part in transformation projects in the field. They help build the bridge between theory and practice by offering participants examples, methods, and applicable frameworks."
     },
     "courses": {
       "eyebrow": "Featured Courses",
-      "heading": "[EN] Programlarımızı tek bir akışta keşfedin",
-      "body": "[EN] En güncel eğitim programlarımızı inceleyin. Her program, kurumların dönüşüm ihtiyaçlarına yanıt verecek şekilde yapılandırılır."
+      "heading": "Discover our programs in a single flow",
+      "body": "Explore our most up-to-date training programs. Each program is structured to address organizations’ transformation needs."
     },
     "contact_cta": {
       "eyebrow": "Contact",
-      "heading": "[EN] Kurumsal eğitim ihtiyacınızı birlikte şekillendirelim",
-      "body": "[EN] Eğitim kapsamını, ekip yapınızı ve hedeflediğiniz çıktıları paylaşın. İhtiyacınıza uygun bir kurumsal program kurgulayalım.",
+      "heading": "Let’s shape your corporate training needs together",
+      "body": "Share the training scope, your team structure, and your target outcomes. Let’s design a corporate program tailored to your needs.",
       "button": "Corporate Training Request"
     }
   },
@@ -132,8 +132,8 @@
     },
     "hero": {
       "title": "Course Catalog",
-      "description_strong": "[EN] Uzman eğitmenlerin hazırladığı programları",
-      "description_rest": "[EN] inceleyin, kurumunuza en uygun öğrenme yolunu seçin.",
+      "description_strong": "Explore the programs prepared by expert instructors",
+      "description_rest": "and choose the learning path best suited to your organization.",
       "chip_corporate": "Corporate programs",
       "chip_live": "Live sessions",
       "chip_applied": "Applied learning",
@@ -145,12 +145,12 @@
       "empty_default": "Course data is currently unavailable."
     },
     "card": {
-      "no_summary": "[EN] Bu kurs için özet yakında eklenecek.",
+      "no_summary": "A summary for this course will be added soon.",
       "audience_label": "Target Audience:",
       "teacher_label": "Instructor:"
     },
     "detail": {
-      "no_summary": "[EN] Kurumunuza uygun, uygulama odaklı ve detaylı eğitim içeriği.",
+      "no_summary": "Practical, application-focused, and detailed training content tailored to your organization.",
       "teacher_label": "Instructor",
       "breadcrumb": "Course Catalog",
       "corporate_cta_label": "Request This Course for Your Organization",
@@ -172,8 +172,8 @@
     },
     "hero": {
       "title": "Events",
-      "description_strong": "[EN] Yaklaşan buluşmaları, webinarları ve özel oturumları",
-      "description_rest": "[EN] takip edin; katılım için gerekli detaylara tek ekrandan ulaşın."
+      "description_strong": "Follow upcoming gatherings, webinars, and special sessions",
+      "description_rest": "and access all the details required for participation on a single screen."
     },
     "detail": {
       "info_panel_heading": "Event Information",
@@ -223,15 +223,15 @@
       },
       "notes": {
         "label": "Additional Notes",
-        "placeholder": "[EN] Katılım beklentiniz, kurumunuz veya iletmek istediginiz notlar..."
+        "placeholder": "Your participation expectations, organization, or any notes you would like to share…"
       }
     },
     "kvkk": {
       "law_reference": "Pursuant to Law No. 6698 on the Protection of Personal Data",
-      "link": "[EN] Aydınlatma Metni'ni",
+      "link": "Privacy Notice",
       "suffix": "I have read and understood."
     },
-    "footer_note": "[EN] Kaydınız tamamlandığında durum bilgisi bu form üzerinde gösterilir. Gerekli durumlarda sizinle paylaştığınız iletişim bilgileri üzerinden iletişime geçilebilir.",
+    "footer_note": "Once your registration is complete, the status information will be displayed on this form. When necessary, we may contact you through the contact details you shared.",
     "error": {
       "event_closed": "Registration for this event is closed. Registration closes automatically 24 hours before the event starts.",
       "event_not_found": "Event not found.",
@@ -256,8 +256,8 @@
   "teachers": {
     "hero": {
       "title": "Our Instructors",
-      "description_strong": "[EN] Alanında uzman eğitmen kadromuzla",
-      "description_rest": "[EN] tanışın. Her biri saha deneyimini sınıfa taşıyan, sektörün önde gelen profesyonellerinden oluşan ekibimizle öğrenme yolculuğunuza yön verin."
+      "description_strong": "Meet our team of expert instructors",
+      "description_rest": "in their fields. Shape your learning journey with our team of leading industry professionals, each bringing field experience into the classroom."
     },
     "list": {
       "empty": "No instructor profiles have been added yet."
@@ -266,7 +266,7 @@
   "blog": {
     "hero": {
       "title": "Blog",
-      "description": "[EN] Sektörel bakış açıları, uygulama notları ve eğitim odaklı içgörülerle hazırlanan yazı arşivini keşfedin."
+      "description": "Explore our archive of articles featuring sectoral perspectives, practical notes, and education-focused insights."
     },
     "list": {
       "empty": "No blog posts matched your search."
@@ -279,14 +279,14 @@
   "news": {
     "hero": {
       "title": "News",
-      "description": "[EN] Akademi gündemini, yeni duyuruları ve öne çıkan gelişmeleri takip edebileceğiniz kurumsal haber alanı."
+      "description": "A corporate news area where you can follow the Academy agenda, new announcements, and featured developments."
     }
   },
   "contact": {
     "hero": {
       "title": "Contact",
       "breadcrumb": "Contact",
-      "description": "[EN] Eğitim kataloğu, etkinlikler ve kurumsal iş birlikleri hakkında bize yazın."
+      "description": "Contact us about the training catalog, events, and corporate partnerships."
     },
     "tab": {
       "corporate": "Corporate Training Request",
@@ -295,11 +295,11 @@
       "general": "General Contact"
     },
     "success": {
-      "corporate": "[EN] Kurumsal eğitim talebiniz alınmıştır. Eğitim kataloğumuza göz atabilir veya ekibinizle iletişime geçeceğiz.",
+      "corporate": "Your corporate training request has been received. You can browse our training catalog, or we will contact your team.",
       "corporate_cta": "Browse Course Catalog",
-      "instructor": "[EN] Eğitmen başvurunuz alınmıştır. Uzmanlık alanınıza uygun fırsatlar için sizinle iletişime geçeceğiz.",
-      "partner": "[EN] Çözüm ortaklığı başvurunuz alınmıştır. İş geliştirme ekibimiz sizinle iletişime geçecektir.",
-      "general": "[EN] Mesajınız alınmıştır. En kısa sürede sizinle iletişime geçeceğiz."
+      "instructor": "Your instructor application has been received. We will contact you about opportunities suited to your area of expertise.",
+      "partner": "Your solution partnership application has been received. Our business development team will contact you.",
+      "general": "Your message has been received. We will contact you as soon as possible."
     },
     "field": {
       "full_name": {
