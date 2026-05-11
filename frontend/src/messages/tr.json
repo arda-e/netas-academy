@@ -71,7 +71,58 @@
     "hero": {
       "title": "Kurumsal dönüşümü saha tecrübesiyle hızlandırın.",
       "description": "Netaş Akademi, teknoloji birikimi ve saha deneyimini kurumsal öğrenmeye dönüştürerek ekiplerin değişime daha hızlı uyum sağlamasına yardımcı olur.",
-      "cta_primary": "Daha Fazla Keşfet"
+      "cta_primary": "Daha Fazla Keşfet",
+      "cta_secondary": "Eğitimleri İncele",
+      "slide_nav": "{index}. slayta git",
+      "slide_1": {
+        "headline": "Kurumsal öğrenmeyi iş bağlamına taşıyan programlar",
+        "subtitle": "Netaş Academy, teknoloji ve sektör deneyimini kurumunuza özel, uygulamalı öğrenme programlarına dönüştürür."
+      },
+      "slide_2": {
+        "headline": "Kurumunuza göre tasarlanan, sahada uygulanabilen eğitimler",
+        "subtitle": "Her program, ekibin ihtiyaçlarına ve iş önceliklerine göre yeniden kurgulanır; hazır paket değil, gerçek kullanım için öğrenme tasarımı sunar."
+      },
+      "slide_3": {
+        "headline": "Değişimi ekibin içinden başlatan öğrenme yaklaşımı",
+        "subtitle": "Sahada denenmiş yöntemler, vaka çalışmaları ve pratik uygulamalarla ekiplerin değişime daha hızlı uyum sağlamasına yardımcı olur."
+      }
+    },
+    "trust": {
+      "heading": "Netaş Academy, kurumsal öğrenmeyi teknoloji ve sektör deneyimiyle yeniden tanımlar.",
+      "pillar_1": {
+        "title": "Netaş Teknoloji ve Sektör Güvencesi",
+        "body": "Programlar, Netaş'ın onlarca yıllık teknoloji ve sektör birikiminin üzerine inşa edilir. Teorik çerçeve değil, sahada denenmiş yöntemler temel alınır."
+      },
+      "pillar_2": {
+        "title": "Kuruma Özel Şekillenen Yaklaşım",
+        "body": "Her program, kurumun sektörüne, ekip yapısına ve gelişim hedeflerine göre yeniden kurgulanır. Hazır içerik değil, ihtiyaca göre tasarlanmış bir öğrenme deneyimi sunulur."
+      },
+      "pillar_3": {
+        "title": "Uzun Vadeli Ortaklık Modeli",
+        "body": "Tek seferlik eğitim yerine, kurumun dönüşüm yolculuğuna eşlik eden sürdürülebilir bir öğrenme ilişkisi kurulur."
+      }
+    },
+    "learning": {
+      "left": {
+        "heading": "Aktif katılım ve uygulama",
+        "body": "Grup çalışmaları, anlık geri bildirim döngüleri ve sahaya taşınan alıştırmalarla öğrenme kalıcı hale gelir."
+      },
+      "right": {
+        "heading": "İş Bağlamı",
+        "body": "Eğitimlerimiz teorik aktarımın ötesinde; katılımcıların kendi iş bağlamlarına taşıyabileceği somut yöntemler ve uygulamalı çalışma biçimleri üzerine kurulur."
+      }
+    },
+    "featured_courses": {
+      "eyebrow": "Öne Çıkan Eğitimler",
+      "heading": "Programlarımızı keşfedin",
+      "body": "En güncel eğitim programlarımızı inceleyin. Her program, kurumların dönüşüm ihtiyaçlarına yanıt verecek şekilde yapılandırılır."
+    },
+    "programs": {
+      "eyebrow": "Kuruma Özel Tasarım",
+      "heading": "Kurumunuzun ihtiyaçlarına göre şekillenen programlar",
+      "body_1": "Her kurumun sektörü, ekip yapısı ve gelişim öncelikleri farklıdır. Programlarımız bu farklılıkları temel alır: sektöre özgü vaka çalışmaları, mevcut beceri düzeyine uyarlanmış içerik ve kurumun stratejik hedefleriyle örtüşen çıktılar.",
+      "body_2": "İster açık sınıf ister kapalı devre; ister yüz yüze ister hibrit formatta olsun, programın çerçevesi kurumun kendi dinamiklerine göre yeniden kurgulanır. Hedef: ekibinizin gerçekten değişmesi.",
+      "cta": "Eğitim Kataloğunu İncele"
     },
     "about": {
       "eyebrow": "Hakkımızda",

@@ -4,7 +4,19 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
 
-const slides = [
+type HomeHeroSlide = {
+  headline: string;
+  subtitle: string;
+};
+
+type HomeHeroSectionProps = {
+  slides?: HomeHeroSlide[];
+  primaryCtaLabel?: string;
+  secondaryCtaLabel?: string;
+  slideNavLabels?: string[];
+};
+
+const defaultSlides = [
   {
     headline: 'Kurumsal öğrenmeyi iş bağlamına taşıyan programlar',
     subtitle:
@@ -22,7 +34,12 @@ const slides = [
   },
 ];
 
-export function HomeHeroSection() {
+export function HomeHeroSection({
+  slides = defaultSlides,
+  primaryCtaLabel = 'Kurumsal Eğitim Talep Et',
+  secondaryCtaLabel = 'Eğitimleri İncele',
+  slideNavLabels = [],
+}: HomeHeroSectionProps = {}) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -31,7 +48,7 @@ export function HomeHeroSection() {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   return (
     <section className="relative flex min-h-[clamp(300px,44svh,680px)] items-center justify-center overflow-hidden bg-slate-950">
@@ -63,7 +80,7 @@ export function HomeHeroSection() {
                     data-testid="page.home.hero.cta.corporate-training"
                     className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-white/90"
                   >
-                    Kurumsal Eğitim Talep Et
+                    {primaryCtaLabel}
                   </Link>
                   <Link
                     href="/egitimler"
@@ -71,7 +88,7 @@ export function HomeHeroSection() {
                     data-testid="page.home.hero.cta.catalog"
                     className="inline-flex items-center justify-center rounded-full border border-white/40 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10"
                   >
-                    Eğitimleri İncele
+                    {secondaryCtaLabel}
                   </Link>
                 </div>
               </div>
@@ -84,7 +101,7 @@ export function HomeHeroSection() {
             <button
               key={index}
               onClick={() => setCurrent(index)}
-              aria-label={`${index + 1}. slayta git`}
+              aria-label={slideNavLabels[index] ?? `${index + 1}. slayta git`}
               className={`h-2.5 w-2.5 rounded-full border-0 p-0 cursor-pointer transition-colors duration-300 ${
                 index === current ? 'bg-white' : 'bg-white/35'
               }`}

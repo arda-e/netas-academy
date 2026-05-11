@@ -71,7 +71,58 @@
     "hero": {
       "title": "Accelerate corporate transformation with field expertise.",
       "description": "Netas Academy helps teams adapt to change faster by transforming technology knowledge and field experience into corporate learning.",
-      "cta_primary": "Discover More"
+      "cta_primary": "Discover More",
+      "cta_secondary": "View Training",
+      "slide_nav": "Go to slide {index}",
+      "slide_1": {
+        "headline": "Programs that bring corporate learning into the business context",
+        "subtitle": "Netaş Academy transforms technology and industry experience into customized, applied learning programs for your organization."
+      },
+      "slide_2": {
+        "headline": "Training designed for your organization and ready for real-world use",
+        "subtitle": "Each program is restructured around team needs and business priorities; not a packaged course, but a learning design built for practical application."
+      },
+      "slide_3": {
+        "headline": "A learning approach that starts change from within the team",
+        "subtitle": "Field-tested methods, case studies, and practical exercises help teams adapt to change more quickly."
+      }
+    },
+    "trust": {
+      "heading": "Netaş Academy redefines corporate learning through technology and industry experience.",
+      "pillar_1": {
+        "title": "Netaş Technology and Industry Assurance",
+        "body": "Programs are built on Netaş’s decades of technology and industry expertise. The foundation is not theory, but methods proven in the field."
+      },
+      "pillar_2": {
+        "title": "A Tailored Approach for Each Organization",
+        "body": "Each program is restructured according to the organization’s sector, team structure, and growth goals. Instead of off-the-shelf content, we deliver a learning experience designed for the need."
+      },
+      "pillar_3": {
+        "title": "A Long-Term Partnership Model",
+        "body": "Rather than a one-time training, we build a sustainable learning relationship that accompanies the organization’s transformation journey."
+      }
+    },
+    "learning": {
+      "left": {
+        "heading": "Active participation and application",
+        "body": "Group work, real-time feedback loops, and practice-based exercises make learning stick."
+      },
+      "right": {
+        "heading": "Business Context",
+        "body": "Our trainings go beyond theoretical transfer; they are built around concrete methods and applied working styles that participants can bring back into their own business context."
+      }
+    },
+    "featured_courses": {
+      "eyebrow": "Featured Training",
+      "heading": "Discover our programs",
+      "body": "Explore our most up-to-date training programs. Each program is structured to address organizations’ transformation needs."
+    },
+    "programs": {
+      "eyebrow": "Custom Design for Organizations",
+      "heading": "Programs shaped around your organization’s needs",
+      "body_1": "Every organization has a different sector, team structure, and growth priority. Our programs reflect those differences: sector-specific case studies, content adapted to the current skill level, and outcomes aligned with strategic goals.",
+      "body_2": "Whether open enrollment or private cohort; whether in-person or hybrid, the program framework is restructured around the organization’s own dynamics. The goal: real change in your team.",
+      "cta": "View Training Catalog"
     },
     "about": {
       "eyebrow": "About Us",

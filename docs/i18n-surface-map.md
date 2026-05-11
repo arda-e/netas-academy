@@ -1,8 +1,8 @@
 # i18n Translation Surface Map
 
-**Status:** Reference — living document  
-**Locales:** `tr` (default, no prefix) · `en` (`/en/` prefix)  
-**Library:** `next-intl` (App Router)  
+**Status:** Reference — living document
+**Locales:** `tr` (default, no prefix) · `en` (`/en/` prefix)
+**Library:** `next-intl` (App Router)
 **Source of truth for keys:** `frontend/src/messages/tr.json`
 
 ---

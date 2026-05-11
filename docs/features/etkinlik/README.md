@@ -362,4 +362,3 @@ erDiagram
 - Registration status must be checked on the backend even if the UI already hides the form.
 - Do not add raw request-body logging around event registration because attendee PII can include email, phone, and TCKN.
 - Keep event registration and course application payment/SPL behavior separate unless a future product decision explicitly merges them.
-

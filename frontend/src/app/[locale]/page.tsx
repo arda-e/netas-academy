@@ -1,25 +1,16 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { HeroOverlay } from "@/components/hero-overlay";
-import {
-  CourseListLoading,
-  TeacherListLoading,
-  VisualStorySection,
-} from "@/components/content";
-import { CourseCarousel } from "@/components/course-carousel";
-import { TeacherCarousel } from "@/components/teacher-carousel";
-import { buildIntentLeadUrl } from "@/lib/lead-intents";
-import { hakkimizdaVisualSection } from "@/lib/page-visual-sections";
-import { getLatestCourses } from "@/lib/strapi-courses";
-import { getStrapiMediaAltText, getStrapiMediaUrl } from "@/lib/strapi-media";
-import { getTeachers } from "@/lib/strapi-teachers";
-import { join, normalizeKey } from "@/lib/testids";
-import Link from "next/link";
-import { Suspense } from "react";
 
-interface HomePageParams {
+import { HomeContactCTASection } from "@/components/home/HomeContactCTASection";
+import { HomeFeaturedCoursesSection } from "@/components/home/HomeFeaturedCoursesSection";
+import { HomeHeroSection } from "@/components/home/HomeHeroSection";
+import { HomeLearningModelSection } from "@/components/home/HomeLearningModelSection";
+import { HomeProgramsSection } from "@/components/home/HomeProgramsSection";
+import { HomeTrustSection } from "@/components/home/HomeTrustSection";
+
+type HomePageParams = {
   locale: string;
-}
+};
 
 export async function generateMetadata({
   params,
@@ -35,265 +26,76 @@ export async function generateMetadata({
   };
 }
 
-async function InstructorCarouselSection() {
-  const teachers = await getTeachers();
-
-  return (
-    <TeacherCarousel
-      items={teachers.map((teacher) => ({
-        id: teacher.documentId,
-        slug: teacher.slug,
-        name: teacher.fullName,
-        imageUrl: getStrapiMediaUrl(teacher.profilePhoto),
-        imageAlt: getStrapiMediaAltText(teacher.profilePhoto) ?? teacher.fullName,
-      }))}
-      cardTestIdPrefix="page.home.teacher-carousel.card"
-      prevButtonTestId="page.home.teacher-carousel.prev"
-      nextButtonTestId="page.home.teacher-carousel.next"
-    />
-  );
-}
-
-async function LatestCoursesSection() {
-  const courses = await getLatestCourses(5);
-
-  return (
-    <CourseCarousel
-      items={courses.map((course) => ({
-        documentId: course.documentId,
-        slug: course.slug,
-        title: course.title,
-        summary: course.summary,
-        topicArea: course.topicArea,
-        level: course.level,
-      }))}
-      cardTestIdPrefix="page.home.course-carousel.card"
-    />
-  );
-}
-
-export default async function Home({
-  params,
-}: {
-  params: Promise<HomePageParams>;
-}) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "home" });
+export default async function Home() {
+  const t = await getTranslations("home");
 
   return (
     <>
-      <HeroOverlay
-        variant="home"
-        showBreadcrumb={false}
-        title={t("hero.title")}
-        description={t("hero.description")}
-        primaryCta={{
-          href: "/#hakkimizda",
-          label: t("hero.cta_primary"),
-        }}
-        secondaryCta={undefined}
-        primaryCtaMeasurementId="home-hero-primary"
-        secondaryCtaMeasurementId="home-hero-secondary"
-        primaryCtaTestId="page.home.hero.cta.corporate-training"
-        secondaryCtaTestId="page.home.hero.cta.about"
+      <HomeHeroSection
+        slides={[
+          {
+            headline: t("hero.slide_1.headline"),
+            subtitle: t("hero.slide_1.subtitle"),
+          },
+          {
+            headline: t("hero.slide_2.headline"),
+            subtitle: t("hero.slide_2.subtitle"),
+          },
+          {
+            headline: t("hero.slide_3.headline"),
+            subtitle: t("hero.slide_3.subtitle"),
+          },
+        ]}
+        primaryCtaLabel={t("hero.cta_primary")}
+        secondaryCtaLabel={t("hero.cta_secondary")}
+        slideNavLabels={[
+          t("hero.slide_nav", { index: 1 }),
+          t("hero.slide_nav", { index: 2 }),
+          t("hero.slide_nav", { index: 3 }),
+        ]}
       />
 
       <main className="page-shell" data-testid="page.home">
-        <section id="hakkimizda" className="page-section scroll-mt-24 pt-6 sm:pt-8 lg:pt-12">
-          <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-stretch">
-            <div className="space-y-5">
-              <p className="page-eyebrow">{t("about.eyebrow")}</p>
-              <div className="space-y-4">
-                <h2 className="max-w-3xl text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-                  {t("about.heading")}
-                </h2>
-                <p className="max-w-2xl page-body-text">
-                  {t("about.body")}
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href={buildIntentLeadUrl("corporate_training_request")}
-                  data-measurement-id="home_about_corporate_cta"
-                  data-testid="page.home.about.cta.corporate-training"
-                  className="inline-flex items-center justify-center gap-2 rounded-sm bg-[#0f4c81] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0c406b]"
-                >
-                  {t("about.cta_corporate")}
-                </Link>
-                <Link
-                  href="/egitimler"
-                  data-measurement-id="home_about_catalog_cta"
-                  data-testid="page.home.about.cta.catalog"
-                  className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
-                >
-                  {t("about.cta_catalog")}
-                </Link>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <article
-                  className="panel-surface rounded-sm p-5 sm:p-6"
-                  data-testid={join(
-                    "page",
-                    "home",
-                    "about",
-                    "card",
-                    normalizeKey("Sahada Kanıtlanmış"),
-                  )}
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary/72">
-                    {t("about.card_proven.title")}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-foreground/72">
-                    {t("about.card_proven.body")}
-                  </p>
-                </article>
-
-                <article
-                  className="panel-surface rounded-sm p-5 sm:p-6"
-                  data-testid={join(
-                    "page",
-                    "home",
-                    "about",
-                    "card",
-                    normalizeKey("Kuruma Özel"),
-                  )}
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary/72">
-                    {t("about.card_custom.title")}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-foreground/72">
-                    {t("about.card_custom.body")}
-                  </p>
-                </article>
-
-                <article
-                  className="panel-surface rounded-sm p-5 sm:p-6"
-                  data-testid={join(
-                    "page",
-                    "home",
-                    "about",
-                    "card",
-                    normalizeKey("Dönüşüm Odaklı"),
-                  )}
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary/72">
-                    {t("about.card_transform.title")}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-foreground/72">
-                    {t("about.card_transform.body")}
-                  </p>
-                </article>
-
-                <article className="rounded-sm border border-primary/18 bg-slate-950 p-5 text-white shadow-sm sm:p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/58">
-                    {t("about.card_netas.title")}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-white/78">
-                    {t("about.card_netas.body")}
-                  </p>
-                </article>
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              <article className="rounded-sm border border-primary/18 bg-slate-950 p-6 text-white shadow-sm sm:p-8 lg:min-h-[260px]">
-                <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/58">
-                  {t("about.card_applied.title")}
-                </p>
-                <h3 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
-                  {t("about.card_applied.heading")}
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-white/76 sm:text-base">
-                  {t("about.card_applied.body")}
-                </p>
-              </article>
-
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                <article className="panel-surface rounded-sm p-5 sm:p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary/72">
-                    {t("about.card_impact.title")}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-foreground/72">
-                    {t("about.card_impact.body")}
-                  </p>
-                </article>
-
-                <article className="rounded-sm border border-primary/16 bg-primary/10 p-5 sm:p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-                    {t("about.card_flexible.title")}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-foreground/72">
-                    {t("about.card_flexible.body")}
-                  </p>
-                </article>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="page-section pt-0 sm:pt-0 lg:pt-2">
-          <VisualStorySection
-            {...hakkimizdaVisualSection}
-            itemTestIdPrefix="page.home.visual-story.item"
-          />
-        </section>
-
-        <section className="page-section pt-0 sm:pt-0 lg:pt-2">
-          <div className="space-y-4 sm:space-y-5">
-            <p className="page-eyebrow">{t("teachers.eyebrow")}</p>
-            <h2 className="text-balance text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-              {t("teachers.heading")}
-            </h2>
-            <p className="max-w-3xl page-body-text">
-              {t("teachers.body")}
-            </p>
-            <Suspense fallback={<TeacherListLoading testId="loading.home.teachers" />}>
-              <InstructorCarouselSection />
-            </Suspense>
-          </div>
-        </section>
-
-        <section className="page-section pt-0 sm:pt-0 lg:pt-2">
-          <div className="space-y-4 sm:space-y-5">
-            <p className="page-eyebrow">{t("courses.eyebrow")}</p>
-            <h2 className="text-balance text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-              {t("courses.heading")}
-            </h2>
-            <p className="max-w-3xl page-body-text">
-              {t("courses.body")}
-            </p>
-            <Suspense fallback={<CourseListLoading testId="loading.home.courses" />}>
-              <LatestCoursesSection />
-            </Suspense>
-          </div>
-        </section>
-
-        <section className="page-section pt-0 pb-16 sm:pb-20 lg:pb-24">
-          <div className="panel-surface rounded-sm p-6 sm:p-8 lg:p-10">
-            <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div className="space-y-3">
-                <p className="page-eyebrow">{t("contact_cta.eyebrow")}</p>
-                <h2 className="text-balance text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-                  {t("contact_cta.heading")}
-                </h2>
-                <p className="max-w-3xl page-body-text">
-                  {t("contact_cta.body")}
-                </p>
-              </div>
-
-              <Link
-                href={buildIntentLeadUrl("corporate_training_request")}
-                data-measurement-id="home_contact_cta"
-                data-testid="page.home.cta.contact"
-                className="inline-flex items-center justify-center gap-2 rounded-sm bg-[#0f4c81] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0c406b]"
-              >
-                {t("contact_cta.button")}
-              </Link>
-            </div>
-          </div>
-        </section>
+        <HomeTrustSection
+          heading={t("trust.heading")}
+          pillars={[
+            {
+              heading: t("trust.pillar_1.title"),
+              body: t("trust.pillar_1.body"),
+            },
+            {
+              heading: t("trust.pillar_2.title"),
+              body: t("trust.pillar_2.body"),
+            },
+            {
+              heading: t("trust.pillar_3.title"),
+              body: t("trust.pillar_3.body"),
+            },
+          ]}
+        />
+        <HomeLearningModelSection
+          leftHeading={t("learning.left.heading")}
+          leftBody={t("learning.left.body")}
+          rightHeading={t("learning.right.heading")}
+          rightBody={t("learning.right.body")}
+        />
+        <HomeFeaturedCoursesSection
+          eyebrow={t("featured_courses.eyebrow")}
+          heading={t("featured_courses.heading")}
+          body={t("featured_courses.body")}
+        />
+        <HomeProgramsSection
+          eyebrow={t("programs.eyebrow")}
+          heading={t("programs.heading")}
+          body1={t("programs.body_1")}
+          body2={t("programs.body_2")}
+          ctaLabel={t("programs.cta")}
+        />
+        <HomeContactCTASection
+          heading={t("contact_cta.heading")}
+          body={t("contact_cta.body")}
+          buttonLabel={t("contact_cta.button")}
+        />
       </main>
     </>
   );

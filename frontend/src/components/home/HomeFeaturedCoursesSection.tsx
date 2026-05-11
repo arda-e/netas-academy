@@ -4,6 +4,12 @@ import { CourseListLoading } from "@/components/content";
 import { CourseCarousel, type CourseCarouselItem } from "@/components/course-carousel";
 import { getLatestCourses } from "@/lib/strapi-courses";
 
+type HomeFeaturedCoursesSectionProps = {
+  eyebrow?: string;
+  heading?: string;
+  body?: string;
+};
+
 async function FeaturedCoursesCarousel() {
   const courses = await getLatestCourses(5);
 
@@ -19,20 +25,23 @@ async function FeaturedCoursesCarousel() {
   return <CourseCarousel items={items} cardTestIdPrefix="home.featured-courses.card" />;
 }
 
-export function HomeFeaturedCoursesSection() {
+export function HomeFeaturedCoursesSection({
+  eyebrow = "Öne Çıkan Eğitimler",
+  heading = "Programlarımızı keşfedin",
+  body = "En güncel eğitim programlarımızı inceleyin. Her program, kurumların dönüşüm ihtiyaçlarına yanıt verecek şekilde yapılandırılır.",
+}: HomeFeaturedCoursesSectionProps = {}) {
   return (
     <section className="bg-background">
       <div className="page-container py-10 sm:py-12 lg:py-14">
         <div className="max-w-3xl">
           <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs uppercase tracking-widest text-primary">
-            Öne Çıkan Eğitimler
+            {eyebrow}
           </span>
           <h2 className="mt-4 text-3xl font-normal leading-tight text-foreground md:text-4xl">
-            Programlarımızı keşfedin
+            {heading}
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-foreground/60 md:text-base">
-            En güncel eğitim programlarımızı inceleyin. Her program, kurumların
-            dönüşüm ihtiyaçlarına yanıt verecek şekilde yapılandırılır.
+            {body}
           </p>
         </div>
 
