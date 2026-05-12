@@ -34,7 +34,6 @@ type BlogDetailProps = {
   coverImageUrl?: string | null;
   coverImageAlt?: string | null;
   coverImageBlurDataURL?: string | null;
-  showHeroOverlay?: boolean;
   meta?: ReactNode;
   children: ReactNode;
   afterContent?: ReactNode;
@@ -91,7 +90,6 @@ export function BlogDetail({
   coverImageUrl,
   coverImageAlt,
   coverImageBlurDataURL,
-  showHeroOverlay = true,
   meta,
   children,
   afterContent,
@@ -118,11 +116,8 @@ export function BlogDetail({
                 sizes="100vw"
                 className="object-cover"
                 {...(coverImageBlurDataURL ? { placeholder: "blur" as const, blurDataURL: coverImageBlurDataURL } : {})}
-              />
-            </div>
-            {showHeroOverlay && (
-              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
-            )}
+                />
+              </div>
           </>
         ) : null}
 

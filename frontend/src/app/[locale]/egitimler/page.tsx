@@ -61,6 +61,8 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
     <ContentPageShell
       testId="page.egitimler"
       title={t("hero.title")}
+      heroImageUrl="/hero-5.webp"
+      heroImageAlt=""
       description={
         <>
           <p>

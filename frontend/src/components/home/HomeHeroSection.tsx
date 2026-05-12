@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
 
@@ -14,6 +15,7 @@ type HomeHeroSectionProps = {
   primaryCtaLabel?: string;
   secondaryCtaLabel?: string;
   slideNavLabels?: string[];
+  imageUrl?: string | null;
 };
 
 const defaultSlides = [
@@ -39,6 +41,7 @@ export function HomeHeroSection({
   primaryCtaLabel = 'Kurumsal Eğitim Talep Et',
   secondaryCtaLabel = 'Eğitimleri İncele',
   slideNavLabels = [],
+  imageUrl = '/hero-5.webp',
 }: HomeHeroSectionProps = {}) {
   const [current, setCurrent] = useState(0);
 
@@ -52,6 +55,16 @@ export function HomeHeroSection({
 
   return (
     <section className="relative flex min-h-[clamp(300px,44svh,680px)] items-center justify-center overflow-hidden bg-slate-950">
+      {imageUrl && (
+        <Image
+          src={imageUrl}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      )}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,oklch(0.65_0.12_205.25/0.25),transparent_60%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,oklch(0.65_0.12_205.25/0.12),transparent_50%)]" />
 

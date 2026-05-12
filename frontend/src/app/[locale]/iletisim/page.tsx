@@ -1,6 +1,7 @@
 import type { LeadType } from "@/lib/lead-intents";
 import { resolveLeadTypeFromQuery } from "@/lib/lead-intents";
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { IntentLeadForm } from "@/components/contact/intent-lead-form";
 
@@ -22,7 +23,18 @@ export default async function IletisimPage({ searchParams }: IletisimPageProps) 
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.iletisim">
-      <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
+      <section className="relative isolate overflow-hidden border-b border-white/8 bg-slate-950">
+        <div className="absolute inset-0">
+          <Image
+            src="/hero-iletisim-1.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
+
         <div className="relative mx-auto flex min-h-[400px] w-full max-w-7xl items-end px-6 py-12 md:px-10 lg:px-12">
           <div className="absolute left-6 right-6 top-12 md:left-10 md:right-10 lg:left-12 lg:right-12">
             <SiteBreadcrumbs items={[{ label: t('hero.breadcrumb') }]} />

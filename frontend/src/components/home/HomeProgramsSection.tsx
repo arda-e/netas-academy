@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 type HomeProgramsSectionProps = {
@@ -45,11 +46,14 @@ export function HomeProgramsSection({
           </div>
 
           {/* Right — visual panel */}
-          <div className="min-h-[220px] bg-primary/10 flex items-center justify-center p-6 lg:p-8">
-            <div className="text-center px-8">
-              <p className="text-6xl font-light text-primary/25 leading-none">NA</p>
-              <p className="text-xs uppercase tracking-widest text-primary/40 mt-3">Netaş Academy · Kuruma Özel</p>
-            </div>
+          <div className="relative min-h-[220px] overflow-hidden bg-primary/10 p-0 lg:min-h-[420px]">
+            <Image
+              src="/home-2.jpg"
+              alt="Kurumunuzun ihtiyaçlarına göre şekillenen programlar"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover object-center"
+            />
           </div>
         </div>
       </div>

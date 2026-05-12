@@ -49,6 +49,8 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
           {t('hero.description')}
         </p>
       }
+      heroImageUrl="/hero-blog-1.webp"
+      heroImageAlt=""
       testId="page.blog"
     >
       <div className="space-y-4 sm:space-y-8">

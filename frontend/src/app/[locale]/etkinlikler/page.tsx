@@ -107,6 +107,8 @@ export default async function EtkinliklerPage({
   return (
     <ContentPageShell
       title={t("hero.title")}
+      heroImageUrl="/hero-5.webp"
+      heroImageAlt=""
       description={
         <p>
           <strong className="text-white">

@@ -14,7 +14,7 @@ export function HomeContactCTASection({
   heading = 'İhtiyacınıza uygun eğitim yolculuğunu birlikte kuralım',
   body = 'Ekibinizin hedeflerini ve gelişim önceliklerini paylaşın; size özel bir kurumsal eğitim programı tasarlayalım.',
   buttonLabel = 'Kurumsal Eğitim Talep Et',
-  imageUrl = '/home-cta-3.webp',
+  imageUrl = '/hero-cta-1.webp',
   imageAlt = '',
 }: HomeContactCTASectionProps = {}) {
   return (
@@ -26,26 +26,29 @@ export function HomeContactCTASection({
           fill
           sizes="100vw"
           className="object-cover object-center"
+          priority
         />
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/92 via-slate-950/72 to-slate-950/52" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/42 to-slate-950/20" />
 
       <div className="relative z-10 flex min-h-[240px] flex-col items-center justify-center px-4 py-10 text-center sm:min-h-[280px] lg:min-h-[340px]">
-        <h2 className="max-w-2xl text-3xl font-normal leading-snug text-white md:text-4xl">
-          {heading}
-        </h2>
-        <p className="mt-4 max-w-xl text-base leading-relaxed text-white/70">
-          {body}
-        </p>
-        <Link
-          href={buildIntentLeadUrl("corporate_training_request")}
-          data-measurement-id="home_contact_cta"
-          data-testid="page.home.cta.contact"
-          className="mt-6 inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-white/90"
-        >
-          {buttonLabel}
-        </Link>
+        <div className="max-w-2xl px-5 py-6 sm:px-8 sm:py-8">
+          <h2 className="text-3xl font-normal leading-snug text-white md:text-4xl">
+            {heading}
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-white/80">
+            {body}
+          </p>
+          <Link
+            href={buildIntentLeadUrl("corporate_training_request")}
+            data-measurement-id="home_contact_cta"
+            data-testid="page.home.cta.contact"
+            className="mt-6 inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-white/90"
+          >
+            {buttonLabel}
+          </Link>
+        </div>
       </div>
     </section>
   );
