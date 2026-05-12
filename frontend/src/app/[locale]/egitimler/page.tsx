@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { Download, Filter } from "lucide-react";
@@ -5,6 +6,8 @@ import { getTranslations } from "next-intl/server";
 import { ContentPageShell, CourseListLoading, SearchField } from "@/components/content";
 import { CourseCatalogList } from "@/components/courses/course-catalog-list";
 import { getCourses } from "@/lib/strapi-courses";
+import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 import {
   TOPIC_AREAS,
   resolveTopicFilter,
@@ -16,8 +19,31 @@ import { join, normalizeKey } from "@/lib/testids";
 import { cn } from "@/lib/utils"
 
 type EgitimlerPageProps = {
+  params: Promise<{
+    locale: string;
+  }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
+
+export async function generateMetadata({
+  params,
+}: EgitimlerPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const [t, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "courses" }),
+    getSiteSettings(),
+  ]);
+
+  return buildMetadata({
+    seo: null,
+    defaults: siteSettings,
+    fallbackTitle: t("hero.title"),
+    fallbackDescription: `${t("hero.description_strong")} ${t("hero.description_rest")}`,
+    pagePath: buildLocalePath(locale, "/egitimler"),
+    locale,
+    localeAlternates: buildLocaleAlternates("/egitimler"),
+  });
+}
 
 async function CourseCatalogResults({
   activeTopic,

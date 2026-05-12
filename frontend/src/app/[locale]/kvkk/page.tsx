@@ -4,14 +4,37 @@ import type { Metadata } from "next";
 import kvkkData from "@/data/kvkk.json";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { KvkkBackButton } from "@/components/kvkk-back-button";
+import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "KVKK | Netas Academy",
-  description:
-    "Netaş Telekomünikasyon A.Ş. kişisel verilerin korunmasına ilişkin aydınlatma metni.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{
+    locale: string;
+  }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const canonical = buildLocalePath(locale, "/kvkk");
+
+  return {
+    title: "KVKK | Netas Academy",
+    description:
+      "Netaş Telekomünikasyon A.Ş. kişisel verilerin korunmasına ilişkin aydınlatma metni.",
+    alternates: {
+      canonical,
+      languages: buildLocaleAlternates("/kvkk"),
+    },
+    openGraph: {
+      locale: locale === "en" ? "en_US" : "tr_TR",
+      title: "KVKK | Netas Academy",
+      description:
+        "Netaş Telekomünikasyon A.Ş. kişisel verilerin korunmasına ilişkin aydınlatma metni.",
+      url: canonical,
+    },
+  };
+}
 
 function getLatestCommitId() {
   return process.env.GIT_COMMIT_SHA?.slice(0, 7) ?? null;

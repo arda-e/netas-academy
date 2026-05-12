@@ -1,18 +1,50 @@
+import type { Metadata } from "next";
 import type { LeadType } from "@/lib/lead-intents";
 import { resolveLeadTypeFromQuery } from "@/lib/lead-intents";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { IntentLeadForm } from "@/components/contact/intent-lead-form";
+import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
 
 export const dynamic = "force-dynamic";
 
 type IletisimPageProps = {
+  params: Promise<{
+    locale: string;
+  }>;
   searchParams: Promise<{
     intent?: string;
     topic?: string;
   }>;
 };
+
+export async function generateMetadata({
+  params,
+}: IletisimPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "contact" });
+  const canonical = buildLocalePath(locale, "/iletisim");
+
+  return {
+    title: t("meta.title"),
+    description: t("meta.description"),
+    robots: {
+      index: false,
+      follow: false,
+    },
+    alternates: {
+      canonical,
+      languages: buildLocaleAlternates("/iletisim"),
+    },
+    openGraph: {
+      locale: locale === "en" ? "en_US" : "tr_TR",
+      title: t("meta.title"),
+      description: t("meta.description"),
+      url: canonical,
+    },
+  };
+}
 
 export default async function IletisimPage({ searchParams }: IletisimPageProps) {
   const params = await searchParams;

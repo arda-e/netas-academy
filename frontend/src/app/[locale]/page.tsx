@@ -7,6 +7,8 @@ import { HomeHeroSection } from "@/components/home/HomeHeroSection";
 import { HomeLearningModelSection } from "@/components/home/HomeLearningModelSection";
 import { HomeProgramsSection } from "@/components/home/HomeProgramsSection";
 import { HomeTrustSection } from "@/components/home/HomeTrustSection";
+import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 
 type HomePageParams = {
   locale: string;
@@ -18,12 +20,20 @@ export async function generateMetadata({
   params: Promise<HomePageParams>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "home" });
+  const [t, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "home" }),
+    getSiteSettings(),
+  ]);
 
-  return {
-    title: t("meta.title"),
-    description: t("meta.description"),
-  };
+  return buildMetadata({
+    seo: null,
+    defaults: siteSettings,
+    fallbackTitle: t("meta.title"),
+    fallbackDescription: t("meta.description"),
+    pagePath: buildLocalePath(locale, "/"),
+    locale,
+    localeAlternates: buildLocaleAlternates("/"),
+  });
 }
 
 export default async function Home() {

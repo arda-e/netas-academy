@@ -305,6 +305,9 @@
     }
   },
   "teachers": {
+    "meta": {
+      "not_found": "Eğitmen Bulunamadı"
+    },
     "hero": {
       "title": "Eğitmenlerimiz",
       "description_strong": "Alanında uzman eğitmen kadromuzla",
@@ -315,6 +318,9 @@
     }
   },
   "blog": {
+    "meta": {
+      "not_found": "Blog Yazısı Bulunamadı"
+    },
     "hero": {
       "title": "Blog",
       "description": "Sektörel bakış açıları, uygulama notları ve eğitim odaklı içgörülerle hazırlanan yazı arşivini keşfedin."
@@ -328,12 +334,20 @@
     }
   },
   "news": {
+    "meta": {
+      "title": "Haberler | Netas Academy",
+      "description": "Akademi gündemini, yeni duyuruları ve öne çıkan gelişmeleri takip edebileceğiniz kurumsal haber alanı."
+    },
     "hero": {
       "title": "Haberler",
       "description": "Akademi gündemini, yeni duyuruları ve öne çıkan gelişmeleri takip edebileceğiniz kurumsal haber alanı."
     }
   },
   "contact": {
+    "meta": {
+      "title": "İletişim | Netas Academy",
+      "description": "Eğitim kataloğu, etkinlikler ve kurumsal iş birlikleri hakkında bize yazın."
+    },
     "hero": {
       "title": "İletişim",
       "breadcrumb": "İletişim",
