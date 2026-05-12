@@ -95,6 +95,7 @@ export default async function Home() {
           heading={t("contact_cta.heading")}
           body={t("contact_cta.body")}
           buttonLabel={t("contact_cta.button")}
+          imageUrl="/home-cta-3.webp"
         />
       </main>
     </>
