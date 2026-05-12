@@ -33,6 +33,7 @@ export type StrapiCourse = {
   businessValue?: string | null;
   scopeSummary?: string | null;
   outcomeBullets?: string | null;
+  seo?: StrapiSeo | null;
   teacher?: {
     id: number;
     documentId: string;
@@ -68,6 +69,7 @@ export type StrapiEvent = {
   keepRegistrationsOpen?: boolean | null;
   location?: string | null;
   topicArea?: string | null;
+  seo?: StrapiSeo | null;
   course?: {
     id: number;
     documentId: string;
@@ -115,6 +117,7 @@ export type StrapiBlogPost = {
   publishedDate?: string | null;
   sourceNotes?: string | null;
   coverImage?: StrapiMedia | null;
+  seo?: StrapiSeo | null;
 };
 export type StrapiTeacher = {
   id: number;
@@ -128,12 +131,34 @@ export type StrapiTeacher = {
   targetTeams?: string | null;
   teachingApproach?: string | null;
   profilePhoto?: StrapiMedia | null;
+  seo?: StrapiSeo | null;
   courses?: Array<{
     id: number;
     documentId: string;
     title: string;
     slug: string;
   }>;
+};
+
+export type StrapiSeo = {
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  canonicalPath?: string | null;
+  noIndex?: boolean | null;
+  ogImage?: StrapiMedia | null;
+  ogImageAlt?: string | null;
+  ogTitle?: string | null;
+  ogDescription?: string | null;
+};
+
+export type StrapiSiteSetting = {
+  id: number;
+  documentId: string;
+  siteName: string;
+  defaultMetaTitle?: string | null;
+  defaultMetaDescription?: string | null;
+  defaultOgImage?: StrapiMedia | null;
+  defaultOgImageAlt?: string | null;
 };
 
 export type EventRegistrationStatus = {

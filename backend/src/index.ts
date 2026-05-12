@@ -11,6 +11,7 @@ const PUBLIC_READ_ACTIONS = [
   'api::blog-post.blog-post.findOne',
   'api::blog-author.blog-author.find',
   'api::blog-author.blog-author.findOne',
+  'api::site-setting.site-setting.find',
   'plugin::upload.content-api.find',
   'plugin::upload.content-api.findOne',
 ];
