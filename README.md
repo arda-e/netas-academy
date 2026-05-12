@@ -73,3 +73,11 @@ Notes:
 - Local compose defaults to `netas-academy:local`; EC2 deploy overrides this with the GHCR image
 - Server-to-server calls use `STRAPI_URL`; Strapi uploads are exposed through the frontend `/uploads/*` rewrite so browser image URLs stay same-origin
 - Replace the placeholder secrets in `docker-compose.yml` before using this anywhere beyond local testing
+
+## Preview setup
+
+To enable Strapi Content Manager preview with the Next.js frontend, set these env vars:
+
+- `CLIENT_URL` for the frontend origin used by Strapi preview URLs
+- `PREVIEW_SECRET` for the draft-mode preview route token
+- `NEXT_PUBLIC_API_URL` for the Strapi admin origin used in the frontend CSP `frame-ancestors` allowlist

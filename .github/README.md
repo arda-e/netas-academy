@@ -11,6 +11,12 @@ Additional secrets for GHCR deploy:
 - `GHCR_USERNAME`: GitHub username used to log in on EC2
 - `GHCR_TOKEN`: a GitHub token or PAT with package read access on EC2
 
+Preview/deploy secrets used by `deploy-ec2.yml`:
+
+- `CLIENT_URL`: public frontend origin used by Strapi preview
+- `PREVIEW_SECRET`: shared draft-mode token for preview routes
+- `NEXT_PUBLIC_API_URL`: public Strapi/admin origin used by the frontend CSP
+
 The current pipeline publishes the combined app image with both mutable and immutable tags:
 
 - `ghcr.io/<owner>/netas-academy:latest`

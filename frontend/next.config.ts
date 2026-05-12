@@ -2,6 +2,15 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const strapiUrl = process.env.STRAPI_URL ?? "http://127.0.0.1:1337";
+const strapiAdminUrl = process.env.NEXT_PUBLIC_API_URL ?? strapiUrl;
+
+function getOrigin(url: string): string {
+  try {
+    return new URL(url).origin;
+  } catch {
+    return url;
+  }
+}
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -21,6 +30,21 @@ const nextConfig: NextConfig = {
       {
         source: "/uploads/:path*",
         destination: `${strapiUrl}/uploads/:path*`,
+      },
+    ];
+  },
+  async headers() {
+    const strapiOrigin = getOrigin(strapiAdminUrl);
+
+    return [
+      {
+        source: "/((?!api|_next|_vercel|.*\\..*).*)",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: `frame-ancestors 'self' ${strapiOrigin};`,
+          },
+        ],
       },
     ];
   },

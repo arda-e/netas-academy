@@ -1,3 +1,5 @@
+import { draftMode } from "next/headers";
+
 import type { FetchStrapiOptions } from "./strapi-types";
 
 const STRAPI_URL = process.env.STRAPI_URL ?? "http://127.0.0.1:1337";
@@ -44,6 +46,7 @@ async function fetchStrapi<T>(path: string, options?: FetchStrapiOptions): Promi
   const timeout = options?.timeout ?? DEFAULT_TIMEOUT_MS;
   const route = extractRoute(path);
   const endpoint = path.split("?")[0];
+  const { isEnabled: isDraftMode } = await draftMode();
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     const controller = new AbortController();
@@ -57,11 +60,21 @@ async function fetchStrapi<T>(path: string, options?: FetchStrapiOptions): Promi
       if (options?.cache) {
         fetchOptions.cache = options.cache;
       } else if (!options?.next) {
-        fetchOptions.cache = "force-cache";
+        fetchOptions.cache = isDraftMode ? "no-store" : "force-cache";
       }
 
       if (options?.next) {
         fetchOptions.next = options.next;
+      }
+
+      const headers = new Headers(options?.headers);
+      headers.set("strapi-encode-source-maps", isDraftMode ? "true" : "false");
+      fetchOptions.headers = headers;
+
+      if (isDraftMode) {
+        const requestUrl = new URL(path, STRAPI_URL);
+        requestUrl.searchParams.set("status", "draft");
+        path = `${requestUrl.pathname}${requestUrl.search}`;
       }
 
       const response = await fetch(`${STRAPI_URL}${path}`, fetchOptions);

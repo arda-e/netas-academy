@@ -15,6 +15,7 @@ export type FetchStrapiOptions = {
   next?: NextFetchRequestConfig;
   timeout?: number;
   retries?: number;
+  headers?: HeadersInit;
 };
 
 export type StrapiCourse = {
@@ -140,4 +141,3 @@ export type EventRegistrationStatus = {
   startsAt: string;
   keepRegistrationsOpen: boolean;
 };
-
