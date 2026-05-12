@@ -24,14 +24,6 @@ function getPreviewPathname(
   }
 }
 
-function getOrigin(url: string): string | null {
-  try {
-    return new URL(url).origin;
-  } catch {
-    return null;
-  }
-}
-
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Admin => ({
   auth: {
     secret: env('ADMIN_JWT_SECRET'),
@@ -55,10 +47,7 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Admin => 
     enabled: true,
     config: {
       allowedOrigins: (() => {
-        const clientUrl = env('CLIENT_URL', 'http://localhost:3000');
-        const clientOrigin = getOrigin(clientUrl);
-
-        return clientOrigin ? [clientOrigin] : [];
+        return [env('CLIENT_URL', 'http://localhost:3000')];
       })(),
       handler: async (uid, { documentId, locale, status }) => {
         const clientUrl = env('CLIENT_URL', 'http://localhost:3000');
@@ -71,8 +60,6 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Admin => 
 
         const document = await strapi.documents(uid as any).findOne({
           documentId,
-          locale,
-          status: previewStatus as any,
         });
 
         const pathname = getPreviewPathname(uid, { locale, document });
