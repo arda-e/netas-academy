@@ -14,6 +14,7 @@ type ContentPageShellProps = {
   heroImageAlt?: string;
   heroImageBlurDataURL?: string;
   heroImageUrl?: string | null;
+  showHeroOverlay?: boolean;
   children?: ReactNode;
   skeleton?: ReactNode;
   testId?: string;
@@ -28,6 +29,7 @@ export function ContentPageShell({
   heroImageAlt,
   heroImageBlurDataURL,
   heroImageUrl,
+  showHeroOverlay = true,
   children,
   skeleton,
   testId,
@@ -106,7 +108,9 @@ export function ContentPageShell({
                   : {})}
               />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/35" />
+            {showHeroOverlay && (
+              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/35" />
+            )}
           </>
         )}
         <div className="page-container relative flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">
