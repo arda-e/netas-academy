@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { ContentPageShell, BlogList, BlogListLoading, SearchField } from "@/components/content";
 import { getBlogPosts } from "@/lib/strapi-blog";
+import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 import {
   getStrapiMediaAltText,
   getStrapiMediaBlurDataUrl,
@@ -9,8 +12,31 @@ import {
 } from "@/lib/strapi-media";
 
 type BlogYazilariPageProps = {
+  params: Promise<{
+    locale: string;
+  }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
+
+export async function generateMetadata({
+  params,
+}: BlogYazilariPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const [t, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "blog" }),
+    getSiteSettings(),
+  ]);
+
+  return buildMetadata({
+    seo: null,
+    defaults: siteSettings,
+    fallbackTitle: t("hero.title"),
+    fallbackDescription: t("hero.description"),
+    pagePath: buildLocalePath(locale, "/blog-yazilari"),
+    locale,
+    localeAlternates: buildLocaleAlternates("/blog-yazilari"),
+  });
+}
 
 async function BlogResults({ search, emptyMessage }: { search: string; emptyMessage: string }) {
   const posts = await getBlogPosts(search);

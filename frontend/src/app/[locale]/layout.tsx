@@ -21,11 +21,19 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('site');
+export async function generateMetadata({
+  params,
+}: Readonly<{
+  params: Promise<{ locale: string }>;
+}>): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "site" });
   return {
-    title: t('meta.title'),
-    description: t('meta.description'),
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+    ),
+    title: t("meta.title"),
+    description: t("meta.description"),
   };
 }
 

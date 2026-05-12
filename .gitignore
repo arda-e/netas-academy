@@ -13,6 +13,7 @@ frontend/npm-debug.log*
 backend/npm-debug.log*
 .env
 .env.*
+!.env.example
 .vercel
 .worktrees
 .compound-engineering/*.local.yaml

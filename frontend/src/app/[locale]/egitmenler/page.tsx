@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { ContentPageShell, ContentGrid, TeacherListLoading } from "@/components/content";
 import { TeacherCard } from "@/components/teacher-card";
+import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 import {
   getStrapiMediaAltText,
   getStrapiMediaBlurDataUrl,
@@ -9,6 +12,32 @@ import {
 } from "@/lib/strapi-media";
 import { getTeachers } from "@/lib/strapi-teachers";
 import { join } from "@/lib/testids";
+
+type EgitmenlerPageProps = {
+  params: Promise<{
+    locale: string;
+  }>;
+};
+
+export async function generateMetadata({
+  params,
+}: EgitmenlerPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const [t, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "teachers" }),
+    getSiteSettings(),
+  ]);
+
+  return buildMetadata({
+    seo: null,
+    defaults: siteSettings,
+    fallbackTitle: t("hero.title"),
+    fallbackDescription: `${t("hero.description_strong")} ${t("hero.description_rest")}`,
+    pagePath: buildLocalePath(locale, "/egitmenler"),
+    locale,
+    localeAlternates: buildLocaleAlternates("/egitmenler"),
+  });
+}
 
 async function TeacherResults({ emptyMessage }: { emptyMessage: string }) {
   const teachers = await getTeachers();

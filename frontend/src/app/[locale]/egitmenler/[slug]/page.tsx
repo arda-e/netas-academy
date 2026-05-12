@@ -8,17 +8,21 @@ import { getTranslations } from "next-intl/server";
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
+import { JsonLd } from "@/components/seo/json-ld";
 import {
   getStrapiMediaAltText,
   getStrapiMediaBlurDataUrl,
   getStrapiMediaUrl,
 } from "@/lib/strapi-media";
 import { getTeacherBySlug } from "@/lib/strapi-teachers";
+import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { cn, getInitials } from "@/lib/utils";
 import { join } from "@/lib/testids";
 
 type TeacherDetailPageProps = {
   params: Promise<{
+    locale: string;
     slug: string;
   }>;
 };
@@ -34,19 +38,32 @@ type DetailSectionProps = {
 export async function generateMetadata({
   params,
 }: TeacherDetailPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const teacher = await getTeacherBySlug(slug);
+  const { locale, slug } = await params;
+  const [t, teacher, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "teachers" }),
+    getTeacherBySlug(slug),
+    getSiteSettings(),
+  ]);
 
   if (!teacher) {
     return {
-      title: "Eğitmen Bulunamadı",
+      title: t("meta.not_found"),
     };
   }
 
-  return {
-    title: `${teacher.fullName} | Eğitmen`,
-    description: teacher.headline ?? undefined,
-  };
+  const fallbackTitle =
+    locale === "en"
+      ? `${teacher.fullName} | Instructor`
+      : `${teacher.fullName} | Eğitmen`;
+
+  return buildMetadata({
+    seo: teacher.seo,
+    defaults: siteSettings,
+    fallbackTitle,
+    fallbackDescription: teacher.headline,
+    pagePath: buildLocalePath(locale, `/egitmenler/${slug}`),
+    locale,
+  });
 }
 
 export default async function TeacherDetailPage({
@@ -92,6 +109,15 @@ export default async function TeacherDetailPage({
         </div>
       }
     >
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: teacher.fullName,
+          jobTitle: teacher.headline ?? undefined,
+          description: teacher.headline ?? undefined,
+        }}
+      />
       <Suspense fallback={<RouteLoading testId="loading.teacher-detail" />}>
         <div className="max-w-3xl space-y-5 sm:space-y-6">
           {teacher.bio ? (

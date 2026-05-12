@@ -9,7 +9,10 @@ import { RouteLoading } from "@/components/content";
 import { Button } from "@/components/ui/button";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { NewsletterSubscriptionForm } from "@/components/newsletter-subscription-form";
+import { JsonLd } from "@/components/seo/json-ld";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
+import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi-events";
 import { formatEventDateTime } from "@/lib/date-formatting";
 
@@ -83,9 +86,12 @@ function EventInformationPanel({
 export async function generateMetadata({
   params,
 }: EventDetailPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const t = await getTranslations("events");
-  const event = await getEventBySlug(slug);
+  const { locale, slug } = await params;
+  const [t, event, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "events" }),
+    getEventBySlug(slug),
+    getSiteSettings(),
+  ]);
 
   if (!event) {
     return {
@@ -93,15 +99,22 @@ export async function generateMetadata({
     };
   }
 
-  return {
-    title: event.title,
-    description: event.summary ?? undefined,
-  };
+  return buildMetadata({
+    seo: event.seo,
+    defaults: siteSettings,
+    fallbackTitle: event.title,
+    fallbackDescription: event.summary,
+    pagePath: buildLocalePath(locale, `/etkinlikler/${slug}`),
+    locale,
+  });
 }
 
 export default async function EventDetailPage({ params }: EventDetailPageProps) {
   const { slug } = await params;
-  const event = await getEventBySlug(slug);
+  const [event, siteSettings] = await Promise.all([
+    getEventBySlug(slug),
+    getSiteSettings(),
+  ]);
 
   if (!event) {
     notFound();
@@ -110,6 +123,22 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   const t = await getTranslations("events");
   const registrationStatus = await getEventRegistrationStatus(event.documentId);
   const registrationOpen = registrationStatus?.isOpen ?? false;
+  const eventJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.title,
+    description: event.summary ?? event.details ?? undefined,
+    startDate: event.startsAt,
+    ...(event.endsAt ? { endDate: event.endsAt } : {}),
+    ...(siteSettings?.siteName
+      ? {
+          organizer: {
+            "@type": "Organization",
+            name: siteSettings.siteName,
+          },
+        }
+      : {}),
+  };
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.event-detail">
@@ -134,6 +163,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         </div>
       </section>
 
+      <JsonLd data={eventJsonLd} />
       <Suspense fallback={<RouteLoading testId="loading.event-detail" />}>
         <section className="relative z-10 mx-auto w-full max-w-7xl bg-background px-4 py-14 md:px-10 md:py-18 lg:px-12">
           <div className="grid gap-6 xl:grid-cols-[minmax(0,0.72fr)_minmax(300px,0.42fr)]">

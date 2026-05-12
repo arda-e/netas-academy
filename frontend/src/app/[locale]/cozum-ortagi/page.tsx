@@ -7,15 +7,35 @@ import { AccordionSection } from "@/components/uncode/AccordionSection";
 import { IntroSection } from "@/components/uncode/IntroSection";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { join } from "@/lib/testids";
+import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('solution_partner');
-  return {
-    title: t('meta.title'),
-    description: t('meta.description'),
-  };
+type CozumOrtagiPageProps = {
+  params: Promise<{
+    locale: string;
+  }>;
+};
+
+export async function generateMetadata({
+  params,
+}: CozumOrtagiPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const [t, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "solution_partner" }),
+    getSiteSettings(),
+  ]);
+
+  return buildMetadata({
+    seo: null,
+    defaults: siteSettings,
+    fallbackTitle: t("meta.title"),
+    fallbackDescription: t("meta.description"),
+    pagePath: buildLocalePath(locale, "/cozum-ortagi"),
+    locale,
+    localeAlternates: buildLocaleAlternates("/cozum-ortagi"),
+  });
 }
 
 export default async function CozumOrtagiPage() {

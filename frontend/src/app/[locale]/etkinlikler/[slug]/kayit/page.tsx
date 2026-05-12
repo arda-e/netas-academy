@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { EventRegistrationForm } from "@/components/event-registration-form";
 import { Button } from "@/components/ui/button";
+import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
 import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi-events";
 import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventRegistrationPageProps = {
   params: Promise<{
+    locale: string;
     slug: string;
   }>;
 };
@@ -61,18 +64,56 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: EventRegistrationPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const event = await getEventBySlug(slug);
+  const { locale, slug } = await params;
+  const [t, event] = await Promise.all([
+    getTranslations({ locale, namespace: "events" }),
+    getEventBySlug(slug),
+  ]);
+  const canonical = buildLocalePath(locale, `/etkinlikler/${slug}/kayit`);
 
   if (!event) {
     return {
-      title: "Kayit Sayfasi Bulunamadi",
+      title: t("meta.not_found"),
+      robots: {
+        index: false,
+        follow: false,
+      },
+      alternates: {
+        canonical,
+        languages: buildLocaleAlternates(`/etkinlikler/${slug}/kayit`),
+      },
+      openGraph: {
+        locale: locale === "en" ? "en_US" : "tr_TR",
+        title: t("meta.not_found"),
+        description: t("meta.not_found"),
+        url: canonical,
+      },
     };
   }
 
   return {
-    title: `${event.title} | Kayit`,
-    description: `${event.title} etkinligi icin kayit formu.`,
+    title: locale === "en" ? `${event.title} | Registration` : `${event.title} | Kayıt`,
+    description:
+      locale === "en"
+        ? `Registration form for ${event.title}.`
+        : `${event.title} etkinliği için kayıt formu.`,
+    robots: {
+      index: false,
+      follow: false,
+    },
+    alternates: {
+      canonical,
+      languages: buildLocaleAlternates(`/etkinlikler/${slug}/kayit`),
+    },
+    openGraph: {
+      locale: locale === "en" ? "en_US" : "tr_TR",
+      title: locale === "en" ? `${event.title} | Registration` : `${event.title} | Kayıt`,
+      description:
+        locale === "en"
+          ? `Registration form for ${event.title}.`
+          : `${event.title} etkinliği için kayıt formu.`,
+      url: canonical,
+    },
   };
 }
 
