@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { ContentPageShell, RouteLoading } from "@/components/content";
 import { RelatedPostsSection } from "@/components/content/blog-related-posts";
 import { RichTextContent } from "@/components/content/rich-text-content";
+import { JsonLd } from "@/components/seo/json-ld";
 import {
   getBlogPostBySlug,
   getBlogPosts,
@@ -16,10 +17,13 @@ import {
   getStrapiMediaUrl,
 } from "@/lib/strapi-media";
 import type { StrapiBlogPost } from "@/lib/strapi-types";
+import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { formatLongDate as formatBlogDate } from "@/lib/date-formatting";
 
 type BlogDetailPageProps = {
   params: Promise<{
+    locale: string;
     slug: string;
   }>;
 };
@@ -61,19 +65,27 @@ function BlogMetaContent({ author, publishedDate }: BlogMetaProps) {
 export async function generateMetadata({
   params,
 }: BlogDetailPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const { locale, slug } = await params;
+  const [t, post, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "blog" }),
+    getBlogPostBySlug(slug),
+    getSiteSettings(),
+  ]);
 
   if (!post) {
     return {
-      title: "Blog Yazısı Bulunamadı",
+      title: t("meta.not_found"),
     };
   }
 
-  return {
-    title: post.title,
-    description: post.excerpt ?? undefined,
-  };
+  return buildMetadata({
+    seo: post.seo,
+    defaults: siteSettings,
+    fallbackTitle: post.title,
+    fallbackDescription: post.excerpt,
+    pagePath: buildLocalePath(locale, `/blog-yazilari/${slug}`),
+    locale,
+  });
 }
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
@@ -99,17 +111,34 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   ) : (
     EMPTY_BLOG_CONTENT
   );
+  const blogJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt ?? undefined,
+    datePublished: post.publishedDate ?? undefined,
+    ...(post.author?.displayName
+      ? {
+          author: {
+            "@type": "Person",
+            name: post.author.displayName,
+          },
+        }
+      : {}),
+  };
 
   return (
-    <Suspense fallback={<RouteLoading testId="loading.blog-detail" />}>
-      <ContentPageShell
-        testId="page.blog-detail"
-        breadcrumbItems={breadcrumbItems}
-        title={post.title}
-        heroImageUrl={getStrapiMediaUrl(post.coverImage, "large")}
-        heroImageAlt={getStrapiMediaAltText(post.coverImage) ?? post.title}
-        heroImageBlurDataURL={getStrapiMediaBlurDataUrl(post.coverImage) ?? undefined}
-      >
+    <>
+      <JsonLd data={blogJsonLd} />
+      <Suspense fallback={<RouteLoading testId="loading.blog-detail" />}>
+        <ContentPageShell
+          testId="page.blog-detail"
+          breadcrumbItems={breadcrumbItems}
+          title={post.title}
+          heroImageUrl={getStrapiMediaUrl(post.coverImage, "large")}
+          heroImageAlt={getStrapiMediaAltText(post.coverImage) ?? post.title}
+          heroImageBlurDataURL={getStrapiMediaBlurDataUrl(post.coverImage) ?? undefined}
+        >
         <div className="mb-8 max-w-3xl space-y-4 sm:mb-10 sm:space-y-5">
           {post.excerpt && (
             <p
@@ -142,8 +171,9 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             </div>
           </div>
         )}
-        <RelatedPostsSection relatedPosts={relatedPosts} />
-      </ContentPageShell>
-    </Suspense>
+          <RelatedPostsSection relatedPosts={relatedPosts} />
+        </ContentPageShell>
+      </Suspense>
+    </>
   );
 }

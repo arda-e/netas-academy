@@ -6,7 +6,10 @@ import { getTranslations } from "next-intl/server";
 
 import { ContentPageShell, RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
+import { JsonLd } from "@/components/seo/json-ld";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
+import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { getCourseBySlug } from "@/lib/strapi-courses";
 import { normalizeCourseLevel, getCourseLevelLabel } from "@/lib/content-taxonomy";
 import { join } from "@/lib/testids";
@@ -46,8 +49,11 @@ export async function generateMetadata({
   params,
 }: CourseDetailPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
-  const t = await getTranslations({ locale, namespace: "courses" });
-  const course = await getCourseBySlug(slug);
+  const [t, course, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "courses" }),
+    getCourseBySlug(slug),
+    getSiteSettings(),
+  ]);
 
   if (!course) {
     return {
@@ -55,17 +61,24 @@ export async function generateMetadata({
     };
   }
 
-  return {
-    title: course.title,
-    description: course.summary ?? undefined,
-  };
+  return buildMetadata({
+    seo: course.seo,
+    defaults: siteSettings,
+    fallbackTitle: course.title,
+    fallbackDescription: course.summary,
+    pagePath: buildLocalePath(locale, `/egitimler/${slug}`),
+    locale,
+  });
 }
 
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
   const { slug } = await params;
   const t = await getTranslations("courses");
   const tt = await getTranslations("taxonomy");
-  const course = await getCourseBySlug(slug);
+  const [course, siteSettings] = await Promise.all([
+    getCourseBySlug(slug),
+    getSiteSettings(),
+  ]);
 
   if (!course) {
     notFound();
@@ -73,6 +86,16 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
   const outcomeBullets = parseOutcomeBullets(course.outcomeBullets);
   const levelLabel = getCourseLevel(course, tt);
+  const courseJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: course.title,
+    description: course.summary ?? course.description ?? undefined,
+    provider: {
+      "@type": "Organization",
+      name: siteSettings?.siteName ?? "Netas Academy",
+    },
+  };
 
   return (
     <ContentPageShell
@@ -140,6 +163,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         </Link>
       }
     >
+      <JsonLd data={courseJsonLd} />
       <Suspense fallback={<RouteLoading testId="loading.course-detail" />}>
         <div className="space-y-6 sm:space-y-8">
           <section data-testid="page.course-detail.section.description">

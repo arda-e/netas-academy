@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { Filter } from "lucide-react";
@@ -8,12 +9,37 @@ import { ContentPageShell, EventList, EventListLoading } from "@/components/cont
 import { join } from "@/lib/testids";
 import { cn } from "@/lib/utils";
 import { getEvents, normalizeEventType } from "@/lib/strapi-events";
+import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
+import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { EVENT_TYPES, getEventTypeLabel } from "@/lib/content-taxonomy";
 import type { StrapiEventSortOrder, StrapiEventType } from "@/lib/strapi-types";
 
 type EtkinliklerPageProps = {
+  params: Promise<{
+    locale: string;
+  }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
+
+export async function generateMetadata({
+  params,
+}: EtkinliklerPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const [t, siteSettings] = await Promise.all([
+    getTranslations({ locale, namespace: "events" }),
+    getSiteSettings(),
+  ]);
+
+  return buildMetadata({
+    seo: null,
+    defaults: siteSettings,
+    fallbackTitle: t("hero.title"),
+    fallbackDescription: `${t("hero.description_strong")} ${t("hero.description_rest")}`,
+    pagePath: buildLocalePath(locale, "/etkinlikler"),
+    locale,
+    localeAlternates: buildLocaleAlternates("/etkinlikler"),
+  });
+}
 
 function resolveEventTypeFilter(
   value: string | string[] | undefined

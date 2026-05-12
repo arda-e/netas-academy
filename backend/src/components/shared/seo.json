@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_shared_seos",
+  "info": {
+    "displayName": "SEO",
+    "description": "Reusable SEO metadata for public content"
+  },
+  "options": {},
+  "attributes": {
+    "metaTitle": {
+      "type": "string"
+    },
+    "metaDescription": {
+      "type": "text"
+    },
+    "canonicalPath": {
+      "type": "string"
+    },
+    "noIndex": {
+      "type": "boolean",
+      "default": false
+    },
+    "ogImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "ogImageAlt": {
+      "type": "string"
+    },
+    "ogTitle": {
+      "type": "string"
+    },
+    "ogDescription": {
+      "type": "text"
+    },
+  }
+}

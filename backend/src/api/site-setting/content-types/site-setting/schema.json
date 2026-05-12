@@ -1,0 +1,33 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site Setting",
+    "description": "Global site-wide defaults and SEO settings"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "siteName": {
+      "type": "string",
+      "required": true
+    },
+    "defaultMetaTitle": {
+      "type": "string"
+    },
+    "defaultMetaDescription": {
+      "type": "text"
+    },
+    "defaultOgImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "defaultOgImageAlt": {
+      "type": "string"
+    }
+  }
+}

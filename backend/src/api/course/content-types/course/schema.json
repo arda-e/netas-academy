@@ -59,6 +59,11 @@
       "multiple": false,
       "allowedTypes": ["images"]
     },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    },
     "teacher": {
       "type": "relation",
       "relation": "manyToOne",

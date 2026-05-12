@@ -305,6 +305,9 @@
     }
   },
   "teachers": {
+    "meta": {
+      "not_found": "Teacher Not Found"
+    },
     "hero": {
       "title": "Our Instructors",
       "description_strong": "Meet our team of expert instructors",
@@ -315,6 +318,9 @@
     }
   },
   "blog": {
+    "meta": {
+      "not_found": "Blog Post Not Found"
+    },
     "hero": {
       "title": "Blog",
       "description": "Explore our archive of articles featuring sectoral perspectives, practical notes, and education-focused insights."
@@ -328,12 +334,20 @@
     }
   },
   "news": {
+    "meta": {
+      "title": "News | Netas Academy",
+      "description": "A corporate news area where you can follow the Academy agenda, new announcements, and featured developments."
+    },
     "hero": {
       "title": "News",
       "description": "A corporate news area where you can follow the Academy agenda, new announcements, and featured developments."
     }
   },
   "contact": {
+    "meta": {
+      "title": "Contact | Netas Academy",
+      "description": "Contact us about the training catalog, events, and corporate partnerships."
+    },
     "hero": {
       "title": "Contact",
       "breadcrumb": "Contact",
