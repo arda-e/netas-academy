@@ -34,7 +34,7 @@ export function HomeTrustSection({
   return (
     <section className="bg-background">
       <div className="page-container py-10 sm:py-12 lg:py-14">
-        <h2 className="mx-auto mb-8 max-w-4xl text-center text-foreground text-3xl font-normal leading-tight md:text-5xl">
+        <h2 className="mx-auto mb-8 text-center text-foreground text-3xl font-normal leading-tight md:text-5xl">
           {heading}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3">
@@ -44,13 +44,15 @@ export function HomeTrustSection({
             return (
               <div
                 key={index}
-                className="py-3 border-t border-border md:py-0 md:border-t-0 md:border-l md:px-8 first:border-l-0 first:pl-0"
+                className="py-3 border-t border-border md:py-0 md:border-t-0 md:border-l md:px-8 first:border-l-0 first:pl-0 flex flex-col items-center"
               >
+                <div className="flex justify-center">
                 <Icon aria-hidden="true" size={36} weight="duotone" className="mb-4 text-primary" />
-                <p className="text-foreground text-sm font-semibold uppercase tracking-[0.2em] mb-3">
+                </div>
+                <p className="text-foreground text-sm text-center font-semibold uppercase tracking-[0.2em] mb-3 max-w-[240px]">
                   {pillar.heading}
                 </p>
-                <p className="text-foreground/60 text-sm font-normal leading-relaxed">
+                <p className="text-foreground/60 text-sm text-center font-normal leading-relaxed">
                   {pillar.body}
                 </p>
               </div>

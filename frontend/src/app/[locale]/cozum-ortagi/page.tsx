@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -64,6 +65,15 @@ export default async function CozumOrtagiPage() {
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.cozum-ortagi">
       {/* Hero */}
       <section className="relative isolate overflow-hidden border-b border-white/10 bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]">
+        <Image
+          src="/home-cta-2.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="absolute inset-0 object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/0" />
         <div className="page-container relative flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">
           <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
             <SiteBreadcrumbs items={[{ label: t('hero.breadcrumb') }]} />

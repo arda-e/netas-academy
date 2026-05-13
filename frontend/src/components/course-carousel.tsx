@@ -73,7 +73,7 @@ export function CourseCarousel({
       {/* Scrollable Content Area */}
       <div
         ref={scrollAreaRef}
-        className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] "
       >
         {items.map((course) => {
           const topicSlug = normalizeTopicArea(course.topicArea ?? null);
@@ -83,7 +83,7 @@ export function CourseCarousel({
             <Link
               key={course.documentId}
               href={`/egitimler/${course.slug}`}
-              className="group/card-link flex min-w-[260px] snap-start cursor-pointer flex-col rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[300px]"
+              className="group/card-link flex min-w-[260px] snap-start cursor-pointer flex-col rounded-sm p-5 mt-1 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[300px] border-2 border-gray-200"
               data-testid={
                 cardTestIdPrefix ? `${cardTestIdPrefix}.${course.slug}` : undefined
               }

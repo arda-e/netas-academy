@@ -45,7 +45,7 @@ export function HomeFeaturedCoursesSection({
           </p>
         </div>
 
-        <div className="mt-5 sm:mt-6">
+        <div className="mt-5 sm:mt-5">
           <Suspense fallback={<CourseListLoading testId="loading.home.featured-courses" />}>
             <FeaturedCoursesCarousel />
           </Suspense>
