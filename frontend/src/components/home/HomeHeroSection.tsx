@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import heroImage from '@/assets/images/hero-blog.webp';
+import heroImage from '@/assets/images/hero-events.webp';
 import { getImagePlaceholderProps, type ImageSource } from '@/lib/image-sources';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
+import { cn } from '@/lib/utils';
 
 type HomeHeroSlide = {
   headline: string;
@@ -46,6 +47,7 @@ export function HomeHeroSection({
   imageUrl = heroImage,
 }: HomeHeroSectionProps = {}) {
   const [current, setCurrent] = useState(0);
+  const hasImage = Boolean(imageUrl);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -56,7 +58,12 @@ export function HomeHeroSection({
   }, [slides.length]);
 
   return (
-    <section className="relative flex min-h-[clamp(300px,44svh,680px)] items-center justify-center overflow-hidden bg-slate-950">
+    <section
+      className={cn(
+        "relative flex min-h-[clamp(300px,44svh,680px)] items-center justify-center overflow-hidden",
+        hasImage ? "bg-slate-950" : "bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]",
+      )}
+    >
       {imageUrl && (
         <Image
           src={imageUrl}
@@ -68,8 +75,14 @@ export function HomeHeroSection({
           {...getImagePlaceholderProps(imageUrl)}
         />
       )}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,oklch(0.65_0.12_205.25/0.25),transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,oklch(0.65_0.12_205.25/0.12),transparent_50%)]" />
+      {hasImage ? (
+        <div className="absolute inset-0 bg-slate-950/8" />
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,oklch(0.65_0.12_205.25/0.25),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,oklch(0.65_0.12_205.25/0.12),transparent_50%)]" />
+        </>
+      )}
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-10 xl:px-12">
         <div className="relative w-full min-h-[8rem]">
@@ -83,10 +96,10 @@ export function HomeHeroSection({
               }`}
             >
               <div className="mx-auto flex w-full max-w-5xl flex-col items-center">
-                <h1 className="text-3xl font-normal leading-tight text-white md:text-5xl lg:text-6xl">
+                <h1 className="max-w-4xl text-balance text-3xl font-normal leading-tight text-white sm:text-4xl lg:text-5xl">
                   {slide.headline}
                 </h1>
-                <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/75 md:text-lg">
+                <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/86 md:text-lg">
                   {slide.subtitle}
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">

@@ -33,6 +33,7 @@ export function ContentPageShell({
   skeleton,
   testId,
 }: ContentPageShellProps) {
+  const hasHeroImage = Boolean(heroImageUrl);
   const resolvedBreadcrumbItems = breadcrumbItems ?? [
     { label: title },
   ];
@@ -43,7 +44,7 @@ export function ContentPageShell({
     }
 
     const baseDescriptionClass = cn(
-      "max-w-2xl space-y-3 text-[15px] leading-7 text-white/76 sm:space-y-4 sm:text-lg sm:leading-8",
+      "max-w-2xl space-y-3 text-[15px] leading-7 text-white/88 sm:space-y-4 sm:text-lg sm:leading-8",
       descriptionClassName,
     );
 
@@ -81,12 +82,12 @@ export function ContentPageShell({
       <section
         className={cn(
           "relative isolate overflow-hidden border-b border-white/10",
-          heroImageUrl
+          hasHeroImage
             ? "bg-slate-950"
             : "bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]",
         )}
       >
-        {heroImageUrl && (
+        {hasHeroImage && heroImageUrl && (
           <>
             <div
               className="absolute inset-0"
@@ -100,8 +101,8 @@ export function ContentPageShell({
                 sizes="100vw"
                 className="object-cover"
                 {...getImagePlaceholderProps(heroImageUrl, heroImageBlurDataURL)}
-                />
-              </div>
+              />
+            </div>
           </>
         )}
         <div className="page-container relative flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">

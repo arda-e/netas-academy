@@ -11,6 +11,7 @@ import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { join } from "@/lib/testids";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,7 @@ export async function generateMetadata({
 
 export default async function CozumOrtagiPage() {
   const t = await getTranslations('solution_partner');
+  const heroImage = solutionPartnerHeroImage;
 
   const collaborationAreas = [
     {
@@ -65,16 +67,23 @@ export default async function CozumOrtagiPage() {
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.cozum-ortagi">
       {/* Hero */}
-      <section className="relative isolate overflow-hidden border-b border-white/10 bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]">
-        <Image
-          src={solutionPartnerHeroImage}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="absolute inset-0 object-cover object-center"
-          placeholder="blur"
-        />
+      <section
+        className={cn(
+          "relative isolate overflow-hidden border-b border-white/10",
+          heroImage ? "bg-slate-950" : "bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]",
+        )}
+      >
+        {heroImage ? (
+          <Image
+            src={heroImage}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="absolute inset-0 object-cover object-center"
+            placeholder="blur"
+          />
+        ) : null}
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/0" />
         <div className="page-container relative flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">
           <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">

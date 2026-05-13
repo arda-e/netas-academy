@@ -96,17 +96,19 @@ export function BlogDetail({
   afterContent,
   sourceNotes,
 }: BlogDetailProps) {
+  const hasCoverImage = Boolean(coverImageUrl);
+
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="blog-yazilari.detail">
       <section
         className={cn(
           "relative isolate overflow-hidden border-b border-white/10",
-          coverImageUrl
+          hasCoverImage
             ? "bg-slate-950"
             : "bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]"
         )}
       >
-        {coverImageUrl ? (
+        {hasCoverImage && coverImageUrl ? (
           <>
             <div className="absolute inset-0" data-testid="blog-yazilari.detail.cover-image">
               <Image
@@ -117,8 +119,8 @@ export function BlogDetail({
                 sizes="100vw"
                 className="object-cover"
                 {...getImagePlaceholderProps(coverImageUrl, coverImageBlurDataURL)}
-                />
-              </div>
+              />
+            </div>
           </>
         ) : null}
 
@@ -138,7 +140,7 @@ export function BlogDetail({
               {title}
             </h1>
             {meta ? (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-sm leading-6 text-white/76 sm:text-base" data-testid="blog-yazilari.detail.meta">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-sm leading-6 text-white/88 sm:text-base" data-testid="blog-yazilari.detail.meta">
                 {meta}
               </div>
             ) : null}
