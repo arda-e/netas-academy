@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 
 import { SiteBreadcrumbs, type BreadcrumbItem } from "@/components/breadcrumbs";
+import { getImagePlaceholderProps, type ImageSource } from "@/lib/image-sources";
 import { join } from "@/lib/testids";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +14,7 @@ type ContentPageShellProps = {
   descriptionTrailing?: ReactNode;
   heroImageAlt?: string;
   heroImageBlurDataURL?: string;
-  heroImageUrl?: string | null;
+  heroImageUrl?: ImageSource | null;
   children?: ReactNode;
   skeleton?: ReactNode;
   testId?: string;
@@ -98,12 +99,7 @@ export function ContentPageShell({
                 priority
                 sizes="100vw"
                 className="object-cover"
-                {...(heroImageBlurDataURL
-                  ? {
-                      placeholder: "blur" as const,
-                      blurDataURL: heroImageBlurDataURL,
-                    }
-                  : {})}
+                {...getImagePlaceholderProps(heroImageUrl, heroImageBlurDataURL)}
                 />
               </div>
           </>

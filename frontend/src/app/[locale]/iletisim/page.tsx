@@ -3,6 +3,7 @@ import type { LeadType } from "@/lib/lead-intents";
 import { resolveLeadTypeFromQuery } from "@/lib/lead-intents";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
+import contactHeroImage from "@/assets/images/hero-iletisim-1.webp";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { IntentLeadForm } from "@/components/contact/intent-lead-form";
 import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
@@ -54,16 +55,17 @@ export default async function IletisimPage({ searchParams }: IletisimPageProps) 
   const t = await getTranslations('contact');
 
   return (
-    <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.iletisim">
-      <section className="relative isolate overflow-hidden border-b border-white/8 bg-slate-950">
+    <main className="page-shell min-h-[calc(100vh-80px)]" data-testid="page.iletisim">
+      <section className="relative isolate overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="/hero-iletisim-1.webp"
+            src={contactHeroImage}
             alt=""
             fill
             priority
             sizes="100vw"
             className="object-cover object-center"
+            placeholder="blur"
           />
         </div>
 

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Filter } from "lucide-react";
 import { SortAscending, SortDescending } from "@phosphor-icons/react/dist/ssr";
 import { getTranslations } from "next-intl/server";
+import eventsHeroImage from "@/assets/images/hero-events.webp";
 
 import { ContentPageShell, EventList, EventListLoading } from "@/components/content";
 import { join } from "@/lib/testids";
@@ -133,7 +134,7 @@ export default async function EtkinliklerPage({
   return (
     <ContentPageShell
       title={t("hero.title")}
-      heroImageUrl="/hero-5.webp"
+      heroImageUrl={eventsHeroImage}
       heroImageAlt=""
       description={
         <p>

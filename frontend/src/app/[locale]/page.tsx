@@ -84,6 +84,9 @@ export default async function Home() {
           ]}
         />
         <HomeLearningModelSection
+          eyebrow={t("learning.header.eyebrow")}
+          heading={t("learning.header.heading")}
+          body={t("learning.header.body")}
           leftHeading={t("learning.left.heading")}
           leftBody={t("learning.left.body")}
           rightHeading={t("learning.right.heading")}
@@ -105,7 +108,6 @@ export default async function Home() {
           heading={t("contact_cta.heading")}
           body={t("contact_cta.body")}
           buttonLabel={t("contact_cta.button")}
-          imageUrl="/hero-cta-1.webp"
         />
       </main>
     </>

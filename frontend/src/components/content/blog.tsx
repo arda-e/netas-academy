@@ -5,6 +5,7 @@ import { SiteBreadcrumbs, type BreadcrumbItem } from "@/components/breadcrumbs";
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
+import { getImagePlaceholderProps, type ImageSource } from "@/lib/image-sources";
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
 import { formatLongDate } from "@/lib/date-formatting";
@@ -16,7 +17,7 @@ export type BlogListItem = {
   excerpt?: string | null;
   publishedDate?: string | null;
   authorName?: string | null;
-  coverImageUrl?: string | null;
+  coverImageUrl?: ImageSource | null;
   coverImageAlt?: string | null;
   coverImageBlurDataURL?: string | null;
 };
@@ -31,7 +32,7 @@ type BlogDetailProps = {
   breadcrumbItems?: BreadcrumbItem[];
   title: string;
   excerpt?: string | null;
-  coverImageUrl?: string | null;
+  coverImageUrl?: ImageSource | null;
   coverImageAlt?: string | null;
   coverImageBlurDataURL?: string | null;
   meta?: ReactNode;
@@ -115,7 +116,7 @@ export function BlogDetail({
                 priority
                 sizes="100vw"
                 className="object-cover"
-                {...(coverImageBlurDataURL ? { placeholder: "blur" as const, blurDataURL: coverImageBlurDataURL } : {})}
+                {...getImagePlaceholderProps(coverImageUrl, coverImageBlurDataURL)}
                 />
               </div>
           </>

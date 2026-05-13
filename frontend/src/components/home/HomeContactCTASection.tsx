@@ -1,12 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import heroCtaImage from '@/assets/images/hero-blog.webp';
+import { getImagePlaceholderProps, type ImageSource } from '@/lib/image-sources';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
 
 type HomeContactCTASectionProps = {
   heading?: string;
   body?: string;
   buttonLabel?: string;
-  imageUrl?: string | null;
+  imageUrl?: ImageSource | null;
   imageAlt?: string;
 };
 
@@ -14,7 +16,7 @@ export function HomeContactCTASection({
   heading = 'İhtiyacınıza uygun eğitim yolculuğunu birlikte kuralım',
   body = 'Ekibinizin hedeflerini ve gelişim önceliklerini paylaşın; size özel bir kurumsal eğitim programı tasarlayalım.',
   buttonLabel = 'Kurumsal Eğitim Talep Et',
-  imageUrl = '/hero-cta-1.webp',
+  imageUrl = heroCtaImage,
   imageAlt = '',
 }: HomeContactCTASectionProps = {}) {
   return (
@@ -27,6 +29,7 @@ export function HomeContactCTASection({
           sizes="100vw"
           className="object-cover object-center"
           priority
+          {...getImagePlaceholderProps(imageUrl)}
         />
       )}
 

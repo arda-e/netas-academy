@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContentSuperheading } from "@/components/content/content-superheading";
+import { getImagePlaceholderProps, type ImageSource } from "@/lib/image-sources";
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
 
@@ -15,7 +16,7 @@ type ContentCardShellProps = {
   summary?: ReactNode;
   meta?: ReactNode;
   className?: string;
-  imageUrl?: string | null;
+  imageUrl?: ImageSource | null;
   imageAlt?: string;
   imageSize?: "small" | "medium" | "large";
   blurDataURL?: string;
@@ -79,7 +80,7 @@ export function ContentCardShell({
             fill
             sizes={imageSizes}
             className="object-cover"
-            {...(blurDataURL ? { placeholder: "blur" as const, blurDataURL } : {})}
+            {...getImagePlaceholderProps(imageUrl, blurDataURL)}
           />
         </div>
       )}

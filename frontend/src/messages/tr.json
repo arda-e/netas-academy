@@ -103,6 +103,11 @@
       }
     },
     "learning": {
+      "header": {
+        "eyebrow": "Öğrenme Modeli",
+        "heading": "Vaka, senaryo ve gerçek iş problemleriyle öğrenme",
+        "body": "Eğitimlerimiz teorik aktarımın ötesinde; katılımcıların kendi iş bağlamlarına taşıyabileceği somut yöntemler ve uygulamalı çalışma biçimleri üzerine kurulur."
+      },
       "left": {
         "heading": "Aktif katılım ve uygulama",
         "body": "Grup çalışmaları, anlık geri bildirim döngüleri ve sahaya taşınan alıştırmalarla öğrenme kalıcı hale gelir."

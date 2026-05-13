@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import heroImage from '@/assets/images/hero-blog.webp';
+import { getImagePlaceholderProps, type ImageSource } from '@/lib/image-sources';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
 
 type HomeHeroSlide = {
@@ -15,7 +17,7 @@ type HomeHeroSectionProps = {
   primaryCtaLabel?: string;
   secondaryCtaLabel?: string;
   slideNavLabels?: string[];
-  imageUrl?: string | null;
+  imageUrl?: ImageSource | null;
 };
 
 const defaultSlides = [
@@ -41,7 +43,7 @@ export function HomeHeroSection({
   primaryCtaLabel = 'Kurumsal Eğitim Talep Et',
   secondaryCtaLabel = 'Eğitimleri İncele',
   slideNavLabels = [],
-  imageUrl = '/hero-5.webp',
+  imageUrl = heroImage,
 }: HomeHeroSectionProps = {}) {
   const [current, setCurrent] = useState(0);
 
@@ -63,6 +65,7 @@ export function HomeHeroSection({
           priority
           sizes="100vw"
           className="object-cover object-center"
+          {...getImagePlaceholderProps(imageUrl)}
         />
       )}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,oklch(0.65_0.12_205.25/0.25),transparent_60%)]" />

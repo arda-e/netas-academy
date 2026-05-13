@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
+import blogHeroImage from "@/assets/images/hero-blog.webp";
 import { ContentPageShell, BlogList, BlogListLoading, SearchField } from "@/components/content";
 import { getBlogPosts } from "@/lib/strapi-blog";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
@@ -75,7 +76,7 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
           {t('hero.description')}
         </p>
       }
-      heroImageUrl="/hero-blog-1.webp"
+      heroImageUrl={blogHeroImage}
       heroImageAlt=""
       testId="page.blog"
     >

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Download, Filter } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import trainingHeroImage from "@/assets/images/hero-events.webp";
 import { ContentPageShell, CourseListLoading, SearchField } from "@/components/content";
 import { CourseCatalogList } from "@/components/courses/course-catalog-list";
 import { getCourses } from "@/lib/strapi-courses";
@@ -87,7 +88,7 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
     <ContentPageShell
       testId="page.egitimler"
       title={t("hero.title")}
-      heroImageUrl="/hero-5.webp"
+      heroImageUrl={trainingHeroImage}
       heroImageAlt=""
       description={
         <>

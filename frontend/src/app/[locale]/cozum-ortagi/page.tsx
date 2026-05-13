@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import solutionPartnerHeroImage from "@/assets/images/hero-cozum.webp";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { AccordionSection } from "@/components/uncode/AccordionSection";
 import { IntroSection } from "@/components/uncode/IntroSection";
@@ -66,12 +67,13 @@ export default async function CozumOrtagiPage() {
       {/* Hero */}
       <section className="relative isolate overflow-hidden border-b border-white/10 bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]">
         <Image
-          src="/home-cta-2.webp"
+          src={solutionPartnerHeroImage}
           alt=""
           fill
           priority
           sizes="100vw"
           className="absolute inset-0 object-cover object-center"
+          placeholder="blur"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/0" />
         <div className="page-container relative flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import programsImage from '@/assets/images/home-2.jpg';
 
 type HomeProgramsSectionProps = {
   eyebrow?: string;
@@ -48,11 +49,12 @@ export function HomeProgramsSection({
           {/* Right — visual panel */}
           <div className="relative min-h-[220px] overflow-hidden bg-primary/10 p-0 lg:min-h-[420px]">
             <Image
-              src="/home-2.jpg"
+              src={programsImage}
               alt="Kurumunuzun ihtiyaçlarına göre şekillenen programlar"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover object-center"
+              placeholder="blur"
             />
           </div>
         </div>

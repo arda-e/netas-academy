@@ -103,6 +103,11 @@
       }
     },
     "learning": {
+      "header": {
+        "eyebrow": "Learning Model",
+        "heading": "Learning through cases, scenarios, and real business problems",
+        "body": "Our trainings go beyond theoretical transfer; they are built around concrete methods and applied working styles that participants can bring back into their own business context."
+      },
       "left": {
         "heading": "Active participation and application",
         "body": "Group work, real-time feedback loops, and practice-based exercises make learning stick."
