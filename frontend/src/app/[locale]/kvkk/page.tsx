@@ -6,8 +6,6 @@ import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { KvkkBackButton } from "@/components/kvkk-back-button";
 import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
 
-export const dynamic = "force-dynamic";
-
 export async function generateMetadata({
   params,
 }: {
@@ -59,7 +57,7 @@ export default function KvkkPage() {
             <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl">
               Kişisel verilerin korunmasına ilişkin aydınlatma metni
             </h1>
-            <p className="max-w-3xl text-[15px] leading-7 text-white/78 sm:text-lg sm:leading-8">
+            <p className="max-w-3xl text-[15px] leading-7 text-white/88 sm:text-lg sm:leading-8">
               Netaş Telekomünikasyon A.Ş., kişisel verilerinizin hukuka uygun
               olarak toplanması, saklanması ve paylaşılmasını sağlamak ve
               gizliliğinizi korumak amacıyla mümkün olan en üst seviyede güvenlik

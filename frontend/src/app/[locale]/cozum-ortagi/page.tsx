@@ -13,7 +13,7 @@ import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { cn } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type CozumOrtagiPageProps = {
   params: Promise<{

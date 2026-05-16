@@ -4,8 +4,6 @@ import { ContentPageShell, NewsList } from "@/components/content";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 
-export const dynamic = "force-dynamic";
-
 type HaberlerPageProps = {
   params: Promise<{
     locale: string;
