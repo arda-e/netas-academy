@@ -14,11 +14,20 @@ import {
   getStrapiMediaBlurDataUrl,
   getStrapiMediaUrl,
 } from "@/lib/strapi-media";
-import { getTeacherBySlug } from "@/lib/strapi-teachers";
+import { getTeacherBySlug, getTeacherSlugs } from "@/lib/strapi-teachers";
 import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { cn, getInitials } from "@/lib/utils";
 import { join } from "@/lib/testids";
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const slugs = await getTeacherSlugs();
+  return ["tr", "en"].flatMap((locale) =>
+    slugs.map((slug) => ({ locale, slug }))
+  );
+}
 
 type TeacherDetailPageProps = {
   params: Promise<{
