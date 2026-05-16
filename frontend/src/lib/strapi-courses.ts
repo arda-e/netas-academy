@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { StrapiCourse, StrapiListResponse } from "./strapi-types";
 import { fetchStrapi } from "./strapi-client";
 
@@ -51,7 +52,7 @@ export async function getCourseSlugs() {
   }
 }
 
-export async function getCourseBySlug(slug: string) {
+export const getCourseBySlug = cache(async (slug: string) => {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
       `/api/courses?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1` +
@@ -82,7 +83,7 @@ export async function getCourseBySlug(slug: string) {
     }));
     return null;
   }
-}
+});
 
 export async function getLatestCourses(limit = 5) {
   try {
