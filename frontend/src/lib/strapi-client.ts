@@ -1,5 +1,3 @@
-import { draftMode } from "next/headers";
-
 import type { FetchStrapiOptions } from "./strapi-types";
 
 const STRAPI_URL = process.env.STRAPI_URL ?? "http://127.0.0.1:1337";
@@ -46,7 +44,7 @@ async function fetchStrapi<T>(path: string, options?: FetchStrapiOptions): Promi
   const timeout = options?.timeout ?? DEFAULT_TIMEOUT_MS;
   const route = extractRoute(path);
   const endpoint = path.split("?")[0];
-  const { isEnabled: isDraftMode } = await draftMode();
+  const isDraftMode = options?.isDraft ?? false;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     const controller = new AbortController();

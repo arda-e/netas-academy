@@ -9,7 +9,7 @@ import { RichTextContent } from "@/components/content/rich-text-content";
 import { JsonLd } from "@/components/seo/json-ld";
 import {
   getBlogPostBySlug,
-  getBlogPosts,
+  getRelatedBlogPosts,
 } from "@/lib/strapi-blog";
 import {
   getStrapiMediaAltText,
@@ -98,11 +98,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
   const t = await getTranslations('blog');
 
-  const allPosts = await getBlogPosts();
-
-  const relatedPosts = allPosts
-    .filter((p) => p.documentId !== post.documentId)
-    .slice(0, 3);
+  const relatedPosts = await getRelatedBlogPosts(slug, 3);
 
   const breadcrumbItems = [{ label: t('hero.title'), href: "/blog-yazilari" }];
 

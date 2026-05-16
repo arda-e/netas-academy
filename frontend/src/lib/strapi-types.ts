@@ -16,6 +16,7 @@ export type FetchStrapiOptions = {
   timeout?: number;
   retries?: number;
   headers?: HeadersInit;
+  isDraft?: boolean;
 };
 
 export type StrapiCourse = {

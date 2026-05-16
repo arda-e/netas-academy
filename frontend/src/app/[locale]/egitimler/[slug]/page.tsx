@@ -10,7 +10,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
-import { getCourseBySlug } from "@/lib/strapi-courses";
+import { getCourseBySlug, getCourseSlugs } from "@/lib/strapi-courses";
 import { normalizeCourseLevel, getCourseLevelLabel } from "@/lib/content-taxonomy";
 import { join } from "@/lib/testids";
 import { formatEventDateTime } from "@/lib/date-formatting";
@@ -36,6 +36,15 @@ function getCourseLevel(
 
   const level = normalizeCourseLevel(course.level);
   return level ? getCourseLevelLabel(level, t_taxonomy) : undefined;
+}
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const slugs = await getCourseSlugs();
+  return ["tr", "en"].flatMap((locale) =>
+    slugs.map((slug) => ({ locale, slug }))
+  );
 }
 
 type CourseDetailPageProps = {
@@ -109,15 +118,15 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         <div className="flex w-full flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <div className="max-w-3xl space-y-5">
             {course.summary ? (
-              <p className="max-w-2xl text-[15px] leading-7 text-white/76 sm:text-lg sm:leading-8">
+              <p className="max-w-2xl text-[15px] leading-7 text-white/88 sm:text-lg sm:leading-8">
                 {course.summary}
               </p>
             ) : (
-              <p className="max-w-2xl text-[15px] leading-7 text-white/76 sm:text-lg sm:leading-8">
+              <p className="max-w-2xl text-[15px] leading-7 text-white/88 sm:text-lg sm:leading-8">
                 {t("detail.no_summary")}
               </p>
             )}
-            <div className="space-y-3 text-sm text-white/82 sm:text-base">
+            <div className="space-y-3 text-sm text-white/90 sm:text-base">
               <div className="flex flex-wrap items-center gap-3">
                 {levelLabel && (
                   <span className="inline-flex items-center rounded-full border border-white/18 bg-white/12 px-3 py-1 text-xs font-semibold text-white">
@@ -128,9 +137,9 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
               </div>
               {course.teacher && (
                 <p className="mt-3 sm:mt-4">
-                  <span className="font-medium text-white/86">{t("detail.teacher_label")}:</span>{" "}
+                  <span className="font-medium text-white/92">{t("detail.teacher_label")}:</span>{" "}
                   <Link
-                    className="font-medium text-white underline decoration-white/28 decoration-2 underline-offset-4 transition-colors hover:text-white/90"
+                    className="font-medium text-white underline decoration-white/28 decoration-2 underline-offset-4 transition-colors hover:text-white/96"
                     href={`/egitmenler/${course.teacher.slug}`}
                     data-testid={join("page", "course-detail", "teacher-link", course.teacher.slug)}
                   >
@@ -147,16 +156,16 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         <Link
           href={buildIntentLeadUrl("corporate_training_request", { topic: course.title })}
           data-testid="page.course-detail.cta.corporate-request"
-          className="inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-white/58 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-colors hover:bg-white/14 hover:text-white/72"
+          className="inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-white/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-colors hover:bg-white/14 hover:text-white/86"
         >
-          <span className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/48">
+          <span className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/62">
             <span className="text-sm leading-none">→</span>
           </span>
           <span className="flex flex-col items-start leading-tight">
             <span className="text-sm font-semibold text-white">
               {t("detail.corporate_cta_label")}
             </span>
-            <span className="text-[11px] uppercase tracking-[0.22em] text-white/38">
+            <span className="text-[11px] uppercase tracking-[0.22em] text-white/55">
               {t("detail.corporate_cta_sub")}
             </span>
           </span>

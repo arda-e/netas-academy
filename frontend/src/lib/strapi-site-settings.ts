@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { fetchStrapi } from "./strapi-client";
 import type { StrapiSiteSetting } from "./strapi-types";
 
@@ -7,7 +8,7 @@ type StrapiSiteSettingResponse = {
 
 const SITE_SETTINGS_TAG = "site-settings";
 
-export async function getSiteSettings() {
+export const getSiteSettings = cache(async () => {
   try {
     const response = await fetchStrapi<StrapiSiteSettingResponse>(
       "/api/site-setting?fields[0]=siteName&fields[1]=defaultMetaTitle&fields[2]=defaultMetaDescription&fields[3]=defaultOgImageAlt&populate[defaultOgImage][fields][0]=url&populate[defaultOgImage][fields][1]=alternativeText&populate[defaultOgImage][fields][2]=width&populate[defaultOgImage][fields][3]=height&populate[defaultOgImage][fields][4]=mime&populate[defaultOgImage][fields][5]=formats",
@@ -28,4 +29,4 @@ export async function getSiteSettings() {
     );
     return null;
   }
-}
+});

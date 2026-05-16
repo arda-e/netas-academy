@@ -28,7 +28,6 @@ export function HomeContactCTASection({
           fill
           sizes="100vw"
           className="object-cover object-center"
-          priority
           {...getImagePlaceholderProps(imageUrl)}
         />
       )}
@@ -40,7 +39,7 @@ export function HomeContactCTASection({
           <h2 className="text-3xl font-normal leading-snug text-white md:text-4xl">
             {heading}
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-white/80">
+          <p className="mt-4 text-base leading-relaxed text-white/90">
             {body}
           </p>
           <Link

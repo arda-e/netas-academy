@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { StrapiCourse, StrapiListResponse } from "./strapi-types";
 import { fetchStrapi } from "./strapi-client";
 
@@ -51,7 +52,7 @@ export async function getCourseSlugs() {
   }
 }
 
-export async function getCourseBySlug(slug: string) {
+export const getCourseBySlug = cache(async (slug: string) => {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
       `/api/courses?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1` +
@@ -82,16 +83,14 @@ export async function getCourseBySlug(slug: string) {
     }));
     return null;
   }
-}
+});
 
 export async function getLatestCourses(limit = 5) {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
       `/api/courses?pagination[pageSize]=${limit}&sort[0]=createdAt:desc` +
       '&fields[0]=title&fields[1]=slug&fields[2]=summary' +
-      '&fields[3]=topicArea&fields[4]=level' +
-      '&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription' +
-      '&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex',
+      '&fields[3]=topicArea&fields[4]=level',
       { next: { tags: [COURSES_TAG] } }
     );
 
