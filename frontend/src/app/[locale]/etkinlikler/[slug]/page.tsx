@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { RouteLoading } from "@/components/content";
-import { Button } from "@/components/ui/button";
 import { RichTextContent } from "@/components/content/rich-text-content";
-import { NewsletterSubscriptionForm } from "@/components/newsletter-subscription-form";
+import { RegistrationStatusButton } from "@/components/events/registration-status-button";
 import { JsonLd } from "@/components/seo/json-ld";
-import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
-import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi-events";
+import { getEventBySlug } from "@/lib/strapi-events";
 import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventDetailPageProps = {
@@ -28,23 +25,15 @@ function EventInformationPanel({
   startsAt,
   endsAt,
   location,
-  slug,
-  registrationOpen,
   infoPanelHeading,
-  registerCta,
-  contactCta,
-  registrationClosedNotice,
+  registrationAction,
 }: {
   title: string;
   startsAt: string;
   endsAt?: string | null;
   location?: string | null;
-  slug: string;
-  registrationOpen: boolean;
   infoPanelHeading: string;
-  registerCta: string;
-  contactCta: string;
-  registrationClosedNotice: string;
+  registrationAction: ReactNode;
 }) {
   return (
     <aside className="panel-surface rounded-sm p-6 md:p-8" data-testid="page.event-detail.info-panel">
@@ -59,26 +48,7 @@ function EventInformationPanel({
         </div>
         {location && <p>{location}</p>}
       </div>
-
-      {registrationOpen ? (
-        <>
-          <Button asChild className="mt-6 w-full rounded-sm" data-testid="page.event-detail.register-cta">
-            <Link href={`/etkinlikler/${slug}/kayit`}>{registerCta}</Link>
-          </Button>
-          <Button asChild variant="outline" className="mt-3 w-full rounded-sm" data-testid="page.event-detail.contact-cta">
-            <Link href={buildIntentLeadUrl("general_contact")}>{contactCta}</Link>
-          </Button>
-        </>
-      ) : (
-        <div className="mt-6 space-y-4" data-testid="page.event-detail.registration-closed.notice">
-          <p className="text-sm font-medium text-foreground/72">
-            {registrationClosedNotice}
-          </p>
-          <div data-testid="page.event-detail.registration-closed.newsletter">
-            <NewsletterSubscriptionForm source="event_closed_registration" />
-          </div>
-        </div>
-      )}
+      {registrationAction}
     </aside>
   );
 }
@@ -121,8 +91,6 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   }
 
   const t = await getTranslations("events");
-  const registrationStatus = await getEventRegistrationStatus(event.documentId);
-  const registrationOpen = registrationStatus?.isOpen ?? false;
   const eventJsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -157,7 +125,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               {event.title}
             </h1>
             {event.summary && (
-              <p className="max-w-2xl text-lg leading-8 text-white/78">{event.summary}</p>
+              <p className="max-w-2xl text-lg leading-8 text-white/88">{event.summary}</p>
             )}
           </div>
         </div>
@@ -183,12 +151,16 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               startsAt={event.startsAt}
               endsAt={event.endsAt}
               location={event.location}
-              slug={event.slug}
-              registrationOpen={registrationOpen}
               infoPanelHeading={t("detail.info_panel_heading")}
-              registerCta={t("detail.register_cta")}
-              contactCta={t("detail.contact_cta")}
-              registrationClosedNotice={t("detail.registration_closed_notice")}
+              registrationAction={
+                <RegistrationStatusButton
+                  documentId={event.documentId}
+                  slug={event.slug}
+                  registerCta={t("detail.register_cta")}
+                  contactCta={t("detail.contact_cta")}
+                  registrationClosedNotice={t("detail.registration_closed_notice")}
+                />
+              }
             />
           </div>
         </section>
