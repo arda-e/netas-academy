@@ -65,3 +65,27 @@ export const getBlogPostBySlug = cache(async (slug: string) => {
     return null;
   }
 });
+
+export async function getRelatedBlogPosts(excludeSlug: string, limit = 3) {
+  try {
+    const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(
+      `/api/blog-posts?pagination[pageSize]=${limit}&sort[0]=publishedDate:desc` +
+      `&filters[slug][$ne]=${encodeURIComponent(excludeSlug)}` +
+      '&fields[0]=title&fields[1]=slug&fields[2]=excerpt&fields[3]=publishedDate' +
+      '&populate[author][fields][0]=displayName&populate[author][fields][1]=slug&populate[author][fields][2]=role' +
+      '&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=alternativeText' +
+      '&populate[coverImage][fields][2]=width&populate[coverImage][fields][3]=height' +
+      '&populate[coverImage][fields][4]=mime&populate[coverImage][fields][5]=formats',
+      { next: { tags: [BLOG_TAG] } }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: 'blog',
+      function: 'getRelatedBlogPosts',
+      message: `Error fetching related blog posts: ${error instanceof Error ? error.message : String(error)}`,
+    }));
+    return [];
+  }
+}

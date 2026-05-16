@@ -90,9 +90,7 @@ export async function getLatestCourses(limit = 5) {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
       `/api/courses?pagination[pageSize]=${limit}&sort[0]=createdAt:desc` +
       '&fields[0]=title&fields[1]=slug&fields[2]=summary' +
-      '&fields[3]=topicArea&fields[4]=level' +
-      '&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription' +
-      '&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex',
+      '&fields[3]=topicArea&fields[4]=level',
       { next: { tags: [COURSES_TAG] } }
     );
 
