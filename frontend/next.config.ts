@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import createBundleAnalyzer from "@next/bundle-analyzer";
 
 const strapiUrl = process.env.STRAPI_URL ?? "http://127.0.0.1:1337";
 const strapiAdminUrl = process.env.NEXT_PUBLIC_API_URL ?? strapiUrl;
@@ -53,5 +54,9 @@ const nextConfig: NextConfig = {
   },
 };
 
+const withBundleAnalyzer = createBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
+
 const withNextIntl = createNextIntlPlugin();
-export default withNextIntl(nextConfig);
+export default withBundleAnalyzer(withNextIntl(nextConfig));
