@@ -36,14 +36,15 @@ jobs:
           script: |
             mkdir -p ${{ secrets.EC2_APP_DIR }}/.docker-data/strapi
             mkdir -p ${{ secrets.EC2_APP_DIR }}/.docker-data/uploads
+            mkdir -p ${{ secrets.EC2_APP_DIR }}/docker/nginx/conf.d
 
-      - name: Upload deploy compose
+      - name: Upload deploy files
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: docker-compose.deploy.yml
+          source: docker-compose.deploy.yml,docker/nginx/conf.d/new.netasacademy.com.conf
           target: ${{ secrets.EC2_APP_DIR }}
           strip_components: 0
 
@@ -57,12 +58,49 @@ jobs:
             set -e
             cd ${{ secrets.EC2_APP_DIR }}
             export APP_IMAGE=ghcr.io/${{ secrets.GHCR_OWNER }}/netas-academy:${{ env.DEPLOY_SHA }}
-            export STRAPI_PUBLIC_URL=http://${{ secrets.EC2_HOST }}:1337
+            export NEXT_PUBLIC_SITE_URL="${{ secrets.NEXT_PUBLIC_SITE_URL }}"
+            export STRAPI_PUBLIC_URL="${{ secrets.STRAPI_PUBLIC_URL }}"
             export CLIENT_URL="${{ secrets.CLIENT_URL }}"
+            export FRONTEND_URL="${{ secrets.FRONTEND_URL }}"
             export PREVIEW_SECRET="${{ secrets.PREVIEW_SECRET }}"
             export NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}"
             export GIT_COMMIT_SHA=${{ env.DEPLOY_SHA }}
-            printf "APP_IMAGE=%s\nSTRAPI_PUBLIC_URL=%s\nCLIENT_URL=%s\nPREVIEW_SECRET=%s\nNEXT_PUBLIC_API_URL=%s\nGIT_COMMIT_SHA=%s\n" "$APP_IMAGE" "$STRAPI_PUBLIC_URL" "$CLIENT_URL" "$PREVIEW_SECRET" "$NEXT_PUBLIC_API_URL" "$GIT_COMMIT_SHA" > .env
+            export APP_KEYS="${{ secrets.APP_KEYS }}"
+            export ADMIN_JWT_SECRET="${{ secrets.ADMIN_JWT_SECRET }}"
+            export API_TOKEN_SALT="${{ secrets.API_TOKEN_SALT }}"
+            export TRANSFER_TOKEN_SALT="${{ secrets.TRANSFER_TOKEN_SALT }}"
+            export ENCRYPTION_KEY="${{ secrets.ENCRYPTION_KEY }}"
+            export JWT_SECRET="${{ secrets.JWT_SECRET }}"
+
+            : "${NEXT_PUBLIC_SITE_URL:=https://new.netasacademy.com}"
+            : "${STRAPI_PUBLIC_URL:=http://new.netasacademy.com:1337}"
+            : "${CLIENT_URL:=https://new.netasacademy.com}"
+            : "${FRONTEND_URL:=http://127.0.0.1:3000}"
+            : "${NEXT_PUBLIC_API_URL:=http://new.netasacademy.com:1337}"
+
+            for required_var in APP_KEYS ADMIN_JWT_SECRET API_TOKEN_SALT TRANSFER_TOKEN_SALT ENCRYPTION_KEY JWT_SECRET; do
+              if [ -z "$(eval "printf '%s' \"\${${required_var}:-}\"")" ]; then
+                echo "Missing required GitHub secret: ${required_var}" >&2
+                exit 1
+              fi
+            done
+
+            cat > .env <<EOF
+            APP_IMAGE=$APP_IMAGE
+            NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+            STRAPI_PUBLIC_URL=$STRAPI_PUBLIC_URL
+            CLIENT_URL=$CLIENT_URL
+            FRONTEND_URL=$FRONTEND_URL
+            PREVIEW_SECRET=$PREVIEW_SECRET
+            NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+            GIT_COMMIT_SHA=$GIT_COMMIT_SHA
+            APP_KEYS=$APP_KEYS
+            ADMIN_JWT_SECRET=$ADMIN_JWT_SECRET
+            API_TOKEN_SALT=$API_TOKEN_SALT
+            TRANSFER_TOKEN_SALT=$TRANSFER_TOKEN_SALT
+            ENCRYPTION_KEY=$ENCRYPTION_KEY
+            JWT_SECRET=$JWT_SECRET
+            EOF
             cp docker-compose.deploy.yml docker-compose.yml
             docker container prune -f
             docker image prune -af
@@ -126,4 +164,4 @@ jobs:
           script: |
             cd ${{ secrets.EC2_APP_DIR }}
             docker compose ps || true
-            docker compose logs --tail=200 app || true
+            docker compose logs --tail=200 || true

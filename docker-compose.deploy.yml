@@ -1,32 +1,67 @@
 services:
+  cert-init:
+    image: alpine/openssl:latest
+    restart: "no"
+    command:
+      - sh
+      - -c
+      - |
+        set -eu
+
+        if [ ! -s /certs/new.netasacademy.com.crt ] || [ ! -s /certs/new.netasacademy.com.key ]; then
+          openssl req \
+            -x509 \
+            -nodes \
+            -newkey rsa:2048 \
+            -sha256 \
+            -days "${SSL_CERT_DAYS:-825}" \
+            -keyout /certs/new.netasacademy.com.key \
+            -out /certs/new.netasacademy.com.crt \
+            -subj "/CN=new.netasacademy.com" \
+            -addext "subjectAltName=DNS:new.netasacademy.com"
+        fi
+
+        chmod 600 /certs/new.netasacademy.com.key
+        chmod 644 /certs/new.netasacademy.com.crt
+    volumes:
+      - nginx-certs:/certs
+
   app:
-    image: ${APP_IMAGE}
+    image: ${APP_IMAGE:-ghcr.io/arda-e/netas-academy:latest}
+    restart: unless-stopped
     environment:
       NODE_ENV: production
       FRONTEND_PORT: 3000
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://netasacademy.com}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://new.netasacademy.com}
       STRAPI_URL: ${STRAPI_URL:-http://127.0.0.1:1337}
-      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL}
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-http://new.netasacademy.com:1337}
+      CLIENT_URL: ${CLIENT_URL:-https://new.netasacademy.com}
+      FRONTEND_URL: ${FRONTEND_URL:-http://127.0.0.1:3000}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://new.netasacademy.com:1337}
       GIT_COMMIT_SHA: ${GIT_COMMIT_SHA:-}
       HOST: 0.0.0.0
       PORT: 1337
-      APP_KEYS: ${APP_KEYS:-app-key-1,app-key-2,app-key-3,app-key-4}
-      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-change-admin-jwt-secret}
-      API_TOKEN_SALT: ${API_TOKEN_SALT:-change-api-token-salt}
-      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:-change-transfer-token-salt}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-change-encryption-key}
-      JWT_SECRET: ${JWT_SECRET:-change-jwt-secret}
+      APP_KEYS: ${APP_KEYS:?Set APP_KEYS in the deployment environment}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:?Set ADMIN_JWT_SECRET in the deployment environment}
+      API_TOKEN_SALT: ${API_TOKEN_SALT:?Set API_TOKEN_SALT in the deployment environment}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:?Set TRANSFER_TOKEN_SALT in the deployment environment}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY in the deployment environment}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in the deployment environment}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-}
       DATABASE_CLIENT: sqlite
       DATABASE_FILENAME: .tmp/data.db
-      EMAIL_PROVIDER: sendmail
-      EMAIL_DEFAULT_FROM: "Netas Academy <no-reply@example.local>"
-      EMAIL_DEFAULT_REPLY_TO: "support@example.local"
-      EMAIL_TEST_ADDRESS: "test@example.local"
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-sendmail}
+      EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM:-Netas Academy <no-reply@netasacademy.com>}
+      EMAIL_DEFAULT_REPLY_TO: ${EMAIL_DEFAULT_REPLY_TO:-support@netasacademy.com}
+      EMAIL_TEST_ADDRESS: ${EMAIL_TEST_ADDRESS:-test@netasacademy.com}
     volumes:
       - ./.docker-data/strapi:/app/backend/.tmp
+      - ./.docker-data/uploads:/app/public/uploads
       - ./.docker-data/uploads:/app/backend/public/uploads
+    expose:
+      - "3000"
+      - "1337"
     ports:
-      - "3000:3000"
       - "1337:1337"
     healthcheck:
       test: ["CMD-SHELL", "curl --globoff --fail --silent http://127.0.0.1:3000/ >/dev/null && curl --globoff --fail --silent 'http://127.0.0.1:1337/api/events?pagination[pageSize]=1' >/dev/null"]
@@ -34,3 +69,21 @@ services:
       timeout: 5s
       retries: 6
       start_period: 45s
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      cert-init:
+        condition: service_completed_successfully
+      app:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - nginx-certs:/etc/nginx/certs:ro
+
+volumes:
+  nginx-certs:
