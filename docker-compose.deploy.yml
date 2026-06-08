@@ -1,31 +1,21 @@
 services:
   cert-init:
-    image: alpine/openssl:latest
+    image: certbot/certbot:latest
     restart: "no"
-    entrypoint:
-      - /bin/sh
-      - -c
     command:
-      - |
-        set -eu
-
-        if [ ! -s /certs/new.netasacademy.com.crt ] || [ ! -s /certs/new.netasacademy.com.key ]; then
-          openssl req \
-            -x509 \
-            -nodes \
-            -newkey rsa:2048 \
-            -sha256 \
-            -days "${SSL_CERT_DAYS:-825}" \
-            -keyout /certs/new.netasacademy.com.key \
-            -out /certs/new.netasacademy.com.crt \
-            -subj "/CN=new.netasacademy.com" \
-            -addext "subjectAltName=DNS:new.netasacademy.com"
-        fi
-
-        chmod 600 /certs/new.netasacademy.com.key
-        chmod 644 /certs/new.netasacademy.com.crt
+      - certonly
+      - --standalone
+      - --non-interactive
+      - --agree-tos
+      - --keep-until-expiring
+      - --email
+      - ${LETSENCRYPT_EMAIL:?Set LETSENCRYPT_EMAIL in the deployment environment}
+      - -d
+      - new.netasacademy.com
+    ports:
+      - "80:80"
     volumes:
-      - nginx-certs:/certs
+      - letsencrypt:/etc/letsencrypt
 
   app:
     image: ${APP_IMAGE:-ghcr.io/arda-e/netas-academy:latest}
@@ -35,10 +25,10 @@ services:
       FRONTEND_PORT: 3000
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://new.netasacademy.com}
       STRAPI_URL: ${STRAPI_URL:-http://127.0.0.1:1337}
-      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-http://new.netasacademy.com:1337}
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-https://new.netasacademy.com:1337}
       CLIENT_URL: ${CLIENT_URL:-https://new.netasacademy.com}
       FRONTEND_URL: ${FRONTEND_URL:-http://127.0.0.1:3000}
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://new.netasacademy.com:1337}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://new.netasacademy.com:1337}
       GIT_COMMIT_SHA: ${GIT_COMMIT_SHA:-}
       HOST: 0.0.0.0
       PORT: 1337
@@ -62,8 +52,6 @@ services:
     expose:
       - "3000"
       - "1337"
-    ports:
-      - "1337:1337"
     healthcheck:
       test: ["CMD-SHELL", "curl --globoff --fail --silent http://127.0.0.1:3000/ >/dev/null && curl --globoff --fail --silent 'http://127.0.0.1:1337/api/events?pagination[pageSize]=1' >/dev/null"]
       interval: 15s
@@ -82,9 +70,10 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "1337:1337"
     volumes:
       - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
-      - nginx-certs:/etc/nginx/certs:ro
+      - letsencrypt:/etc/letsencrypt:ro
 
 volumes:
-  nginx-certs:
+  letsencrypt:

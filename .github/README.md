@@ -16,15 +16,16 @@ Preview/deploy secrets used by `deploy-ec2.yml`:
 - `NEXT_PUBLIC_SITE_URL`: public frontend origin, usually `https://new.netasacademy.com`
 - `CLIENT_URL`: public frontend origin used by Strapi preview, usually `https://new.netasacademy.com`
 - `FRONTEND_URL`: frontend origin for Strapi revalidation; defaults to `http://127.0.0.1:3000`
-- `STRAPI_PUBLIC_URL`: public Strapi origin, usually `http://new.netasacademy.com:1337`
+- `STRAPI_PUBLIC_URL`: public Strapi origin, usually `https://new.netasacademy.com:1337`
 - `PREVIEW_SECRET`: shared draft-mode token for preview routes
-- `NEXT_PUBLIC_API_URL`: public Strapi/admin origin used by the frontend CSP, usually `http://new.netasacademy.com:1337`
+- `NEXT_PUBLIC_API_URL`: public Strapi/admin origin used by the frontend CSP, usually `https://new.netasacademy.com:1337`
 - `APP_KEYS`: four comma-separated Strapi app keys
 - `ADMIN_JWT_SECRET`: Strapi admin JWT secret
 - `API_TOKEN_SALT`: Strapi API token salt
 - `TRANSFER_TOKEN_SALT`: Strapi transfer token salt
 - `ENCRYPTION_KEY`: Strapi encryption key
 - `JWT_SECRET`: Strapi users-permissions JWT secret
+- `LETSENCRYPT_EMAIL`: email used for Let's Encrypt certificate registration and expiry notices
 
 The current pipeline publishes the combined app image with both mutable and immutable tags:
 

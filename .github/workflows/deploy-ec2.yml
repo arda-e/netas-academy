@@ -71,14 +71,15 @@ jobs:
             export TRANSFER_TOKEN_SALT="${{ secrets.TRANSFER_TOKEN_SALT }}"
             export ENCRYPTION_KEY="${{ secrets.ENCRYPTION_KEY }}"
             export JWT_SECRET="${{ secrets.JWT_SECRET }}"
+            export LETSENCRYPT_EMAIL="${{ secrets.LETSENCRYPT_EMAIL }}"
 
             : "${NEXT_PUBLIC_SITE_URL:=https://new.netasacademy.com}"
-            : "${STRAPI_PUBLIC_URL:=http://new.netasacademy.com:1337}"
+            : "${STRAPI_PUBLIC_URL:=https://new.netasacademy.com:1337}"
             : "${CLIENT_URL:=https://new.netasacademy.com}"
             : "${FRONTEND_URL:=http://127.0.0.1:3000}"
-            : "${NEXT_PUBLIC_API_URL:=http://new.netasacademy.com:1337}"
+            : "${NEXT_PUBLIC_API_URL:=https://new.netasacademy.com:1337}"
 
-            for required_var in APP_KEYS ADMIN_JWT_SECRET API_TOKEN_SALT TRANSFER_TOKEN_SALT ENCRYPTION_KEY JWT_SECRET; do
+            for required_var in APP_KEYS ADMIN_JWT_SECRET API_TOKEN_SALT TRANSFER_TOKEN_SALT ENCRYPTION_KEY JWT_SECRET LETSENCRYPT_EMAIL; do
               if [ -z "$(eval "printf '%s' \"\${${required_var}:-}\"")" ]; then
                 echo "Missing required GitHub secret: ${required_var}" >&2
                 exit 1
@@ -100,6 +101,7 @@ jobs:
             TRANSFER_TOKEN_SALT=$TRANSFER_TOKEN_SALT
             ENCRYPTION_KEY=$ENCRYPTION_KEY
             JWT_SECRET=$JWT_SECRET
+            LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL
             EOF
             cp docker-compose.deploy.yml docker-compose.yml
             docker container prune -f
