@@ -1,6 +1,8 @@
 services:
   cert-init:
     image: certbot/certbot:latest
+    profiles:
+      - cert
     restart: "no"
     command:
       - certonly
@@ -63,8 +65,6 @@ services:
     image: nginx:1.27-alpine
     restart: unless-stopped
     depends_on:
-      cert-init:
-        condition: service_completed_successfully
       app:
         condition: service_started
     ports:
