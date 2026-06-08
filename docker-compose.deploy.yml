@@ -2,9 +2,10 @@ services:
   cert-init:
     image: alpine/openssl:latest
     restart: "no"
-    command:
-      - sh
+    entrypoint:
+      - /bin/sh
       - -c
+    command:
       - |
         set -eu
 
