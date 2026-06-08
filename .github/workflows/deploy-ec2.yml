@@ -71,7 +71,6 @@ jobs:
             export TRANSFER_TOKEN_SALT="${{ secrets.TRANSFER_TOKEN_SALT }}"
             export ENCRYPTION_KEY="${{ secrets.ENCRYPTION_KEY }}"
             export JWT_SECRET="${{ secrets.JWT_SECRET }}"
-            export LETSENCRYPT_EMAIL="${{ secrets.LETSENCRYPT_EMAIL }}"
 
             : "${NEXT_PUBLIC_SITE_URL:=https://new.netasacademy.com}"
             : "${STRAPI_PUBLIC_URL:=https://new.netasacademy.com:1337}"
@@ -79,7 +78,7 @@ jobs:
             : "${FRONTEND_URL:=http://127.0.0.1:3000}"
             : "${NEXT_PUBLIC_API_URL:=https://new.netasacademy.com:1337}"
 
-            for required_var in APP_KEYS ADMIN_JWT_SECRET API_TOKEN_SALT TRANSFER_TOKEN_SALT ENCRYPTION_KEY JWT_SECRET LETSENCRYPT_EMAIL; do
+            for required_var in APP_KEYS ADMIN_JWT_SECRET API_TOKEN_SALT TRANSFER_TOKEN_SALT ENCRYPTION_KEY JWT_SECRET; do
               if [ -z "$(eval "printf '%s' \"\${${required_var}:-}\"")" ]; then
                 echo "Missing required GitHub secret: ${required_var}" >&2
                 exit 1
@@ -101,9 +100,13 @@ jobs:
             TRANSFER_TOKEN_SALT=$TRANSFER_TOKEN_SALT
             ENCRYPTION_KEY=$ENCRYPTION_KEY
             JWT_SECRET=$JWT_SECRET
-            LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL
             EOF
             cp docker-compose.deploy.yml docker-compose.yml
+            if [ ! -s /etc/letsencrypt/live/new.netasacademy.com/fullchain.pem ] || [ ! -s /etc/letsencrypt/live/new.netasacademy.com/privkey.pem ]; then
+              echo "Missing Let's Encrypt certificate on EC2. Run certbot locally on the server first:" >&2
+              echo "sudo certbot certonly --standalone -d new.netasacademy.com" >&2
+              exit 1
+            fi
             docker container prune -f
             docker image prune -af
 
@@ -139,7 +142,7 @@ jobs:
 
             for attempt in 1 2 3 4 5; do
               echo "docker compose pull attempt ${attempt}/5"
-              if docker compose --profile cert pull; then
+              if docker compose pull; then
                 break
               fi
 
@@ -152,7 +155,6 @@ jobs:
             done
 
             docker compose down
-            docker compose --profile cert run --rm --service-ports cert-init
             docker compose up -d --remove-orphans --wait --wait-timeout 180
             docker compose ps
             docker image prune -af

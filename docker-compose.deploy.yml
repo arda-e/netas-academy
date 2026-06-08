@@ -1,24 +1,4 @@
 services:
-  cert-init:
-    image: certbot/certbot:latest
-    profiles:
-      - cert
-    restart: "no"
-    command:
-      - certonly
-      - --standalone
-      - --non-interactive
-      - --agree-tos
-      - --keep-until-expiring
-      - --email
-      - ${LETSENCRYPT_EMAIL:?Set LETSENCRYPT_EMAIL in the deployment environment}
-      - -d
-      - new.netasacademy.com
-    ports:
-      - "80:80"
-    volumes:
-      - letsencrypt:/etc/letsencrypt
-
   app:
     image: ${APP_IMAGE:-ghcr.io/arda-e/netas-academy:latest}
     restart: unless-stopped
@@ -73,7 +53,4 @@ services:
       - "1337:1337"
     volumes:
       - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
-      - letsencrypt:/etc/letsencrypt:ro
-
-volumes:
-  letsencrypt:
+      - /etc/letsencrypt:/etc/letsencrypt:ro

@@ -25,7 +25,6 @@ Preview/deploy secrets used by `deploy-ec2.yml`:
 - `TRANSFER_TOKEN_SALT`: Strapi transfer token salt
 - `ENCRYPTION_KEY`: Strapi encryption key
 - `JWT_SECRET`: Strapi users-permissions JWT secret
-- `LETSENCRYPT_EMAIL`: email used for Let's Encrypt certificate registration and expiry notices
 
 The current pipeline publishes the combined app image with both mutable and immutable tags:
 
@@ -33,4 +32,5 @@ The current pipeline publishes the combined app image with both mutable and immu
 - `ghcr.io/<owner>/netas-academy:<commit-sha>`
 
 The deploy workflow uploads `docker-compose.deploy.yml` plus the Nginx config under `docker/nginx/conf.d/` to the server and does not require a Git checkout on EC2.
+The EC2 host must already have a Let's Encrypt certificate at `/etc/letsencrypt/live/new.netasacademy.com/`; install and renew it with host-level `certbot`, not through Docker Compose.
 Because deploys use immutable commit tags, the workflow prunes unused containers and images before pulling and again after a successful recreate. This keeps small EC2 root volumes from filling `/var/lib/containerd` with old tagged images.
