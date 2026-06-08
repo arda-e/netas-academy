@@ -102,9 +102,9 @@ jobs:
             JWT_SECRET=$JWT_SECRET
             EOF
             cp docker-compose.deploy.yml docker-compose.yml
-            if [ ! -s /etc/letsencrypt/live/new.netasacademy.com/fullchain.pem ] || [ ! -s /etc/letsencrypt/live/new.netasacademy.com/privkey.pem ]; then
+            if ! sudo test -s /etc/letsencrypt/live/new.netasacademy.com/fullchain.pem || ! sudo test -s /etc/letsencrypt/live/new.netasacademy.com/privkey.pem; then
               echo "Missing Let's Encrypt certificate on EC2. Run certbot locally on the server first:" >&2
-              echo "sudo certbot certonly --standalone -d new.netasacademy.com" >&2
+              echo "sudo certbot certonly --standalone -d new.netasacademy.com --email aeren@netas.com.tr --agree-tos --non-interactive" >&2
               exit 1
             fi
             docker container prune -f
