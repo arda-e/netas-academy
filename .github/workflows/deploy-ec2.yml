@@ -71,6 +71,8 @@ jobs:
             export TRANSFER_TOKEN_SALT="${{ secrets.TRANSFER_TOKEN_SALT }}"
             export ENCRYPTION_KEY="${{ secrets.ENCRYPTION_KEY }}"
             export JWT_SECRET="${{ secrets.JWT_SECRET }}"
+            export EMAIL_SMTP_USER="${{ secrets.EMAIL_SMTP_USER }}"
+            export EMAIL_SMTP_PASS="${{ secrets.EMAIL_SMTP_PASS }}"
 
             : "${NEXT_PUBLIC_SITE_URL:=https://new.netasacademy.com}"
             : "${STRAPI_PUBLIC_URL:=https://new.netasacademy.com:1337}"
@@ -78,7 +80,7 @@ jobs:
             : "${FRONTEND_URL:=http://127.0.0.1:3000}"
             : "${NEXT_PUBLIC_API_URL:=https://new.netasacademy.com:1337}"
 
-            for required_var in APP_KEYS ADMIN_JWT_SECRET API_TOKEN_SALT TRANSFER_TOKEN_SALT ENCRYPTION_KEY JWT_SECRET; do
+            for required_var in APP_KEYS ADMIN_JWT_SECRET API_TOKEN_SALT TRANSFER_TOKEN_SALT ENCRYPTION_KEY JWT_SECRET EMAIL_SMTP_USER EMAIL_SMTP_PASS; do
               if [ -z "$(eval "printf '%s' \"\${${required_var}:-}\"")" ]; then
                 echo "Missing required GitHub secret: ${required_var}" >&2
                 exit 1
@@ -100,6 +102,8 @@ jobs:
             TRANSFER_TOKEN_SALT=$TRANSFER_TOKEN_SALT
             ENCRYPTION_KEY=$ENCRYPTION_KEY
             JWT_SECRET=$JWT_SECRET
+            EMAIL_SMTP_USER=$EMAIL_SMTP_USER
+            EMAIL_SMTP_PASS=$EMAIL_SMTP_PASS
             EOF
             cp docker-compose.deploy.yml docker-compose.yml
             if ! sudo test -s /etc/letsencrypt/live/new.netasacademy.com/fullchain.pem || ! sudo test -s /etc/letsencrypt/live/new.netasacademy.com/privkey.pem; then
