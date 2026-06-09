@@ -217,7 +217,7 @@ API route handlerlari `[locale]` altina konmamali. `next-intl` middleware `/api`
 
 Current courses exemplar:
 
-- `frontend/src/app/api/courses/route.ts`
+- `frontend/src/app/api/courses/route.ts`  ← lives here in the exemplar
 - `frontend/src/lib/course-service.ts`
 - `frontend/src/app/[locale]/egitimler/page.tsx`
 

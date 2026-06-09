@@ -23,10 +23,9 @@ export async function GET(request: Request) {
       errorCategory: "controller",
       message: `Error fetching course list: ${error instanceof Error ? error.message : String(error)}`,
     }));
-    return Response.json([], {
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    });
+    return Response.json(
+      { error: "Failed to fetch courses" },
+      { status: 500, headers: { "Cache-Control": "no-store" } }
+    );
   }
 }

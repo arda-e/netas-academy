@@ -118,7 +118,7 @@ test("strapi-client logging does not reference request bodies, auth headers, coo
 /* ─── Domain module logging tests ─── */
 
 test("courses route logs controller errors", () => {
-  const source = readSource("app/[locale]/api/courses/route.ts");
+  const source = readSource("app/api/courses/route.ts");
 
   assert.match(
     source,

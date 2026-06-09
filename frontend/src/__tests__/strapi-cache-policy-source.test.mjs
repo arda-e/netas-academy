@@ -36,19 +36,19 @@ test("getLatestCourses uses tagged cache semantics", () => {
   );
 });
 
-test("getCourseSlugs uses force-cache", () => {
+test("getCourseSlugs uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-courses.ts");
   assert.match(
     source,
-    FORCE_CACHE,
-    "getCourseSlugs should use force-cache"
+    /next:\s*\{\s*tags:\s*\[\s*COURSES_TAG\s*\]\s*\}/,
+    "getCourseSlugs should tag course fetches"
   );
 });
 
-test("getCourseBySlug uses force-cache", () => {
+test("getCourseBySlug uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-courses.ts");
-  const matches = source.match(/cache:\s*['"]force-cache['"]/g);
-  assert.ok(matches && matches.length >= 2, "Should have force-cache in both getCourseSlugs and getCourseBySlug");
+  const matches = source.match(/next:\s*\{\s*tags:\s*\[\s*COURSES_TAG\s*\]\s*\}/g);
+  assert.ok(matches && matches.length >= 2, "Should have tagged cache in both getCourseSlugs and getCourseBySlug");
 });
 
 test("strapi-courses.ts has no no-store", () => {
