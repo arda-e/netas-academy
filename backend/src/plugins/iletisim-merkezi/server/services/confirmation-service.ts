@@ -1,9 +1,10 @@
 import type { Core } from '@strapi/strapi';
 import { replaceTemplateVariables } from './utils/template';
+import type { EmailSender } from '../../../../services/email';
 
 const TEMPLATE_UID = 'plugin::iletisim-merkezi.confirmation-template';
 
-const confirmationService = ({ strapi }: { strapi: Core.Strapi }) => ({
+const confirmationService = ({ strapi, emailSender }: { strapi: Core.Strapi; emailSender: EmailSender }) => ({
   /**
    * Send an auto-confirmation email for a registration.
    * Fire-and-forget: errors are caught and logged, never thrown.
@@ -60,7 +61,7 @@ const confirmationService = ({ strapi }: { strapi: Core.Strapi }) => ({
       });
 
       // Send email
-      await strapi.plugin('email').service('email').send({
+      await emailSender.send({
         to: student.email,
         subject: `Kaydınız Onaylandı — ${event.title}`,
         html,

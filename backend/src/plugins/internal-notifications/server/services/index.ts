@@ -1,6 +1,7 @@
 import type { Core } from '@strapi/strapi';
 
 import { deliverInternalNotification as deliverCore } from '../../../../services/internal-notifications/service-core';
+import { createStrapiEmailSender } from '../../../../services/email/strapi-adapter';
 import type { NotificationRoutingRecord } from '../../../../services/internal-notifications/service-core';
 import type { InternalNotificationEnvelope } from '../../../../services/internal-notifications/types';
 
@@ -24,7 +25,7 @@ const services = {
           const toStr = to.join(', ');
           console.log(`[internal-notifications] calling strapi email send to="${toStr}" subject="${subject}"`);
           try {
-            await strapi.plugin('email').service('email').send({ to: toStr, subject, text });
+            await createStrapiEmailSender(strapi).send({ to: toStr, subject, text });
             console.log(`[internal-notifications] strapi email send returned OK`);
           } catch (err) {
             const msg = err instanceof Error ? err.message : String(err);

@@ -1,6 +1,7 @@
 import type { Core } from "@strapi/strapi";
 
 import { deliverInternalNotification as deliverCore } from "./service-core";
+import { createStrapiEmailSender } from "../email/strapi-adapter";
 import type { InternalNotificationEnvelope } from "./types";
 
 const NOTIFICATION_ROUTING_UID = 'api::notification-routing.notification-routing';
@@ -23,7 +24,7 @@ export const deliverInternalNotificationViaStrapi = <K extends InternalNotificat
     sendEmail: async ({ to, subject, text }) => {
       const toStr = to.join(', ');
       console.log(`[internal-notifications] sending email to="${toStr}" subject="${subject}"`);
-      await strapi.plugin('email').service('email').send({ to: toStr, subject, text });
+      await createStrapiEmailSender(strapi).send({ to: toStr, subject, text });
       console.log(`[internal-notifications] email sent OK`);
     },
     warn: (message, meta) => strapi.log.warn(message, meta),
