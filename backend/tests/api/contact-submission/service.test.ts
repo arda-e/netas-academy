@@ -347,7 +347,7 @@ describe("contact-submission service", () => {
       "Contact submission notification delivery failed",
       expect.objectContaining({
         submissionId: 4,
-        error: expect.any(Error),
+        errMessage: expect.any(String),
       }),
     );
   });

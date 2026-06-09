@@ -32,17 +32,7 @@ describe("deliverInternalNotification", () => {
       key: "event_registration",
       label: "Etkinlik Kayit Bildirimi",
       enabled: true,
-      customEmails: [" Etkinlikler@Netas.com.tr ", "ops@netas.com.tr", "invalid"],
-      adminRoles: [
-        {
-          code: "strapi-super-admin",
-          users: [{ email: "OPS@netas.com.tr" }, { email: "" }],
-        },
-        {
-          code: "editor",
-          users: [{ email: "events@netas.com.tr" }, { email: null }],
-        },
-      ],
+      customEmails: [" Etkinlikler@Netas.com.tr ", "ops@netas.com.tr", "invalid", "ops@netas.com.tr"],
     });
     const sendEmail = vi.fn().mockResolvedValue(undefined);
     const warn = vi.fn();
@@ -58,7 +48,7 @@ describe("deliverInternalNotification", () => {
 
     expect(loadRoutingByKey).toHaveBeenCalledWith("event_registration");
     expect(sendEmail).toHaveBeenCalledWith({
-      to: ["etkinlikler@netas.com.tr", "ops@netas.com.tr", "events@netas.com.tr"],
+      to: ["etkinlikler@netas.com.tr", "ops@netas.com.tr"],
       subject: "Etkinlik Kayit Bildirimi - Demo Etkinlik",
       text: expect.stringContaining("Yeni bir etkinlik kayit talebi olusturuldu."),
     });
@@ -99,7 +89,6 @@ describe("deliverInternalNotification", () => {
       label: "Etkinlik Kayit Bildirimi",
       enabled: false,
       customEmails: ["events@netas.com.tr"],
-      adminRoles: [],
     });
     const sendEmail = vi.fn().mockResolvedValue(undefined);
     const warn = vi.fn();
@@ -123,8 +112,7 @@ describe("deliverInternalNotification", () => {
       key: "event_registration",
       label: "Etkinlik Kayit Bildirimi",
       enabled: true,
-      customEmails: [" ", "invalid"],
-      adminRoles: [{ code: "editor", users: [{ email: null }] }],
+      customEmails: [" ", "invalid", null],
     });
     const sendEmail = vi.fn().mockResolvedValue(undefined);
     const warn = vi.fn();
@@ -146,94 +134,12 @@ describe("deliverInternalNotification", () => {
     expect(error).not.toHaveBeenCalled();
   });
 
-  it("resolves role recipients from nested user collections", async () => {
-    const loadRoutingByKey = vi.fn().mockResolvedValue({
-      key: "event_registration",
-      label: "Etkinlik Kayit Bildirimi",
-      enabled: true,
-      customEmails: [],
-      adminRoles: [
-        {
-          code: "strapi-super-admin",
-          users: {
-            data: [{ email: "admins@netas.com.tr" }, { email: " ADMINS@netas.com.tr " }],
-          },
-        },
-      ],
-    });
-    const sendEmail = vi.fn().mockResolvedValue(undefined);
-    const warn = vi.fn();
-    const error = vi.fn();
-
-    await deliverInternalNotification({
-      envelope: eventRegistrationEnvelope,
-      loadRoutingByKey,
-      sendEmail,
-      warn,
-      error,
-    });
-
-    expect(sendEmail).toHaveBeenCalledWith(
-      expect.objectContaining({
-        to: ["admins@netas.com.tr"],
-      }),
-    );
-    expect(warn).not.toHaveBeenCalled();
-    expect(error).not.toHaveBeenCalled();
-  });
-
-  it("logs and returns invalid_routing_data when populated role users shape is malformed", async () => {
-    const loadRoutingByKey = vi.fn().mockResolvedValue({
-      key: "event_registration",
-      label: "Etkinlik Kayit Bildirimi",
-      enabled: true,
-      customEmails: [],
-      adminRoles: [
-        {
-          code: "strapi-super-admin",
-          users: {
-            data: {
-              email: "admins@netas.com.tr",
-            },
-          },
-        },
-      ],
-    });
-    const sendEmail = vi.fn().mockResolvedValue(undefined);
-    const warn = vi.fn();
-    const error = vi.fn();
-
-    await expect(
-      deliverInternalNotification({
-        envelope: eventRegistrationEnvelope,
-        loadRoutingByKey,
-        sendEmail,
-        warn,
-        error,
-      }),
-    ).resolves.toEqual({
-      status: "invalid_routing_data",
-      key: "event_registration",
-    });
-
-    expect(sendEmail).not.toHaveBeenCalled();
-    expect(warn).not.toHaveBeenCalled();
-    expect(error).toHaveBeenCalledWith(
-      "Internal notification routing data is malformed",
-      expect.objectContaining({
-        key: "event_registration",
-        label: "Etkinlik Kayit Bildirimi",
-      }),
-    );
-  });
-
-  it("logs and returns a structured send failure when email delivery rejects", async () => {
+  it("returns send_failed and logs when email delivery rejects", async () => {
     const loadRoutingByKey = vi.fn().mockResolvedValue({
       key: "event_registration",
       label: "Etkinlik Kayit Bildirimi",
       enabled: true,
       customEmails: ["events@netas.com.tr"],
-      adminRoles: [],
     });
     const sendError = new Error("SMTP timeout");
     const sendEmail = vi.fn().mockRejectedValue(sendError);
@@ -255,10 +161,10 @@ describe("deliverInternalNotification", () => {
     });
 
     expect(error).toHaveBeenCalledWith(
-      "Internal notification delivery failed",
+      "Internal notification SMTP send failed",
       expect.objectContaining({
         key: "event_registration",
-        error: sendError,
+        errMessage: "SMTP timeout",
       }),
     );
     expect(warn).not.toHaveBeenCalled();

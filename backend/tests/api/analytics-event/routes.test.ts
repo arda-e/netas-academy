@@ -70,7 +70,7 @@ describe("analytics-event controller", () => {
     });
   });
 
-  it("rejects missing eventId", async () => {
+  it("sets 400 error body for missing eventId", async () => {
     const strapi = {
       service: vi.fn(),
     };
@@ -84,16 +84,18 @@ describe("analytics-event controller", () => {
     };
 
     const ctx = {
-      request: {
-        body: {},
-      },
+      request: { body: {} },
       body: null as unknown,
+      status: 0 as unknown,
     };
 
-    await expect(controller.capture(ctx as any)).rejects.toThrow("eventId is required");
+    await controller.capture(ctx as any);
+
+    expect((ctx.body as any).error.message).toBe("eventId is required");
+    expect(ctx.status).toBe(400);
   });
 
-  it("rejects unknown eventId", async () => {
+  it("sets 400 error body for unknown eventId", async () => {
     const strapi = {
       service: vi.fn(),
     };
@@ -107,16 +109,14 @@ describe("analytics-event controller", () => {
     };
 
     const ctx = {
-      request: {
-        body: {
-          eventId: "bogus_event",
-        },
-      },
+      request: { body: { eventId: "bogus_event" } },
       body: null as unknown,
+      status: 0 as unknown,
     };
 
-    await expect(controller.capture(ctx as any)).rejects.toThrow(
-      "eventId must be one of:"
-    );
+    await controller.capture(ctx as any);
+
+    expect((ctx.body as any).error.message).toContain("eventId must be one of:");
+    expect(ctx.status).toBe(400);
   });
 });

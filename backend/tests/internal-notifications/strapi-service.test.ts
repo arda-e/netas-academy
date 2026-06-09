@@ -26,52 +26,55 @@ const eventRegistrationEnvelope: InternalNotificationEnvelope<"event_registratio
   },
 };
 
+function makeStrapi(emailSendFn: ReturnType<typeof vi.fn>) {
+  return {
+    db: {
+      query: vi.fn().mockReturnValue({
+        findOne: vi.fn().mockResolvedValue({
+          key: "event_registration",
+          label: "Etkinlik Kayit Bildirimi",
+          enabled: true,
+          customEmails: ["events@netas.com.tr"],
+        }),
+      }),
+    },
+    plugin: vi.fn().mockReturnValue({
+      service: vi.fn().mockReturnValue({ send: emailSendFn }),
+    }),
+    log: { warn: vi.fn(), error: vi.fn() },
+  };
+}
+
 describe("deliverInternalNotificationViaStrapi", () => {
-  it("delegates to the internal-notifications plugin service and returns structured result", async () => {
-    const deliverFn = vi.fn().mockResolvedValue({
+  it("loads routing via db.query and sends email; returns sent result", async () => {
+    const emailSendFn = vi.fn().mockResolvedValue(undefined);
+    const strapi = makeStrapi(emailSendFn);
+
+    const result = await deliverInternalNotificationViaStrapi(strapi as any, eventRegistrationEnvelope);
+
+    expect(result).toMatchObject({
       status: "sent",
       key: "event_registration",
-      recipients: ["events@netas.com.tr", "ops@netas.com.tr"],
+      recipients: ["events@netas.com.tr"],
     });
-
-    const pluginServiceFn = vi.fn().mockReturnValue(deliverFn);
-    const pluginFn = vi.fn().mockReturnValue({ service: pluginServiceFn });
-    const warn = vi.fn();
-    const error = vi.fn();
-    const strapi = {
-      plugin: pluginFn,
-      log: { warn, error },
-    } as any;
-
-    await expect(
-      deliverInternalNotificationViaStrapi(strapi, eventRegistrationEnvelope)
-    ).resolves.toEqual({
-      status: "sent",
-      key: "event_registration",
-      recipients: ["events@netas.com.tr", "ops@netas.com.tr"],
-    });
-
-    expect(pluginFn).toHaveBeenCalledWith("internal-notifications");
-    expect(pluginServiceFn).toHaveBeenCalledWith("deliverInternalNotification");
-    expect(deliverFn).toHaveBeenCalledWith(eventRegistrationEnvelope);
+    expect(emailSendFn).toHaveBeenCalledWith(
+      expect.objectContaining({ to: "events@netas.com.tr" }),
+    );
   });
 
-  it("propagates errors from the plugin service", async () => {
-    const deliverFn = vi.fn().mockRejectedValue(new Error("SMTP timeout"));
-    const pluginServiceFn = vi.fn().mockReturnValue(deliverFn);
-    const pluginFn = vi.fn().mockReturnValue({ service: pluginServiceFn });
-    const warn = vi.fn();
-    const error = vi.fn();
-    const strapi = {
-      plugin: pluginFn,
-      log: { warn, error },
-    } as any;
+  it("returns send_failed and logs when email delivery throws", async () => {
+    const emailSendFn = vi.fn().mockRejectedValue(new Error("SMTP timeout"));
+    const strapi = makeStrapi(emailSendFn);
 
-    await expect(
-      deliverInternalNotificationViaStrapi(strapi, eventRegistrationEnvelope)
-    ).rejects.toThrow("SMTP timeout");
+    const result = await deliverInternalNotificationViaStrapi(strapi as any, eventRegistrationEnvelope);
 
-    expect(pluginFn).toHaveBeenCalledWith("internal-notifications");
-    expect(deliverFn).toHaveBeenCalledWith(eventRegistrationEnvelope);
+    expect(result).toMatchObject({
+      status: "send_failed",
+      key: "event_registration",
+    });
+    expect(strapi.log.error).toHaveBeenCalledWith(
+      "Internal notification SMTP send failed",
+      expect.objectContaining({ key: "event_registration", errMessage: "SMTP timeout" }),
+    );
   });
 });
