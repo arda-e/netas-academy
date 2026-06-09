@@ -10,7 +10,12 @@
       "Bash(cp /Users/arda/.claude/plugins/cache/compound-engineering-plugin/compound-engineering/3.7.0/skills/ce-setup/references/config-template.yaml /Users/arda/Desktop/development/netas_academy/.compound-engineering/config.local.example.yaml)",
       "Bash(command -v ast-grep)",
       "mcp__plugin_context7_context7__query-docs",
-      "WebFetch(domain:docs.iyzico.com)"
+      "WebFetch(domain:docs.iyzico.com)",
+      "Bash(node --test src/__tests__/strapi-cache-policy-source.test.mjs)",
+      "Bash(npm run *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

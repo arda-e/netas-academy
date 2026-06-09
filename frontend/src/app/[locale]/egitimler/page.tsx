@@ -6,7 +6,7 @@ import trainingHeroImage from "@/assets/images/hero-events.webp";
 import { ContentPageShell, CourseListLoading, SearchField } from "@/components/content";
 import { CourseCatalogList } from "@/components/courses/course-catalog-list";
 import { Link } from "@/i18n/navigation";
-import { getCourses } from "@/lib/strapi-courses";
+import { getCourseList } from "@/lib/course-service";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 import {
@@ -17,7 +17,7 @@ import {
   type TopicArea,
 } from "@/lib/content-taxonomy";
 import { join, normalizeKey } from "@/lib/testids";
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 type EgitimlerPageProps = {
   params: Promise<{
@@ -53,36 +53,33 @@ async function CourseCatalogResults({
   activeTopic: TopicArea | "all";
   search: string;
 }) {
-  const courses = await getCourses();
+  let courses: Awaited<ReturnType<typeof getCourseList>> = [];
+
+  try {
+    courses = await getCourseList();
+  } catch (error) {
+    console.error(JSON.stringify({
+      domain: "courses",
+      function: "CourseCatalogResults",
+      message: `Error fetching course list from service: ${error instanceof Error ? error.message : String(error)}`,
+    }));
+  }
 
   return (
     <CourseCatalogList
       activeTopic={activeTopic === "all" ? null : activeTopic}
       search={search}
-      items={courses.map((course) => ({
-        id: course.documentId,
-        slug: course.slug,
-        title: course.title,
-        summary: course.summary,
-        description: course.description,
-        topicArea: course.topicArea,
-        level: course.level,
-        targetAudience: course.targetAudience,
-        businessValue: course.businessValue,
-        scopeSummary: course.scopeSummary,
-        outcomeBullets: course.outcomeBullets,
-        teacherName: course.teacher?.fullName ?? null,
-      }))}
+      items={courses}
     />
   );
 }
 
 export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps) {
-  const params = await searchParams;
+  const paramsValue = await searchParams;
   const t = await getTranslations("courses");
   const tt = await getTranslations("taxonomy");
-  const activeTopic = resolveTopicFilter(params.topic);
-  const search = Array.isArray(params.search) ? params.search[0] ?? "" : params.search ?? "";
+  const activeTopic = resolveTopicFilter(paramsValue.topic);
+  const search = Array.isArray(paramsValue.search) ? paramsValue.search[0] ?? "" : paramsValue.search ?? "";
 
   return (
     <ContentPageShell

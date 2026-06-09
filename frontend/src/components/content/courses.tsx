@@ -17,7 +17,7 @@ type CourseListItem = {
   slug: string;
   title: string;
   summary?: string | null;
-  teacherName?: string | null;
+  teacher?: { fullName?: string | null } | null;
   topicArea?: string | null;
   level?: string | null;
   targetAudience?: string | null;
@@ -71,7 +71,7 @@ export function CourseList({
             : null;
 
         const hasMeta =
-          levelLabel || course.targetAudience || course.teacherName;
+          levelLabel || course.targetAudience || course.teacher?.fullName;
 
         const noSummaryFallback = t_courses
           ? t_courses("card.no_summary")
@@ -116,10 +116,10 @@ export function CourseList({
                       {course.targetAudience}
                     </p>
                   ) : null}
-                  {course.teacherName ? (
+                  {course.teacher?.fullName ? (
                     <p>
                       <span className="font-medium text-foreground/78">{teacherLabel}</span>{" "}
-                      {course.teacherName}
+                      {course.teacher.fullName}
                     </p>
                   ) : null}
                 </div>

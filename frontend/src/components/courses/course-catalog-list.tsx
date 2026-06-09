@@ -23,7 +23,7 @@ export type CourseCatalogListItem = {
   businessValue?: string | null;
   scopeSummary?: string | null;
   outcomeBullets?: string | null;
-  teacherName?: string | null;
+  teacher?: { fullName?: string | null } | null;
 };
 
 export type CourseCatalogListProps = {
@@ -72,7 +72,7 @@ function getCourseSearchText(
       course.scopeSummary,
       course.outcomeBullets,
       course.targetAudience,
-      course.teacherName,
+      course.teacher?.fullName,
       topicArea ? getTopicAreaLabel(topicArea, t_taxonomy) : course.topicArea,
       level ? getCourseLevelLabel(level, t_taxonomy) : course.level,
     ]
