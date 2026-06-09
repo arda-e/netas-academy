@@ -38,6 +38,7 @@
     "legal": {
       "aria_label": "Yasal ve kurumsal bağlantılar",
       "kvkk": "KVKK",
+      "cookie_notice": "Çerez Aydınlatma Metni",
       "netas_website": "Netaş Web Sitesi"
     }
   },
@@ -469,6 +470,9 @@
     }
   },
   "kvkk": {
+    "back_button": "Geri Dön"
+  },
+  "cookie_notice": {
     "back_button": "Geri Dön"
   },
   "newsletter": {

@@ -1,0 +1,60 @@
+{
+  "hero": {
+    "eyebrow": "Çerezler",
+    "title": "Çerez Aydınlatma Metni",
+    "description": "Netas Academy şu anda zorunlu olmayan çerez ya da üçüncü taraf izleyici kullanmaz. Bu sayfa mevcut durumu açıklar."
+  },
+  "sections": [
+    {
+      "heading": "Genel Bilgilendirme",
+      "paragraphs": [
+        "Bu sayfa, web sitemizde hangi çerezlerin ve benzeri teknolojilerin kullanıldığını açıklar.",
+        "Bugünkü durumda site, yalnızca temel çalışma için gerekli tarayıcı davranışlarına ve form sürekliliği için sessionStorage kullanımına dayanır."
+      ]
+    },
+    {
+      "heading": "Şu anda ne kullanıyoruz?",
+      "paragraphs": [
+        "Zorunlu olmayan çerezler, analitik takip etiketleri, reklam çerezleri veya üçüncü taraf pazarlama izleyicileri aktif değildir.",
+        "Form alanlarında girilen bilgilerin sayfalar arasında korunması için tarayıcı oturum depolaması kullanılabilir; bu veri, tarayıcı oturumu kapandığında silinebilir."
+      ],
+      "bullets": [
+        "Gerekli olmayan cookie ya da piksel yerleşimi yoktur.",
+        "Üçüncü taraf analiz sağlayıcıları yüklenmez.",
+        "Çerez tercih merkezi şu anda sunulmamaktadır."
+      ]
+    },
+    {
+      "heading": "Tarayıcı depolaması ve çerez farkı",
+      "paragraphs": [
+        "sessionStorage bir çerez değildir; tarayıcı içinde geçici olarak tutulan veridir.",
+        "Bu alan, yalnızca aynı ziyaret içinde form verisini korumak için kullanılır.",
+        "Kullanıcı tarayıcı verisini temizlediğinde bu kayıt da kaybolur."
+      ],
+      "bullets": [
+        "sessionStorage, reklam veya davranışsal profil oluşturmak için kullanılmaz.",
+        "Bu alan, yalnızca ziyaret devamlılığı için kısa ömürlü bir yardımcıdır.",
+        "Kullanıcıya çerez yönetimi anlamında ayrı bir tercih seti sunulmaz; çünkü yönetilecek non-essential çerez yoktur."
+      ]
+    },
+    {
+      "heading": "İleride ne değişebilir?",
+      "paragraphs": [
+        "İleride analitik, pazarlama, yeniden hedefleme veya dış servisler eklenirse, bu sayfa güncellenir ve zorunlu olmayan teknolojiler için ayrıca tercih akışı açılır.",
+        "Böyle bir değişiklik yapılmadan önce kullanıcıya açık, anlaşılır ve ayrı bir tercih mekanizması sunulur."
+      ],
+      "bullets": [
+        "Yeni izleyiciler yüklenmeden önce bilgilendirme yapılır.",
+        "Reddetme seçeneği eşit görünürlükte sunulur.",
+        "Tercih değiştirme yolu kalıcı erişilebilir olur."
+      ]
+    },
+    {
+      "heading": "Sorularınız varsa",
+      "paragraphs": [
+        "Bu metinle ilgili sorularınız için İletişim sayfamızı kullanabilirsiniz.",
+        "Genel KVKK haklarınız için ayrıca KVKK Aydınlatma Metni sayfasını inceleyebilirsiniz."
+      ]
+    }
+  ]
+}

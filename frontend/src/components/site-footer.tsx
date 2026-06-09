@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import { join } from "@/lib/testids";
 import { footerSitePlanItems } from "@/config/navigation";
 
@@ -53,6 +53,13 @@ export async function SiteFooter() {
             className={`${footerLinkClassName} px-3 py-2`}
           >
             {t('legal.kvkk')}
+          </Link>
+          <Link
+            href="/cerez-aydinlatma-metni"
+            data-testid="site-footer.legal.cookie-notice"
+            className={`${footerLinkClassName} px-3 py-2`}
+          >
+            {t('legal.cookie_notice')}
           </Link>
           <a
             href="https://netas.com.tr/"

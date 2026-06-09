@@ -57,6 +57,10 @@ assert.ok(
   siteFooter.includes(`data-testid="site-footer.legal"`),
   "site-footer.tsx should contain data-testid=\"site-footer.legal\""
 );
+assert.ok(
+  siteFooter.includes(`data-testid="site-footer.legal.cookie-notice"`),
+  "site-footer.tsx should contain data-testid=\"site-footer.legal.cookie-notice\""
+);
 
 // --- breadcrumbs.tsx ---
 
