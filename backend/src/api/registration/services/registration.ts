@@ -34,7 +34,7 @@ type SanitizedRegistration = {
 
 export default factories.createCoreService('api::registration.registration' as any, () => ({
   async registerStudentForEvent(input: RegisterStudentInput): Promise<SanitizedRegistration> {
-    const normalizedTckn = normalizeTcknValue(input.student.tckn);
+    const normalizedTckn = normalizeTcknValue(input.student.tckn ?? "");
 
     const event = await strapi.db.query('api::event.event').findOne({
       where: { documentId: input.eventDocumentId },
@@ -50,7 +50,8 @@ export default factories.createCoreService('api::registration.registration' as a
     }
 
     // TCKN is required only for egitim/kurs events, not etkinlik
-    if (event.eventType !== 'etkinlik') {
+    // Positive matching so null/undefined eventType (legacy records) defaults to etkinlik behavior
+    if (event.eventType === 'egitim' || event.eventType === 'kurs') {
       const tckn = typeof input.student.tckn === 'string' ? input.student.tckn : '';
       if (!isValidTckn(tckn)) {
         throw new ValidationError('Invalid TCKN');

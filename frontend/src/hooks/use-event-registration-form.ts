@@ -84,7 +84,8 @@ export function useEventRegistrationForm({
   const requiresKvkkConsent = eventType === "egitim" || eventType === "kurs";
 
   // TCKN is required only for egitim/kurs events, not etkinlik
-  const requiresTckn = eventType !== "etkinlik";
+  // Positive matching so undefined eventType (event not yet loaded) defaults to no TCKN required
+  const requiresTckn = eventType === "egitim" || eventType === "kurs";
   const [values, setValues] = useState<EventRegistrationValues>(() => {
     const saved = load();
     return saved ?? initialValues;

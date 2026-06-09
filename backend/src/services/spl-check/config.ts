@@ -15,7 +15,7 @@ export type SplCheckConfigResult =
     };
 
 export function loadSplCheckConfig(env: NodeJS.ProcessEnv = process.env): SplCheckConfig {
-  const endpoint = env.SPL_CHECK_ENDPOINT ?? env.SAP_SOAP_ENDPOINT ?? "";
+  const endpoint = env.SPL_CHECK_ENDPOINT || env.SAP_SOAP_ENDPOINT || "";
 
   if (!endpoint.trim()) {
     throw new Error("SPL check endpoint is not configured");

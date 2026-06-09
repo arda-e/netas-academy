@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { runSplCheck } from "../../../src/services/spl-check/service";
+import { loadSplCheckConfig } from "../../../src/services/spl-check/config";
 
 describe("spl-check service", () => {
   afterEach(() => {
@@ -106,5 +107,48 @@ describe("spl-check service", () => {
       rawResponse: null,
       errorReason: "SPL check endpoint is not configured",
     });
+  });
+
+  it("uses SAP_SOAP_ENDPOINT as fallback when SPL_CHECK_ENDPOINT is empty", () => {
+    vi.stubEnv("SPL_CHECK_ENDPOINT", "");
+    vi.stubEnv("SAP_SOAP_ENDPOINT", "https://sap.example.com");
+
+    const config = loadSplCheckConfig(process.env);
+    expect(config.endpoint).toBe("https://sap.example.com");
+  });
+
+  it("reads SPL_CHECK_TIMEOUT_MS and returns it as a number", () => {
+    vi.stubEnv("SPL_CHECK_ENDPOINT", "https://sap.example.com");
+    vi.stubEnv("SPL_CHECK_TIMEOUT_MS", "5000");
+
+    const config = loadSplCheckConfig(process.env);
+    expect(config.timeoutMs).toBe(5000);
+  });
+
+  it("forwards SPL_CHECK_SOAP_ACTION as the SOAPAction header in the fetch call", async () => {
+    vi.stubEnv("SPL_CHECK_ENDPOINT", "https://sap.example.com");
+    vi.stubEnv("SPL_CHECK_SOAP_ACTION", "MySoapAction");
+
+    const fetchImpl = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: vi.fn().mockResolvedValue("<Status>10</Status>"),
+    });
+
+    await runSplCheck(
+      {
+        applicationNumber: "CA-20260424-AB12CD",
+        firstName: "Ada",
+        lastName: "Kaya",
+        email: "ada@example.com",
+        phone: "+90 555 111 2233",
+        tckn: "12345678901",
+        courseDocumentId: "course_123",
+      },
+      { fetchImpl: fetchImpl as unknown as typeof fetch },
+    );
+
+    const [, options] = fetchImpl.mock.calls[0] as [string, RequestInit];
+    expect((options.headers as Record<string, string>)["SOAPAction"]).toBe("MySoapAction");
   });
 });

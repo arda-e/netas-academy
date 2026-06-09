@@ -47,6 +47,7 @@ describe("registration service", () => {
       startsAt: "2026-04-22T09:00:00.000Z",
       keepRegistrationsOpen: true,
       location: "Istanbul Campus",
+      eventType: "etkinlik",
     };
     const studentRecord = {
       id: 20,
@@ -177,6 +178,7 @@ describe("registration service", () => {
       startsAt: "2026-04-22T09:00:00.000Z",
       keepRegistrationsOpen: true,
       location: "Istanbul Campus",
+      eventType: "etkinlik",
     };
     const studentRecord = {
       id: 20,
@@ -339,6 +341,7 @@ describe("registration service", () => {
       startsAt: "2026-04-22T09:00:00.000Z",
       keepRegistrationsOpen: true,
       location: "Istanbul Campus",
+      eventType: "etkinlik",
     };
     const existingReg = {
       id: 99,
