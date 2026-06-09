@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { EventRegistrationForm } from "@/components/event-registration-form";
@@ -65,6 +65,7 @@ export async function generateMetadata({
   params,
 }: EventRegistrationPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const [t, event] = await Promise.all([
     getTranslations({ locale, namespace: "events" }),
     getEventBySlug(slug),

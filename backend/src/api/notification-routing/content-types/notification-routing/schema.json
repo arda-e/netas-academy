@@ -37,11 +37,6 @@
     },
     "customEmails": {
       "type": "json"
-    },
-    "adminRoles": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "admin::role"
     }
   }
 }

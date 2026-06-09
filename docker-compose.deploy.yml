@@ -29,8 +29,8 @@ services:
       EMAIL_SMTP_SECURE: "false"
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER:?Set EMAIL_SMTP_USER (Brevo SMTP login) in the deployment environment}
       EMAIL_SMTP_PASS: ${EMAIL_SMTP_PASS:?Set EMAIL_SMTP_PASS (Brevo SMTP key) in the deployment environment}
-      EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM:-Netas Academy <no-reply@netasacademy.com>}
-      EMAIL_DEFAULT_REPLY_TO: ${EMAIL_DEFAULT_REPLY_TO:-support@netasacademy.com}
+      EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM:-Netas Academy <aeren@netas.com.tr>}
+      EMAIL_DEFAULT_REPLY_TO: ${EMAIL_DEFAULT_REPLY_TO:-aeren@netas.com.tr}
       EMAIL_TEST_ADDRESS: ${EMAIL_TEST_ADDRESS:-test@netasacademy.com}
     volumes:
       - ./.docker-data/strapi:/app/backend/.tmp

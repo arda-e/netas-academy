@@ -48,6 +48,7 @@ export async function generateMetadata({
   params,
 }: TeacherDetailPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const [t, teacher, siteSettings] = await Promise.all([
     getTranslations({ locale, namespace: "teachers" }),
     getTeacherBySlug(slug),

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ContentPageShell, RouteLoading } from "@/components/content";
 import { RelatedPostsSection } from "@/components/content/blog-related-posts";
@@ -66,6 +66,7 @@ export async function generateMetadata({
   params,
 }: BlogDetailPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const [t, post, siteSettings] = await Promise.all([
     getTranslations({ locale, namespace: "blog" }),
     getBlogPostBySlug(slug),

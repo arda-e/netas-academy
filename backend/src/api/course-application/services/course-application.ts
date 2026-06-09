@@ -7,6 +7,7 @@ import { normalizeTcknValue, isValidTckn, maskTcknValue, hashTcknForStorage } fr
 import { runSplCheck } from "../../../services/spl-check/service";
 import { resolveCourseApplicationOutcomeFromSplResult } from "../../../services/course-application/domain/course-application-status";
 import type { CourseApplicationNotificationPayload } from "../../../services/internal-notifications/types";
+import { deliverInternalNotificationViaStrapi } from "../../../services/internal-notifications/strapi-service";
 
 const { NotFoundError, ValidationError } = errors;
 
@@ -117,8 +118,7 @@ const notifyApplicationResult = async (
         : "course_application_submitted";
 
   try {
-    const deliverNotification = strapi.plugin("internal-notifications").service("deliverInternalNotification") as (envelope: any) => Promise<any>;
-    await deliverNotification({
+    await deliverInternalNotificationViaStrapi(strapi, {
       key: notificationKey,
       payload: toApplicationNotificationPayload(application, nextAction, paymentUrl),
     });

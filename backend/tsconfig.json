@@ -38,6 +38,8 @@
     "src/admin/",
     // Do not include test files
     "**/*.test.*",
+    // Do not include standalone scripts (run as plain JS)
+    "scripts/",
     // Do not include plugins in the server compilation
     "src/plugins/**"
   ]

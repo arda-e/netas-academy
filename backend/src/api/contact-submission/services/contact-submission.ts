@@ -1,6 +1,8 @@
 import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
+import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
+
 
 
 const { ValidationError } = errors;
@@ -126,15 +128,20 @@ export default factories.createCoreService(
       const notificationPayload = buildNotificationPayload(leadType, submission);
 
       try {
-        const deliverNotification = strapi.plugin("internal-notifications").service("deliverInternalNotification") as (envelope: any) => Promise<any>;
-        await deliverNotification({
+        console.log(`[contact-submission] triggering notification key=${notificationKey} submissionId=${submission.id}`);
+        const result = await deliverInternalNotificationViaStrapi(strapi, {
           key: notificationKey,
           payload: notificationPayload,
         });
+        console.log(`[contact-submission] notification result:`, result);
       } catch (error) {
+        const errMsg = error instanceof Error ? error.message : String(error);
+        const errStack = error instanceof Error ? error.stack : undefined;
+        console.error(`[contact-submission] notification threw: ${errMsg}`, errStack);
         strapi.log.error('Contact submission notification delivery failed', {
           submissionId: submission.id,
-          error,
+          errMessage: errMsg,
+          errStack,
         });
       }
 

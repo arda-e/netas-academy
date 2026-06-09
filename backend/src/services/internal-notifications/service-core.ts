@@ -2,30 +2,11 @@ import { buildInternalNotificationEmail } from "./templates";
 import { coerceCustomRecipientEmails, normalizeRecipientEmails } from "./recipient-utils";
 import type { InternalNotificationEmail, InternalNotificationEnvelope } from "./types";
 
-type RoutingRoleUser = {
-  email?: string | null;
-};
-
-type RoutingRoleUsersCollection = {
-  data?: RoutingRoleUser[] | null;
-  results?: RoutingRoleUser[] | null;
-};
-
-type RoutingAdminRole = {
-  users?: RoutingRoleUser[] | RoutingRoleUsersCollection | null;
-};
-
-type ResolvedRoleUsers = {
-  users: RoutingRoleUser[];
-  isValid: boolean;
-};
-
 export type NotificationRoutingRecord = {
   key: InternalNotificationEnvelope["key"];
   label: string;
   enabled: boolean;
   customEmails?: unknown;
-  adminRoles?: RoutingAdminRole[] | null;
 };
 
 type SendEmailInput = InternalNotificationEmail & {
@@ -47,10 +28,6 @@ export type DeliverInternalNotificationResult<K extends InternalNotificationEnve
       status: "send_failed";
       key: K;
       recipients: string[];
-    }
-  | {
-      status: "invalid_routing_data";
-      key: K;
     };
 
 type DeliverInternalNotificationDependencies<K extends InternalNotificationEnvelope["key"]> = {
@@ -61,52 +38,6 @@ type DeliverInternalNotificationDependencies<K extends InternalNotificationEnvel
   error: (message: string, meta?: Record<string, unknown>) => void;
 };
 
-const getRoleUsers = (users: RoutingAdminRole["users"]): ResolvedRoleUsers => {
-  if (Array.isArray(users)) {
-    return {
-      users,
-      isValid: true,
-    };
-  }
-
-  if (!users) {
-    return {
-      users: [],
-      isValid: true,
-    };
-  }
-
-  if (Array.isArray(users.data)) {
-    return {
-      users: users.data,
-      isValid: true,
-    };
-  }
-
-  if (Array.isArray(users.results)) {
-    return {
-      users: users.results,
-      isValid: true,
-    };
-  }
-
-  return {
-    users: [],
-    isValid: false,
-  };
-};
-
-const getRoleRecipientEmails = (routing: NotificationRoutingRecord) => {
-  const resolvedUsers = (routing.adminRoles ?? []).map((role) => getRoleUsers(role.users));
-
-  return {
-    recipients: resolvedUsers.flatMap(({ users }) =>
-      users.flatMap((user) => (typeof user.email === "string" ? [user.email] : [])),
-    ),
-    hasInvalidRoleUsers: resolvedUsers.some(({ isValid }) => !isValid),
-  };
-};
-
 export const deliverInternalNotification = async <K extends InternalNotificationEnvelope["key"]>({
   envelope,
   loadRoutingByKey,
@@ -114,7 +45,13 @@ export const deliverInternalNotification = async <K extends InternalNotification
   warn,
   error,
 }: DeliverInternalNotificationDependencies<K>) => {
+  console.log(`[internal-notifications] delivering key=${envelope.key}`);
+
   const routing = await loadRoutingByKey(envelope.key);
+  console.log(`[internal-notifications] routing loaded:`, routing
+    ? { key: routing.key, enabled: routing.enabled, customEmails: routing.customEmails }
+    : null
+  );
 
   if (!routing) {
     warn("Internal notification routing not found", { key: envelope.key });
@@ -126,6 +63,7 @@ export const deliverInternalNotification = async <K extends InternalNotification
   }
 
   if (!routing.enabled) {
+    console.log(`[internal-notifications] routing disabled for key=${envelope.key}`);
     return {
       status: "skipped",
       key: envelope.key,
@@ -133,24 +71,10 @@ export const deliverInternalNotification = async <K extends InternalNotification
     } satisfies DeliverInternalNotificationResult<K>;
   }
 
-  const { recipients: roleRecipients, hasInvalidRoleUsers } = getRoleRecipientEmails(routing);
-
-  if (hasInvalidRoleUsers) {
-    error("Internal notification routing data is malformed", {
-      key: envelope.key,
-      label: routing.label,
-    });
-
-    return {
-      status: "invalid_routing_data",
-      key: envelope.key,
-    } satisfies DeliverInternalNotificationResult<K>;
-  }
-
-  const recipients = normalizeRecipientEmails([
-    ...coerceCustomRecipientEmails(routing.customEmails),
-    ...roleRecipients,
-  ]);
+  const recipients = normalizeRecipientEmails(
+    coerceCustomRecipientEmails(routing.customEmails),
+  );
+  console.log(`[internal-notifications] resolved recipients:`, recipients);
 
   if (recipients.length === 0) {
     warn("No recipients resolved for internal notification routing", {
@@ -165,6 +89,7 @@ export const deliverInternalNotification = async <K extends InternalNotification
   }
 
   const email = buildInternalNotificationEmail(envelope);
+  console.log(`[internal-notifications] sending email subject="${email.subject}" to=${recipients.join(", ")}`);
 
   try {
     await sendEmail({
@@ -173,17 +98,22 @@ export const deliverInternalNotification = async <K extends InternalNotification
       text: email.text,
     });
 
+    console.log(`[internal-notifications] email sent OK to=${recipients.join(", ")}`);
     return {
       status: "sent",
       key: envelope.key,
       recipients,
     } satisfies DeliverInternalNotificationResult<K>;
   } catch (sendError) {
-    error("Internal notification delivery failed", {
+    const errMsg = sendError instanceof Error ? sendError.message : String(sendError);
+    const errStack = sendError instanceof Error ? sendError.stack : undefined;
+    console.error(`[internal-notifications] SMTP send failed: ${errMsg}`, errStack);
+    error("Internal notification SMTP send failed", {
       key: envelope.key,
       label: routing.label,
       recipients,
-      error: sendError,
+      errMessage: errMsg,
+      errStack,
     });
 
     return {

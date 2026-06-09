@@ -276,8 +276,9 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     const intent = leadIntents[leadType];
     return (
       <div className="space-y-6" data-testid="contact-lead.success">
-        <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4 text-base text-emerald-100">
-          {intent.successMessage}
+        <div className="rounded-sm border border-emerald-400/30 bg-emerald-400/10 px-5 py-4">
+          <p className="text-base font-semibold text-emerald-300">Mesajınız Alındı</p>
+          <p className="mt-1 text-base text-foreground">{intent.successMessage}</p>
         </div>
         {intent.successCtaHref && intent.successCtaLabel ? (
           <Link
