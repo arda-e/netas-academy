@@ -128,16 +128,13 @@ export default factories.createCoreService(
       const notificationPayload = buildNotificationPayload(leadType, submission);
 
       try {
-        console.log(`[contact-submission] triggering notification key=${notificationKey} submissionId=${submission.id}`);
-        const result = await deliverInternalNotificationViaStrapi(strapi, {
+        await deliverInternalNotificationViaStrapi(strapi, {
           key: notificationKey,
           payload: notificationPayload,
         });
-        console.log(`[contact-submission] notification result:`, result);
       } catch (error) {
         const errMsg = error instanceof Error ? error.message : String(error);
         const errStack = error instanceof Error ? error.stack : undefined;
-        console.error(`[contact-submission] notification threw: ${errMsg}`, errStack);
         strapi.log.error('Contact submission notification delivery failed', {
           submissionId: submission.id,
           errMessage: errMsg,
