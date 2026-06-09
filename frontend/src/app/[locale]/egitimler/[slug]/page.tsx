@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ContentPageShell, RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
@@ -81,7 +81,8 @@ export async function generateMetadata({
 }
 
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("courses");
   const tt = await getTranslations("taxonomy");
   const [course, siteSettings] = await Promise.all([

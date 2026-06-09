@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { RouteLoading } from "@/components/content";
@@ -78,7 +78,8 @@ export async function generateMetadata({
 export default async function TeacherDetailPage({
   params,
 }: TeacherDetailPageProps) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
   const teacher = await getTeacherBySlug(slug);
   const t = await getTranslations('teachers');
 
