@@ -18,19 +18,22 @@ const REVALIDATE_EXPORT = /export\s+const\s+revalidate\s*=\s*60/;
 
 // ── strapi-courses.ts ──────────────────────────────────────────
 
-test("getCourses uses { next: { revalidate: 60 } }", () => {
-  const source = readSource("lib/strapi-courses.ts");
+test("getCourseList uses tagged cache semantics", () => {
+  const source = readSource("lib/course-service.ts");
   assert.match(
     source,
-    ISR_REVALIDATE,
-    "strapi-courses.ts should contain ISR revalidate: 60"
+    /next:\s*\{\s*tags:\s*\[\s*COURSES_TAG\s*\]\s*\}/,
+    "course-service.ts should tag course list fetches"
   );
 });
 
-test("getLatestCourses uses { next: { revalidate: 60 } }", () => {
+test("getLatestCourses uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-courses.ts");
-  const matches = source.match(/next:\s*\{\s*revalidate:\s*60\s*\}/g);
-  assert.ok(matches && matches.length >= 2, "Should have ISR option in both getCourses and getLatestCourses");
+  assert.match(
+    source,
+    /next:\s*\{\s*tags:\s*\[\s*COURSES_TAG\s*\]\s*\}/,
+    "getLatestCourses should tag course fetches"
+  );
 });
 
 test("getCourseSlugs uses force-cache", () => {

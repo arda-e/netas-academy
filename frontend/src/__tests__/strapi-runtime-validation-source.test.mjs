@@ -134,16 +134,15 @@ test("strapi-courses.ts does not import Zod schemas", () => {
   );
 });
 
-test("getCourses does not pass a schema argument", () => {
-  const source = readSource("lib/strapi-courses.ts");
-  const getCoursesFn = source.substring(
-    source.indexOf("export async function getCourses"),
-    source.indexOf("export async function getCourseSlugs")
+test("getCourseList does not pass a schema argument", () => {
+  const source = readSource("lib/course-service.ts");
+  const getCourseListFn = source.substring(
+    source.indexOf("export async function getCourseList")
   );
   assert.doesNotMatch(
-    getCoursesFn,
+    getCourseListFn,
     /StrapiListResponseSchema/,
-    "getCourses should not pass a schema"
+    "getCourseList should not pass a schema"
   );
 });
 
@@ -407,16 +406,12 @@ test("strapi-types.ts still exports TypeScript types", () => {
 
 /* ─── Error path: try/catch still returns fallback ─── */
 
-test("getCourses returns empty array on catch", () => {
-  const source = readSource("lib/strapi-courses.ts");
-  const getFn = source.substring(
-    source.indexOf("export async function getCourses"),
-    source.indexOf("export async function getCourseSlugs")
-  );
+test("course page returns empty array fallback on service failure", () => {
+  const source = readSource("app/[locale]/egitimler/page.tsx");
   assert.match(
-    getFn,
-    /catch\s*\([\s\S]*?return \[\]/,
-    "getCourses should return [] on error"
+    source,
+    /let courses:[\s\S]*?= \[\][\s\S]*?catch\s*\(/,
+    "course page should render an empty list on service failure"
   );
 });
 
@@ -528,12 +523,12 @@ test("strapi-client.ts defaults to force-cache instead of no-store", () => {
   );
 });
 
-test("getCourses uses next.tags for on-demand revalidation", () => {
-  const source = readSource("lib/strapi-courses.ts");
+test("getCourseList uses next.tags for on-demand revalidation", () => {
+  const source = readSource("lib/course-service.ts");
   assert.match(
     source,
     /tags:\s*\[\s*COURSES_TAG\s*\]/,
-    "getCourses should use next.tags with COURSES_TAG"
+    "getCourseList should use next.tags with COURSES_TAG"
   );
 });
 

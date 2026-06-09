@@ -117,25 +117,25 @@ test("strapi-client logging does not reference request bodies, auth headers, coo
 
 /* ─── Domain module logging tests ─── */
 
-test("strapi-courses logs errors in getCourses catch block", () => {
-  const source = readSource("lib/strapi-courses.ts");
+test("courses route logs controller errors", () => {
+  const source = readSource("app/[locale]/api/courses/route.ts");
 
   assert.match(
     source,
-    /domain.*'courses'[\s\S]*function.*'getCourses'/,
-    "getCourses catch block should log domain and function name"
+    /route:\s*"courses"[\s\S]*errorCategory:\s*"controller"/,
+    "courses route should log route and controller category"
   );
 });
 
-test("strapi-courses logs errors in all 4 functions", () => {
+test("strapi-courses logs errors in all 3 remaining helper functions", () => {
   const source = readSource("lib/strapi-courses.ts");
 
   const catchLogs = source.match(/console\.error\(JSON\.stringify/g);
   assert.ok(catchLogs, "strapi-courses should contain console.error calls");
   assert.equal(
     catchLogs.length,
-    4,
-    "strapi-courses should log errors in all 4 functions"
+    3,
+    "strapi-courses should log errors in getCourseSlugs, getCourseBySlug, and getLatestCourses"
   );
 });
 
