@@ -20,6 +20,10 @@ vi.mock("../../../src/services/spl-check/service", () => ({
   runSplCheck,
 }));
 
+vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
+  deliverInternalNotificationViaStrapi: (_strapi: unknown, envelope: unknown) => deliverFn(envelope),
+}));
+
 describe("course-application service", () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -28,12 +32,6 @@ describe("course-application service", () => {
 
   function createStrapiMock(overrides: Record<string, unknown> = {}) {
     return {
-      plugin: vi.fn((name: string) => {
-        if (name === "internal-notifications") {
-          return { service: vi.fn().mockReturnValue(deliverFn) };
-        }
-        return {};
-      }),
       log: {
         error: vi.fn(),
       },

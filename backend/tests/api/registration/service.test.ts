@@ -15,6 +15,10 @@ vi.mock("@strapi/utils", () => ({
   },
 }));
 
+vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
+  deliverInternalNotificationViaStrapi: (_strapi: unknown, envelope: unknown) => deliverFn(envelope),
+}));
+
 describe("registration service", () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -26,12 +30,6 @@ describe("registration service", () => {
       db: {
         transaction: vi.fn((fn: () => unknown) => fn()),
       },
-      plugin: vi.fn((name: string) => {
-        if (name === "internal-notifications") {
-          return { service: vi.fn().mockReturnValue(deliverFn) };
-        }
-        return {};
-      }),
       log: {
         error: vi.fn(),
       },
