@@ -15,7 +15,9 @@
       "Bash(npm run *)",
       "Bash(grep -v \"^$\")",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(node --test /Users/arda/Desktop/development/netas_academy/frontend/src/__tests__/strapi-cache-policy-source.test.mjs)",
+      "Bash(rm -rf /Users/arda/Desktop/development/netas_academy/frontend/src/app/\\\\[locale\\\\]/api/courses)"
     ]
   }
 }
