@@ -1,12 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 export type TeacherCarouselItem = {

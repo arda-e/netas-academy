@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 import { Download, Filter } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import trainingHeroImage from "@/assets/images/hero-events.webp";
 import { ContentPageShell, CourseListLoading, SearchField } from "@/components/content";
 import { CourseCatalogList } from "@/components/courses/course-catalog-list";
+import { Link } from "@/i18n/navigation";
 import { getCourses } from "@/lib/strapi-courses";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";

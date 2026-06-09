@@ -1,9 +1,9 @@
-import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContentSuperheading } from "@/components/content/content-superheading";
+import { Link } from "@/i18n/navigation";
 import { getImagePlaceholderProps, type ImageSource } from "@/lib/image-sources";
 import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";

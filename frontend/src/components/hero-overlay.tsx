@@ -1,12 +1,12 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 type HeroOverlayVariant = "home" | "feature";

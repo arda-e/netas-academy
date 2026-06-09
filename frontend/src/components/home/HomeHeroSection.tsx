@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import heroImage from '@/assets/images/hero-events.webp';
+import { Link } from '@/i18n/navigation';
 import { getImagePlaceholderProps, type ImageSource } from '@/lib/image-sources';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
 import { cn } from '@/lib/utils';

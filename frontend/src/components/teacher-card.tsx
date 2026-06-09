@@ -1,6 +1,6 @@
-import Link from "next/link";
 import Image from "next/image";
 
+import { Link } from "@/i18n/navigation";
 import { getInitials } from "@/lib/utils";
 import { join, normalizeKey } from "@/lib/testids";
 

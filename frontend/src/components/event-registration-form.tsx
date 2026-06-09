@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { useEventRegistrationForm } from "@/hooks/use-event-registration-form";
 import type { StrapiEventType } from "@/lib/strapi-types";
 

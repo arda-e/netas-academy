@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -7,6 +6,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ContentPageShell, RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { JsonLd } from "@/components/seo/json-ld";
+import { Link } from "@/i18n/navigation";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";

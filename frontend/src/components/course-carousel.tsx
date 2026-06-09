@@ -1,12 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import {
   getCourseLevelLabel,

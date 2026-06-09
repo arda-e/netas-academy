@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import heroCtaImage from '@/assets/images/hero-blog.webp';
+import { Link } from '@/i18n/navigation';
 import { getImagePlaceholderProps, type ImageSource } from '@/lib/image-sources';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
 

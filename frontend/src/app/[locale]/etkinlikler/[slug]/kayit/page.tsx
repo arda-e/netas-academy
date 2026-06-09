@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { EventRegistrationForm } from "@/components/event-registration-form";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
 import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi-events";
 import { formatEventDateTime } from "@/lib/date-formatting";

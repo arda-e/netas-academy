@@ -1,9 +1,10 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/navigation";
 
 export function KvkkBackButton() {
   const t = useTranslations('kvkk');

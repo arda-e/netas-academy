@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -9,6 +8,7 @@ import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { JsonLd } from "@/components/seo/json-ld";
+import { Link } from "@/i18n/navigation";
 import {
   getStrapiMediaAltText,
   getStrapiMediaBlurDataUrl,

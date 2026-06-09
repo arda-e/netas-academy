@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 import { Filter } from "lucide-react";
 import { SortAscending, SortDescending } from "@phosphor-icons/react/dist/ssr";
@@ -7,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import eventsHeroImage from "@/assets/images/hero-events.webp";
 
 import { ContentPageShell, EventList, EventListLoading } from "@/components/content";
+import { Link } from "@/i18n/navigation";
 import { join } from "@/lib/testids";
 import { cn } from "@/lib/utils";
 import { getEvents, normalizeEventType } from "@/lib/strapi-events";

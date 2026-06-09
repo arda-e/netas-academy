@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import programsImage from '@/assets/images/home-2.jpg';
+import { Link } from '@/i18n/navigation';
 
 type HomeProgramsSectionProps = {
   eyebrow?: string;

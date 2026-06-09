@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import solutionPartnerHeroImage from "@/assets/images/hero-cozum.webp";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { AccordionSection } from "@/components/uncode/AccordionSection";
 import { IntroSection } from "@/components/uncode/IntroSection";
+import { Link } from "@/i18n/navigation";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { join } from "@/lib/testids";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
