@@ -1,8 +1,13 @@
 import type { Core } from '@strapi/strapi';
-import { replaceTemplateVariables } from './utils/template';
+import { applyTemplateParams } from './utils/template';
 import type { EmailSender } from '../../../../services/email';
 
 const TEMPLATE_UID = 'plugin::iletisim-merkezi.confirmation-template';
+
+const ACADEMY_NAME = 'Netas Academy';
+const TIMEZONE = 'Europe/Istanbul';
+const SUPPORT_EMAIL = 'destek@netasacademy.com';
+const LOGO_PNG_URL = ''; // TODO: set production URL
 
 const confirmationService = ({ strapi, emailSender }: { strapi: Core.Strapi; emailSender: EmailSender }) => ({
   /**
@@ -16,7 +21,7 @@ const confirmationService = ({ strapi, emailSender }: { strapi: Core.Strapi; ema
         where: { id: registrationId },
         populate: {
           event: {
-            select: ['id', 'documentId', 'title', 'startsAt', 'location', 'meetingLink', 'autoConfirmationEnabled'],
+            select: ['id', 'documentId', 'title', 'startsAt', 'endsAt', 'eventType', 'location', 'meetingLink', 'autoConfirmationEnabled'],
           },
           student: {
             select: ['id', 'firstName', 'lastName', 'email'],
@@ -52,13 +57,46 @@ const confirmationService = ({ strapi, emailSender }: { strapi: Core.Strapi; ema
 
       const htmlBody = template.htmlBody || '';
 
-      // Replace template variables
-      const html = replaceTemplateVariables(htmlBody, {
-        title: event.title,
-        startsAt: event.startsAt,
-        location: event.location,
-        meetingLink: event.meetingLink,
-      });
+      // Compute template params
+      const programTitle = event.title ?? '';
+      const programDate = event.startsAt
+        ? new Date(event.startsAt).toLocaleDateString('tr-TR', { dateStyle: 'full' })
+        : '';
+      const programTime = event.startsAt
+        ? new Date(event.startsAt).toLocaleTimeString('tr-TR', { timeStyle: 'short' })
+        : '';
+      const eventTypeMap: Record<string, string> = { etkinlik: 'Etkinlik', egitim: 'Eğitim', kurs: 'Kurs' };
+      const programType = eventTypeMap[event.eventType ?? ''] ?? 'Etkinlik';
+      let duration = '';
+      if (event.startsAt && event.endsAt) {
+        const mins = Math.round((new Date(event.endsAt).getTime() - new Date(event.startsAt).getTime()) / 60000);
+        const hours = Math.floor(mins / 60);
+        const rem = mins % 60;
+        duration = hours > 0 && rem === 0 ? `${hours} saat` : hours > 0 ? `${hours} saat ${rem} dakika` : `${mins} dakika`;
+      }
+      const deliveryMode = event.meetingLink ? 'Çevrimiçi' : (event.location ?? 'Yüz Yüze');
+      const joinUrl = event.meetingLink ?? '';
+
+      const params: Record<string, string> = {
+        firstName: student.firstName ?? '',
+        programTitle,
+        programDate,
+        programTime,
+        programType,
+        duration,
+        deliveryMode,
+        joinUrl,
+        registrationId: String(registration.id),
+        calendarUrl: '',
+        academyName: ACADEMY_NAME,
+        logoPngUrl: LOGO_PNG_URL,
+        preheader: `${programTitle} etkinliğine kaydınız alındı.`,
+        preparationNote: '',
+        supportEmail: SUPPORT_EMAIL,
+        timezone: TIMEZONE,
+      };
+
+      const html = applyTemplateParams(htmlBody, params);
 
       // Send email
       await emailSender.send({
