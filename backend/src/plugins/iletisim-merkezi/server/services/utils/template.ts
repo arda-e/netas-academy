@@ -6,7 +6,7 @@
 export function applyTemplateParams(html: string, params: Record<string, string>): string {
   let result = html;
   for (const [key, value] of Object.entries(params)) {
-    result = result.replaceAll(`{{params.${key}}}`, value);
+    result = result.split(`{{params.${key}}}`).join(value);
   }
   return result;
 }
