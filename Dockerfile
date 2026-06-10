@@ -19,6 +19,7 @@ WORKDIR /app
 COPY frontend ./frontend
 COPY backend ./backend
 COPY docker ./docker
+COPY emails ./emails
 
 ENV STRAPI_URL=http://127.0.0.1:1337
 
@@ -43,6 +44,7 @@ ENV STRAPI_PUBLIC_URL=http://localhost:1337
 COPY --from=builder /app/backend ./backend
 COPY --from=builder /app/frontend ./frontend
 COPY --from=builder /app/docker ./docker
+COPY --from=builder /app/emails ./emails
 
 RUN chmod +x /app/docker/start-app.sh \
   && mkdir -p /app/backend/.tmp /app/backend/public/uploads

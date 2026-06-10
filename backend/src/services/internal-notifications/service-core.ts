@@ -80,13 +80,14 @@ export const deliverInternalNotification = async <K extends InternalNotification
     } satisfies DeliverInternalNotificationResult<K>;
   }
 
-  const email = buildInternalNotificationEmail(envelope);
+  const email = await buildInternalNotificationEmail(envelope);
 
   try {
     await sendEmail({
       to: recipients,
       subject: email.subject,
       text: email.text,
+      html: email.html,
     });
 
     return {

@@ -18,8 +18,8 @@ export const deliverInternalNotificationViaStrapi = <K extends InternalNotificat
         select: ['key', 'label', 'enabled', 'customEmails'],
       });
     },
-    sendEmail: async ({ to, subject, text }) => {
-      await createStrapiEmailSender(strapi).send({ to: to.join(', '), subject, text });
+    sendEmail: async ({ to, subject, text, html }) => {
+      await createStrapiEmailSender(strapi).send({ to: to.join(', '), subject, text, html });
     },
     warn: (message, meta) => strapi.log.warn(message, meta),
     error: (message, meta) => strapi.log.error(message, meta),
