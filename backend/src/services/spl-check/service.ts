@@ -1,5 +1,4 @@
 import { loadSplCheckConfig, resolveSplCheckConfig } from "./config";
-import { buildSplCheckRequestXml } from "./xml";
 import { runSapSoapSplCheck } from "./sap-soap-adapter";
 import type { SplCheckRequest, SplCheckResult } from "./types";
 
@@ -33,11 +32,13 @@ export async function runSplCheck(
     });
   }
 
-  const requestXml = buildSplCheckRequestXml(request);
+  const fullName = [request.firstName, request.lastName]
+    .filter((part): part is string => Boolean(part?.trim()))
+    .join(" ");
 
   return runSapSoapSplCheck({
     endpoint: config.endpoint,
-    requestXml,
+    fullName,
     timeoutMs: config.timeoutMs,
     soapAction: config.soapAction,
     fetchImpl: dependencies.fetchImpl,

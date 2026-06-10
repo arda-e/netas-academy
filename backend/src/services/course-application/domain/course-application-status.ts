@@ -28,12 +28,12 @@ export function resolveCourseApplicationOutcomeFromSplResult(
   result: Pick<SplCheckResult, "decision" | "statusCode">,
   now = new Date().toISOString(),
 ): CourseApplicationOutcome {
-  if (result.decision === "accepted") {
+  if (result.decision === "blocked") {
     return {
       status: "pending_payment",
       manualReview: false,
       nextAction: "redirect_to_payment",
-      integrationDecision: "accepted",
+      integrationDecision: "blocked",
       paymentStatus: "pending",
       completedAt: null,
     };
@@ -54,7 +54,7 @@ export function resolveCourseApplicationOutcomeFromSplResult(
     status: "completed_without_payment",
     manualReview: false,
     nextAction: "show_finish_page",
-    integrationDecision: "rejected",
+    integrationDecision: "clear",
     paymentStatus: "not_started",
     completedAt: now,
   };

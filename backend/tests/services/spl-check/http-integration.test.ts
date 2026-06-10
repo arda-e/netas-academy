@@ -1,13 +1,23 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { runSapSoapSplCheck } from "../../../src/services/spl-check/sap-soap-adapter";
 
 describe("sap-soap adapter — HTTP integration", () => {
   let handler: (req: IncomingMessage, res: ServerResponse) => void;
   let endpoint: string;
+  let requestBodies: string[];
+  let requestCount: number;
 
-  const server = createServer((req, res) => handler(req, res));
+  const server = createServer((req, res) => {
+    let body = "";
+    req.on("data", (chunk: Buffer) => { body += chunk.toString(); });
+    req.on("end", () => {
+      requestBodies.push(body);
+      requestCount++;
+      handler(req, res);
+    });
+  });
 
   beforeAll(
     () =>
@@ -22,98 +32,101 @@ describe("sap-soap adapter — HTTP integration", () => {
 
   afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())));
 
-  it("accepted: real fetch reaches the server; verifies POST, Content-Type, and Status 10", async () => {
-    let receivedMethod: string | undefined;
-    let receivedContentType: string | undefined;
-    let receivedBody = "";
-
-    handler = (req, res) => {
-      receivedMethod = req.method;
-      receivedContentType = req.headers["content-type"];
-      req.on("data", (chunk: Buffer) => { receivedBody += chunk.toString(); });
-      req.on("end", () => {
-        res.writeHead(200, { "Content-Type": "text/xml" });
-        res.end("<Status>10</Status>");
-      });
-    };
-
-    const result = await runSapSoapSplCheck({
-      endpoint,
-      requestXml: "<soap />",
-      timeoutMs: 2000,
-    });
-
-    expect(result).toMatchObject({ decision: "accepted", statusCode: "10" });
-    expect(receivedMethod).toBe("POST");
-    expect(receivedContentType).toContain("text/xml");
-    expect(receivedBody.length).toBeGreaterThan(0);
+  beforeEach(() => {
+    requestBodies = [];
+    requestCount = 0;
   });
 
-  it("rejected: server returns Status 42 → decision rejected, errorReason contains '42'", async () => {
+  it("blocked: makes two POST requests with text/xml; Status 10 on SalesDoc → accepted", async () => {
+    // Partner returns OK (body irrelevant), SalesDoc returns Status 10
+    let call = 0;
     handler = (_req, res) => {
+      call++;
       res.writeHead(200, { "Content-Type": "text/xml" });
-      res.end("<Status>42</Status>");
+      res.end(call === 1 ? "" : "<Status>10</Status>");
     };
 
-    const result = await runSapSoapSplCheck({
-      endpoint,
-      requestXml: "<soap />",
-      timeoutMs: 2000,
-    });
+    const result = await runSapSoapSplCheck({ endpoint, fullName: "Arda Eren", timeoutMs: 2000 });
 
-    expect(result.decision).toBe("rejected");
-    expect(result.statusCode).toBe("42");
-    expect(result.errorReason).toContain("42");
+    expect(result).toMatchObject({ decision: "blocked", statusCode: "10" });
+    expect(requestCount).toBe(2);
+    expect(requestBodies[0]).toContain("ZNnGtsTransferPartner");
+    expect(requestBodies[1]).toContain("ZNnGtsTransferSalesDoc");
   });
 
-  it("HTTP error 500: decision manual_review, errorReason contains '500'", async () => {
+  it("both calls use the same 10-digit partnerId", async () => {
+    let call = 0;
+    handler = (_req, res) => {
+      call++;
+      res.writeHead(200, { "Content-Type": "text/xml" });
+      res.end(call === 1 ? "" : "<Status>10</Status>");
+    };
+
+    await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000 });
+
+    const partnerIdMatch = requestBodies[0].match(/<PartnerId>(\d{10})<\/PartnerId>/);
+    const refnoMatch = requestBodies[1].match(/<RefnoHeader>(\d{10})<\/RefnoHeader>/);
+
+    expect(partnerIdMatch).not.toBeNull();
+    expect(refnoMatch).not.toBeNull();
+    expect(partnerIdMatch![1]).toBe(refnoMatch![1]);
+  });
+
+  it("clear: SalesDoc returns Status 42 → decision clear", async () => {
+    let call = 0;
+    handler = (_req, res) => {
+      call++;
+      res.writeHead(200, { "Content-Type": "text/xml" });
+      res.end(call === 1 ? "" : "<Status>42</Status>");
+    };
+
+    const result = await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000 });
+
+    expect(result.decision).toBe("clear");
+    expect(result.statusCode).toBe("42");
+  });
+
+  it("Partner HTTP 500 → manual_review, only one request made", async () => {
     handler = (_req, res) => {
       res.writeHead(500);
       res.end("");
     };
 
-    const result = await runSapSoapSplCheck({
-      endpoint,
-      requestXml: "<soap />",
-      timeoutMs: 2000,
-    });
+    const result = await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000 });
 
     expect(result.decision).toBe("manual_review");
     expect(result.errorReason).toContain("500");
+    expect(requestCount).toBe(1);
   });
 
-  it("missing Status element: decision manual_review, errorReason contains 'did not contain a Status value'", async () => {
+  it("SalesDoc missing Status element → manual_review", async () => {
+    let call = 0;
     handler = (_req, res) => {
+      call++;
       res.writeHead(200, { "Content-Type": "text/xml" });
-      res.end("<soap:Envelope />");
+      res.end(call === 1 ? "" : "<soapenv:Envelope />");
     };
 
-    const result = await runSapSoapSplCheck({
-      endpoint,
-      requestXml: "<soap />",
-      timeoutMs: 2000,
-    });
+    const result = await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000 });
 
     expect(result.decision).toBe("manual_review");
     expect(result.errorReason).toContain("did not contain a Status value");
   });
 
-  it("SOAPAction forwarded: server receives the SOAPAction header when provided", async () => {
-    let receivedSoapAction: string | string[] | undefined;
+  it("SOAPAction forwarded on both calls when provided", async () => {
+    const receivedSoapActions: Array<string | undefined> = [];
+    let call = 0;
 
     handler = (req, res) => {
-      receivedSoapAction = req.headers["soapaction"];
+      call++;
+      receivedSoapActions.push(req.headers["soapaction"] as string | undefined);
       res.writeHead(200, { "Content-Type": "text/xml" });
-      res.end("<Status>10</Status>");
+      res.end(call === 1 ? "" : "<Status>10</Status>");
     };
 
-    await runSapSoapSplCheck({
-      endpoint,
-      requestXml: "<soap />",
-      timeoutMs: 2000,
-      soapAction: "test-action",
-    });
+    await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000, soapAction: "test-action" });
 
-    expect(receivedSoapAction).toBe("test-action");
+    expect(receivedSoapActions[0]).toBe("test-action");
+    expect(receivedSoapActions[1]).toBe("test-action");
   });
 });

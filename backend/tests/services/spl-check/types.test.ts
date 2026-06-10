@@ -3,17 +3,17 @@ import { describe, expect, it } from "vitest";
 import { resolveCourseApplicationOutcomeFromSplResult } from "../../../src/services/course-application/domain/course-application-status";
 
 describe("course application outcome mapping", () => {
-  it("maps an accepted SPL result to pending_payment and redirect_to_payment", () => {
+  it("maps a blocked SPL result to pending_payment and redirect_to_payment", () => {
     expect(
       resolveCourseApplicationOutcomeFromSplResult({
-        decision: "accepted",
+        decision: "blocked",
         statusCode: "10",
       }),
     ).toEqual({
       status: "pending_payment",
       manualReview: false,
       nextAction: "redirect_to_payment",
-      integrationDecision: "accepted",
+      integrationDecision: "blocked",
       paymentStatus: "pending",
       completedAt: null,
     });
@@ -35,11 +35,11 @@ describe("course application outcome mapping", () => {
     });
   });
 
-  it("maps a rejected SPL result to completed_without_payment and show_finish_page", () => {
+  it("maps a clear SPL result to completed_without_payment and show_finish_page", () => {
     expect(
       resolveCourseApplicationOutcomeFromSplResult(
         {
-          decision: "rejected",
+          decision: "clear",
           statusCode: "42",
         },
         "2026-04-24T12:00:00.000Z",
@@ -48,7 +48,7 @@ describe("course application outcome mapping", () => {
       status: "completed_without_payment",
       manualReview: false,
       nextAction: "show_finish_page",
-      integrationDecision: "rejected",
+      integrationDecision: "clear",
       paymentStatus: "not_started",
       completedAt: "2026-04-24T12:00:00.000Z",
     });
