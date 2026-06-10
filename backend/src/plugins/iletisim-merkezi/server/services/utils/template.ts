@@ -8,6 +8,8 @@
  *   {{ event.meetingLink }} — event meeting link (Zoom etc.)
  *
  * Uses simple String.replaceAll — no template engine needed.
+ *
+ * @deprecated Use applyTemplateParams instead.
  */
 export function replaceTemplateVariables(html: string, event: {
   title: string;
@@ -28,5 +30,21 @@ export function replaceTemplateVariables(html: string, event: {
   result = result.replaceAll('{{ event.location }}', event.location ?? '');
   result = result.replaceAll('{{ event.meetingLink }}', event.meetingLink ?? '');
 
+  return result;
+}
+
+/**
+ * Replace named template parameters in an HTML string.
+ *
+ * Each key in `params` is substituted for all occurrences of `{{ key }}` in
+ * the template. Values must already be formatted as display strings.
+ *
+ * Uses simple String.replaceAll — no template engine needed.
+ */
+export function applyTemplateParams(html: string, params: Record<string, string>): string {
+  let result = html;
+  for (const [key, value] of Object.entries(params)) {
+    result = result.replaceAll(`{{ ${key} }}`, value);
+  }
   return result;
 }
