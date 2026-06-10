@@ -13,7 +13,7 @@
     "seed:demo": "npm run seed:demo --prefix backend"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^10.0.3"
   },
   "engines": {
     "node": ">=22 <23",
