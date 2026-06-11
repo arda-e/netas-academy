@@ -14,6 +14,10 @@ vi.mock("@strapi/utils", () => ({
   },
 }));
 
+vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
+  deliverInternalNotificationViaStrapi: (_strapi: unknown, envelope: unknown) => deliverFn(envelope),
+}));
+
 describe("contact-submission service", () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -26,12 +30,6 @@ describe("contact-submission service", () => {
       db: {
         query: vi.fn().mockReturnValue({ create }),
       },
-      plugin: vi.fn((name: string) => {
-        if (name === "internal-notifications") {
-          return { service: vi.fn().mockReturnValue(deliverFn) };
-        }
-        return {};
-      }),
       log: {
         error: vi.fn(),
       },
@@ -349,7 +347,7 @@ describe("contact-submission service", () => {
       "Contact submission notification delivery failed",
       expect.objectContaining({
         submissionId: 4,
-        error: expect.any(Error),
+        errMessage: expect.any(String),
       }),
     );
   });

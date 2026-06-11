@@ -45,13 +45,7 @@ export const deliverInternalNotification = async <K extends InternalNotification
   warn,
   error,
 }: DeliverInternalNotificationDependencies<K>) => {
-  console.log(`[internal-notifications] delivering key=${envelope.key}`);
-
   const routing = await loadRoutingByKey(envelope.key);
-  console.log(`[internal-notifications] routing loaded:`, routing
-    ? { key: routing.key, enabled: routing.enabled, customEmails: routing.customEmails }
-    : null
-  );
 
   if (!routing) {
     warn("Internal notification routing not found", { key: envelope.key });
@@ -63,7 +57,6 @@ export const deliverInternalNotification = async <K extends InternalNotification
   }
 
   if (!routing.enabled) {
-    console.log(`[internal-notifications] routing disabled for key=${envelope.key}`);
     return {
       status: "skipped",
       key: envelope.key,
@@ -74,7 +67,6 @@ export const deliverInternalNotification = async <K extends InternalNotification
   const recipients = normalizeRecipientEmails(
     coerceCustomRecipientEmails(routing.customEmails),
   );
-  console.log(`[internal-notifications] resolved recipients:`, recipients);
 
   if (recipients.length === 0) {
     warn("No recipients resolved for internal notification routing", {
@@ -88,17 +80,16 @@ export const deliverInternalNotification = async <K extends InternalNotification
     } satisfies DeliverInternalNotificationResult<K>;
   }
 
-  const email = buildInternalNotificationEmail(envelope);
-  console.log(`[internal-notifications] sending email subject="${email.subject}" to=${recipients.join(", ")}`);
+  const email = await buildInternalNotificationEmail(envelope);
 
   try {
     await sendEmail({
       to: recipients,
       subject: email.subject,
       text: email.text,
+      html: email.html,
     });
 
-    console.log(`[internal-notifications] email sent OK to=${recipients.join(", ")}`);
     return {
       status: "sent",
       key: envelope.key,
@@ -107,7 +98,6 @@ export const deliverInternalNotification = async <K extends InternalNotification
   } catch (sendError) {
     const errMsg = sendError instanceof Error ? sendError.message : String(sendError);
     const errStack = sendError instanceof Error ? sendError.stack : undefined;
-    console.error(`[internal-notifications] SMTP send failed: ${errMsg}`, errStack);
     error("Internal notification SMTP send failed", {
       key: envelope.key,
       label: routing.label,

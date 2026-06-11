@@ -2,6 +2,7 @@ import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
 import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
+import { runSplCheck } from '../../../services/spl-check/service';
 
 import { isEventRegistrationOpen } from '../../../utils/event-registration';
 import { isValidTckn, normalizeTcknValue, maskTcknValue } from '../../../utils/tckn';
@@ -34,7 +35,7 @@ type SanitizedRegistration = {
 
 export default factories.createCoreService('api::registration.registration' as any, () => ({
   async registerStudentForEvent(input: RegisterStudentInput): Promise<SanitizedRegistration> {
-    const normalizedTckn = normalizeTcknValue(input.student.tckn);
+    const normalizedTckn = normalizeTcknValue(input.student.tckn ?? "");
 
     const event = await strapi.db.query('api::event.event').findOne({
       where: { documentId: input.eventDocumentId },
@@ -50,7 +51,8 @@ export default factories.createCoreService('api::registration.registration' as a
     }
 
     // TCKN is required only for egitim/kurs events, not etkinlik
-    if (event.eventType !== 'etkinlik') {
+    // Positive matching so null/undefined eventType (legacy records) defaults to etkinlik behavior
+    if (event.eventType === 'egitim' || event.eventType === 'kurs') {
       const tckn = typeof input.student.tckn === 'string' ? input.student.tckn : '';
       if (!isValidTckn(tckn)) {
         throw new ValidationError('Invalid TCKN');
@@ -63,6 +65,31 @@ export default factories.createCoreService('api::registration.registration' as a
       input.kvkkConsent !== true
     ) {
       throw new ValidationError('kvkkConsent must be true');
+    }
+
+    // SPL sanctions check — runs before any DB writes.
+    // blocked (status 30) = hard reject. manual_review (status 20 or unconfigured) = proceed, staff sees it.
+    const splResult = await runSplCheck({
+      applicationNumber: `EVT-${event.documentId}`,
+      firstName: input.student.firstName,
+      lastName: input.student.lastName ?? null,
+      email: input.student.email,
+      phone: input.student.phone ?? null,
+      tckn: normalizedTckn || null,
+    });
+
+    if (splResult.decision === 'blocked') {
+      throw new ValidationError('Registration blocked by sanctions check');
+    }
+
+    if (splResult.decision === 'manual_review') {
+      strapi.log.warn('[registration] SPL check returned manual_review — registration will proceed for staff review', {
+        eventDocumentId: input.eventDocumentId,
+        firstName: input.student.firstName,
+        lastName: input.student.lastName,
+        statusCode: splResult.statusCode,
+        errorReason: splResult.errorReason,
+      });
     }
 
     // Wrap the entire registration flow in a transaction to prevent race conditions.

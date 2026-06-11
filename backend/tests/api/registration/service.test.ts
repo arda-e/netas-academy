@@ -1,6 +1,7 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const deliverFn = vi.fn();
+const splCheckFn = vi.fn();
 
 vi.mock("@strapi/strapi", () => ({
   factories: {
@@ -15,7 +16,21 @@ vi.mock("@strapi/utils", () => ({
   },
 }));
 
+vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
+  deliverInternalNotificationViaStrapi: (_strapi: unknown, envelope: unknown) => deliverFn(envelope),
+}));
+
+vi.mock("../../../src/services/spl-check/service", () => ({
+  runSplCheck: (...args: unknown[]) => splCheckFn(...args),
+}));
+
+const CLEAR_SPL = { provider: "sap_soap", decision: "clear", statusCode: "10", rawResponse: "<Status>10</Status>" };
+
 describe("registration service", () => {
+  beforeEach(() => {
+    splCheckFn.mockResolvedValue(CLEAR_SPL);
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllGlobals();
@@ -26,14 +41,9 @@ describe("registration service", () => {
       db: {
         transaction: vi.fn((fn: () => unknown) => fn()),
       },
-      plugin: vi.fn((name: string) => {
-        if (name === "internal-notifications") {
-          return { service: vi.fn().mockReturnValue(deliverFn) };
-        }
-        return {};
-      }),
       log: {
         error: vi.fn(),
+        warn: vi.fn(),
       },
       ...overrides,
     };
@@ -49,6 +59,7 @@ describe("registration service", () => {
       startsAt: "2026-04-22T09:00:00.000Z",
       keepRegistrationsOpen: true,
       location: "Istanbul Campus",
+      eventType: "etkinlik",
     };
     const studentRecord = {
       id: 20,
@@ -102,7 +113,7 @@ describe("registration service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/registration/services/registration");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       registerStudentForEvent: (input: {
         eventDocumentId: string;
         student: {
@@ -179,6 +190,7 @@ describe("registration service", () => {
       startsAt: "2026-04-22T09:00:00.000Z",
       keepRegistrationsOpen: true,
       location: "Istanbul Campus",
+      eventType: "etkinlik",
     };
     const studentRecord = {
       id: 20,
@@ -228,7 +240,7 @@ describe("registration service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/registration/services/registration");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       registerStudentForEvent: (input: {
         eventDocumentId: string;
         student: {
@@ -304,7 +316,7 @@ describe("registration service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/registration/services/registration");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       registerStudentForEvent: (input: {
         eventDocumentId: string;
         student: {
@@ -341,6 +353,7 @@ describe("registration service", () => {
       startsAt: "2026-04-22T09:00:00.000Z",
       keepRegistrationsOpen: true,
       location: "Istanbul Campus",
+      eventType: "etkinlik",
     };
     const existingReg = {
       id: 99,
@@ -379,7 +392,7 @@ describe("registration service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/registration/services/registration");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       registerStudentForEvent: (input: {
         eventDocumentId: string;
         student: {
@@ -457,7 +470,7 @@ describe("registration service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/registration/services/registration");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       registerStudentForEvent: (input: {
         eventDocumentId: string;
         student: {
@@ -483,5 +496,190 @@ describe("registration service", () => {
     expect(registrationFindOne).not.toHaveBeenCalled();
     expect(registrationCreate).not.toHaveBeenCalled();
     expect(deliverFn).not.toHaveBeenCalled();
+  });
+
+  it("rejects registration when SPL check returns blocked (Status 30) and does not create or notify", async () => {
+    const eventRecord = {
+      id: 10,
+      documentId: "evt_123",
+      title: "Demo Etkinlik",
+      slug: "demo-etkinlik",
+      startsAt: "2026-04-22T09:00:00.000Z",
+      keepRegistrationsOpen: true,
+      location: "Istanbul Campus",
+      eventType: "etkinlik",
+    };
+    const eventFindOne = vi.fn().mockResolvedValue(eventRecord);
+    const registrationFindOne = vi.fn();
+    const registrationCreate = vi.fn();
+    const upsertByEmail = vi.fn();
+
+    const strapi = createStrapiMock({
+      db: {
+        query: vi.fn((uid: string) => {
+          if (uid === "api::event.event") {
+            return { findOne: eventFindOne };
+          }
+
+          if (uid === "api::registration.registration") {
+            return {
+              findOne: registrationFindOne,
+              create: registrationCreate,
+            };
+          }
+
+          throw new Error(`Unexpected query uid: ${uid}`);
+        }),
+        transaction: vi.fn((fn: () => unknown) => fn()),
+      },
+      service: vi.fn().mockReturnValue({ upsertByEmail }),
+    });
+
+    splCheckFn.mockResolvedValue({
+      provider: "sap_soap",
+      decision: "blocked",
+      statusCode: "30",
+      rawResponse: "<Status>30</Status>",
+    });
+
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/registration/services/registration");
+    const service = serviceModule.default as unknown as {
+      registerStudentForEvent: (input: {
+        eventDocumentId: string;
+        student: {
+          firstName: string;
+          lastName?: string;
+          email: string;
+          tckn?: string;
+        };
+      }) => Promise<unknown>;
+    };
+
+    await expect(
+      service.registerStudentForEvent({
+        eventDocumentId: "evt_123",
+        student: {
+          firstName: "Sinan",
+          lastName: "İnan",
+          email: "sinan.inan@example.com",
+        },
+      }),
+    ).rejects.toThrow("Registration blocked by sanctions check");
+
+    expect(splCheckFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        firstName: "Sinan",
+        lastName: "İnan",
+      }),
+    );
+    expect(upsertByEmail).not.toHaveBeenCalled();
+    expect(registrationCreate).not.toHaveBeenCalled();
+    expect(deliverFn).not.toHaveBeenCalled();
+  });
+
+  it("proceeds with registration when SPL check returns manual_review (Status 20) and logs a warning", async () => {
+    const eventRecord = {
+      id: 10,
+      documentId: "evt_123",
+      title: "Demo Etkinlik",
+      slug: "demo-etkinlik",
+      startsAt: "2026-04-22T09:00:00.000Z",
+      keepRegistrationsOpen: true,
+      location: "Istanbul Campus",
+      eventType: "etkinlik",
+    };
+    const studentRecord = {
+      id: 20,
+      firstName: "Ada",
+      lastName: "Kaya",
+      email: "ada@example.com",
+      phone: null,
+    };
+    const createdRegistration = {
+      id: 44,
+      status: "pending",
+      notes: null,
+      event: eventRecord,
+      student: studentRecord,
+    };
+    const eventFindOne = vi.fn().mockResolvedValue(eventRecord);
+    const registrationFindOne = vi.fn().mockResolvedValue(null);
+    const registrationCreate = vi.fn().mockResolvedValue(createdRegistration);
+    const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
+
+    const logWarn = vi.fn();
+    const strapi = createStrapiMock({
+      db: {
+        query: vi.fn((uid: string) => {
+          if (uid === "api::event.event") {
+            return { findOne: eventFindOne };
+          }
+
+          if (uid === "api::registration.registration") {
+            return {
+              findOne: registrationFindOne,
+              create: registrationCreate,
+            };
+          }
+
+          throw new Error(`Unexpected query uid: ${uid}`);
+        }),
+        transaction: vi.fn((fn: () => unknown) => fn()),
+      },
+      service: vi.fn().mockReturnValue({ upsertByEmail }),
+      log: {
+        error: vi.fn(),
+        warn: logWarn,
+      },
+    });
+
+    splCheckFn.mockResolvedValue({
+      provider: "sap_soap",
+      decision: "manual_review",
+      statusCode: "20",
+      rawResponse: "<Status>20</Status>",
+      errorReason: "Business status 20",
+    });
+
+    deliverFn.mockResolvedValue(undefined);
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/registration/services/registration");
+    const service = serviceModule.default as unknown as {
+      registerStudentForEvent: (input: {
+        eventDocumentId: string;
+        student: {
+          firstName: string;
+          email: string;
+        };
+      }) => Promise<{ id: number; status: string; event: { documentId: string; title: string } }>;
+    };
+
+    await expect(
+      service.registerStudentForEvent({
+        eventDocumentId: "evt_123",
+        student: {
+          firstName: "Ada",
+          email: "ada@example.com",
+        },
+      }),
+    ).resolves.toEqual({
+      id: 44,
+      status: "pending",
+      event: {
+        documentId: "evt_123",
+        title: "Demo Etkinlik",
+      },
+    });
+
+    expect(registrationCreate).toHaveBeenCalled();
+    expect(logWarn).toHaveBeenCalledWith(
+      expect.stringContaining("manual_review"),
+      expect.objectContaining({
+        statusCode: "20",
+      }),
+    );
   });
 });

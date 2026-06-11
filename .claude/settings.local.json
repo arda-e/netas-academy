@@ -17,7 +17,8 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(node --test /Users/arda/Desktop/development/netas_academy/frontend/src/__tests__/strapi-cache-policy-source.test.mjs)",
-      "Bash(rm -rf /Users/arda/Desktop/development/netas_academy/frontend/src/app/\\\\[locale\\\\]/api/courses)"
+      "Bash(rm -rf /Users/arda/Desktop/development/netas_academy/frontend/src/app/\\\\[locale\\\\]/api/courses)",
+      "Bash(grep -E \"routes.*\\\\.ts$\")"
     ]
   }
 }

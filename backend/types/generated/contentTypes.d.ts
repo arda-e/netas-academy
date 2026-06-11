@@ -661,7 +661,7 @@ export interface ApiCourseApplicationCourseApplication
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     integrationDecision: Schema.Attribute.Enumeration<
-      ['pending', 'accepted', 'manual_review', 'rejected']
+      ['pending', 'blocked', 'clear', 'manual_review']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'pending'>;
@@ -878,7 +878,6 @@ export interface ApiNotificationRoutingNotificationRouting
     draftAndPublish: false;
   };
   attributes: {
-    adminRoles: Schema.Attribute.Relation<'manyToMany', 'admin::role'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

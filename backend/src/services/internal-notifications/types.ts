@@ -104,4 +104,5 @@ export type InternalNotificationEnvelope<K extends InternalNotificationKey = Int
 export interface InternalNotificationEmail {
   subject: string;
   text: string;
+  html?: string;
 }

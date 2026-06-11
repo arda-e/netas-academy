@@ -1,32 +1,12 @@
 /**
- * Replace template variables in an HTML string with event data.
- *
- * Supported variables:
- *   {{ event.title }}      — event title
- *   {{ event.startsAt }}   — event start date/time (locale: tr-TR)
- *   {{ event.location }}   — event location
- *   {{ event.meetingLink }} — event meeting link (Zoom etc.)
- *
- * Uses simple String.replaceAll — no template engine needed.
+ * Replace {{params.<key>}} placeholders in an HTML string with the provided values.
+ * Unknown keys are left unreplaced (no error). Matches the {{params.xxx}} convention
+ * used in emails/01_registration_confirmation.html and renderer.ts.
  */
-export function replaceTemplateVariables(html: string, event: {
-  title: string;
-  startsAt: string | Date;
-  location?: string | null;
-  meetingLink?: string | null;
-}): string {
+export function applyTemplateParams(html: string, params: Record<string, string>): string {
   let result = html;
-
-  result = result.replaceAll('{{ event.title }}', event.title);
-  result = result.replaceAll(
-    '{{ event.startsAt }}',
-    new Date(event.startsAt).toLocaleString('tr-TR', {
-      dateStyle: 'full',
-      timeStyle: 'short',
-    })
-  );
-  result = result.replaceAll('{{ event.location }}', event.location ?? '');
-  result = result.replaceAll('{{ event.meetingLink }}', event.meetingLink ?? '');
-
+  for (const [key, value] of Object.entries(params)) {
+    result = result.split(`{{params.${key}}}`).join(value);
+  }
   return result;
 }

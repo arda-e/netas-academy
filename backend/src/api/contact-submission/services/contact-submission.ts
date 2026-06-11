@@ -106,6 +106,14 @@ export default factories.createCoreService(
         partnershipDetails,
       });
 
+      strapi.log.info('[contact-submission] Received form submission', {
+        leadType,
+        fullName,
+        email,
+        phone,
+        company: company || null,
+      });
+
       const submission = await strapi.db.query('api::contact-submission.contact-submission').create({
         data: {
           leadType,
@@ -127,17 +135,26 @@ export default factories.createCoreService(
       const notificationKey = getNotificationKeyForLeadType(leadType);
       const notificationPayload = buildNotificationPayload(leadType, submission);
 
+      strapi.log.info('[contact-submission] Saved to DB, delivering notification email', {
+        submissionId: submission.id,
+        notificationKey,
+      });
+
       try {
-        console.log(`[contact-submission] triggering notification key=${notificationKey} submissionId=${submission.id}`);
-        const result = await deliverInternalNotificationViaStrapi(strapi, {
+        const notificationResult = await deliverInternalNotificationViaStrapi(strapi, {
           key: notificationKey,
           payload: notificationPayload,
         });
-        console.log(`[contact-submission] notification result:`, result);
+
+        strapi.log.info('[contact-submission] Notification result', {
+          submissionId: submission.id,
+          status: notificationResult.status,
+          ...(notificationResult.status === 'sent' ? { recipients: notificationResult.recipients } : {}),
+          ...(notificationResult.status === 'skipped' ? { reason: notificationResult.reason } : {}),
+        });
       } catch (error) {
         const errMsg = error instanceof Error ? error.message : String(error);
         const errStack = error instanceof Error ? error.stack : undefined;
-        console.error(`[contact-submission] notification threw: ${errMsg}`, errStack);
         strapi.log.error('Contact submission notification delivery failed', {
           submissionId: submission.id,
           errMessage: errMsg,

@@ -1,6 +1,6 @@
 export type SplCheckProvider = "sap_soap";
 
-export type SplCheckDecision = "accepted" | "manual_review" | "rejected";
+export type SplCheckDecision = "blocked" | "clear" | "manual_review";
 
 export type SplCheckResult = {
   provider: SplCheckProvider;
@@ -16,7 +16,7 @@ export type SplCheckRequest = {
   lastName?: string | null;
   email: string;
   phone?: string | null;
-  tckn: string;
-  courseDocumentId: string;
+  tckn?: string | null;
+  courseDocumentId?: string | null;
 };
 

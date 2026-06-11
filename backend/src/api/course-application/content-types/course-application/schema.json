@@ -65,7 +65,7 @@
     },
     "integrationDecision": {
       "type": "enumeration",
-      "enum": ["pending", "accepted", "manual_review", "rejected"],
+      "enum": ["pending", "blocked", "clear", "manual_review"],
       "required": true,
       "default": "pending"
     },

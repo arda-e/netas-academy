@@ -1,4 +1,5 @@
 import type { Core } from '@strapi/strapi';
+import type { EmailSender } from '../../../../services/email';
 
 type RegistrationWithStudent = {
   id: number;
@@ -14,7 +15,7 @@ type RegistrationWithStudent = {
 
 const DEFAULT_STATUSES = ['confirmed'];
 
-const manualEmailService = ({ strapi }: { strapi: Core.Strapi }) => ({
+const manualEmailService = ({ strapi, emailSender }: { strapi: Core.Strapi; emailSender: EmailSender }) => ({
   /**
    * Send a manual email to filtered registrants of an event.
    */
@@ -72,7 +73,7 @@ const manualEmailService = ({ strapi }: { strapi: Core.Strapi }) => ({
       }
 
       try {
-        await strapi.plugin('email').service('email').send({
+        await emailSender.send({
           to: email,
           subject,
           html: finalHtml,
@@ -133,7 +134,7 @@ const manualEmailService = ({ strapi }: { strapi: Core.Strapi }) => ({
       finalHtml += `\n\n<p><strong>Etkinlik Katılım Linki:</strong> <a href="${event.meetingLink}">${event.meetingLink}</a></p>`;
     }
 
-    await strapi.plugin('email').service('email').send({
+    await emailSender.send({
       to: adminEmail,
       subject: `[TEST] ${subject}`,
       html: finalHtml,

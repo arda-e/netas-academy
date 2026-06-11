@@ -3,27 +3,27 @@ import { describe, expect, it } from "vitest";
 import { resolveCourseApplicationOutcomeFromSplResult } from "../../../src/services/course-application/domain/course-application-status";
 
 describe("course application outcome mapping", () => {
-  it("maps an accepted SPL result to pending_payment and redirect_to_payment", () => {
+  it("maps a blocked SPL result (Status 30, kara liste) to cancelled and show_support_message", () => {
     expect(
       resolveCourseApplicationOutcomeFromSplResult({
-        decision: "accepted",
-        statusCode: "10",
+        decision: "blocked",
+        statusCode: "30",
       }),
     ).toEqual({
-      status: "pending_payment",
+      status: "cancelled",
       manualReview: false,
-      nextAction: "redirect_to_payment",
-      integrationDecision: "accepted",
-      paymentStatus: "pending",
+      nextAction: "show_support_message",
+      integrationDecision: "blocked",
+      paymentStatus: "not_started",
       completedAt: null,
     });
   });
 
-  it("maps a manual review SPL result to manual_review and show_support_message", () => {
+  it("maps a manual review SPL result (Status 20) to manual_review and show_support_message", () => {
     expect(
       resolveCourseApplicationOutcomeFromSplResult({
         decision: "manual_review",
-        statusCode: null,
+        statusCode: "20",
       }),
     ).toEqual({
       status: "manual_review",
@@ -35,22 +35,19 @@ describe("course application outcome mapping", () => {
     });
   });
 
-  it("maps a rejected SPL result to completed_without_payment and show_finish_page", () => {
+  it("maps a clear SPL result (Status 10, tertemiz) to pending_payment and redirect_to_payment", () => {
     expect(
-      resolveCourseApplicationOutcomeFromSplResult(
-        {
-          decision: "rejected",
-          statusCode: "42",
-        },
-        "2026-04-24T12:00:00.000Z",
-      ),
+      resolveCourseApplicationOutcomeFromSplResult({
+        decision: "clear",
+        statusCode: "10",
+      }),
     ).toEqual({
-      status: "completed_without_payment",
+      status: "pending_payment",
       manualReview: false,
-      nextAction: "show_finish_page",
-      integrationDecision: "rejected",
-      paymentStatus: "not_started",
-      completedAt: "2026-04-24T12:00:00.000Z",
+      nextAction: "redirect_to_payment",
+      integrationDecision: "clear",
+      paymentStatus: "pending",
+      completedAt: null,
     });
   });
 });

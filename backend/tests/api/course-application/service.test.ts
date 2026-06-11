@@ -20,6 +20,10 @@ vi.mock("../../../src/services/spl-check/service", () => ({
   runSplCheck,
 }));
 
+vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
+  deliverInternalNotificationViaStrapi: (_strapi: unknown, envelope: unknown) => deliverFn(envelope),
+}));
+
 describe("course-application service", () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -28,12 +32,6 @@ describe("course-application service", () => {
 
   function createStrapiMock(overrides: Record<string, unknown> = {}) {
     return {
-      plugin: vi.fn((name: string) => {
-        if (name === "internal-notifications") {
-          return { service: vi.fn().mockReturnValue(deliverFn) };
-        }
-        return {};
-      }),
       log: {
         error: vi.fn(),
       },
@@ -41,7 +39,7 @@ describe("course-application service", () => {
     };
   }
 
-  it("creates an application, maps an accepted SPL result, and resolves payment state", async () => {
+  it("creates an application, maps a clear SPL result (Status 10), and resolves payment state", async () => {
     const events: string[] = [];
     const courseRecord = {
       id: 10,
@@ -74,7 +72,7 @@ describe("course-application service", () => {
     const finalApplication = {
       ...draftApplication,
       status: "pending_payment",
-      integrationDecision: "accepted",
+      integrationDecision: "clear",
       integrationStatusCode: "10",
       paymentStatus: "pending",
       paymentUrlSnapshot: "https://pay.example.com/matematik",
@@ -118,7 +116,7 @@ describe("course-application service", () => {
 
     runSplCheck.mockResolvedValue({
       provider: "sap_soap",
-      decision: "accepted",
+      decision: "clear",
       statusCode: "10",
       rawResponse: "<Status>10</Status>",
     });
@@ -132,7 +130,7 @@ describe("course-application service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/course-application/services/course-application");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       submitApplication: (input: {
         courseDocumentId: string;
         student: {
@@ -182,7 +180,7 @@ describe("course-application service", () => {
       integration: {
         provider: "sap_soap",
         statusCode: "10",
-        decision: "accepted",
+        decision: "clear",
       },
       nextAction: "redirect_to_payment",
       paymentUrl: "https://pay.example.com/matematik",
@@ -256,7 +254,7 @@ describe("course-application service", () => {
     const finalApplication = {
       ...draftApplication,
       status: "pending_payment",
-      integrationDecision: "accepted",
+      integrationDecision: "clear",
       integrationStatusCode: "10",
       paymentStatus: "pending",
       paymentUrlSnapshot: "https://pay.example.com/matematik",
@@ -288,7 +286,7 @@ describe("course-application service", () => {
 
     runSplCheck.mockResolvedValue({
       provider: "sap_soap",
-      decision: "accepted",
+      decision: "clear",
       statusCode: "10",
       rawResponse: "<Status>10</Status>",
     });
@@ -296,8 +294,11 @@ describe("course-application service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/course-application/services/course-application");
-    const service = serviceModule.default as {
-      submitApplication: (input: Record<string, unknown>) => Promise<Record<string, unknown>>;
+    const service = serviceModule.default as unknown as {
+      submitApplication: (
+        input: Record<string, unknown>,
+        options?: Record<string, unknown>,
+      ) => Promise<Record<string, unknown>>;
     };
 
     await expect(
@@ -381,7 +382,7 @@ describe("course-application service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/course-application/services/course-application");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       submitApplication: (input: Record<string, unknown>) => Promise<unknown>;
     };
 
@@ -446,7 +447,7 @@ describe("course-application service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/course-application/services/course-application");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       submitApplication: (input: Record<string, unknown>) => Promise<unknown>;
     };
 
@@ -555,7 +556,7 @@ describe("course-application service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/course-application/services/course-application");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       submitApplication: (input: Record<string, unknown>) => Promise<Record<string, unknown>>;
     };
 
@@ -583,7 +584,7 @@ describe("course-application service", () => {
     });
   });
 
-  it("maps rejected SPL decisions to completed_without_payment and clears active application key", async () => {
+  it("maps blocked SPL decisions (Status 30, kara liste) to cancelled and clears active application key", async () => {
     const courseRecord = {
       id: 10,
       documentId: "course_123",
@@ -614,10 +615,10 @@ describe("course-application service", () => {
     };
     const finalApplication = {
       ...draftApplication,
-      status: "completed_without_payment",
+      status: "cancelled",
       manualReview: false,
-      integrationDecision: "rejected",
-      integrationStatusCode: "42",
+      integrationDecision: "blocked",
+      integrationStatusCode: "30",
       paymentStatus: "not_started",
     };
     const update = vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => {
@@ -651,10 +652,9 @@ describe("course-application service", () => {
 
     runSplCheck.mockResolvedValue({
       provider: "sap_soap",
-      decision: "rejected",
-      statusCode: "42",
-      rawResponse: "<Status>42</Status>",
-      errorReason: "Business status 42",
+      decision: "blocked",
+      statusCode: "30",
+      rawResponse: "<Status>30</Status>",
     });
     deliverFn.mockResolvedValue({
       status: "sent",
@@ -664,7 +664,7 @@ describe("course-application service", () => {
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/course-application/services/course-application");
-    const service = serviceModule.default as {
+    const service = serviceModule.default as unknown as {
       submitApplication: (input: Record<string, unknown>) => Promise<Record<string, unknown>>;
     };
 
@@ -682,20 +682,20 @@ describe("course-application service", () => {
         },
       }),
     ).resolves.toMatchObject({
-      status: "completed_without_payment",
+      status: "cancelled",
       manualReview: false,
       integration: {
-        decision: "rejected",
-        statusCode: "42",
+        decision: "blocked",
+        statusCode: "30",
       },
-      nextAction: "show_finish_page",
+      nextAction: "show_support_message",
       paymentUrl: null,
     });
 
     expect(update).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
-          status: "completed_without_payment",
+          status: "cancelled",
           activeApplicationKey: null,
         }),
       }),

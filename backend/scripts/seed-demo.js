@@ -301,6 +301,41 @@ const demoEvents = [
   },
 ];
 
+const e2eFixtures = [
+  {
+    slug: 'e2e-test-etkinlik',
+    title: 'E2E Test: Etkinlik',
+    summary: 'E2E test fixture — etkinlik type, registration open.',
+    startsAt: '2030-01-01T10:00:00.000Z',
+    eventType: 'etkinlik',
+    keepRegistrationsOpen: true,
+  },
+  {
+    slug: 'e2e-test-egitim',
+    title: 'E2E Test: Eğitim',
+    summary: 'E2E test fixture — egitim type, registration open.',
+    startsAt: '2030-01-02T10:00:00.000Z',
+    eventType: 'egitim',
+    keepRegistrationsOpen: true,
+  },
+  {
+    slug: 'e2e-test-kurs',
+    title: 'E2E Test: Kurs',
+    summary: 'E2E test fixture — kurs type, registration open.',
+    startsAt: '2030-01-03T10:00:00.000Z',
+    eventType: 'kurs',
+    keepRegistrationsOpen: true,
+  },
+  {
+    slug: 'e2e-test-kapali',
+    title: 'E2E Test: Kayıt Kapalı',
+    summary: 'E2E test fixture — closed registration.',
+    startsAt: '2020-01-01T10:00:00.000Z',
+    eventType: 'etkinlik',
+    keepRegistrationsOpen: false,
+  },
+];
+
 const demoBlogPosts = [
   {
     slug: 'demo-launching-the-academy-portal',
@@ -638,6 +673,27 @@ async function main() {
           autoConfirmationEnabled: event.autoConfirmationEnabled ?? false,
           topicArea: event.topicArea,
           course: courseDocumentId,
+        },
+        result,
+        'events'
+      );
+    }
+
+    // Seed E2E test fixtures (no course association required)
+    for (const fixture of e2eFixtures) {
+      await upsertPublishedDocument(
+        app,
+        'api::event.event',
+        'slug',
+        fixture.slug,
+        {
+          title: fixture.title,
+          slug: fixture.slug,
+          summary: fixture.summary,
+          startsAt: fixture.startsAt,
+          eventType: fixture.eventType,
+          keepRegistrationsOpen: fixture.keepRegistrationsOpen,
+          course: null,
         },
         result,
         'events'
