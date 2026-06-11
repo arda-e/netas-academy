@@ -11,6 +11,20 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
+  webServer: [
+    {
+      command: "cd .. && npm run dev:backend",
+      url: "http://localhost:1337/_health",
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
+    {
+      command: "cd .. && npm run dev:frontend",
+      url: "http://localhost:3000",
+      reuseExistingServer: true,
+      timeout: 60_000,
+    },
+  ],
   projects: [
     {
       name: "chromium",

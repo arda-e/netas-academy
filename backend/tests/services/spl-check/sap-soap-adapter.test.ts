@@ -24,23 +24,47 @@ describe("sap-soap adapter", () => {
     vi.clearAllMocks();
   });
 
-  it("returns blocked when SalesDoc response contains Status 10", async () => {
-    const fetchImpl = mockFetch(ok(""), ok("<Status>10</Status><Reference>REF-10</Reference>"));
+  it("returns blocked when SalesDoc response contains Status 30 (kara liste)", async () => {
+    const fetchImpl = mockFetch(ok(""), ok("<Status>30</Status><Reference>REF-30</Reference>"));
 
     await expect(
-      runSapSoapSplCheck({ endpoint: "https://sap.example.test", fullName: "Arda Eren", timeoutMs: 1000, fetchImpl: fetchImpl as unknown as typeof fetch }),
+      runSapSoapSplCheck({ endpoint: "https://sap.example.test", fullName: "Sinan İnan", timeoutMs: 1000, fetchImpl: fetchImpl as unknown as typeof fetch }),
     ).resolves.toEqual({
       provider: "sap_soap",
       decision: "blocked",
-      statusCode: "10",
-      rawResponse: expect.stringContaining("<Status>10</Status>"),
+      statusCode: "30",
+      rawResponse: expect.stringContaining("<Status>30</Status>"),
     });
 
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
-  it("sends Partner call first, then SalesDoc call", async () => {
+  it("returns clear when SalesDoc response contains Status 10 (tertemiz)", async () => {
     const fetchImpl = mockFetch(ok(""), ok("<Status>10</Status>"));
+
+    await expect(
+      runSapSoapSplCheck({ endpoint: "https://sap.example.test", fullName: "Test User", timeoutMs: 1000, fetchImpl: fetchImpl as unknown as typeof fetch }),
+    ).resolves.toMatchObject({
+      provider: "sap_soap",
+      decision: "clear",
+      statusCode: "10",
+    });
+  });
+
+  it("returns manual_review when SalesDoc response contains Status 20", async () => {
+    const fetchImpl = mockFetch(ok(""), ok("<Status>20</Status>"));
+
+    await expect(
+      runSapSoapSplCheck({ endpoint: "https://sap.example.test", fullName: "Test User", timeoutMs: 1000, fetchImpl: fetchImpl as unknown as typeof fetch }),
+    ).resolves.toMatchObject({
+      provider: "sap_soap",
+      decision: "manual_review",
+      statusCode: "20",
+    });
+  });
+
+  it("sends Partner call first, then SalesDoc call", async () => {
+    const fetchImpl = mockFetch(ok(""), ok("<Status>30</Status>"));
 
     await runSapSoapSplCheck({ endpoint: "https://sap.example.test", fullName: "Test User", timeoutMs: 1000, fetchImpl: fetchImpl as unknown as typeof fetch });
 
@@ -52,7 +76,7 @@ describe("sap-soap adapter", () => {
   });
 
   it("both calls use the same partnerId", async () => {
-    const fetchImpl = mockFetch(ok(""), ok("<Status>10</Status>"));
+    const fetchImpl = mockFetch(ok(""), ok("<Status>30</Status>"));
 
     await runSapSoapSplCheck({ endpoint: "https://sap.example.test", fullName: "Test User", timeoutMs: 1000, fetchImpl: fetchImpl as unknown as typeof fetch });
 

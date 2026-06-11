@@ -25,14 +25,14 @@ describe("spl-check service", () => {
     vi.clearAllMocks();
   });
 
-  it("makes two SAP SOAP calls (Partner then SalesDoc) and returns blocked on Status 10", async () => {
+  it("makes two SAP SOAP calls (Partner then SalesDoc) and returns blocked on Status 30 (kara liste)", async () => {
     let call = 0;
     const fetchImpl = vi.fn().mockImplementation(() => {
       call++;
       return Promise.resolve({
         ok: true,
         status: 200,
-        text: vi.fn().mockResolvedValue(call === 1 ? "" : "<Status>10</Status>"),
+        text: vi.fn().mockResolvedValue(call === 1 ? "" : "<Status>30</Status>"),
       });
     });
 
@@ -41,8 +41,8 @@ describe("spl-check service", () => {
     expect(result).toEqual({
       provider: "sap_soap",
       decision: "blocked",
-      statusCode: "10",
-      rawResponse: "<Status>10</Status>",
+      statusCode: "30",
+      rawResponse: "<Status>30</Status>",
     });
     expect(fetchImpl).toHaveBeenCalledTimes(2);
 
@@ -61,7 +61,7 @@ describe("spl-check service", () => {
       return Promise.resolve({
         ok: true,
         status: 200,
-        text: vi.fn().mockResolvedValue(call === 1 ? "" : "<Status>10</Status>"),
+        text: vi.fn().mockResolvedValue(call === 1 ? "" : "<Status>30</Status>"),
       });
     });
 
@@ -126,7 +126,7 @@ describe("spl-check service", () => {
       return Promise.resolve({
         ok: true,
         status: 200,
-        text: vi.fn().mockResolvedValue(call === 1 ? "" : "<Status>10</Status>"),
+        text: vi.fn().mockResolvedValue(call === 1 ? "" : "<Status>30</Status>"),
       });
     });
 

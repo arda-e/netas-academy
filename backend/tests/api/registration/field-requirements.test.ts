@@ -19,6 +19,15 @@ vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
   deliverInternalNotificationViaStrapi: (_strapi: unknown, envelope: unknown) => deliverFn(envelope),
 }));
 
+vi.mock("../../../src/services/spl-check/service", () => ({
+  runSplCheck: vi.fn().mockResolvedValue({
+    provider: "sap_soap",
+    decision: "clear",
+    statusCode: "10",
+    rawResponse: "<Status>10</Status>",
+  }),
+}));
+
 describe("registration service — event-type field-requirement matrix", () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -70,7 +79,7 @@ describe("registration service — event-type field-requirement matrix", () => {
 
   async function getService() {
     const mod = await import("../../../src/api/registration/services/registration");
-    return mod.default as {
+    return mod.default as unknown as {
       registerStudentForEvent: (input: {
         eventDocumentId: string;
         student: { firstName: string; email: string; tckn?: string };

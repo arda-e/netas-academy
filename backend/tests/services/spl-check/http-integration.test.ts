@@ -37,8 +37,25 @@ describe("sap-soap adapter — HTTP integration", () => {
     requestCount = 0;
   });
 
-  it("blocked: makes two POST requests with text/xml; Status 10 on SalesDoc → accepted", async () => {
-    // Partner returns OK (body irrelevant), SalesDoc returns Status 10
+  it("blocked: Sinan İnan — Status 30 (kara liste) → decision blocked", async () => {
+    // Partner returns OK (body irrelevant), SalesDoc returns Status 30
+    let call = 0;
+    handler = (_req, res) => {
+      call++;
+      res.writeHead(200, { "Content-Type": "text/xml" });
+      res.end(call === 1 ? "" : "<Status>30</Status>");
+    };
+
+    const result = await runSapSoapSplCheck({ endpoint, fullName: "Sinan İnan", timeoutMs: 2000 });
+
+    expect(result).toMatchObject({ decision: "blocked", statusCode: "30" });
+    expect(requestCount).toBe(2);
+    expect(requestBodies[0]).toContain("ZNnGtsTransferPartner");
+    expect(requestBodies[0]).toContain("<Name1>Sinan İnan</Name1>");
+    expect(requestBodies[1]).toContain("ZNnGtsTransferSalesDoc");
+  });
+
+  it("clear: Status 10 (tertemiz) → decision clear", async () => {
     let call = 0;
     handler = (_req, res) => {
       call++;
@@ -46,12 +63,22 @@ describe("sap-soap adapter — HTTP integration", () => {
       res.end(call === 1 ? "" : "<Status>10</Status>");
     };
 
-    const result = await runSapSoapSplCheck({ endpoint, fullName: "Arda Eren", timeoutMs: 2000 });
+    const result = await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000 });
 
-    expect(result).toMatchObject({ decision: "blocked", statusCode: "10" });
-    expect(requestCount).toBe(2);
-    expect(requestBodies[0]).toContain("ZNnGtsTransferPartner");
-    expect(requestBodies[1]).toContain("ZNnGtsTransferSalesDoc");
+    expect(result).toMatchObject({ decision: "clear", statusCode: "10" });
+  });
+
+  it("manual_review: Status 20 → decision manual_review", async () => {
+    let call = 0;
+    handler = (_req, res) => {
+      call++;
+      res.writeHead(200, { "Content-Type": "text/xml" });
+      res.end(call === 1 ? "" : "<Status>20</Status>");
+    };
+
+    const result = await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000 });
+
+    expect(result).toMatchObject({ decision: "manual_review", statusCode: "20" });
   });
 
   it("both calls use the same 10-digit partnerId", async () => {
@@ -59,7 +86,7 @@ describe("sap-soap adapter — HTTP integration", () => {
     handler = (_req, res) => {
       call++;
       res.writeHead(200, { "Content-Type": "text/xml" });
-      res.end(call === 1 ? "" : "<Status>10</Status>");
+      res.end(call === 1 ? "" : "<Status>30</Status>");
     };
 
     await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000 });
@@ -121,7 +148,7 @@ describe("sap-soap adapter — HTTP integration", () => {
       call++;
       receivedSoapActions.push(req.headers["soapaction"] as string | undefined);
       res.writeHead(200, { "Content-Type": "text/xml" });
-      res.end(call === 1 ? "" : "<Status>10</Status>");
+      res.end(call === 1 ? "" : "<Status>30</Status>");
     };
 
     await runSapSoapSplCheck({ endpoint, fullName: "Test User", timeoutMs: 2000, soapAction: "test-action" });
