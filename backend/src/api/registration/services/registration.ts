@@ -2,6 +2,7 @@ import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
 import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
+import { runSplCheck } from '../../../services/spl-check/service';
 
 import { isEventRegistrationOpen } from '../../../utils/event-registration';
 import { isValidTckn, normalizeTcknValue, maskTcknValue } from '../../../utils/tckn';
@@ -64,6 +65,31 @@ export default factories.createCoreService('api::registration.registration' as a
       input.kvkkConsent !== true
     ) {
       throw new ValidationError('kvkkConsent must be true');
+    }
+
+    // SPL sanctions check — runs before any DB writes.
+    // blocked (status 30) = hard reject. manual_review (status 20 or unconfigured) = proceed, staff sees it.
+    const splResult = await runSplCheck({
+      applicationNumber: `EVT-${event.documentId}`,
+      firstName: input.student.firstName,
+      lastName: input.student.lastName ?? null,
+      email: input.student.email,
+      phone: input.student.phone ?? null,
+      tckn: normalizedTckn || null,
+    });
+
+    if (splResult.decision === 'blocked') {
+      throw new ValidationError('Registration blocked by sanctions check');
+    }
+
+    if (splResult.decision === 'manual_review') {
+      strapi.log.warn('[registration] SPL check returned manual_review — registration will proceed for staff review', {
+        eventDocumentId: input.eventDocumentId,
+        firstName: input.student.firstName,
+        lastName: input.student.lastName,
+        statusCode: splResult.statusCode,
+        errorReason: splResult.errorReason,
+      });
     }
 
     // Wrap the entire registration flow in a transaction to prevent race conditions.

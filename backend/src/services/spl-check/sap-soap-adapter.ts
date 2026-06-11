@@ -126,8 +126,21 @@ export async function runSapSoapSplCheck({
     );
   }
 
-  if (statusCode === "10") {
+  // SAP GTS status codes: 10 = clear, 20 = manual review, 30 = blacklisted
+  if (statusCode === "30") {
     return { provider: "sap_soap", decision: "blocked", statusCode, rawResponse };
+  }
+
+  if (statusCode === "20") {
+    return {
+      provider: "sap_soap",
+      decision: "manual_review",
+      statusCode,
+      rawResponse,
+      errorReason: reference
+        ? `Business status ${statusCode} (${reference})`
+        : `Business status ${statusCode}`,
+    };
   }
 
   return {

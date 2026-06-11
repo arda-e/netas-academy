@@ -26,15 +26,16 @@ export type CourseApplicationOutcome = {
 
 export function resolveCourseApplicationOutcomeFromSplResult(
   result: Pick<SplCheckResult, "decision" | "statusCode">,
-  now = new Date().toISOString(),
+  _now = new Date().toISOString(),
 ): CourseApplicationOutcome {
+  // SAP GTS status codes: 10 = clear (tertemiz), 20 = manual review, 30 = blacklisted (kara liste)
   if (result.decision === "blocked") {
     return {
-      status: "pending_payment",
+      status: "cancelled",
       manualReview: false,
-      nextAction: "redirect_to_payment",
+      nextAction: "show_support_message",
       integrationDecision: "blocked",
-      paymentStatus: "pending",
+      paymentStatus: "not_started",
       completedAt: null,
     };
   }
@@ -51,12 +52,12 @@ export function resolveCourseApplicationOutcomeFromSplResult(
   }
 
   return {
-    status: "completed_without_payment",
+    status: "pending_payment",
     manualReview: false,
-    nextAction: "show_finish_page",
+    nextAction: "redirect_to_payment",
     integrationDecision: "clear",
-    paymentStatus: "not_started",
-    completedAt: now,
+    paymentStatus: "pending",
+    completedAt: null,
   };
 }
 

@@ -16,7 +16,7 @@ export type SplCheckRequest = {
   lastName?: string | null;
   email: string;
   phone?: string | null;
-  tckn: string;
-  courseDocumentId: string;
+  tckn?: string | null;
+  courseDocumentId?: string | null;
 };
 
