@@ -4,10 +4,18 @@ import { fetchStrapi } from "./strapi-client";
 
 const TEACHERS_TAG = "strapi-teachers";
 
-export async function getTeachers() {
+export async function getTeachers(search?: string) {
   try {
+    let path =
+      "/api/teachers?pagination[pageSize]=100&sort[0]=fullName:asc&fields[0]=fullName&fields[1]=slug&fields[2]=headline&fields[3]=expertiseAreas&fields[4]=targetTeams&fields[5]=teachingApproach&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex&populate[seo][fields][4]=ogImageAlt&populate[seo][fields][5]=ogTitle&populate[seo][fields][6]=ogDescription&populate[seo][populate][ogImage][fields][0]=url&populate[seo][populate][ogImage][fields][1]=alternativeText&populate[seo][populate][ogImage][fields][2]=width&populate[seo][populate][ogImage][fields][3]=height&populate[seo][populate][ogImage][fields][4]=mime&populate[seo][populate][ogImage][fields][5]=formats&populate[profilePhoto][fields][0]=url&populate[profilePhoto][fields][1]=alternativeText&populate[profilePhoto][fields][2]=width&populate[profilePhoto][fields][3]=height&populate[profilePhoto][fields][4]=mime&populate[profilePhoto][fields][5]=formats";
+
+    if (search && search.trim()) {
+      const term = encodeURIComponent(search.trim());
+      path += `&filters[$or][0][fullName][$containsi]=${term}&filters[$or][1][headline][$containsi]=${term}`;
+    }
+
     const response = await fetchStrapi<StrapiListResponse<StrapiTeacher>>(
-      "/api/teachers?pagination[pageSize]=100&sort[0]=fullName:asc&fields[0]=fullName&fields[1]=slug&fields[2]=headline&fields[3]=expertiseAreas&fields[4]=targetTeams&fields[5]=teachingApproach&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex&populate[seo][fields][4]=ogImageAlt&populate[seo][fields][5]=ogTitle&populate[seo][fields][6]=ogDescription&populate[seo][populate][ogImage][fields][0]=url&populate[seo][populate][ogImage][fields][1]=alternativeText&populate[seo][populate][ogImage][fields][2]=width&populate[seo][populate][ogImage][fields][3]=height&populate[seo][populate][ogImage][fields][4]=mime&populate[seo][populate][ogImage][fields][5]=formats&populate[profilePhoto][fields][0]=url&populate[profilePhoto][fields][1]=alternativeText&populate[profilePhoto][fields][2]=width&populate[profilePhoto][fields][3]=height&populate[profilePhoto][fields][4]=mime&populate[profilePhoto][fields][5]=formats",
+      path,
       { next: { tags: [TEACHERS_TAG] } }
     );
 

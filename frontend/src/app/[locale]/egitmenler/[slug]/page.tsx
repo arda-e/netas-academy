@@ -164,7 +164,7 @@ export default async function TeacherDetailPage({
 
           {teacher.courses?.length && (
             <DetailSection title="Eğitimleri">
-              <ul className="grid gap-2 sm:grid-cols-2 sm:gap-3">
+              <ul className="grid list-disc list-inside gap-2 sm:grid-cols-2 sm:gap-3">
                 {teacher.courses.map((course) => (
                   <li key={course.documentId}>
                     <Link

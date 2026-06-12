@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { ContentPageShell, ContentGrid, TeacherListLoading } from "@/components/content";
+import { ContentPageShell, ContentGrid, TeacherListLoading, SearchField } from "@/components/content";
 import { TeacherCard } from "@/components/teacher-card";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
@@ -17,6 +17,7 @@ type EgitmenlerPageProps = {
   params: Promise<{
     locale: string;
   }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export async function generateMetadata({
@@ -39,8 +40,8 @@ export async function generateMetadata({
   });
 }
 
-async function TeacherResults({ emptyMessage }: { emptyMessage: string }) {
-  const teachers = await getTeachers();
+async function TeacherResults({ search, emptyMessage }: { search: string; emptyMessage: string }) {
+  const teachers = await getTeachers(search);
 
   return (
     <ContentGrid
@@ -66,7 +67,9 @@ async function TeacherResults({ emptyMessage }: { emptyMessage: string }) {
   );
 }
 
-export default async function EgitmenlerPage() {
+export default async function EgitmenlerPage({ searchParams }: EgitmenlerPageProps) {
+  const params = await searchParams;
+  const search = Array.isArray(params.search) ? params.search[0] ?? "" : params.search ?? "";
   const t = await getTranslations('teachers');
 
   return (
@@ -81,9 +84,16 @@ export default async function EgitmenlerPage() {
         </p>
       }
     >
-      <Suspense fallback={<TeacherListLoading testId="loading.egitmenler" />}>
-        <TeacherResults emptyMessage={t('list.empty')} />
-      </Suspense>
+      <div className="space-y-4 sm:space-y-8">
+        <SearchField
+          initialValue={search}
+          searchOnly
+          expandedWidthClassName="lg:w-[560px]"
+        />
+        <Suspense fallback={<TeacherListLoading testId="loading.egitmenler" />}>
+          <TeacherResults search={search} emptyMessage={t('list.empty')} />
+        </Suspense>
+      </div>
     </ContentPageShell>
   );
 }
