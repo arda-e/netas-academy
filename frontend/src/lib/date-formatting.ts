@@ -1,4 +1,5 @@
 const TR_LOCALE = "tr-TR";
+const TZ = "Europe/Istanbul";
 
 /**
  * Formats a date string for event display: "01 Ocak 2025 14:30"
@@ -11,6 +12,7 @@ export function formatEventDateTime(value: string | null | undefined): string {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: TZ,
   }).format(new Date(value));
 }
 
@@ -25,5 +27,6 @@ export function formatLongDate(value: string | null | undefined): string {
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: TZ,
   }).format(new Date(value));
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { z } from "zod";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -118,20 +119,21 @@ export function useEventRegistrationForm({
     }));
   };
 
+  const formSchema = z.object({
+    firstName: z.string().min(5, t('validation.first_name_min_5')),
+    lastName: z.string().min(5, t('validation.last_name_min_5')),
+    phone: z.string().min(1, t('validation.phone_required')).regex(/^[\d\s()+\-]+$/, t('validation.phone_invalid')),
+  });
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    if (!values.firstName.trim()) {
-      setErrorMessage(t('validation.first_name_required'));
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!values.lastName.trim()) {
-      setErrorMessage(t('validation.last_name_required'));
+    const nameResult = formSchema.safeParse(values);
+    if (!nameResult.success) {
+      setErrorMessage(nameResult.error.issues[0].message);
       setIsSubmitting(false);
       return;
     }
