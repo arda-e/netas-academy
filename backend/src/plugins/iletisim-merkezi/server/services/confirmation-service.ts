@@ -1,11 +1,11 @@
 import type { Core } from '@strapi/strapi';
-import { applyTemplateParams } from './utils/template';
+import { renderTemplate } from '../../../../services/email-templates/renderer';
 import type { EmailSender } from '../../../../services/email';
 
 const TEMPLATE_UID = 'plugin::iletisim-merkezi.confirmation-template';
 
 const ACADEMY_NAME = 'Netas Academy';
-const TIMEZONE = 'Europe/Istanbul';
+const TIMEZONE = 'TSİ (UTC+3)';
 const SUPPORT_EMAIL = 'destek@netasacademy.com';
 const LOGO_PNG_URL = ''; // TODO: set production URL
 
@@ -47,15 +47,13 @@ const confirmationService = ({ strapi, emailSender }: { strapi: Core.Strapi; ema
         return;
       }
 
-      // Load template
-      const template = await strapi.db.query(TEMPLATE_UID).findOne({ select: ['htmlBody', 'enabled'] });
+      // Check global enable/disable switch
+      const template = await strapi.db.query(TEMPLATE_UID).findOne({ select: ['enabled'] });
 
       if (!template?.enabled) {
         strapi.log.warn('[iletisim-merkezi] auto-confirmation: confirmation template is disabled');
         return;
       }
-
-      const htmlBody = template.htmlBody || '';
 
       // Compute template params
       const programTitle = event.title ?? '';
@@ -96,7 +94,7 @@ const confirmationService = ({ strapi, emailSender }: { strapi: Core.Strapi; ema
         timezone: TIMEZONE,
       };
 
-      const html = applyTemplateParams(htmlBody, params);
+      const html = await renderTemplate('01_registration_confirmation.html', params);
 
       // Send email
       await emailSender.send({
