@@ -30,16 +30,6 @@ test("StrapiBlogPost type includes publishedDate", () => {
   );
 });
 
-test("StrapiBlogPost type includes sourceNotes", () => {
-  const source = readSource("lib/strapi-types.ts");
-
-  assert.match(
-    source,
-    /sourceNotes\?:\s*string\s*\|\s*null/,
-    "StrapiBlogPost should include sourceNotes field"
-  );
-});
-
 test("StrapiBlogPost type includes coverImage", () => {
   const source = readSource("lib/strapi-types.ts");
 
@@ -83,13 +73,13 @@ test("getBlogPosts populates coverImage", () => {
   );
 });
 
-test("getBlogPostBySlug includes fields for publishedDate and sourceNotes", () => {
+test("getBlogPostBySlug includes fields for publishedDate", () => {
   const source = readSource("lib/strapi-blog.ts");
 
   assert.match(
     source,
-    /fields\[4\]=publishedDate&fields\[5\]=sourceNotes/,
-    "getBlogPostBySlug should request publishedDate and sourceNotes fields"
+    /fields\[4\]=publishedDate/,
+    "getBlogPostBySlug should request publishedDate field"
   );
 });
 

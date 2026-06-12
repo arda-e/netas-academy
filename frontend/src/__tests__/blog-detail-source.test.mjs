@@ -40,26 +40,6 @@ test("blog detail page shows author shortBio", () => {
   );
 });
 
-test("BlogDetail component has Dayanak / Kaynak label for sourceNotes", () => {
-  const source = readSource("components/content/blog.tsx");
-
-  assert.match(
-    source,
-    /Dayanak\s*\/\s*Kaynak/,
-    "BlogDetail component should show 'Dayanak / Kaynak' label for sourceNotes"
-  );
-});
-
-test("blog detail page passes sourceNotes to BlogDetail", () => {
-  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
-
-  assert.match(
-    source,
-    /sourceNotes=\{post\.sourceNotes/,
-    "blog detail page should pass sourceNotes to BlogDetail"
-  );
-});
-
 test("blog detail page has İlgili Yazılar section", () => {
   const source = readSource("components/content/blog-related-posts.tsx");
 

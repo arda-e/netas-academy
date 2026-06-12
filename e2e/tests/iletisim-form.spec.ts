@@ -5,9 +5,9 @@ import { test, expect } from "@playwright/test";
  *
  * Her test senaryosu:
  *   1. /tr/iletisim sayfasına git
- *   2. İlgili sekmeye tıkla
+ *   2. Intent dropdown'dan ilgili türü seç
  *   3. Ortak alanları doldur (fullName, email, phone, company, message)
- *   4. Sekmeye özel alanları doldur
+ *   4. İntente özel alanları doldur
  *   5. KVKK onayını işaretle
  *   6. Gönder butonuna tıkla
  *   7. Başarı mesajının görüntülendiğini doğrula
@@ -16,16 +16,16 @@ import { test, expect } from "@playwright/test";
 const BASE_URL = "http://localhost:3000";
 
 /**
- * Switch to a tab and wait for React's tab-change useEffect to complete.
+ * Switch the intent selector and wait for React's intent-change useEffect to complete.
  *
  * The form's useEffect runs reset() *after* the browser paint (React's
- * scheduling), so just waiting for a tab-specific element to appear is not
+ * scheduling), so just waiting for the select value to change is not
  * enough — the effect hasn't fired yet. We wait for the fullName field to
  * clear, which is a reliable signal the reset() call has executed.
  */
-async function switchTab(page: import("@playwright/test").Page, tabTestId: string) {
-  await page.getByTestId(tabTestId).click();
-  // Wait for the tab-change reset() effect to clear the form fields
+async function switchIntent(page: import("@playwright/test").Page, intent: string) {
+  await page.selectOption('[data-testid="contact-lead.intent-select"]', intent);
+  // Wait for the intent-change reset() effect to clear the form fields
   await expect(page.getByTestId("contact-lead.field.full-name")).toHaveValue("", { timeout: 3000 });
   // Small buffer so any downstream watch/persist effects also settle
   await page.waitForTimeout(100);
@@ -59,9 +59,7 @@ test.describe("İletişim Formu — 4 intent", () => {
     await page.goto(`${BASE_URL}/tr/iletisim`);
     await expect(page.getByTestId("contact-lead.form")).toBeVisible();
 
-    // Sekme zaten aktif (default) — korporatif tab için reset gerekmez
-    await page.getByTestId("contact-lead.tab.corporate_training_request").click();
-    await page.waitForTimeout(100); // let any effects settle
+    // corporate_training_request is the default intent — no switch needed
 
     await fillCommonFields(page, {
       fullName: "Ahmet Yılmaz",
@@ -83,7 +81,7 @@ test.describe("İletişim Formu — 4 intent", () => {
     await page.goto(`${BASE_URL}/tr/iletisim`);
     await expect(page.getByTestId("contact-lead.form")).toBeVisible();
 
-    await switchTab(page, "contact-lead.tab.instructor_application");
+    await switchIntent(page, "instructor_application");
 
     await fillCommonFields(page, {
       fullName: "Zeynep Kaya",
@@ -106,7 +104,7 @@ test.describe("İletişim Formu — 4 intent", () => {
     await page.goto(`${BASE_URL}/tr/iletisim`);
     await expect(page.getByTestId("contact-lead.form")).toBeVisible();
 
-    await switchTab(page, "contact-lead.tab.solution_partner_application");
+    await switchIntent(page, "solution_partner_application");
 
     await fillCommonFields(page, {
       fullName: "Meriç Arda Eren",
@@ -116,7 +114,6 @@ test.describe("İletişim Formu — 4 intent", () => {
       message: "Çözüm ortaklığı programınıza dahil olmak istiyoruz. Yazılım geliştirme alanında hizmet veriyoruz.",
     });
 
-    await page.getByTestId("contact-lead.field.company-size").fill("50-100 çalışan");
     await page.getByTestId("contact-lead.field.partnership-details").fill(
       "Yazılım geliştirme ve bulut altyapı hizmetleri sunuyoruz. Eğitim platformunuzla entegrasyon konusunda işbirliği yapmak istiyoruz."
     );
@@ -131,7 +128,7 @@ test.describe("İletişim Formu — 4 intent", () => {
     await page.goto(`${BASE_URL}/tr/iletisim`);
     await expect(page.getByTestId("contact-lead.form")).toBeVisible();
 
-    await switchTab(page, "contact-lead.tab.general_contact");
+    await switchIntent(page, "general_contact");
 
     await fillCommonFields(page, {
       fullName: "Fatma Şahin",
@@ -157,7 +154,7 @@ test.describe("İletişim Formu — 4 intent", () => {
  *
  *   5. Gönderilmemiş taslak, sayfa yenilemeden sonra korunmalı
  *   6. Başarılı gönderim sessionStorage'ı temizler; yenileme boş form göstermeli
- *   7. Sekme değişimi önceki sekmenin taslağını siler; yenileme boş form göstermeli
+ *   7. Intent değişimi önceki intentin taslağını siler; yenileme boş form göstermeli
  */
 test.describe("İletişim Formu — Sayfa Yenileme Davranışı", () => {
 
@@ -187,8 +184,8 @@ test.describe("İletişim Formu — Sayfa Yenileme Davranışı", () => {
     await page.goto(`${BASE_URL}/tr/iletisim`);
     await expect(page.getByTestId("contact-lead.form")).toBeVisible();
 
-    // Use general_contact — no tab-specific required fields, so submission always succeeds
-    await switchTab(page, "contact-lead.tab.general_contact");
+    // Use general_contact — no intent-specific required fields, so submission always succeeds
+    await switchIntent(page, "general_contact");
 
     await fillCommonFields(page, {
       fullName: "Gönderim Sonrası Kullanıcı",
@@ -210,26 +207,26 @@ test.describe("İletişim Formu — Sayfa Yenileme Davranışı", () => {
     console.log("[E2E] ✅ Başarılı gönderim sonrası sayfa yenilemesinde form boş görüntülendi");
   });
 
-  test("7. Sekme değişimi önceki sekmenin taslağını siler; yenilemede form boş olmalı", async ({ page }) => {
+  test("7. Intent değişimi önceki intentin taslağını siler; yenilemede form boş olmalı", async ({ page }) => {
     await page.goto(`${BASE_URL}/tr/iletisim`);
     await expect(page.getByTestId("contact-lead.form")).toBeVisible();
 
-    // Fill the default (corporate_training_request) tab
+    // Fill the default (corporate_training_request) intent
     await page.getByTestId("contact-lead.field.full-name").fill("Sekme Değiştirme Testi");
     await page.getByTestId("contact-lead.field.email").fill("sekme@ornek.com");
     await waitForStorageWrite(page);
 
-    // Switching tabs triggers the React useEffect that clears the previous tab's storage
-    await switchTab(page, "contact-lead.tab.general_contact");
+    // Switching intent triggers the React useEffect that clears the previous intent's storage
+    await switchIntent(page, "general_contact");
 
     // Reload: no ?intent= in URL, so initialLeadType is corporate_training_request again.
-    // That storage key was cleared by the tab-switch effect, so the form should be empty.
+    // That storage key was cleared by the intent-switch effect, so the form should be empty.
     await page.reload();
     await expect(page.getByTestId("contact-lead.form")).toBeVisible();
 
     await expect(page.getByTestId("contact-lead.field.full-name")).toHaveValue("");
     await expect(page.getByTestId("contact-lead.field.email")).toHaveValue("");
-    console.log("[E2E] ✅ Sekme değişimi sonrası sayfa yenilemesinde form boş görüntülendi");
+    console.log("[E2E] ✅ Intent değişimi sonrası sayfa yenilemesinde form boş görüntülendi");
   });
 
 });

@@ -33,13 +33,18 @@ test("instructor schema requires expertiseAreas", () => {
   );
 });
 
-test("solution partner schema requires companySize", () => {
+test("solution partner schema is baseSchema only (companySize removed)", () => {
   const source = readSource("lib/lead-intents.ts");
 
   assert.match(
     source,
-    /solution_partner_application:\s*baseSchema\.extend\(\{[\s\S]*companySize:\s*z\.string\(\)\.min\(1/,
-    "solution_partner_application should extend baseSchema with companySize"
+    /solution_partner_application:\s*baseSchema\b(?!\.extend)/,
+    "solution_partner_application should be baseSchema without .extend() after companySize removal"
+  );
+  assert.doesNotMatch(
+    source,
+    /solution_partner_application:[\s\S]*companySize/,
+    "solution_partner_application should not have companySize"
   );
 });
 
@@ -59,8 +64,8 @@ test("baseSchema requires fullName, email, phone, message", () => {
 
   assert.match(
     source,
-    /fullName:\s*z\.string\(\)\.min\(1/,
-    "baseSchema should require fullName"
+    /fullName:\s*z\.string\(\)\.min\(5/,
+    "baseSchema should require fullName with min 5 chars"
   );
   assert.match(
     source,
@@ -139,7 +144,7 @@ test("intent select value is controlled by leadType state", () => {
 });
 
 test("intent select onChange calls router.replace with new intent", () => {
-  const source = readSource("components/contact/intent-lead-form.tsx");
+  const source = readSource("components/contact/use-intent-lead-form.ts");
 
   assert.match(
     source,
@@ -153,23 +158,24 @@ test("intent select onChange calls router.replace with new intent", () => {
   );
 });
 
-test("preselection path unchanged — resolveLeadTypeFromQuery and initialLeadType still present", () => {
-  const source = readSource("components/contact/intent-lead-form.tsx");
+test("preselection path unchanged — initialLeadType prop and useState still present", () => {
+  const formSource = readSource("components/contact/intent-lead-form.tsx");
+  const hookSource = readSource("components/contact/use-intent-lead-form.ts");
 
   assert.match(
-    source,
+    formSource,
     /initialLeadType/,
-    "initialLeadType prop should still be present"
+    "initialLeadType prop should still be present in the component"
   );
   assert.match(
-    source,
+    hookSource,
     /useState<LeadType>\(initialLeadType\)/,
-    "useState should still be initialised from initialLeadType"
+    "useState should still be initialised from initialLeadType in the hook"
   );
 });
 
 test("emitLeadTabChange still present in onChange handler", () => {
-  const source = readSource("components/contact/intent-lead-form.tsx");
+  const source = readSource("components/contact/use-intent-lead-form.ts");
 
   assert.match(
     source,
@@ -179,7 +185,7 @@ test("emitLeadTabChange still present in onChange handler", () => {
 });
 
 test("submitted payload includes leadType and excludes frontend-only attribution", () => {
-  const source = readSource("components/contact/intent-lead-form.tsx");
+  const source = readSource("components/contact/use-intent-lead-form.ts");
 
   // Payload must include leadType
   assert.match(
@@ -202,7 +208,7 @@ test("submitted payload includes leadType and excludes frontend-only attribution
 });
 
 test("contact form persistence subscribes to field changes after restore", () => {
-  const source = readSource("components/contact/intent-lead-form.tsx");
+  const source = readSource("components/contact/use-intent-lead-form.ts");
 
   assert.match(
     source,
@@ -222,27 +228,28 @@ test("contact form persistence subscribes to field changes after restore", () =>
 });
 
 test("KVKK disclosure link preserves current form state and return intent", () => {
-  const source = readSource("components/contact/intent-lead-form.tsx");
+  const hookSource = readSource("components/contact/use-intent-lead-form.ts");
+  const formSource = readSource("components/contact/intent-lead-form.tsx");
 
   assert.match(
-    source,
+    hookSource,
     /const persistCurrentValues\s*=\s*useCallback\(\(\)\s*=>\s*\{[\s\S]*persistValues\(getValues\(\)\)/,
     "KVKK link should synchronously persist current form values before navigation"
   );
   assert.match(
-    source,
+    formSource,
     /href=\{`\/kvkk\?returnTo=\$\{encodeURIComponent\(kvkkReturnTo\)\}`\}/,
     "KVKK link should include a returnTo URL"
   );
   assert.match(
-    source,
+    formSource,
     /onClick=\{persistCurrentValues\}/,
     "KVKK link should save current values on click"
   );
 });
 
 test("contact form only clears storage on real lead type changes", () => {
-  const source = readSource("components/contact/intent-lead-form.tsx");
+  const source = readSource("components/contact/use-intent-lead-form.ts");
 
   assert.match(
     source,

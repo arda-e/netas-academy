@@ -18,66 +18,62 @@ function readSource(relativePath) {
   return readFileSync(fullPath, "utf-8");
 }
 
-// --- app/page.tsx ---
+// --- app/[locale]/page.tsx ---
 
-const homePage = readSource("app/page.tsx");
+const homePage = readSource("app/[locale]/page.tsx");
 assert.ok(
   homePage.includes(`data-testid="page.home"`),
-  "app/page.tsx should contain data-testid=\"page.home\""
+  'app/[locale]/page.tsx should contain data-testid="page.home"'
 );
 
-// --- app/hakkimizda/page.tsx ---
+// --- app/[locale]/hakkimizda/page.tsx (redirect to home) ---
 
-const hakkimizdaPage = readSource("app/hakkimizda/page.tsx");
+const hakkimizdaPage = readSource("app/[locale]/hakkimizda/page.tsx");
 assert.ok(
-  hakkimizdaPage.includes(`testId="page.hakkimizda"`),
-  "app/hakkimizda/page.tsx should contain testId=\"page.hakkimizda\""
-);
-assert.ok(
-  hakkimizdaPage.includes("data-measurement-id"),
-  "app/hakkimizda/page.tsx should contain at least one data-measurement-id (preserved)"
+  hakkimizdaPage.includes('redirect("/")'),
+  'app/[locale]/hakkimizda/page.tsx should redirect to home page ("/")'
 );
 
-// --- app/egitimler/page.tsx ---
+// --- app/[locale]/egitimler/page.tsx ---
 
-const egitimlerPage = readSource("app/egitimler/page.tsx");
+const egitimlerPage = readSource("app/[locale]/egitimler/page.tsx");
 assert.ok(
   egitimlerPage.includes(`testId="page.egitimler"`),
-  "app/egitimler/page.tsx should contain testId=\"page.egitimler\""
+  'app/[locale]/egitimler/page.tsx should contain testId="page.egitimler"'
 );
 
-// --- app/etkinlikler/page.tsx ---
+// --- app/[locale]/etkinlikler/page.tsx ---
 
-const etkinliklerPage = readSource("app/etkinlikler/page.tsx");
+const etkinliklerPage = readSource("app/[locale]/etkinlikler/page.tsx");
 assert.ok(
   etkinliklerPage.includes(`testId="page.etkinlikler"`),
-  "app/etkinlikler/page.tsx should contain testId=\"page.etkinlikler\""
+  'app/[locale]/etkinlikler/page.tsx should contain testId="page.etkinlikler"'
 );
 
 // --- Detail pages with root data-testid ---
 
-const eventDetail = readSource("app/etkinlikler/[slug]/page.tsx");
+const eventDetail = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
 assert.ok(
   eventDetail.includes(`data-testid="page.event-detail"`),
-  "app/etkinlikler/[slug]/page.tsx should contain data-testid=\"page.event-detail\""
+  'app/[locale]/etkinlikler/[slug]/page.tsx should contain data-testid="page.event-detail"'
 );
 
-const courseDetail = readSource("app/egitimler/[slug]/page.tsx");
+const courseDetail = readSource("app/[locale]/egitimler/[slug]/page.tsx");
 assert.ok(
   courseDetail.includes(`testId="page.course-detail"`),
-  "app/egitimler/[slug]/page.tsx should contain testId=\"page.course-detail\""
+  'app/[locale]/egitimler/[slug]/page.tsx should contain testId="page.course-detail"'
 );
 
-const teacherDetail = readSource("app/egitmenler/[slug]/page.tsx");
+const teacherDetail = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
 assert.ok(
   teacherDetail.includes(`testId="page.teacher-detail"`),
-  "app/egitmenler/[slug]/page.tsx should contain testId=\"page.teacher-detail\""
+  'app/[locale]/egitmenler/[slug]/page.tsx should contain testId="page.teacher-detail"'
 );
 
-const blogDetail = readSource("app/blog-yazilari/[slug]/page.tsx");
+const blogDetail = readSource("app/[locale]/blog-yazilari/[slug]/page.tsx");
 assert.ok(
-  blogDetail.includes(`data-testid="page.blog-detail"`),
-  "app/blog-yazilari/[slug]/page.tsx should contain data-testid=\"page.blog-detail\""
+  blogDetail.includes(`testId="page.blog-detail"`),
+  'app/[locale]/blog-yazilari/[slug]/page.tsx should contain testId="page.blog-detail"'
 );
 
 // At least 3 detail pages have root data-testid attributes (we check 4 above)
