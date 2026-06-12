@@ -95,17 +95,6 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
             </strong>{" "}
             {t("hero.description_rest")}
           </p>
-          <div className="flex flex-wrap gap-1.5 text-[11px] font-medium text-white/88 sm:gap-2 sm:text-sm">
-            <span className="rounded-full border border-white/18 bg-white/10 px-3 py-1">
-              {t("hero.chip_corporate")}
-            </span>
-            <span className="rounded-full border border-white/18 bg-white/10 px-3 py-1">
-              {t("hero.chip_live")}
-            </span>
-            <span className="rounded-full border border-white/18 bg-white/10 px-3 py-1">
-              {t("hero.chip_applied")}
-            </span>
-          </div>
         </>
       }
       descriptionTrailing={
