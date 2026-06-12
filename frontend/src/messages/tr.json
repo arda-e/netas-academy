@@ -299,7 +299,11 @@
     },
     "validation": {
       "first_name_required": "Ad alani zorunludur.",
+      "first_name_min_5": "Ad alani en az 5 karakter olmalidir.",
       "last_name_required": "Soyad alani zorunludur.",
+      "last_name_min_5": "Soyad alani en az 5 karakter olmalidir.",
+      "phone_required": "Telefon numarasi zorunludur.",
+      "phone_invalid": "Telefon numarasi yalnizca rakam, bosluk ve +, -, ( ) karakterlerini icerebilir.",
       "kvkk_required": "Lutfen KVKK aydinlatma metnini okudugunuzu onaylayin."
     },
     "submit": {
@@ -366,6 +370,7 @@
       "general": "Genel İletişim"
     },
     "success": {
+      "title": "Mesajınız Alındı",
       "corporate": "Kurumsal eğitim talebiniz alınmıştır. Eğitim kataloğumuza göz atabilir veya ekibinizle iletişime geçeceğiz.",
       "corporate_cta": "Eğitim Kataloğunu İncele",
       "instructor": "Eğitmen başvurunuz alınmıştır. Uzmanlık alanınıza uygun fırsatlar için sizinle iletişime geçeceğiz.",
@@ -386,7 +391,7 @@
         "label": "Telefon*"
       },
       "company": {
-        "label": "Şirket"
+        "label": "Şirket Adı"
       },
       "message": {
         "label": "Mesajınız*"
@@ -420,8 +425,10 @@
     "new_submission": "Yeni Başvuru Yap",
     "validation": {
       "full_name_required": "Ad Soyad zorunludur",
+      "full_name_min_5": "Ad Soyad en az 5 karakter olmalıdır",
       "email_invalid": "Geçerli bir e-posta adresi girin",
       "phone_required": "Telefon numarası zorunludur",
+      "phone_invalid": "Telefon numarası yalnızca rakam, boşluk ve +, -, ( ) karakterlerini içerebilir",
       "message_required": "Mesaj alanı zorunludur",
       "kvkk_required": "KVKK metnini onaylamanız gerekmektedir",
       "interest_topic_required": "İlgi duyulan eğitim/konu zorunludur",

@@ -299,7 +299,11 @@
     },
     "validation": {
       "first_name_required": "First name is required.",
+      "first_name_min_5": "First name must be at least 5 characters.",
       "last_name_required": "Last name is required.",
+      "last_name_min_5": "Last name must be at least 5 characters.",
+      "phone_required": "Phone number is required.",
+      "phone_invalid": "Phone number may only contain digits, spaces, and +, -, ( ) characters.",
       "kvkk_required": "Please confirm that you have read the KVKK disclosure statement."
     },
     "submit": {
@@ -366,6 +370,7 @@
       "general": "General Contact"
     },
     "success": {
+      "title": "Your Message Has Been Received",
       "corporate": "Your corporate training request has been received. You can browse our training catalog, or we will contact your team.",
       "corporate_cta": "Browse Course Catalog",
       "instructor": "Your instructor application has been received. We will contact you about opportunities suited to your area of expertise.",
@@ -386,7 +391,7 @@
         "label": "Phone*"
       },
       "company": {
-        "label": "Company"
+        "label": "Company Name"
       },
       "message": {
         "label": "Your Message*"
@@ -420,8 +425,10 @@
     "new_submission": "New Submission",
     "validation": {
       "full_name_required": "Full name is required",
+      "full_name_min_5": "Full name must be at least 5 characters",
       "email_invalid": "Please enter a valid email address",
       "phone_required": "Phone number is required",
+      "phone_invalid": "Phone number may only contain digits, spaces, and +, -, ( ) characters",
       "message_required": "Message is required",
       "kvkk_required": "You must accept the privacy notice",
       "interest_topic_required": "Course/topic of interest is required",
