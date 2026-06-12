@@ -116,7 +116,6 @@ export type StrapiBlogPost = {
     shortBio?: string | null;
   } | null;
   publishedDate?: string | null;
-  sourceNotes?: string | null;
   coverImage?: StrapiMedia | null;
   seo?: StrapiSeo | null;
 };

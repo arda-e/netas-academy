@@ -155,19 +155,6 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         >
           {blogBody}
         </div>
-        {post.sourceNotes && (
-          <div
-            className="mt-8 border-t border-white/10 pt-6 sm:mt-10 sm:pt-8"
-            data-testid="page.blog-detail.source-notes"
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/46">
-              Dayanak / Kaynak
-            </p>
-            <div className="mt-3 text-sm leading-6 text-foreground/62 sm:text-base sm:leading-7">
-              {post.sourceNotes}
-            </div>
-          </div>
-        )}
           <RelatedPostsSection relatedPosts={relatedPosts} />
         </ContentPageShell>
       </Suspense>

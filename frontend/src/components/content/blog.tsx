@@ -38,7 +38,6 @@ type BlogDetailProps = {
   meta?: ReactNode;
   children: ReactNode;
   afterContent?: ReactNode;
-  sourceNotes?: ReactNode;
 };
 
 export function BlogList({
@@ -94,7 +93,6 @@ export function BlogDetail({
   meta,
   children,
   afterContent,
-  sourceNotes,
 }: BlogDetailProps) {
   const hasCoverImage = Boolean(coverImageUrl);
 
@@ -160,17 +158,6 @@ export function BlogDetail({
               {children}
             </div>
           </div>
-
-          {sourceNotes ? (
-            <div className="mt-8 border-t border-white/10 pt-6 sm:mt-10 sm:pt-8" data-testid="blog-yazilari.detail.source-notes">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/46">
-                Dayanak / Kaynak
-              </p>
-              <div className="mt-3 text-sm leading-6 text-foreground/62 sm:text-base sm:leading-7">
-                {sourceNotes}
-              </div>
-            </div>
-          ) : null}
 
           <div data-testid="blog-yazilari.detail.after-content">{afterContent}</div>
         </article>

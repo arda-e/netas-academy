@@ -44,9 +44,6 @@
     "publishedDate": {
       "type": "datetime",
       "required": true
-    },
-    "sourceNotes": {
-      "type": "text"
     }
   }
 }
