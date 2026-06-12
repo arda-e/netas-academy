@@ -113,6 +113,71 @@ test("buildIntentLeadUrl produces correct query strings", () => {
 
 /* ─── Additional: submitted payload shape assertions ─── */
 
+test("intent selector is a select element with correct testid", () => {
+  const source = readSource("components/contact/intent-lead-form.tsx");
+
+  assert.match(
+    source,
+    /data-testid="contact-lead\.intent-select"/,
+    "should have a select with data-testid contact-lead.intent-select"
+  );
+  assert.doesNotMatch(
+    source,
+    /data-testid="contact-lead\.tabs"/,
+    "button tab row should be removed"
+  );
+});
+
+test("intent select value is controlled by leadType state", () => {
+  const source = readSource("components/contact/intent-lead-form.tsx");
+
+  assert.match(
+    source,
+    /value=\{leadType\}/,
+    "select should be controlled by leadType"
+  );
+});
+
+test("intent select onChange calls router.replace with new intent", () => {
+  const source = readSource("components/contact/intent-lead-form.tsx");
+
+  assert.match(
+    source,
+    /router\.replace\(/,
+    "onChange handler should call router.replace"
+  );
+  assert.match(
+    source,
+    /pathname/,
+    "router.replace should use pathname (not a hardcoded path)"
+  );
+});
+
+test("preselection path unchanged — resolveLeadTypeFromQuery and initialLeadType still present", () => {
+  const source = readSource("components/contact/intent-lead-form.tsx");
+
+  assert.match(
+    source,
+    /initialLeadType/,
+    "initialLeadType prop should still be present"
+  );
+  assert.match(
+    source,
+    /useState<LeadType>\(initialLeadType\)/,
+    "useState should still be initialised from initialLeadType"
+  );
+});
+
+test("emitLeadTabChange still present in onChange handler", () => {
+  const source = readSource("components/contact/intent-lead-form.tsx");
+
+  assert.match(
+    source,
+    /emitLeadTabChange/,
+    "emitLeadTabChange should still be called on intent switch"
+  );
+});
+
 test("submitted payload includes leadType and excludes frontend-only attribution", () => {
   const source = readSource("components/contact/intent-lead-form.tsx");
 

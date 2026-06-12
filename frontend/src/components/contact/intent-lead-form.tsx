@@ -33,7 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { IntentFieldSections } from "./intent-field-sections";
 import { join } from "@/lib/testids";
 
@@ -71,6 +71,8 @@ type FieldErrors = Partial<Record<keyof FormValues, string>>;
 export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFormProps) {
   const t = useTranslations("contact");
   const leadIntents = getLeadIntents(t);
+  const router = useRouter();
+  const pathname = usePathname();
   const [leadType, setLeadType] = useState<LeadType>(initialLeadType);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -310,34 +312,34 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
 
   return (
     <form className="space-y-6 md:space-y-8" onSubmit={handleFormSubmit} data-testid="contact-lead.form">
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-white/8 pb-3" data-testid="contact-lead.tabs">
-        {LEAD_TYPES.map((type) => {
-          const isActive = type === leadType;
-          return (
-            <button
-              key={type}
-              type="button"
-              data-testid={join("contact-lead", "tab", type)}
-              onClick={() => {
-                if (type !== leadType) {
-                  emitLeadTabChange(leadType, type);
-                  setSuccess(false);
-                  setErrorMessage(null);
-                  setFieldErrors({});
-                  setLeadType(type);
-                }
-              }}
-              className={`rounded-sm px-3 py-2 text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-primary/15 text-primary"
-                  : "text-foreground/60 hover:text-foreground/80"
-              }`}
-            >
+      {/* Intent selector */}
+      <div className={fieldWrapperClassName}>
+        <label htmlFor="intentSelect" className={labelClassName}>
+          {t("field.request_type.label")}
+        </label>
+        <select
+          id="intentSelect"
+          value={leadType}
+          data-testid="contact-lead.intent-select"
+          onChange={(e) => {
+            const type = e.target.value as LeadType;
+            if (type !== leadType) {
+              emitLeadTabChange(leadType, type);
+              setSuccess(false);
+              setErrorMessage(null);
+              setFieldErrors({});
+              setLeadType(type);
+              router.replace(`${pathname}?intent=${type}`);
+            }
+          }}
+          className={fieldClassName}
+        >
+          {LEAD_TYPES.map((type) => (
+            <option key={type} value={type}>
               {leadIntents[type].label}
-            </button>
-          );
-        })}
+            </option>
+          ))}
+        </select>
       </div>
 
       {errorMessage && (

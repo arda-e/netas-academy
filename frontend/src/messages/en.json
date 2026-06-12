@@ -373,6 +373,9 @@
       "general": "Your message has been received. We will contact you as soon as possible."
     },
     "field": {
+      "request_type": {
+        "label": "Request Type"
+      },
       "full_name": {
         "label": "Full Name*"
       },

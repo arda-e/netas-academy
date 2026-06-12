@@ -373,7 +373,10 @@
       "general": "Mesajınız alınmıştır. En kısa sürede sizinle iletişime geçeceğiz."
     },
     "field": {
-      "full_name": {
+      "request_type": {
+      "label": "Başvuru Türü"
+    },
+    "full_name": {
         "label": "Ad Soyad*"
       },
       "email": {
