@@ -61,11 +61,6 @@
       "maxLength": 2000,
       "description": "Areas of expertise for instructor applications"
     },
-    "companySize": {
-      "type": "string",
-      "maxLength": 80,
-      "description": "Company size for solution partner applications"
-    },
     "partnershipDetails": {
       "type": "text",
       "maxLength": 4000,

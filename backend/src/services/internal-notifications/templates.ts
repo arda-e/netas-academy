@@ -211,7 +211,6 @@ const buildSolutionPartnerEmail = async (
     `E-posta: ${payload.email}`,
     `Telefon: ${fmt(payload.phone)}`,
     `Sirket: ${fmt(payload.company)}`,
-    `Sirket Buyuklugu: ${fmt(payload.companySize)}`,
     `Ortaklik Detaylari: ${fmt(payload.partnershipDetails)}`,
     "",
     "Mesaj:",
@@ -225,7 +224,6 @@ const buildSolutionPartnerEmail = async (
     htmlRow("E-posta", payload.email),
     htmlRow("Telefon", fmt(payload.phone)),
     htmlRow("Şirket", fmt(payload.company)),
-    htmlRow("Şirket Büyüklüğü", fmt(payload.companySize)),
     htmlRow("Ortaklık Detayları", fmt(payload.partnershipDetails)),
     htmlRow("Mesaj", payload.message),
   ].join("");

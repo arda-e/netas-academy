@@ -15,7 +15,6 @@ const CONTACT_SUBMISSION_FIELD_LIMITS = {
   message: 4000,
   interestTopic: 200,
   expertiseAreas: 2000,
-  companySize: 80,
   partnershipDetails: 4000,
 } as const;
 
@@ -28,7 +27,6 @@ type CreateContactSubmissionInput = {
   message: string;
   interestTopic?: string;
   expertiseAreas?: string;
-  companySize?: string;
   partnershipDetails?: string;
   kvkkConsent: boolean;
 };
@@ -70,7 +68,6 @@ export default factories.createCoreService(
       const message = normalizeMultiline(input.message);
       const interestTopic = normalizeWhitespace(input.interestTopic);
       const expertiseAreas = normalizeMultiline(input.expertiseAreas);
-      const companySize = normalizeWhitespace(input.companySize);
       const partnershipDetails = normalizeMultiline(input.partnershipDetails);
 
       if (!leadType || !fullName || !email || !phone || !message) {
@@ -90,10 +87,6 @@ export default factories.createCoreService(
       if (leadType === 'instructor_application' && !expertiseAreas) {
         throw new ValidationError('expertiseAreas is required for instructor applications');
       }
-      if (leadType === 'solution_partner_application' && !companySize) {
-        throw new ValidationError('companySize is required for solution partner applications');
-      }
-
       validateFieldLengths({
         fullName,
         email,
@@ -102,7 +95,6 @@ export default factories.createCoreService(
         message,
         interestTopic,
         expertiseAreas,
-        companySize,
         partnershipDetails,
       });
 
@@ -124,7 +116,6 @@ export default factories.createCoreService(
           message,
           interestTopic: interestTopic || null,
           expertiseAreas: expertiseAreas || null,
-          companySize: companySize || null,
           partnershipDetails: partnershipDetails || null,
           submittedAt: new Date().toISOString(),
           status: 'new',
@@ -211,7 +202,6 @@ function buildNotificationPayload(
     case 'solution_partner_application':
       return {
         ...base,
-        companySize: submission.companySize as string | undefined,
         partnershipDetails: submission.partnershipDetails as string | undefined,
       };
     case 'general_contact':

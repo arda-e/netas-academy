@@ -5,7 +5,7 @@ import type { LeadType } from "@/lib/lead-intents";
 import type { UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { IntentLeadFormValues } from "./intent-lead-form";
+import type { IntentLeadFormValues } from "./contact-form-utils";
 
 const fieldClassName =
   "h-11 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-12 md:px-5 md:text-base";
@@ -67,22 +67,6 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
     case "solution_partner_application":
       return (
         <>
-          <div className={fieldWrapperClassName}>
-            <label htmlFor="companySize" className={labelClassName}>
-              {t("field.company_size.label")}
-            </label>
-            <Input
-              id="companySize"
-              placeholder={t("field.company_size.placeholder")}
-              className={fieldClassName}
-              {...register("companySize")}
-              onFocus={onFieldFocus}
-              data-testid="contact-lead.field.company-size"
-            />
-            {errors.companySize && (
-              <p className="text-sm text-destructive">{errors.companySize}</p>
-            )}
-          </div>
           <div className={fieldWrapperClassName}>
             <label htmlFor="partnershipDetails" className={labelClassName}>
               {t("field.partnership_details.label")}

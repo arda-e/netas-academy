@@ -17,9 +17,9 @@ type TFunc = (key: string) => string;
 
 export function getIntentSchemas(t: TFunc): Record<LeadType, z.ZodType> {
   const baseSchema = z.object({
-      fullName: z.string().min(1, t("validation.full_name_required")),
+      fullName: z.string().min(5, t("validation.full_name_min_5")),
       email: z.string().email(t("validation.email_invalid")),
-      phone: z.string().min(1, t("validation.phone_required")),
+      phone: z.string().min(1, t("validation.phone_required")).regex(/^[\d\s()+\-]+$/, t("validation.phone_invalid")),
       company: z.string().optional(),
       message: z.string().min(1, t("validation.message_required")),
       kvkkConsent: z.boolean().refine((val) => val === true, {
@@ -34,9 +34,7 @@ export function getIntentSchemas(t: TFunc): Record<LeadType, z.ZodType> {
     instructor_application: baseSchema.extend({
         expertiseAreas: z.string().min(1, t("validation.expertise_areas_required")),
     }),
-    solution_partner_application: baseSchema.extend({
-        companySize: z.string().min(1, t("validation.company_size_required")),
-    }),
+    solution_partner_application: baseSchema,
     general_contact: baseSchema,
   };
 }
@@ -69,7 +67,7 @@ export function getLeadIntents(
         "Ekibiniz için özelleştirilmiş eğitim programları talep edin.",
       successMessage: t("success.corporate"),
       successCtaLabel: t("success.corporate_cta"),
-      successCtaHref: "/katalog",
+      successCtaHref: "/egitimler",
     },
     instructor_application: {
       label: t("tab.instructor"),

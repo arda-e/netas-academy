@@ -41,7 +41,6 @@ export interface SolutionPartnerLeadPayload {
   company?: string | null;
   message: string;
   submittedAt: string;
-  companySize?: string | null;
   partnershipDetails?: string | null;
 }
 
