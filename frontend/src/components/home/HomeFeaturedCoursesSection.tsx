@@ -22,7 +22,12 @@ async function FeaturedCoursesCarousel() {
     level: course.level,
   }));
 
-  return <CourseCarousel items={items} cardTestIdPrefix="home.featured-courses.card" />;
+  return (
+    <CourseCarousel
+      items={items}
+      carousel={{ cardTestIdPrefix: "home.featured-courses.card" }}
+    />
+  );
 }
 
 export function HomeFeaturedCoursesSection({

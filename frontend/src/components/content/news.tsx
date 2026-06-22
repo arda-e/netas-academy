@@ -31,10 +31,14 @@ function NewsCard({ item }: { item: NewsListItem }) {
   return (
     <ContentCardShell
       href={item.href}
-      title={item.title}
-      summary={item.summary}
-      meta={meta}
-      testId={join("haberler", "card", String(item.id))}
+      content={{
+        title: item.title,
+        summary: item.summary,
+        meta,
+      }}
+      shell={{
+        testId: join("haberler", "card", String(item.id)),
+      }}
     />
   );
 }
@@ -45,10 +49,14 @@ export function NewsList({
 }: NewsListProps) {
   return (
     <ContentGrid
-      itemsCount={items.length}
-      emptyMessage={emptyMessage}
+      items={{
+        count: items.length,
+        emptyMessage,
+      }}
+      layout={{
+        columnsClassName: responsiveLayoutClasses.newsListGrid,
+      }}
       testId="haberler.list"
-      columnsClassName={responsiveLayoutClasses.newsListGrid}
     >
       {items.map((item) => (
         <NewsCard key={item.id} item={item} />

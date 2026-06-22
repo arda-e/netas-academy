@@ -133,17 +133,21 @@ export default async function EtkinliklerPage({
 
   return (
     <ContentPageShell
-      title={t("hero.title")}
-      heroImageUrl={eventsHeroImage}
-      heroImageAlt=""
-      description={
-        <p>
-          <strong className="text-white">
-            {t("hero.description_strong")}
-          </strong>{" "}
-          {t("hero.description_rest")}
-        </p>
-      }
+      hero={{
+        title: t("hero.title"),
+        description: (
+          <p>
+            <strong className="text-white">
+              {t("hero.description_strong")}
+            </strong>{" "}
+            {t("hero.description_rest")}
+          </p>
+        ),
+      }}
+      media={{
+        heroImageUrl: eventsHeroImage,
+        heroImageAlt: "",
+      }}
       testId="page.etkinlikler"
     >
       <div className="mt-2 mb-6 flex flex-col gap-3 sm:mt-4 sm:mb-8 sm:gap-4 md:flex-row md:items-center md:justify-between">

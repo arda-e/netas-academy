@@ -8,39 +8,38 @@ import { cn } from "@/lib/utils";
 import { join } from "@/lib/testids";
 
 type ContentDetailShellProps = {
-  breadcrumbItems?: BreadcrumbItem[];
-  leadMedia?: ReactNode;
-  title: string;
-  summary?: string;
-  titleClassName?: string;
-  headerMeta?: ReactNode;
-  headerClassName?: string;
-  meta?: ReactNode;
+  hero: {
+    breadcrumbItems?: BreadcrumbItem[];
+    leadMedia?: ReactNode;
+    title: string;
+    summary?: string;
+    titleClassName?: string;
+    headerMeta?: ReactNode;
+    headerClassName?: string;
+  };
+  content?: {
+    meta?: ReactNode;
+  };
   children?: ReactNode;
-  afterContent?: ReactNode;
-  skeleton?: ReactNode;
+  slots?: {
+    afterContent?: ReactNode;
+    skeleton?: ReactNode;
+  };
   testId?: string;
 };
 
 export function ContentDetailShell({
-  breadcrumbItems,
-  leadMedia,
-  title,
-  summary,
-  titleClassName,
-  headerMeta,
-  headerClassName,
-  meta,
+  hero,
+  content,
   children,
-  afterContent,
-  skeleton,
+  slots,
   testId,
 }: ContentDetailShellProps) {
-  const breadcrumbs = breadcrumbItems ?? [{ label: title }];
+  const breadcrumbs = hero.breadcrumbItems ?? [{ label: hero.title }];
 
-  const hasLeadMedia = Boolean(leadMedia);
+  const hasLeadMedia = Boolean(hero.leadMedia);
   const hasBody = Boolean(children);
-  const hasSkeleton = Boolean(skeleton);
+  const hasSkeleton = Boolean(slots?.skeleton);
 
   const bodyContent = hasBody && (
     <div
@@ -62,17 +61,17 @@ export function ContentDetailShell({
 
         <header
           className={cn(
-            headerClassName,
+            hero.headerClassName,
             hasLeadMedia &&
               "flex flex-col gap-5 sm:gap-8 md:flex-row md:items-start md:gap-10",
           )}
         >
-          {leadMedia && (
+          {hero.leadMedia && (
             <div
               className="shrink-0"
               data-testid={testId && join(testId, "lead-media")}
             >
-              {leadMedia}
+              {hero.leadMedia}
             </div>
           )}
 
@@ -80,48 +79,48 @@ export function ContentDetailShell({
             <h1
               className={cn(
                 "text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-6xl",
-                titleClassName,
+                hero.titleClassName,
               )}
               data-testid={testId && join(testId, "title")}
             >
-              {title}
+              {hero.title}
             </h1>
 
-            {summary && (
+            {hero.summary && (
               <p
                 className="max-w-2xl text-[15px] leading-7 text-foreground/72 sm:text-lg sm:leading-8"
                 data-testid={testId && join(testId, "summary")}
               >
-                {summary}
+                {hero.summary}
               </p>
             )}
 
-            {headerMeta && (
+            {hero.headerMeta && (
               <div
                 className="space-y-4 pt-2 text-sm text-foreground/72 sm:text-base"
                 data-testid={testId && join(testId, "header-meta")}
               >
-                {headerMeta}
+                {hero.headerMeta}
               </div>
             )}
           </div>
         </header>
 
         <section className="panel-surface mt-8 w-full rounded-sm p-5 sm:mt-10 sm:p-8 md:p-10">
-          {meta && (
+          {content?.meta && (
             <div
               className="mb-6 space-y-2 border-b border-white/8 pb-6 text-sm text-foreground/68 sm:mb-8 sm:pb-8 sm:text-base"
               data-testid={testId && join(testId, "meta")}
             >
-              {meta}
+              {content.meta}
             </div>
           )}
 
-          {hasSkeleton ? skeleton : bodyContent}
+          {hasSkeleton ? slots?.skeleton : bodyContent}
 
-          {afterContent && (
+          {slots?.afterContent && (
             <div data-testid={testId && join(testId, "after-content")}>
-              {afterContent}
+              {slots.afterContent}
             </div>
           )}
         </section>

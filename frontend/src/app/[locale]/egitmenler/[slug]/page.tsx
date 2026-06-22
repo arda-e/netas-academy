@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Suspense, type ReactNode } from "react";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -81,7 +82,8 @@ export default async function TeacherDetailPage({
 }: TeacherDetailPageProps) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const teacher = await getTeacherBySlug(slug);
+  const { isEnabled: isDraft } = await draftMode();
+  const teacher = await getTeacherBySlug(slug, isDraft);
   const t = await getTranslations('teachers');
 
   if (!teacher) {
@@ -91,34 +93,36 @@ export default async function TeacherDetailPage({
   return (
     <ContentDetailShell
       testId="page.teacher-detail"
-      breadcrumbItems={[
-        { label: t('hero.title'), href: "/egitmenler" },
-        { label: teacher.fullName },
-      ]}
-      leadMedia={<TeacherProfilePhoto teacher={teacher} />}
-      title={teacher.fullName}
-      summary={teacher.headline ?? undefined}
-      headerClassName="mt-6 sm:mt-8"
-      titleClassName="text-xl sm:text-2xl lg:text-4xl"
-      headerMeta={
-        <div className="space-y-4">
-          {teacher.expertiseAreas?.length && (
-            <div
-              className="flex flex-wrap gap-2"
-              data-testid="page.teacher-detail.section.expertise-areas"
-            >
-              {teacher.expertiseAreas.map((area) => (
-                <span
-                  key={area}
-                  className="inline-flex items-center rounded-full border border-[#009ca6]/30 bg-[#009ca6]/10 px-3 py-1 text-sm font-medium text-[#009ca6]"
-                >
-                  {area}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      }
+      hero={{
+        breadcrumbItems: [
+          { label: t('hero.title'), href: "/egitmenler" },
+          { label: teacher.fullName },
+        ],
+        leadMedia: <TeacherProfilePhoto teacher={teacher} />,
+        title: teacher.fullName,
+        summary: teacher.headline ?? undefined,
+        headerClassName: "mt-6 sm:mt-8",
+        titleClassName: "text-xl sm:text-2xl lg:text-4xl",
+        headerMeta: (
+          <div className="space-y-4">
+            {teacher.expertiseAreas?.length && (
+              <div
+                className="flex flex-wrap gap-2"
+                data-testid="page.teacher-detail.section.expertise-areas"
+              >
+                {teacher.expertiseAreas.map((area) => (
+                  <span
+                    key={area}
+                    className="inline-flex items-center rounded-full border border-[#009ca6]/30 bg-[#009ca6]/10 px-3 py-1 text-sm font-medium text-[#009ca6]"
+                  >
+                    {area}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        ),
+      }}
     >
       <JsonLd
         data={{

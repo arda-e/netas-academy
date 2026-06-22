@@ -4,8 +4,10 @@ export default function EgitmenlerLoading() {
   return (
     <ContentPageShell
       testId="page.egitmenler"
-      title="Eğitmenler"
-      descriptionClassName="max-w-3xl text-balance"
+      hero={{
+        title: "Eğitmenler",
+        descriptionClassName: "max-w-3xl text-balance",
+      }}
     >
       <div data-testid="loading.egitmenler">
         <TeacherListLoading />

@@ -84,36 +84,40 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
   return (
     <ContentPageShell
       testId="page.egitimler"
-      title={t("hero.title")}
-      heroImageUrl={trainingHeroImage}
-      heroImageAlt=""
-      description={
-        <>
-          <p>
-            <strong className="text-white">
-              {t("hero.description_strong")}
-            </strong>{" "}
-            {t("hero.description_rest")}
-          </p>
-        </>
-      }
-      descriptionTrailing={
-        <div
-          aria-disabled="true"
-          data-testid="page.egitimler.catalog-pdf-download"
-          className="pointer-events-none inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-white/58 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm"
-        >
-          <span className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/48">
-            <Download className="size-4" aria-hidden="true" />
-          </span>
-          <span className="flex flex-col items-start leading-tight">
-            <span className="text-sm font-semibold">{t("hero.pdf_label")}</span>
-            <span className="text-[11px] uppercase tracking-[0.22em] text-white/38">
-              {t("hero.pdf_status")}
+      hero={{
+        title: t("hero.title"),
+        description: (
+          <>
+            <p>
+              <strong className="text-white">
+                {t("hero.description_strong")}
+              </strong>{" "}
+              {t("hero.description_rest")}
+            </p>
+          </>
+        ),
+        descriptionTrailing: (
+          <div
+            aria-disabled="true"
+            data-testid="page.egitimler.catalog-pdf-download"
+            className="pointer-events-none inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-white/58 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm"
+          >
+            <span className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/48">
+              <Download className="size-4" aria-hidden="true" />
             </span>
-          </span>
-        </div>
-      }
+            <span className="flex flex-col items-start leading-tight">
+              <span className="text-sm font-semibold">{t("hero.pdf_label")}</span>
+              <span className="text-[11px] uppercase tracking-[0.22em] text-white/38">
+                {t("hero.pdf_status")}
+              </span>
+            </span>
+          </div>
+        ),
+      }}
+      media={{
+        heroImageUrl: trainingHeroImage,
+        heroImageAlt: "",
+      }}
     >
       <div className="space-y-10 sm:space-y-12">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">

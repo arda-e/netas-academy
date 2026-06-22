@@ -69,12 +69,10 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
 
   return (
     <ContentPageShell
-      title={t('hero.title')}
-      description={
-        <p>
-          {t('hero.description')}
-        </p>
-      }
+      hero={{
+        title: t('hero.title'),
+        description: <p>{t('hero.description')}</p>,
+      }}
       testId="page.blog"
     >
       <div className="space-y-4 sm:space-y-8">

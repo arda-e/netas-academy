@@ -12,20 +12,27 @@ const readSource = (relativePath) =>
 
 test("Horizontal scroll primitive exists and owns the scroll buttons", () => {
   const source = readSource("components/carousel/horizontal-scroll-carousel.tsx");
+  assert.match(source, /content/);
+  assert.match(source, /controls/);
+  assert.match(source, /layout/);
   assert.match(source, /itemsCount/);
   assert.match(source, /hasOverflow/);
   assert.match(source, /disabled=\{!canScrollPrev\}/);
   assert.match(source, /disabled=\{!canScrollNext\}/);
 });
 
-test("Course carousel uses the primitive with controls after the scroll area", () => {
+test("Course carousel passes grouped carousel config to the primitive", () => {
   const source = readSource("components/course-carousel.tsx");
   assert.match(source, /HorizontalScrollCarousel/);
-  assert.match(source, /controlsPlacement="after"/);
+  assert.match(source, /content=\{\{/);
+  assert.match(source, /controls=\{\{/);
+  assert.match(source, /layout=\{\{/);
 });
 
-test("Teacher carousel uses the primitive with controls before the scroll area", () => {
+test("Teacher carousel passes grouped carousel config to the primitive", () => {
   const source = readSource("components/teacher-carousel.tsx");
   assert.match(source, /HorizontalScrollCarousel/);
-  assert.match(source, /controlsPlacement="before"/);
+  assert.match(source, /content=\{\{/);
+  assert.match(source, /controls=\{\{/);
+  assert.match(source, /layout=\{\{/);
 });

@@ -143,21 +143,32 @@ export default async function EventRegistrationPage({
           </div>
 
           <EventInformationPanel
-            title={event.title}
-            startsAt={event.startsAt}
-            endsAt={event.endsAt}
-            location={event.location}
-            infoPanelHeading={t("panel.heading")}
-            dateLabel={eventInfoTranslations("detail.date_label")}
-            endDateLabel={eventInfoTranslations("detail.end_date_label")}
-            locationLabel={eventInfoTranslations("detail.location_label")}
-            formatLabel={eventInfoTranslations("detail.format_label")}
-            priceLabel={eventInfoTranslations("detail.price_label")}
-            scheduleLabel={eventInfoTranslations("detail.schedule_label")}
-            registrationState={{
-              label: t("status.label"),
-              value: registrationOpen ? t("status.open") : t("status.closed"),
-              tone: registrationOpen ? "success" : "warning",
+            event={{
+              title: event.title,
+              startsAt: event.startsAt,
+              endsAt: event.endsAt,
+              location: event.location,
+              format: event.format,
+              price: event.price,
+              registrationState: {
+                label: t("status.label"),
+                value: registrationOpen ? t("status.open") : t("status.closed"),
+                tone: registrationOpen ? "success" : "warning",
+              },
+              formatDisplayName: event.format
+                ? eventInfoTranslations(
+                    `detail.format.${event.format}` as Parameters<typeof eventInfoTranslations>[0]
+                  )
+                : null,
+            }}
+            copy={{
+              infoPanelHeading: t("panel.heading"),
+              dateLabel: eventInfoTranslations("detail.date_label"),
+              endDateLabel: eventInfoTranslations("detail.end_date_label"),
+              locationLabel: eventInfoTranslations("detail.location_label"),
+              formatLabel: eventInfoTranslations("detail.format_label"),
+              priceLabel: eventInfoTranslations("detail.price_label"),
+              scheduleLabel: eventInfoTranslations("detail.schedule_label"),
             }}
             bodyContent={
               <div className="space-y-4 text-base leading-7 text-foreground/78">
@@ -174,15 +185,6 @@ export default async function EventRegistrationPage({
                 <Link href={`/etkinlikler/${event.slug}`}>{t("panel.back_to_detail")}</Link>
               </Button>
             }
-            format={event.format}
-            formatDisplayName={
-              event.format
-                ? eventInfoTranslations(
-                    `detail.format.${event.format}` as Parameters<typeof eventInfoTranslations>[0]
-                  )
-                : null
-            }
-            price={event.price}
             testId="page.event-registration.info-panel"
           />
         </div>

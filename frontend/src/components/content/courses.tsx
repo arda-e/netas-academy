@@ -36,9 +36,13 @@ export function CourseList({
 }: CourseListProps) {
   return (
     <ContentGrid
-      itemsCount={items.length}
-      emptyMessage={emptyMessage}
-      columnsClassName={responsiveLayoutClasses.courseListGrid}
+      items={{
+        count: items.length,
+        emptyMessage,
+      }}
+      layout={{
+        columnsClassName: responsiveLayoutClasses.courseListGrid,
+      }}
       testId="egitimler.catalog"
     >
       {items.map((course) => {
@@ -76,27 +80,18 @@ export function CourseList({
         return (
           <ContentCardShell
             key={course.id}
-            testId={join("egitimler", "card", course.slug)}
             href={`/egitimler/${course.slug}`}
-            title={course.title}
-            kicker={topicAreaLabel ?? undefined}
-            headerAddon={
-              levelLabel ? (
-                <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
-                  {levelLabel}
-                </span>
-              ) : undefined
-            }
-            summary={
-              <p className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
-                {course.businessValue ??
-                  course.summary ??
-                  noSummaryFallback}
-              </p>
-            }
-            className="bg-white"
-            meta={
-              hasMeta ? (
+            content={{
+              title: course.title,
+              kicker: topicAreaLabel ?? undefined,
+              summary: (
+                <p className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7">
+                  {course.businessValue ??
+                    course.summary ??
+                    noSummaryFallback}
+                </p>
+              ),
+              meta: hasMeta ? (
                 <div className="space-y-2 text-sm leading-6 text-foreground/62 sm:text-base">
                   {course.targetAudience ? (
                     <p>
@@ -111,8 +106,19 @@ export function CourseList({
                     </p>
                   ) : null}
                 </div>
-              ) : undefined
-            }
+              ) : undefined,
+            }}
+            slots={{
+              headerAddon: levelLabel ? (
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                  {levelLabel}
+                </span>
+              ) : undefined,
+            }}
+            shell={{
+              testId: join("egitimler", "card", course.slug),
+              className: "bg-white",
+            }}
           />
         );
       })}

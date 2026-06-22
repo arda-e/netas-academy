@@ -21,6 +21,8 @@ test("Registration page imports the shared event information panel", () => {
 
 test("Registration page provides the shared panel with page-owned body and action", () => {
   const source = readSource("app/[locale]/etkinlikler/[slug]/kayit/page.tsx");
+  assert.match(source, /event=\{\s*\{/);
+  assert.match(source, /copy=\{\s*\{/);
   assert.match(source, /bodyContent=\{/);
   assert.match(source, /event\.summary\s*\?\?\s*t\("panel\.summary_fallback"\)/);
   assert.match(source, /action=\{/);
@@ -29,7 +31,7 @@ test("Registration page provides the shared panel with page-owned body and actio
 
 test("Registration page includes registration state text in the shared panel", () => {
   const source = readSource("app/[locale]/etkinlikler/[slug]/kayit/page.tsx");
-  assert.match(source, /registrationState=\{/);
+  assert.match(source, /registrationState:\s*\{/);
   assert.match(source, /status\.open/);
   assert.match(source, /status\.closed/);
 });

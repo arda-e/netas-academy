@@ -11,7 +11,7 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test("Teacher listing page imports TeacherCard", () => {
-  const source = readSource("app/egitmenler/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/page.tsx");
   assert.match(
     source,
     /TeacherCard/,
@@ -19,17 +19,17 @@ test("Teacher listing page imports TeacherCard", () => {
   );
 });
 
-test("Teacher listing page uses ContentPageShell with title Eğitmenlerimiz", () => {
-  const source = readSource("app/egitmenler/page.tsx");
+test("Teacher listing page uses ContentPageShell with translated title", () => {
+  const source = readSource("app/[locale]/egitmenler/page.tsx");
   assert.match(
     source,
-    /Eğitmenlerimiz/,
-    "Listing page should have title Eğitmenlerimiz"
+    /hero\.title/,
+    "Listing page should read the title from translations"
   );
 });
 
 test("Teacher listing page uses ContentGrid", () => {
-  const source = readSource("app/egitmenler/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/page.tsx");
   assert.match(
     source,
     /ContentGrid/,
@@ -38,20 +38,25 @@ test("Teacher listing page uses ContentGrid", () => {
 });
 
 test("Teacher listing page has empty state message", () => {
-  const source = readSource("app/egitmenler/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/page.tsx");
   assert.match(
     source,
-    /Henüz eğitmen profili eklenmemiş/,
-    "Listing page should show empty state message"
+    /t\('list\.empty'\)/,
+    "Listing page should wire the translated empty state message"
   );
 });
 
 test("Teacher listing page passes expertiseAreas to TeacherCard", () => {
-  const source = readSource("app/egitmenler/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/page.tsx");
   assert.match(
     source,
-    /expertiseAreas/,
-    "Listing page should pass expertiseAreas to TeacherCard"
+    /teacher=\{\{/,
+    "Listing page should pass a grouped teacher prop to TeacherCard"
+  );
+  assert.match(
+    source,
+    /media=\{\{/,
+    "Listing page should pass a grouped media prop to TeacherCard"
   );
 });
 
@@ -77,7 +82,7 @@ test("TeacherCard component links to /egitmenler/[slug]", () => {
   const source = readSource("components/teacher-card.tsx");
   assert.match(
     source,
-    /\/egitmenler\/\$\{slug\}/,
+    /\/egitmenler\/\$\{teacher\.slug\}/,
     "TeacherCard should link to /egitmenler/[slug]"
   );
 });

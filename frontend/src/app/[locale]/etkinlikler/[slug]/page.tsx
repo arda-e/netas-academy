@@ -117,31 +117,32 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             </div>
 
             <EventInformationPanel
-              title={event.title}
-              startsAt={event.startsAt}
-              endsAt={event.endsAt}
-              location={event.location}
-              format={event.format}
-              price={event.price}
-              dailySchedule={event.dailySchedule}
-              infoPanelHeading={
-                event.eventType === "egitim"
-                  ? t("detail.info_panel_heading_egitim")
-                  : event.eventType === "kurs"
-                    ? t("detail.info_panel_heading_kurs")
-                    : t("detail.info_panel_heading")
-              }
-              dateLabel={t("detail.date_label")}
-              endDateLabel={t("detail.end_date_label")}
-              locationLabel={t("detail.location_label")}
-              formatLabel={t("detail.format_label")}
-              priceLabel={t("detail.price_label")}
-              scheduleLabel={t("detail.schedule_label")}
-              formatDisplayName={
-                event.format
+              event={{
+                title: event.title,
+                startsAt: event.startsAt,
+                endsAt: event.endsAt,
+                location: event.location,
+                format: event.format,
+                price: event.price,
+                dailySchedule: event.dailySchedule,
+                formatDisplayName: event.format
                   ? t(`detail.format.${event.format}` as Parameters<typeof t>[0])
-                  : null
-              }
+                  : null,
+              }}
+              copy={{
+                infoPanelHeading:
+                  event.eventType === "egitim"
+                    ? t("detail.info_panel_heading_egitim")
+                    : event.eventType === "kurs"
+                      ? t("detail.info_panel_heading_kurs")
+                      : t("detail.info_panel_heading"),
+                dateLabel: t("detail.date_label"),
+                endDateLabel: t("detail.end_date_label"),
+                locationLabel: t("detail.location_label"),
+                formatLabel: t("detail.format_label"),
+                priceLabel: t("detail.price_label"),
+                scheduleLabel: t("detail.schedule_label"),
+              }}
               testId="page.event-detail.info-panel"
               action={
                 <RegistrationStatusButton

@@ -28,8 +28,8 @@ test("EventList passes kicker from formatEventType before title", () => {
   const source = readSource("components/content/events.tsx");
   assert.match(
     source,
-    /kicker=\{getEventTypeLabel\(tx, event\.eventType\)\}/,
-    "EventList should pass event type as kicker"
+    /content=\{\s*\{[\s\S]*kicker:\s*getEventTypeLabel\(tx, event\.eventType\)/,
+    "EventList should pass event type inside the grouped content prop"
   );
 });
 

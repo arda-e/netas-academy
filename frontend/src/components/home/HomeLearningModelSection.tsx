@@ -1,22 +1,43 @@
 type HomeLearningModelSectionProps = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-  leftHeading?: string;
-  leftBody?: string;
-  rightHeading?: string;
-  rightBody?: string;
+  content?: {
+    eyebrow?: string;
+    heading?: string;
+    body?: string;
+  };
+  sections?: {
+    left?: {
+      heading?: string;
+      body?: string;
+    };
+    right?: {
+      heading?: string;
+      body?: string;
+    };
+  };
 };
 
 export function HomeLearningModelSection({
-  eyebrow = 'Öğrenme Modeli',
-  heading = 'Vaka, senaryo ve gerçek iş problemleriyle öğrenme',
-  body = 'Eğitimlerimiz teorik aktarımın ötesinde; katılımcıların kendi iş bağlamlarına taşıyabileceği somut yöntemler ve uygulamalı çalışma biçimleri üzerine kurulur.',
-  leftHeading = 'Aktif katılım ve uygulama',
-  leftBody = 'Grup çalışmaları, anlık geri bildirim döngüleri ve sahaya taşınan alıştırmalarla öğrenme kalıcı hale gelir.',
-  rightHeading = 'İş Bağlamı',
-  rightBody = 'Eğitimlerimiz teorik aktarımın ötesinde; katılımcıların kendi iş bağlamlarına taşıyabileceği somut yöntemler ve uygulamalı çalışma biçimleri üzerine kurulur.',
+  content = {},
+  sections = {},
 }: HomeLearningModelSectionProps = {}) {
+  const {
+    eyebrow = 'Öğrenme Modeli',
+    heading = 'Vaka, senaryo ve gerçek iş problemleriyle öğrenme',
+    body = 'Eğitimlerimiz teorik aktarımın ötesinde; katılımcıların kendi iş bağlamlarına taşıyabileceği somut yöntemler ve uygulamalı çalışma biçimleri üzerine kurulur.',
+  } = content;
+  const {
+    left = {},
+    right = {},
+  } = sections;
+  const {
+    heading: leftHeading = 'Aktif katılım ve uygulama',
+    body: leftBody = 'Grup çalışmaları, anlık geri bildirim döngüleri ve sahaya taşınan alıştırmalarla öğrenme kalıcı hale gelir.',
+  } = left;
+  const {
+    heading: rightHeading = 'İş Bağlamı',
+    body: rightBody = 'Eğitimlerimiz teorik aktarımın ötesinde; katılımcıların kendi iş bağlamlarına taşıyabileceği somut yöntemler ve uygulamalı çalışma biçimleri üzerine kurulur.',
+  } = right;
+
   return (
     <section className="bg-gray-100">
       <div className="page-container py-10 sm:py-12 lg:py-14">

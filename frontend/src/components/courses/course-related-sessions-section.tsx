@@ -15,22 +15,26 @@ type CourseEventSession = {
 type CourseRelatedSessionsSectionProps = {
   events: CourseEventSession[];
   now: Date;
-  heading: string;
-  upcomingSessionRegisterCta: string;
-  noUpcomingSessions: string;
-  fallbackCtaLabel: string;
-  upcomingSessionClosedLabel: string;
-  pastSessionsLabel: string;
-  formatLabels: {
-    online: string;
-    yuzYuze: string;
-    hibrit: string;
+  copy: {
+    heading: string;
+    upcomingSessionRegisterCta: string;
+    noUpcomingSessions: string;
+    fallbackCtaLabel: string;
+    upcomingSessionClosedLabel: string;
+    pastSessionsLabel: string;
+  };
+  labels: {
+    formats: {
+      online: string;
+      yuzYuze: string;
+      hibrit: string;
+    };
   };
 };
 
 function formatSessionType(
   format: string | null | undefined,
-  formatLabels: CourseRelatedSessionsSectionProps["formatLabels"]
+  formatLabels: CourseRelatedSessionsSectionProps["labels"]["formats"]
 ) {
   if (format === "online") return formatLabels.online;
   if (format === "yuz-yuze") return formatLabels.yuzYuze;
@@ -41,14 +45,17 @@ function formatSessionType(
 export function CourseRelatedSessionsSection({
   events,
   now,
-  heading,
-  upcomingSessionRegisterCta,
-  noUpcomingSessions,
-  fallbackCtaLabel,
-  upcomingSessionClosedLabel,
-  pastSessionsLabel,
-  formatLabels,
+  copy,
+  labels,
 }: CourseRelatedSessionsSectionProps) {
+  const {
+    heading,
+    upcomingSessionRegisterCta,
+    noUpcomingSessions,
+    fallbackCtaLabel,
+    upcomingSessionClosedLabel,
+    pastSessionsLabel,
+  } = copy;
   const upcoming = events.filter((event) => new Date(event.startsAt) > now);
   const past = events.filter((event) => new Date(event.startsAt) <= now);
 
@@ -59,7 +66,7 @@ export function CourseRelatedSessionsSection({
       {upcoming.length > 0 ? (
         <ul className="mt-4 space-y-3">
           {upcoming.map((event) => {
-            const sessionType = formatSessionType(event.format, formatLabels);
+            const sessionType = formatSessionType(event.format, labels.formats);
 
             return (
               <li

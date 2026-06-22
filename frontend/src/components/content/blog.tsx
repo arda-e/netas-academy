@@ -29,15 +29,21 @@ type BlogListProps = {
 };
 
 type BlogDetailProps = {
-  breadcrumbItems?: BreadcrumbItem[];
-  title: string;
-  excerpt?: string | null;
-  coverImageUrl?: ImageSource | null;
-  coverImageAlt?: string | null;
-  coverImageBlurDataURL?: string | null;
-  meta?: ReactNode;
-  children: ReactNode;
-  afterContent?: ReactNode;
+  hero: {
+    breadcrumbItems?: BreadcrumbItem[];
+    title: string;
+    excerpt?: string | null;
+    coverImageUrl?: ImageSource | null;
+    coverImageAlt?: string | null;
+    coverImageBlurDataURL?: string | null;
+    meta?: ReactNode;
+  };
+  content: {
+    children: ReactNode;
+  };
+  slots?: {
+    afterContent?: ReactNode;
+  };
 };
 
 export function BlogList({
@@ -46,12 +52,12 @@ export function BlogList({
   testId,
 }: BlogListProps) {
   const resolvedTestId = testId ?? "blog-yazilari.list";
+
   return (
     <ContentGrid
-      itemsCount={items.length}
-      emptyMessage={emptyMessage}
+      items={{ count: items.length, emptyMessage }}
       testId={resolvedTestId}
-      columnsClassName={responsiveLayoutClasses.blogListGrid}
+      layout={{ columnsClassName: responsiveLayoutClasses.blogListGrid }}
     >
       {items.map((post) => {
         const hasMeta = post.publishedDate || post.authorName;
@@ -67,15 +73,21 @@ export function BlogList({
           <ContentCardShell
             key={post.id}
             href={`/blog-yazilari/${post.slug}`}
-            title={post.title}
-            summary={post.excerpt ?? "Bu yazı için özet yakında eklenecek."}
-            testId={join("blog-yazilari", "card", post.slug)}
-            className="bg-white gap-6 sm:gap-7"
-            imageUrl={post.coverImageUrl ?? null}
-            imageAlt={post.coverImageAlt ?? undefined}
-            blurDataURL={post.coverImageBlurDataURL ?? undefined}
-            imageSize="small"
-            meta={meta}
+            content={{
+              title: post.title,
+              summary: post.excerpt ?? "Bu yazı için özet yakında eklenecek.",
+              meta,
+            }}
+            media={{
+              imageUrl: post.coverImageUrl ?? null,
+              imageAlt: post.coverImageAlt ?? undefined,
+              blurDataURL: post.coverImageBlurDataURL ?? undefined,
+              imageSize: "small",
+            }}
+            shell={{
+              testId: join("blog-yazilari", "card", post.slug),
+              className: "bg-white gap-6 sm:gap-7",
+            }}
           />
         );
       })}
@@ -84,17 +96,11 @@ export function BlogList({
 }
 
 export function BlogDetail({
-  breadcrumbItems,
-  title,
-  excerpt,
-  coverImageUrl,
-  coverImageAlt,
-  coverImageBlurDataURL,
-  meta,
-  children,
-  afterContent,
+  hero,
+  content,
+  slots,
 }: BlogDetailProps) {
-  const hasCoverImage = Boolean(coverImageUrl);
+  const hasCoverImage = Boolean(hero.coverImageUrl);
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="blog-yazilari.detail">
@@ -106,17 +112,17 @@ export function BlogDetail({
             : "bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]"
         )}
       >
-        {hasCoverImage && coverImageUrl ? (
+        {hasCoverImage && hero.coverImageUrl ? (
           <>
             <div className="absolute inset-0" data-testid="blog-yazilari.detail.cover-image">
               <Image
-                src={coverImageUrl}
-                alt={coverImageAlt ?? title}
+                src={hero.coverImageUrl}
+                alt={hero.coverImageAlt ?? hero.title}
                 fill
                 priority
                 sizes="100vw"
                 className="object-cover"
-                {...getImagePlaceholderProps(coverImageUrl, coverImageBlurDataURL)}
+                {...getImagePlaceholderProps(hero.coverImageUrl, hero.coverImageBlurDataURL)}
               />
             </div>
           </>
@@ -126,20 +132,26 @@ export function BlogDetail({
           <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
             <SiteBreadcrumbs
               items={
-                breadcrumbItems ?? [
+                hero.breadcrumbItems ?? [
                   { label: "Blog", href: "/blog-yazilari" },
-                  { label: title },
+                  { label: hero.title },
                 ]
               }
             />
           </div>
           <div className="max-w-3xl space-y-3 sm:space-y-4">
-            <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl" data-testid="blog-yazilari.detail.title">
-              {title}
+            <h1
+              className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl"
+              data-testid="blog-yazilari.detail.title"
+            >
+              {hero.title}
             </h1>
-            {meta ? (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-sm leading-6 text-white/88 sm:text-base" data-testid="blog-yazilari.detail.meta">
-                {meta}
+            {hero.meta ? (
+              <div
+                className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-sm leading-6 text-white/88 sm:text-base"
+                data-testid="blog-yazilari.detail.meta"
+              >
+                {hero.meta}
               </div>
             ) : null}
           </div>
@@ -148,18 +160,21 @@ export function BlogDetail({
 
       <section className="page-section pt-8 sm:pt-10 lg:pt-12">
         <article className="max-w-4xl" data-testid="blog-yazilari.detail.body">
-          {excerpt ? (
-            <p className="mb-8 max-w-3xl text-[17px] leading-8 text-foreground/76 sm:mb-10 sm:text-xl sm:leading-9" data-testid="blog-yazilari.detail.excerpt">
-              {excerpt}
+          {hero.excerpt ? (
+            <p
+              className="mb-8 max-w-3xl text-[17px] leading-8 text-foreground/76 sm:mb-10 sm:text-xl sm:leading-9"
+              data-testid="blog-yazilari.detail.excerpt"
+            >
+              {hero.excerpt}
             </p>
           ) : null}
           <div className="max-w-3xl">
-            <div className="prose prose-invert max-w-none whitespace-pre-wrap text-base leading-7 prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary prose-li:text-foreground/80 sm:leading-8">
-              {children}
+            <div className="prose prose-invert max-w-none whitespace-pre-wrap text-base leading-7 prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary prose-li:text-foreground/80">
+              {content.children}
             </div>
           </div>
 
-          <div data-testid="blog-yazilari.detail.after-content">{afterContent}</div>
+          <div data-testid="blog-yazilari.detail.after-content">{slots?.afterContent}</div>
         </article>
       </section>
     </main>

@@ -28,6 +28,12 @@ test("Detail page passes the registration status button as the action slot", () 
   );
 });
 
+test("Detail page groups panel data into event and copy props", () => {
+  const source = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
+  assert.match(source, /event=\{\s*\{/);
+  assert.match(source, /copy=\{\s*\{/);
+});
+
 test("Detail page renders registration CTA when open", () => {
   const source = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
   assert.match(

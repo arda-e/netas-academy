@@ -25,8 +25,10 @@ test("Course related sessions section keeps fallback contact flow", () => {
 
 test("Course related sessions section preserves upcoming and past labels", () => {
   const source = readSource("components/courses/course-related-sessions-section.tsx");
+  assert.match(source, /copy:/);
   assert.match(source, /upcomingSessionRegisterCta/);
   assert.match(source, /upcomingSessionClosedLabel/);
   assert.match(source, /pastSessionsLabel/);
-  assert.match(source, /formatLabels/);
+  assert.match(source, /labels:/);
+  assert.match(source, /formats:/);
 });

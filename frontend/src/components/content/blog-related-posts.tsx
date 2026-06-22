@@ -58,28 +58,38 @@ export function RelatedPostsSection({ relatedPosts }: RelatedPostsSectionProps) 
         {t('related_posts.heading')}
       </h2>
       <ContentGrid
-        itemsCount={relatedPosts.length}
-        emptyMessage=""
-        columnsClassName={responsiveLayoutClasses.blogListGrid}
+        items={{
+          count: relatedPosts.length,
+          emptyMessage: "",
+        }}
+        layout={{
+          columnsClassName: responsiveLayoutClasses.blogListGrid,
+        }}
         testId={join("page", "blog-detail", "related-posts")}
       >
         {relatedPosts.map((relatedPost) => (
           <ContentCardShell
             key={relatedPost.documentId}
             href={`/blog-yazilari/${relatedPost.slug}`}
-            title={relatedPost.title}
-            summary={relatedPost.excerpt ?? t('related_posts.summary_empty')}
-            testId={join("page", "blog-detail", "related-posts", "card", relatedPost.slug)}
-            className="bg-white"
-            imageUrl={getStrapiMediaUrl(relatedPost.coverImage) ?? null}
-            imageAlt={getStrapiMediaAltText(relatedPost.coverImage) ?? undefined}
-            blurDataURL={getStrapiMediaBlurDataUrl(relatedPost.coverImage) ?? undefined}
-            meta={
-              <RelatedPostMeta
-                publishedDate={relatedPost.publishedDate}
-                authorName={relatedPost.author?.displayName}
-              />
-            }
+            content={{
+              title: relatedPost.title,
+              summary: relatedPost.excerpt ?? t('related_posts.summary_empty'),
+              meta: (
+                <RelatedPostMeta
+                  publishedDate={relatedPost.publishedDate}
+                  authorName={relatedPost.author?.displayName}
+                />
+              ),
+            }}
+            media={{
+              imageUrl: getStrapiMediaUrl(relatedPost.coverImage) ?? null,
+              imageAlt: getStrapiMediaAltText(relatedPost.coverImage) ?? undefined,
+              blurDataURL: getStrapiMediaBlurDataUrl(relatedPost.coverImage) ?? undefined,
+            }}
+            shell={{
+              testId: join("page", "blog-detail", "related-posts", "card", relatedPost.slug),
+              className: "bg-white",
+            }}
           />
         ))}
       </ContentGrid>

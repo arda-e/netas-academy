@@ -84,13 +84,21 @@ export default async function Home() {
           ]}
         />
         <HomeLearningModelSection
-          eyebrow={t("learning.header.eyebrow")}
-          heading={t("learning.header.heading")}
-          body={t("learning.header.body")}
-          leftHeading={t("learning.left.heading")}
-          leftBody={t("learning.left.body")}
-          rightHeading={t("learning.right.heading")}
-          rightBody={t("learning.right.body")}
+          content={{
+            eyebrow: t("learning.header.eyebrow"),
+            heading: t("learning.header.heading"),
+            body: t("learning.header.body"),
+          }}
+          sections={{
+            left: {
+              heading: t("learning.left.heading"),
+              body: t("learning.left.body"),
+            },
+            right: {
+              heading: t("learning.right.heading"),
+              body: t("learning.right.body"),
+            },
+          }}
         />
         <HomeFeaturedCoursesSection
           eyebrow={t("featured_courses.eyebrow")}

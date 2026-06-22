@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ContentPageShell, NewsList } from "@/components/content";
+import { getNewsPosts } from "@/lib/strapi-news";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 
@@ -30,25 +31,30 @@ export async function generateMetadata({
   });
 }
 
-// TODO: Replace hardcoded empty list with Strapi data fetch when a news/haberler content type is created in the backend.
-// Example fetch pattern:
-// import { getNews } from "@/lib/strapi";
-// const news = await getNews();
-
 export default async function HaberlerPage() {
-  const t = await getTranslations('news');
+  const [t, posts] = await Promise.all([
+    getTranslations('news'),
+    getNewsPosts(),
+  ]);
+
+  const items = posts.map((post) => ({
+    id: post.documentId,
+    title: post.title,
+    summary: post.excerpt ?? "",
+    tag: post.source ?? undefined,
+    publishedAt: post.publishedDate ?? undefined,
+    href: `/haberler/${post.slug}`,
+  }));
 
   return (
     <ContentPageShell
       testId="page.haberler"
-      title={t('hero.title')}
-      description={
-        <p>
-          {t('hero.description')}
-        </p>
-      }
+      hero={{
+        title: t('hero.title'),
+        description: <p>{t('hero.description')}</p>,
+      }}
     >
-      <NewsList items={[]} />
+      <NewsList items={items} emptyMessage={t('list.empty')} />
     </ContentPageShell>
   );
 }

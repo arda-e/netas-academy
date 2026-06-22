@@ -21,52 +21,63 @@ function InfoRow({
 }
 
 type EventInformationPanelProps = {
-  title: string;
-  startsAt: string;
-  endsAt?: string | null;
-  location?: string | null;
-  format?: string | null;
-  price?: number | null;
-  dailySchedule?: string | null;
-  infoPanelHeading: string;
-  dateLabel: string;
-  endDateLabel?: string;
-  locationLabel: string;
-  formatLabel: string;
-  priceLabel: string;
-  scheduleLabel: string;
-  formatDisplayName?: string | null;
-  registrationState?: {
-    label: string;
-    value: string;
-    tone?: "success" | "warning";
-  } | null;
+  event: {
+    title: string;
+    startsAt: string;
+    endsAt?: string | null;
+    location?: string | null;
+    format?: string | null;
+    price?: number | null;
+    dailySchedule?: string | null;
+    formatDisplayName?: string | null;
+    registrationState?: {
+      label: string;
+      value: string;
+      tone?: "success" | "warning";
+    } | null;
+  };
+  copy: {
+    infoPanelHeading: string;
+    dateLabel: string;
+    endDateLabel?: string;
+    locationLabel: string;
+    formatLabel: string;
+    priceLabel: string;
+    scheduleLabel: string;
+  };
   bodyContent?: ReactNode;
   action?: ReactNode;
   testId?: string;
 };
 
 export function EventInformationPanel({
-  title,
-  startsAt,
-  endsAt,
-  location,
-  format,
-  price,
-  dailySchedule,
-  infoPanelHeading,
-  dateLabel,
-  endDateLabel,
-  locationLabel,
-  formatLabel,
-  priceLabel,
-  scheduleLabel,
-  formatDisplayName,
-  registrationState,
+  event,
+  copy,
   bodyContent,
   action,
   testId,
 }: EventInformationPanelProps) {
+  const {
+    title,
+    startsAt,
+    endsAt,
+    location,
+    format,
+    price,
+    dailySchedule,
+    formatDisplayName,
+    registrationState,
+  } = event;
+  const {
+    infoPanelHeading,
+    dateLabel,
+    endDateLabel,
+    locationLabel,
+    formatLabel,
+    priceLabel,
+    scheduleLabel,
+  } = copy;
+
   const hasLogisticsRows =
     Boolean(dailySchedule) ||
     Boolean(format && formatDisplayName) ||

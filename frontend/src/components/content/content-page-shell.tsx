@@ -7,61 +7,59 @@ import { join } from "@/lib/testids";
 import { cn } from "@/lib/utils";
 
 type ContentPageShellProps = {
-  breadcrumbItems?: BreadcrumbItem[];
-  title: string;
-  description?: ReactNode;
-  descriptionClassName?: string;
-  descriptionTrailing?: ReactNode;
-  heroImageAlt?: string;
-  heroImageBlurDataURL?: string;
-  heroImageUrl?: ImageSource | null;
+  hero: {
+    breadcrumbItems?: BreadcrumbItem[];
+    title: string;
+    description?: ReactNode;
+    descriptionClassName?: string;
+    descriptionTrailing?: ReactNode;
+  };
+  media?: {
+    heroImageAlt?: string;
+    heroImageBlurDataURL?: string;
+    heroImageUrl?: ImageSource | null;
+  };
   children?: ReactNode;
-  skeleton?: ReactNode;
+  slots?: {
+    skeleton?: ReactNode;
+  };
   testId?: string;
 };
 
 export function ContentPageShell({
-  breadcrumbItems,
-  title,
-  description,
-  descriptionClassName,
-  descriptionTrailing,
-  heroImageAlt,
-  heroImageBlurDataURL,
-  heroImageUrl,
+  hero,
+  media,
   children,
-  skeleton,
+  slots,
   testId,
 }: ContentPageShellProps) {
-  const hasHeroImage = Boolean(heroImageUrl);
-  const resolvedBreadcrumbItems = breadcrumbItems ?? [
-    { label: title },
-  ];
+  const hasHeroImage = Boolean(media?.heroImageUrl);
+  const resolvedBreadcrumbItems = hero.breadcrumbItems ?? [{ label: hero.title }];
 
   const renderDescription = () => {
-    if (!description) {
+    if (!hero.description) {
       return null;
     }
 
     const baseDescriptionClass = cn(
       "max-w-2xl space-y-3 text-[15px] leading-7 text-white/88 sm:space-y-4 sm:text-lg sm:leading-8",
-      descriptionClassName,
+      hero.descriptionClassName,
     );
 
-    if (descriptionTrailing) {
+    if (hero.descriptionTrailing) {
       return (
         <div className="flex w-full flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <div
             className={baseDescriptionClass}
             data-testid={testId && join(testId, "description")}
           >
-            {description}
+            {hero.description}
           </div>
           <div
             className="flex shrink-0 justify-end lg:pb-1"
             data-testid={testId && join(testId, "description-trailing")}
           >
-            {descriptionTrailing}
+            {hero.descriptionTrailing}
           </div>
         </div>
       );
@@ -72,7 +70,7 @@ export function ContentPageShell({
         className={baseDescriptionClass}
         data-testid={testId && join(testId, "description")}
       >
-        {description}
+        {hero.description}
       </div>
     );
   };
@@ -87,20 +85,20 @@ export function ContentPageShell({
             : "bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]",
         )}
       >
-        {hasHeroImage && heroImageUrl && (
+        {hasHeroImage && media?.heroImageUrl && (
           <>
             <div
               className="absolute inset-0"
               data-testid={testId && join(testId, "hero-image")}
             >
               <Image
-                src={heroImageUrl}
-                alt={heroImageAlt ?? title}
+                src={media.heroImageUrl}
+                alt={media.heroImageAlt ?? hero.title}
                 fill
                 priority
                 sizes="100vw"
                 className="object-cover"
-                {...getImagePlaceholderProps(heroImageUrl, heroImageBlurDataURL)}
+                {...getImagePlaceholderProps(media.heroImageUrl, media.heroImageBlurDataURL)}
               />
             </div>
           </>
@@ -113,14 +111,14 @@ export function ContentPageShell({
           <div
             className={cn(
               "space-y-3 sm:space-y-4",
-              descriptionTrailing ? "w-full" : "max-w-3xl",
+              hero.descriptionTrailing ? "w-full" : "max-w-3xl",
             )}
           >
             <h1
               className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl"
               data-testid={testId && join(testId, "title")}
             >
-              {title}
+              {hero.title}
             </h1>
             {renderDescription()}
           </div>
@@ -128,7 +126,7 @@ export function ContentPageShell({
       </section>
       <section className="page-section pt-4 sm:pt-8 lg:pt-8">
         <div data-testid={testId && join(testId, "content")}>
-          {skeleton ?? children}
+          {slots?.skeleton ?? children}
         </div>
       </section>
     </main>

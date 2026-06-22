@@ -10,36 +10,39 @@ import { join } from "@/lib/testids";
 
 type ContentCardShellProps = {
   href?: string;
-  title: string;
-  kicker?: string;
-  headerAddon?: ReactNode;
-  summary?: ReactNode;
-  meta?: ReactNode;
-  className?: string;
-  imageUrl?: ImageSource | null;
-  imageAlt?: string;
-  imageSize?: "small" | "medium" | "large";
-  blurDataURL?: string;
-  skeleton?: ReactNode;
-  testId?: string;
+  content: {
+    title: string;
+    kicker?: string;
+    summary?: ReactNode;
+    meta?: ReactNode;
+  };
+  media?: {
+    imageUrl?: ImageSource | null;
+    imageAlt?: string;
+    imageSize?: "small" | "medium" | "large";
+    blurDataURL?: string;
+  };
+  slots?: {
+    headerAddon?: ReactNode;
+    skeleton?: ReactNode;
+  };
+  shell?: {
+    className?: string;
+    testId?: string;
+  };
 };
 
 export function ContentCardShell({
   href,
-  title,
-  kicker,
-  headerAddon,
-  summary,
-  meta,
-  className,
-  imageUrl,
-  imageAlt,
-  imageSize,
-  blurDataURL,
-  skeleton,
-  testId,
+  content,
+  media,
+  slots,
+  shell,
 }: ContentCardShellProps) {
-  if (skeleton) {
+  const className = shell?.className;
+  const testId = shell?.testId;
+
+  if (slots?.skeleton) {
     return (
       <Card
         className={cn(
@@ -48,15 +51,15 @@ export function ContentCardShell({
         )}
         data-testid={testId}
       >
-        {skeleton}
+        {slots.skeleton}
       </Card>
     );
   }
-  const hasImage = Boolean(imageUrl);
-  const safeUrl = imageUrl ?? "";
+  const hasImage = Boolean(media?.imageUrl);
+  const safeUrl = media?.imageUrl ?? "";
 
   const imageSizes =
-    imageSize === "small"
+    media?.imageSize === "small"
       ? "(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 100vw"
       : "(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw";
 
@@ -76,61 +79,61 @@ export function ContentCardShell({
         >
           <Image
             src={safeUrl}
-            alt={imageAlt ?? title}
+            alt={media?.imageAlt ?? content.title}
             fill
             sizes={imageSizes}
             className="object-cover"
-            {...getImagePlaceholderProps(imageUrl, blurDataURL)}
+            {...getImagePlaceholderProps(media?.imageUrl, media?.blurDataURL)}
           />
         </div>
       )}
       <CardHeader
         className={cn(
           "flex flex-row items-start justify-between gap-4 px-5 sm:px-6",
-          kicker || headerAddon ? "pb-0" : undefined,
+          content.kicker || slots?.headerAddon ? "pb-0" : undefined,
           hasImage ? "pt-6" : undefined
         )}
       >
         <div className="min-w-0 space-y-1.5">
-          {kicker && (
+          {content.kicker && (
             <ContentSuperheading
               className="group-hover/card-link:text-[#009ca6]"
               data-testid={testId && join(testId, "kicker")}
             >
-              {kicker}
+              {content.kicker}
             </ContentSuperheading>
           )}
           <CardTitle
             className="text-xl leading-6 text-foreground transition-colors group-hover/card-link:text-[#009ca6] sm:text-2xl sm:leading-tight"
             data-testid={testId && join(testId, "title")}
           >
-            <span>{title}</span>
+            <span>{content.title}</span>
           </CardTitle>
         </div>
-        {headerAddon && (
+        {slots?.headerAddon && (
           <div className="shrink-0 pt-1" data-testid={testId && join(testId, "header-addon")}>
-            {headerAddon}
+            {slots.headerAddon}
           </div>
         )}
       </CardHeader>
       <CardContent className="flex flex-1 flex-col justify-between gap-5 px-5 sm:px-6">
         <div className="space-y-3 sm:space-y-4">
-          {summary && (
-            typeof summary === "string" ? (
+          {content.summary && (
+            typeof content.summary === "string" ? (
               <p
                 className="text-sm leading-6 text-foreground/74 sm:text-base sm:leading-7"
                 data-testid={testId && join(testId, "summary")}
               >
-                {summary}
+                {content.summary}
               </p>
             ) : (
-              summary
+              content.summary
             )
           )}
         </div>
-        {meta && (
+        {content.meta && (
           <div className="space-y-1 text-sm text-foreground/62" data-testid={testId && join(testId, "meta")}>
-            {meta}
+            {content.meta}
           </div>
         )}
       </CardContent>

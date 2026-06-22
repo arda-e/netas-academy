@@ -35,29 +35,37 @@ export async function EventList({
 
   return (
     <ContentGrid
-      itemsCount={items.length}
-      emptyMessage={effectiveEmptyMessage}
-      columnsClassName={responsiveLayoutClasses.eventListGrid}
+      items={{
+        count: items.length,
+        emptyMessage: effectiveEmptyMessage,
+      }}
+      layout={{
+        columnsClassName: responsiveLayoutClasses.eventListGrid,
+      }}
       testId="etkinlikler.list"
     >
       {items.map((event) => (
         <ContentCardShell
           key={event.id}
-          testId={join("etkinlikler", "card", event.slug)}
           href={`/etkinlikler/${event.slug}`}
-          title={event.title}
-          kicker={getEventTypeLabel(tx, event.eventType)}
-          summary={event.summary ?? t("card.summary_empty")}
-          className="bg-white"
-          meta={
-            <div className="space-y-1.5 break-words">
-              <p className="font-bold text-gray-700">{formatEventDateTime(event.startsAt)}</p>
-              {event.endsAt ? (
-                <p className="font-bold text-gray-700">{formatEventDateTime(event.endsAt)}</p>
-              ) : null}
-              {event.location ? <p>{event.location}</p> : null}
-            </div>
-          }
+          content={{
+            title: event.title,
+            kicker: getEventTypeLabel(tx, event.eventType),
+            summary: event.summary ?? t("card.summary_empty"),
+            meta: (
+              <div className="space-y-1.5 break-words">
+                <p className="font-bold text-gray-700">{formatEventDateTime(event.startsAt)}</p>
+                {event.endsAt ? (
+                  <p className="font-bold text-gray-700">{formatEventDateTime(event.endsAt)}</p>
+                ) : null}
+                {event.location ? <p>{event.location}</p> : null}
+              </div>
+            ),
+          }}
+          shell={{
+            testId: join("etkinlikler", "card", event.slug),
+            className: "bg-white",
+          }}
         />
       ))}
     </ContentGrid>

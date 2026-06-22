@@ -8,34 +8,49 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type HorizontalScrollCarouselProps = {
-  itemsCount: number;
-  emptyMessage: string;
-  children: ReactNode;
-  className?: string;
-  scrollAreaClassName?: string;
-  controlsClassName?: string;
-  controlsPlacement?: "before" | "after";
-  prevLabel: string;
-  nextLabel: string;
-  prevButtonTestId?: string;
-  nextButtonTestId?: string;
-  scrollAreaTestId?: string;
+  content: {
+    itemsCount: number;
+    emptyMessage: string;
+    children: ReactNode;
+  };
+  controls: {
+    prevLabel: string;
+    nextLabel: string;
+    prevButtonTestId?: string;
+    nextButtonTestId?: string;
+    scrollAreaTestId?: string;
+  };
+  layout?: {
+    className?: string;
+    scrollAreaClassName?: string;
+    controlsClassName?: string;
+    controlsPlacement?: "before" | "after";
+  };
 };
 
 export function HorizontalScrollCarousel({
-  itemsCount,
-  emptyMessage,
-  children,
-  className,
-  scrollAreaClassName,
-  controlsClassName,
-  controlsPlacement = "after",
-  prevLabel,
-  nextLabel,
-  prevButtonTestId,
-  nextButtonTestId,
-  scrollAreaTestId,
+  content,
+  controls,
+  layout,
 }: HorizontalScrollCarouselProps) {
+  const {
+    itemsCount,
+    emptyMessage,
+    children,
+  } = content;
+  const {
+    prevLabel,
+    nextLabel,
+    prevButtonTestId,
+    nextButtonTestId,
+    scrollAreaTestId,
+  } = controls;
+  const {
+    className,
+    scrollAreaClassName,
+    controlsClassName,
+    controlsPlacement = "after",
+  } = layout ?? {};
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -102,7 +117,7 @@ export function HorizontalScrollCarousel({
     );
   }
 
-  const controls = hasOverflow ? (
+  const controlsNode = hasOverflow ? (
     <div
       className={cn("flex items-center gap-1.5", controlsClassName)}
       aria-hidden={!hasOverflow}
@@ -135,7 +150,7 @@ export function HorizontalScrollCarousel({
 
   return (
     <section className={className}>
-      {controlsPlacement === "before" ? controls : null}
+      {controlsPlacement === "before" ? controlsNode : null}
 
       <div
         ref={scrollAreaRef}
@@ -145,7 +160,7 @@ export function HorizontalScrollCarousel({
         {children}
       </div>
 
-      {controlsPlacement === "after" ? controls : null}
+      {controlsPlacement === "after" ? controlsNode : null}
     </section>
   );
 }

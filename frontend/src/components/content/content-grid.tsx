@@ -3,37 +3,51 @@ import type { ReactNode } from "react";
 import { join } from "@/lib/testids";
 
 type ContentGridProps = {
-  itemsCount: number;
-  emptyMessage: string;
-  columnsClassName?: string;
+  items: {
+    count: number;
+    emptyMessage: string;
+  };
+  layout?: {
+    columnsClassName?: string;
+  };
   children?: ReactNode;
-  skeleton?: ReactNode;
+  slots?: {
+    skeleton?: ReactNode;
+  };
   testId?: string;
 };
 
 export function ContentGrid({
-  itemsCount,
-  emptyMessage,
-  columnsClassName = "grid gap-4 sm:gap-6",
+  items,
+  layout,
   children,
-  skeleton,
+  slots,
   testId,
 }: ContentGridProps) {
+  const columnsClassName = layout?.columnsClassName ?? "grid gap-4 sm:gap-6";
 
-  if (skeleton) return <div className={columnsClassName} data-testid={testId}>{skeleton}</div>;  
-  
-  if (itemsCount === 0) {
+  if (slots?.skeleton) {
+    return (
+      <div className={columnsClassName} data-testid={testId}>
+        {slots.skeleton}
+      </div>
+    );
+  }
+
+  if (items.count === 0) {
     return (
       <p
         className="text-lg text-muted-foreground"
-        data-testid={
-          testId ? join(testId, 'empty') : "content-grid.empty"
-        }
+        data-testid={testId ? join(testId, "empty") : "content-grid.empty"}
       >
-        {emptyMessage}
+        {items.emptyMessage}
       </p>
     );
   }
 
-  return <div className={columnsClassName} data-testid={testId}>{children}</div>;
+  return (
+    <div className={columnsClassName} data-testid={testId}>
+      {children}
+    </div>
+  );
 }

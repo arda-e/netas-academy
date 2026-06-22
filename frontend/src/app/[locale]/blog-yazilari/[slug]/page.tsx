@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -91,7 +92,8 @@ export async function generateMetadata({
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const { isEnabled: isDraft } = await draftMode();
+  const post = await getBlogPostBySlug(slug, isDraft);
 
   if (!post) {
     notFound();
@@ -130,31 +132,35 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       <Suspense fallback={<RouteLoading testId="loading.blog-detail" />}>
         <ContentPageShell
           testId="page.blog-detail"
-          breadcrumbItems={breadcrumbItems}
-          title={post.title}
-          heroImageUrl={getStrapiMediaUrl(post.coverImage, "large")}
-          heroImageAlt={getStrapiMediaAltText(post.coverImage) ?? post.title}
-          heroImageBlurDataURL={getStrapiMediaBlurDataUrl(post.coverImage) ?? undefined}
+          hero={{
+            breadcrumbItems,
+            title: post.title,
+          }}
+          media={{
+            heroImageUrl: getStrapiMediaUrl(post.coverImage, "large"),
+            heroImageAlt: getStrapiMediaAltText(post.coverImage) ?? post.title,
+            heroImageBlurDataURL: getStrapiMediaBlurDataUrl(post.coverImage) ?? undefined,
+          }}
         >
-        <div className="mb-8 max-w-3xl space-y-4 sm:mb-10 sm:space-y-5">
-          {post.excerpt && (
-            <p
-              className="text-[17px] leading-8 text-foreground/76 sm:text-xl sm:leading-9"
-              data-testid="page.blog-detail.excerpt"
-            >
-              {post.excerpt}
-            </p>
-          )}
-          <div data-testid="page.blog-detail.meta">
-            <BlogMetaContent author={post.author} publishedDate={post.publishedDate} />
+          <div className="mb-8 max-w-3xl space-y-4 sm:mb-10 sm:space-y-5">
+            {post.excerpt && (
+              <p
+                className="text-[17px] leading-8 text-foreground/76 sm:text-xl sm:leading-9"
+                data-testid="page.blog-detail.excerpt"
+              >
+                {post.excerpt}
+              </p>
+            )}
+            <div data-testid="page.blog-detail.meta">
+              <BlogMetaContent author={post.author} publishedDate={post.publishedDate} />
+            </div>
           </div>
-        </div>
-        <div
-          className="max-w-3xl text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg"
-          data-testid="page.blog-detail.body"
-        >
-          {blogBody}
-        </div>
+          <div
+            className="max-w-3xl text-[15px] leading-7 text-foreground/80 sm:text-base sm:leading-8 md:text-lg"
+            data-testid="page.blog-detail.body"
+          >
+            {blogBody}
+          </div>
           <RelatedPostsSection relatedPosts={relatedPosts} />
         </ContentPageShell>
       </Suspense>
