@@ -80,7 +80,6 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
       <div className="space-y-4 sm:space-y-8">
         <SearchField
           initialValue={search}
-          searchOnly
           expandedWidthClassName="lg:w-[560px]"
         />
         <Suspense fallback={<BlogListLoading testId="loading.blog" />}>

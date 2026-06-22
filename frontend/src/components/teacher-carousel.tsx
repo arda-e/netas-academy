@@ -1,13 +1,10 @@
 "use client";
 
-import { useRef } from "react";
-import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 
+import { HorizontalScrollCarousel } from "@/components/carousel/horizontal-scroll-carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { cn } from "@/lib/utils";
 
 export type TeacherCarouselItem = {
   id: number | string;
@@ -43,85 +40,45 @@ export function TeacherCarousel({
   prevButtonTestId,
   nextButtonTestId,
 }: TeacherCarouselProps) {
-  const t = useTranslations('common');
-  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-
-  const scrollByPage = (direction: "left" | "right") => {
-    const node = scrollAreaRef.current;
-
-    if (!node) {
-      return;
-    }
-
-    const amount = Math.max(node.clientWidth * 0.8, 320);
-    node.scrollBy({
-      left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
-  };
-
-  if (items.length === 0) {
-    return (
-      <div className="panel-surface rounded-sm px-6 py-10 text-center text-foreground/68">
-        {emptyMessage}
-      </div>
-    );
-  }
+  const t = useTranslations("common");
 
   return (
-    <section className={cn("space-y-5", className)}>
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          type="button"
-          size="icon-sm"
-          variant="outline"
-          aria-label={t('teacher_carousel.prev')}
-          data-testid={prevButtonTestId}
-          onClick={() => scrollByPage("left")}
+    <HorizontalScrollCarousel
+      itemsCount={items.length}
+      emptyMessage={emptyMessage}
+      className={className ? `space-y-5 ${className}` : "space-y-5"}
+      scrollAreaClassName="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      controlsClassName="justify-end gap-2"
+      controlsPlacement="before"
+      prevLabel={t("teacher_carousel.prev")}
+      nextLabel={t("teacher_carousel.next")}
+      prevButtonTestId={prevButtonTestId}
+      nextButtonTestId={nextButtonTestId}
+    >
+      {items.map((teacher) => (
+        <Link
+          key={teacher.id}
+          href={`/egitmenler/${teacher.slug}`}
+          className="panel-surface group/card-link min-w-[220px] snap-start cursor-pointer rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[250px]"
+          data-testid={cardTestIdPrefix ? `${cardTestIdPrefix}.${teacher.slug}` : undefined}
         >
-          <CaretLeft className="size-4" weight="bold" />
-        </Button>
-        <Button
-          type="button"
-          size="icon-sm"
-          variant="outline"
-          aria-label={t('teacher_carousel.next')}
-          data-testid={nextButtonTestId}
-          onClick={() => scrollByPage("right")}
-        >
-          <CaretRight className="size-4" weight="bold" />
-        </Button>
-      </div>
-
-      <div
-        ref={scrollAreaRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {items.map((teacher) => (
-          <Link
-            key={teacher.id}
-            href={`/egitmenler/${teacher.slug}`}
-            className="panel-surface group/card-link min-w-[220px] snap-start cursor-pointer rounded-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[#009ca6] hover:shadow-sm sm:min-w-[250px]"
-            data-testid={cardTestIdPrefix ? `${cardTestIdPrefix}.${teacher.slug}` : undefined}
-          >
-            <Avatar className="size-24 ring-1 ring-border/60">
-              <AvatarImage
-                src={teacher.imageUrl ?? undefined}
-                alt={teacher.imageAlt ?? teacher.name}
-              />
-              <AvatarFallback className="bg-muted/70 text-lg font-semibold text-foreground">
-                {getInitials(teacher.name)}
-              </AvatarFallback>
-            </Avatar>
-            <p className="mt-4 line-clamp-2 text-lg font-semibold tracking-tight text-foreground transition-colors group-hover/card-link:text-[#009ca6]">
-              {teacher.name}
-            </p>
-            <p className="mt-1 text-sm text-foreground/62 transition-colors group-hover/card-link:text-[#009ca6]">
-              Profili goruntule
-            </p>
-          </Link>
-        ))}
-      </div>
-    </section>
+          <Avatar className="size-24 ring-1 ring-border/60">
+            <AvatarImage
+              src={teacher.imageUrl ?? undefined}
+              alt={teacher.imageAlt ?? teacher.name}
+            />
+            <AvatarFallback className="bg-muted/70 text-lg font-semibold text-foreground">
+              {getInitials(teacher.name)}
+            </AvatarFallback>
+          </Avatar>
+          <p className="mt-4 line-clamp-2 text-lg font-semibold tracking-tight text-foreground transition-colors group-hover/card-link:text-[#009ca6]">
+            {teacher.name}
+          </p>
+          <p className="mt-1 text-sm text-foreground/62 transition-colors group-hover/card-link:text-[#009ca6]">
+            Profili goruntule
+          </p>
+        </Link>
+      ))}
+    </HorizontalScrollCarousel>
   );
 }

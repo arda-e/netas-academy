@@ -10,35 +10,45 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
-test("Detail page imports getEventRegistrationStatus", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
+test("Detail page imports the shared event information panel", () => {
+  const source = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
   assert.match(
     source,
-    /import\s*\{[^}]*\bgetEventRegistrationStatus\b[^}]*\}\s*from\s*"@\/lib\/strapi-events"/,
-    "Detail page should import getEventRegistrationStatus"
+    /import\s*\{\s*EventInformationPanel\s*\}\s*from\s*"@\/components\/events\/event-information-panel"/,
+    "Detail page should import EventInformationPanel from the shared component"
   );
 });
 
-test("Detail page computes registrationOpen with getEventRegistrationStatus", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
+test("Detail page passes the registration status button as the action slot", () => {
+  const source = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
   assert.match(
     source,
-    /getEventRegistrationStatus\(event\.documentId\)/,
-    "Detail page should call getEventRegistrationStatus(event.documentId)"
+    /action=\{\s*<RegistrationStatusButton/,
+    "Detail page should pass RegistrationStatusButton into the action slot"
   );
 });
 
 test("Detail page renders registration CTA when open", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
   assert.match(
     source,
-    /Etkinliğe Kayıt Ol/,
-    "Detail page should show registration button when open"
+    /registerCta=\{t\("detail\.register_cta"\)\}/,
+    "Detail page should pass the translated registration CTA"
+  );
+  assert.match(
+    source,
+    /contactCta=\{t\("detail\.contact_cta"\)\}/,
+    "Detail page should pass the translated contact CTA"
+  );
+  assert.match(
+    source,
+    /registrationClosedNotice=\{t\("detail\.registration_closed_notice"\)\}/,
+    "Detail page should pass the translated closed-registration notice"
   );
 });
 
 test("Detail page uses RichTextContent for event details", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
   assert.match(
     source,
     /<RichTextContent/,
@@ -47,7 +57,7 @@ test("Detail page uses RichTextContent for event details", () => {
 });
 
 test("Detail page shows summary prominently before details", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
   assert.match(
     source,
     /event\.summary/,
@@ -55,11 +65,11 @@ test("Detail page shows summary prominently before details", () => {
   );
 });
 
-test("Detail page passes registrationOpen to EventInformationPanel", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
-  assert.match(
+test("Detail page no longer defines a local EventInformationPanel", () => {
+  const source = readSource("app/[locale]/etkinlikler/[slug]/page.tsx");
+  assert.doesNotMatch(
     source,
-    /registrationOpen=\{registrationOpen\}/,
-    "Detail page should pass registrationOpen prop to EventInformationPanel"
+    /function\s+EventInformationPanel/,
+    "Detail page should not define EventInformationPanel locally"
   );
 });

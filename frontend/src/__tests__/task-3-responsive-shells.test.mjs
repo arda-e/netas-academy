@@ -25,8 +25,8 @@ test("contact and registration forms use tighter mobile spacing and stacked lega
 });
 
 test("contact and event registration pages stack panels before large screens", () => {
-  const contactPage = readSource("app/iletisim/page.tsx");
-  const registrationPage = readSource("app/etkinlikler/[slug]/kayit/page.tsx");
+  const contactPage = readSource("app/[locale]/iletisim/page.tsx");
+  const registrationPage = readSource("app/[locale]/etkinlikler/[slug]/kayit/page.tsx");
 
   assert.match(contactPage, /panel-surface rounded-sm p-6 md:p-8 lg:p-10/);
   assert.match(contactPage, /<IntentLeadForm initialLeadType=\{initialLeadType\} prefilledTopic=\{prefilledTopic\} \/>/);

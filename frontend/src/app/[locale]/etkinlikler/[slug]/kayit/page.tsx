@@ -5,10 +5,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { EventRegistrationForm } from "@/components/event-registration-form";
 import { Button } from "@/components/ui/button";
+import { EventInformationPanel } from "@/components/events/event-information-panel";
 import { Link } from "@/i18n/navigation";
 import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
 import { getEventBySlug, getEventRegistrationStatus } from "@/lib/strapi-events";
-import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventRegistrationPageProps = {
   params: Promise<{
@@ -16,48 +16,6 @@ type EventRegistrationPageProps = {
     slug: string;
   }>;
 };
-
-function EventInformationPanel({
-  title,
-  summary,
-  startsAt,
-  endsAt,
-  location,
-  registrationOpen,
-  slug,
-}: {
-  title: string;
-  summary?: string | null;
-  startsAt: string;
-  endsAt?: string | null;
-  location?: string | null;
-  registrationOpen: boolean;
-  slug: string;
-}) {
-  return (
-    <aside className="panel-surface rounded-sm p-6 md:p-8">
-      <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
-        Etkinlik Bilgileri
-      </p>
-      <div className="mt-5 space-y-4 text-base leading-7 text-foreground/78">
-        <p className="font-bold text-lg text-gray-700">{title}</p>
-        <p>{summary ?? "Bu etkinlik icin aciklama yakinda eklenecek."}</p>
-        <div className="space-y-0.5">
-          <p className="font-bold text-gray-700">{formatEventDateTime(startsAt)}</p>
-          {endsAt ? <p className="font-bold text-gray-700">{formatEventDateTime(endsAt)}</p> : null}
-        </div>
-        {location ? <p>{location}</p> : null}
-        <p className={registrationOpen ? "font-semibold text-emerald-400" : "font-semibold text-amber-300"}>
-          {registrationOpen ? "Kayitlar acik" : "Kayitlar kapandi"}
-        </p>
-      </div>
-
-      <Button asChild variant="outline" className="mt-6 rounded-sm" data-testid="page.event-registration.back-to-detail">
-        <Link href={`/etkinlikler/${slug}`}>Etkinlik Detayina Don</Link>
-      </Button>
-    </aside>
-  );
-}
 
 export const dynamic = "force-dynamic";
 
@@ -67,7 +25,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   setRequestLocale(locale);
   const [t, event] = await Promise.all([
-    getTranslations({ locale, namespace: "events" }),
+    getTranslations({ locale, namespace: "event_reg" }),
     getEventBySlug(slug),
   ]);
   const canonical = buildLocalePath(locale, `/etkinlikler/${slug}/kayit`);
@@ -93,11 +51,8 @@ export async function generateMetadata({
   }
 
   return {
-    title: locale === "en" ? `${event.title} | Registration` : `${event.title} | Kayıt`,
-    description:
-      locale === "en"
-        ? `Registration form for ${event.title}.`
-        : `${event.title} etkinliği için kayıt formu.`,
+    title: `${event.title} | ${t("meta.title_suffix")}`,
+    description: t("meta.description", { title: event.title }),
     robots: {
       index: false,
       follow: false,
@@ -108,11 +63,8 @@ export async function generateMetadata({
     },
     openGraph: {
       locale: locale === "en" ? "en_US" : "tr_TR",
-      title: locale === "en" ? `${event.title} | Registration` : `${event.title} | Kayıt`,
-      description:
-        locale === "en"
-          ? `Registration form for ${event.title}.`
-          : `${event.title} etkinliği için kayıt formu.`,
+      title: `${event.title} | ${t("meta.title_suffix")}`,
+      description: t("meta.description", { title: event.title }),
       url: canonical,
     },
   };
@@ -121,8 +73,13 @@ export async function generateMetadata({
 export default async function EventRegistrationPage({
   params,
 }: EventRegistrationPageProps) {
-  const { slug } = await params;
-  const event = await getEventBySlug(slug);
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+  const [t, event, eventInfoTranslations] = await Promise.all([
+    getTranslations("event_reg"),
+    getEventBySlug(slug),
+    getTranslations("events"),
+  ]);
 
   if (!event) {
     notFound();
@@ -138,23 +95,21 @@ export default async function EventRegistrationPage({
           <div className="absolute left-6 right-6 top-12 md:left-10 md:right-10 lg:left-12 lg:right-12">
             <SiteBreadcrumbs
               items={[
-                { label: "Etkinlikler", href: "/etkinlikler" },
+                { label: t("breadcrumbs.events"), href: "/etkinlikler" },
                 { label: event.title, href: `/etkinlikler/${event.slug}` },
-                { label: "Kayıt" },
+                { label: t("breadcrumbs.registration") },
               ]}
             />
           </div>
           <div className="max-w-3xl space-y-5">
             <p className="text-sm font-medium uppercase tracking-[0.34em] text-white/88">
-              Etkinlik Kaydi
+              {t("hero.eyebrow")}
             </p>
             <h1 className="text-balance text-4xl font-semibold tracking-tight text-white md:text-6xl">
               {event.title}
             </h1>
             <p className="max-w-2xl text-lg leading-8 text-white/78">
-              {registrationOpen
-                ? "Bu etkinlige katilim icin formu doldurun. Kaydiniz alindiginda size onay mesaji gosterilecektir."
-                : "Bu etkinlik icin kayitlar kapandi. Kural, etkinlik baslangicindan 24 saat once otomatik olarak devreye girer."}
+              {registrationOpen ? t("hero.open_body") : t("hero.closed_body")}
             </p>
           </div>
         </div>
@@ -174,20 +129,14 @@ export default async function EventRegistrationPage({
             ) : (
               <div className="space-y-5" data-testid="page.event-registration.closed-state">
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary/76">
-                  Kayitlar Kapandi
+                  {t("closed.heading")}
                 </p>
                 <div className="space-y-4 text-base leading-7 text-foreground/78">
-                  <p>
-                    Bu etkinlik icin kayitlar kapandi. Kayitlar, etkinlik baslangicindan 24 saat once
-                    otomatik olarak kapanir.
-                  </p>
-                  <p>
-                    Guncel etkinlikleri incelemek veya etkinlik detayina geri donmek icin asagidaki
-                    baglantiyi kullanabilirsiniz.
-                  </p>
+                  <p>{t("closed.body_1")}</p>
+                  <p>{t("closed.body_2")}</p>
                 </div>
                 <Button asChild className="rounded-sm">
-                  <Link href={`/etkinlikler/${event.slug}`}>Etkinlik Detayina Don</Link>
+                  <Link href={`/etkinlikler/${event.slug}`}>{t("panel.back_to_detail")}</Link>
                 </Button>
               </div>
             )}
@@ -195,12 +144,46 @@ export default async function EventRegistrationPage({
 
           <EventInformationPanel
             title={event.title}
-            summary={event.summary}
             startsAt={event.startsAt}
             endsAt={event.endsAt}
             location={event.location}
-            registrationOpen={registrationOpen}
-            slug={event.slug}
+            infoPanelHeading={t("panel.heading")}
+            dateLabel={eventInfoTranslations("detail.date_label")}
+            endDateLabel={eventInfoTranslations("detail.end_date_label")}
+            locationLabel={eventInfoTranslations("detail.location_label")}
+            formatLabel={eventInfoTranslations("detail.format_label")}
+            priceLabel={eventInfoTranslations("detail.price_label")}
+            scheduleLabel={eventInfoTranslations("detail.schedule_label")}
+            registrationState={{
+              label: t("status.label"),
+              value: registrationOpen ? t("status.open") : t("status.closed"),
+              tone: registrationOpen ? "success" : "warning",
+            }}
+            bodyContent={
+              <div className="space-y-4 text-base leading-7 text-foreground/78">
+                <p>{event.summary ?? t("panel.summary_fallback")}</p>
+              </div>
+            }
+            action={
+              <Button
+                asChild
+                variant="outline"
+                className="mt-6 rounded-sm"
+                data-testid="page.event-registration.back-to-detail"
+              >
+                <Link href={`/etkinlikler/${event.slug}`}>{t("panel.back_to_detail")}</Link>
+              </Button>
+            }
+            format={event.format}
+            formatDisplayName={
+              event.format
+                ? eventInfoTranslations(
+                    `detail.format.${event.format}` as Parameters<typeof eventInfoTranslations>[0]
+                  )
+                : null
+            }
+            price={event.price}
+            testId="page.event-registration.info-panel"
           />
         </div>
       </section>

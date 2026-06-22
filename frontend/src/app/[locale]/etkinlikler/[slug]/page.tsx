@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Suspense, type ReactNode } from "react";
+import { Suspense } from "react";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
+import { EventInformationPanel } from "@/components/events/event-information-panel";
 import { RegistrationStatusButton } from "@/components/events/registration-status-button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { getEventBySlug } from "@/lib/strapi-events";
-import { formatEventDateTime } from "@/lib/date-formatting";
 
 type EventDetailPageProps = {
   params: Promise<{
@@ -19,39 +20,6 @@ type EventDetailPageProps = {
     slug: string;
   }>;
 };
-
-function EventInformationPanel({
-  title,
-  startsAt,
-  endsAt,
-  location,
-  infoPanelHeading,
-  registrationAction,
-}: {
-  title: string;
-  startsAt: string;
-  endsAt?: string | null;
-  location?: string | null;
-  infoPanelHeading: string;
-  registrationAction: ReactNode;
-}) {
-  return (
-    <aside className="panel-surface rounded-sm p-6 md:p-8" data-testid="page.event-detail.info-panel">
-      <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
-        {infoPanelHeading}
-      </p>
-      <div className="mt-5 space-y-4 text-base leading-7 text-foreground/78">
-        <p className="font-bold text-lg text-gray-700">{title}</p>
-        <div className="space-y-0.5">
-          <p className="font-bold text-gray-700">{formatEventDateTime(startsAt)}</p>
-          {endsAt && <p className="font-bold text-gray-700">{formatEventDateTime(endsAt)}</p>}
-        </div>
-        {location && <p>{location}</p>}
-      </div>
-      {registrationAction}
-    </aside>
-  );
-}
 
 export async function generateMetadata({
   params,
@@ -82,8 +50,9 @@ export async function generateMetadata({
 
 export default async function EventDetailPage({ params }: EventDetailPageProps) {
   const { slug } = await params;
+  const { isEnabled: isDraft } = await draftMode();
   const [event, siteSettings] = await Promise.all([
-    getEventBySlug(slug),
+    getEventBySlug(slug, isDraft),
     getSiteSettings(),
   ]);
 
@@ -152,8 +121,29 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               startsAt={event.startsAt}
               endsAt={event.endsAt}
               location={event.location}
-              infoPanelHeading={t("detail.info_panel_heading")}
-              registrationAction={
+              format={event.format}
+              price={event.price}
+              dailySchedule={event.dailySchedule}
+              infoPanelHeading={
+                event.eventType === "egitim"
+                  ? t("detail.info_panel_heading_egitim")
+                  : event.eventType === "kurs"
+                    ? t("detail.info_panel_heading_kurs")
+                    : t("detail.info_panel_heading")
+              }
+              dateLabel={t("detail.date_label")}
+              endDateLabel={t("detail.end_date_label")}
+              locationLabel={t("detail.location_label")}
+              formatLabel={t("detail.format_label")}
+              priceLabel={t("detail.price_label")}
+              scheduleLabel={t("detail.schedule_label")}
+              formatDisplayName={
+                event.format
+                  ? t(`detail.format.${event.format}` as Parameters<typeof t>[0])
+                  : null
+              }
+              testId="page.event-detail.info-panel"
+              action={
                 <RegistrationStatusButton
                   documentId={event.documentId}
                   slug={event.slug}

@@ -219,8 +219,13 @@
         "business_value_empty": "Business value information for this course will be added soon.",
         "outcomes": "Expected Outcomes",
         "scope": "Scope and Content",
-        "related_events": "Related Events"
-      }
+        "related_events": "Related Events",
+        "upcoming_sessions": "Upcoming Sessions",
+        "past_sessions": "Past sessions",
+        "no_upcoming_sessions": "No upcoming sessions are currently scheduled for this course."
+      },
+      "upcoming_session_register_cta": "Register",
+      "upcoming_session_closed": "Registration Closed"
     }
   },
   "events": {
@@ -237,7 +242,20 @@
       "register_cta": "Register for Event",
       "contact_cta": "Contact Us",
       "registration_closed_notice": "Registration for this event is currently closed. Subscribe to our newsletter to be notified about new events.",
-      "content_empty": "Detailed content for this event will be added soon."
+      "content_empty": "Detailed content for this event will be added soon.",
+      "info_panel_heading_egitim": "Training Details",
+      "info_panel_heading_kurs": "Course Details",
+      "date_label": "Date",
+      "end_date_label": "End",
+      "location_label": "Location",
+      "format_label": "Format",
+      "price_label": "Price",
+      "schedule_label": "Schedule",
+      "format": {
+        "online": "Online",
+        "yuz-yuze": "In Person",
+        "hibrit": "Hybrid"
+      }
     },
     "filters": {
       "type": {
@@ -261,6 +279,35 @@
     }
   },
   "event_reg": {
+    "meta": {
+      "not_found": "Registration page not found.",
+      "title_suffix": "Registration",
+      "description": "Registration form for {title}."
+    },
+    "breadcrumbs": {
+      "events": "Events",
+      "registration": "Registration"
+    },
+    "hero": {
+      "eyebrow": "Event Registration",
+      "open_body": "Fill out the form to join this event. You will see a confirmation message once your registration is received.",
+      "closed_body": "Registration for this event is closed. The rule is enforced automatically 24 hours before the event starts."
+    },
+    "panel": {
+      "heading": "Event Information",
+      "summary_fallback": "Detailed information for this event will be added soon.",
+      "back_to_detail": "Back to Event Details"
+    },
+    "status": {
+      "label": "Registration Status",
+      "open": "Registration open",
+      "closed": "Registration closed"
+    },
+    "closed": {
+      "heading": "Registration Closed",
+      "body_1": "Registration for this event is closed. Registration closes automatically 24 hours before the event starts.",
+      "body_2": "You can review the latest events or return to the event details using the link below."
+    },
     "field": {
       "first_name": {
         "label": "First Name*"
@@ -346,11 +393,15 @@
   "news": {
     "meta": {
       "title": "News | Netas Academy",
-      "description": "A corporate news area where you can follow the Academy agenda, new announcements, and featured developments."
+      "description": "A corporate news area where you can follow the Academy agenda, new announcements, and featured developments.",
+      "not_found": "News Article Not Found"
     },
     "hero": {
       "title": "News",
       "description": "A corporate news area where you can follow the Academy agenda, new announcements, and featured developments."
+    },
+    "list": {
+      "empty": "No news available yet."
     }
   },
   "contact": {

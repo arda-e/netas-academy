@@ -11,16 +11,16 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test("Closed event shows newsletter CTA instead of registration", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
+  const source = readSource("components/events/registration-status-button.tsx");
   assert.match(
     source,
-    /registrationOpen\s*\?/,
-    "EventInformationPanel should branch on registrationOpen"
+    /status\?\.isOpen/,
+    "RegistrationStatusButton should branch on the live registration status"
   );
 });
 
 test("Closed event renders NewsletterSubscriptionForm with source", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
+  const source = readSource("components/events/registration-status-button.tsx");
   assert.match(
     source,
     /<NewsletterSubscriptionForm\s+source="event_closed_registration"/,
@@ -29,11 +29,11 @@ test("Closed event renders NewsletterSubscriptionForm with source", () => {
 });
 
 test("Closed event shows explanatory message about registration", () => {
-  const source = readSource("app/etkinlikler/[slug]/page.tsx");
+  const source = readSource("components/events/registration-status-button.tsx");
   assert.match(
     source,
-    /Bu etkinliğin kayıtları şu an kapalı/,
-    "Closed event should explain registration is closed"
+    /registrationClosedNotice/,
+    "Closed event should receive the translated closed-registration notice"
   );
 });
 

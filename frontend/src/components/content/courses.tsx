@@ -1,7 +1,4 @@
-import type { ReactNode } from "react";
-
 import { ContentCardShell } from "@/components/content/content-card-shell";
-import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { ContentGrid } from "@/components/content/content-grid";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import { join } from "@/lib/testids";
@@ -29,15 +26,6 @@ type CourseListProps = {
   emptyMessage?: string;
   t_taxonomy?: (key: string) => string;
   t_courses?: (key: string) => string;
-};
-
-type CourseDetailProps = {
-  title: string;
-  summary?: string | null;
-  meta?: ReactNode;
-  outcomeBullets?: string | null;
-  children: ReactNode;
-  afterContent?: ReactNode;
 };
 
 export function CourseList({
@@ -88,7 +76,7 @@ export function CourseList({
         return (
           <ContentCardShell
             key={course.id}
-            testId={join('egitimler', 'card', course.slug)}
+            testId={join("egitimler", "card", course.slug)}
             href={`/egitimler/${course.slug}`}
             title={course.title}
             kicker={topicAreaLabel ?? undefined}
@@ -129,25 +117,5 @@ export function CourseList({
         );
       })}
     </ContentGrid>
-  );
-}
-
-export function CourseDetail({
-  title,
-  summary,
-  meta,
-  children,
-  afterContent,
-}: CourseDetailProps) {
-  return (
-    <ContentDetailShell
-      testId="egitimler.detail"
-      title={title}
-      summary={summary ?? undefined}
-      meta={meta}
-      afterContent={afterContent}
-    >
-      {children}
-    </ContentDetailShell>
   );
 }

@@ -11,7 +11,7 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test("blog list page imports SearchField from shared content barrel", () => {
-  const source = readSource("app/blog-yazilari/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/page.tsx");
 
   assert.match(
     source,
@@ -21,7 +21,7 @@ test("blog list page imports SearchField from shared content barrel", () => {
 });
 
 test("blog list page passes publishedDate to blog cards", () => {
-  const source = readSource("app/blog-yazilari/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/page.tsx");
 
   assert.match(
     source,
@@ -31,7 +31,7 @@ test("blog list page passes publishedDate to blog cards", () => {
 });
 
 test("blog list page passes authorName to blog cards", () => {
-  const source = readSource("app/blog-yazilari/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/page.tsx");
 
   assert.match(
     source,
@@ -41,7 +41,7 @@ test("blog list page passes authorName to blog cards", () => {
 });
 
 test("blog list page reads search from searchParams", () => {
-  const source = readSource("app/blog-yazilari/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/page.tsx");
 
   assert.match(
     source,
@@ -51,7 +51,7 @@ test("blog list page reads search from searchParams", () => {
 });
 
 test("blog list page passes search to getBlogPosts", () => {
-  const source = readSource("app/blog-yazilari/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/page.tsx");
 
   assert.match(
     source,
@@ -61,12 +61,12 @@ test("blog list page passes search to getBlogPosts", () => {
 });
 
 test("blog list page shows empty message for no results", () => {
-  const source = readSource("app/blog-yazilari/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/page.tsx");
 
   assert.match(
     source,
-    /Aramanızla eşleşen blog yazısı bulunamadı/,
-    "blog list page should show empty message when no search results"
+    /emptyMessage=\{t\('list\.empty'\)\}/,
+    "blog list page should pass the localized empty message"
   );
 });
 
@@ -90,13 +90,13 @@ test("SearchField renders search input", () => {
   );
 });
 
-test("SearchField accepts searchOnly prop", () => {
+test("SearchField no longer advertises searchOnly prop", () => {
   const source = readSource("components/content/search-field.tsx");
 
-  assert.match(
+  assert.doesNotMatch(
     source,
     /searchOnly/,
-    "SearchField should accept searchOnly prop"
+    "SearchField should not expose the no-op searchOnly prop"
   );
 });
 

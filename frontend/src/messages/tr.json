@@ -219,8 +219,13 @@
         "business_value_empty": "Bu eğitimin kurumsal değer bilgisi yakında eklenecek.",
         "outcomes": "Beklenen Çıktılar",
         "scope": "Kapsam ve İçerik",
-        "related_events": "İlişkili Etkinlikler"
-      }
+        "related_events": "İlişkili Etkinlikler",
+        "upcoming_sessions": "Yaklaşan Eğitimler",
+        "past_sessions": "Geçmiş oturumlar",
+        "no_upcoming_sessions": "Bu eğitim için henüz yaklaşan bir oturum planlanmamıştır."
+      },
+      "upcoming_session_register_cta": "Kayıt Ol",
+      "upcoming_session_closed": "Kayıt Kapandı"
     }
   },
   "events": {
@@ -237,7 +242,20 @@
       "register_cta": "Etkinliğe Kayıt Ol",
       "contact_cta": "İletişime Geç",
       "registration_closed_notice": "Bu etkinliğin kayıtları şu an kapalı. Yeni etkinliklerden haberdar olmak için bültenimize abone olun.",
-      "content_empty": "Bu etkinlik için detaylı içerik yakında eklenecek."
+      "content_empty": "Bu etkinlik için detaylı içerik yakında eklenecek.",
+      "info_panel_heading_egitim": "Eğitim Bilgileri",
+      "info_panel_heading_kurs": "Kurs Bilgileri",
+      "date_label": "Tarih",
+      "end_date_label": "Bitiş",
+      "location_label": "Yer",
+      "format_label": "Format",
+      "price_label": "Ücret",
+      "schedule_label": "Saat",
+      "format": {
+        "online": "Online",
+        "yuz-yuze": "Yüz Yüze",
+        "hibrit": "Hibrit"
+      }
     },
     "filters": {
       "type": {
@@ -261,6 +279,35 @@
     }
   },
   "event_reg": {
+    "meta": {
+      "not_found": "Kayıt sayfası bulunamadı.",
+      "title_suffix": "Kayıt",
+      "description": "{title} etkinliği için kayıt formu."
+    },
+    "breadcrumbs": {
+      "events": "Etkinlikler",
+      "registration": "Kayıt"
+    },
+    "hero": {
+      "eyebrow": "Etkinlik Kaydı",
+      "open_body": "Bu etkinliğe katılım için formu doldurun. Kaydınız alındığında size onay mesajı gösterilecektir.",
+      "closed_body": "Bu etkinlik için kayıtlar kapandı. Kural, etkinlik başlangıcından 24 saat önce otomatik olarak devreye girer."
+    },
+    "panel": {
+      "heading": "Etkinlik Bilgileri",
+      "summary_fallback": "Bu etkinlik için açıklama yakında eklenecek.",
+      "back_to_detail": "Etkinlik Detayına Dön"
+    },
+    "status": {
+      "label": "Kayıt Durumu",
+      "open": "Kayıtlar açık",
+      "closed": "Kayıtlar kapandı"
+    },
+    "closed": {
+      "heading": "Kayıtlar Kapandı",
+      "body_1": "Bu etkinlik için kayıtlar kapandı. Kayıtlar, etkinlik başlangıcından 24 saat önce otomatik olarak kapanır.",
+      "body_2": "Güncel etkinlikleri incelemek veya etkinlik detayına geri dönmek için aşağıdaki bağlantıyı kullanabilirsiniz."
+    },
     "field": {
       "first_name": {
         "label": "Adınız*"
@@ -346,11 +393,15 @@
   "news": {
     "meta": {
       "title": "Haberler | Netas Academy",
-      "description": "Akademi gündemini, yeni duyuruları ve öne çıkan gelişmeleri takip edebileceğiniz kurumsal haber alanı."
+      "description": "Akademi gündemini, yeni duyuruları ve öne çıkan gelişmeleri takip edebileceğiniz kurumsal haber alanı.",
+      "not_found": "Haber Bulunamadı"
     },
     "hero": {
       "title": "Haberler",
       "description": "Akademi gündemini, yeni duyuruları ve öne çıkan gelişmeleri takip edebileceğiniz kurumsal haber alanı."
+    },
+    "list": {
+      "empty": "Henüz haber bulunmuyor."
     }
   },
   "contact": {
@@ -379,9 +430,9 @@
     },
     "field": {
       "request_type": {
-      "label": "Başvuru Türü"
-    },
-    "full_name": {
+        "label": "Başvuru Türü"
+      },
+      "full_name": {
         "label": "Ad Soyad*"
       },
       "email": {

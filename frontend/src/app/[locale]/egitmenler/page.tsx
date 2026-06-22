@@ -87,7 +87,6 @@ export default async function EgitmenlerPage({ searchParams }: EgitmenlerPagePro
       <div className="space-y-4 sm:space-y-8">
         <SearchField
           initialValue={search}
-          searchOnly
           expandedWidthClassName="lg:w-[560px]"
         />
         <Suspense fallback={<TeacherListLoading testId="loading.egitmenler" />}>

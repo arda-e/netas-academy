@@ -1,9 +1,7 @@
-import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
-import { ContentDetailShell } from "@/components/content/content-detail-shell";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
 import { join } from "@/lib/testids";
 import { formatEventDateTime } from "@/lib/date-formatting";
@@ -24,16 +22,6 @@ type EventListItem = {
 type EventListProps = {
   items: EventListItem[];
   emptyMessage?: string;
-};
-
-type EventDetailProps = {
-  title: string;
-  summary?: string | null;
-  startsAt: string;
-  endsAt?: string | null;
-  location?: string | null;
-  children: ReactNode;
-  afterContent?: ReactNode;
 };
 
 export async function EventList({
@@ -73,33 +61,5 @@ export async function EventList({
         />
       ))}
     </ContentGrid>
-  );
-}
-
-export function EventDetail({
-  title,
-  summary,
-  startsAt,
-  endsAt,
-  location,
-  children,
-  afterContent,
-}: EventDetailProps) {
-  return (
-    <ContentDetailShell
-      testId="etkinlikler.detail"
-      title={title}
-      summary={summary ?? undefined}
-      meta={
-        <div className={responsiveLayoutClasses.eventMeta}>
-          <p className="font-bold text-gray-700">{formatEventDateTime(startsAt)}</p>
-          {endsAt ? <p className="font-bold text-gray-700">{formatEventDateTime(endsAt)}</p> : null}
-          {location ? <p>{location}</p> : null}
-        </div>
-      }
-      afterContent={afterContent}
-    >
-      {children}
-    </ContentDetailShell>
   );
 }

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ContentPageShell, RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
+import { CourseRelatedSessionsSection } from "@/components/courses/course-related-sessions-section";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Link } from "@/i18n/navigation";
 import { buildIntentLeadUrl } from "@/lib/lead-intents";
@@ -13,7 +15,6 @@ import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { getCourseBySlug, getCourseSlugs } from "@/lib/strapi-courses";
 import { normalizeCourseLevel, getCourseLevelLabel } from "@/lib/content-taxonomy";
 import { join } from "@/lib/testids";
-import { formatEventDateTime } from "@/lib/date-formatting";
 
 function parseOutcomeBullets(value?: string | null) {
   if (!value) {
@@ -84,10 +85,12 @@ export async function generateMetadata({
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
+  const { isEnabled: isDraft } = await draftMode();
   const t = await getTranslations("courses");
   const tt = await getTranslations("taxonomy");
+  const te = await getTranslations("events");
   const [course, siteSettings] = await Promise.all([
-    getCourseBySlug(slug),
+    getCourseBySlug(slug, isDraft),
     getSiteSettings(),
   ]);
 
@@ -226,29 +229,21 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
             </section>
           )}
 
-          {course.events && course.events.length > 0 && (
-            <section>
-              <h2 className="text-lg font-semibold text-foreground">{t("detail.section.related_events")}</h2>
-              <ul className="mt-2 space-y-2">
-                {course.events.map((event) => (
-                  <li key={event.documentId}>
-                    <Link
-                      className="text-primary hover:underline"
-                      href={`/etkinlikler/${event.slug}`}
-                      data-testid={join("page", "course-detail", "related-event", event.slug)}
-                    >
-                      {event.title}
-                    </Link>
-                    {event.startsAt && (
-                      <span className="ml-2 text-sm text-foreground/50">
-                        {formatEventDateTime(event.startsAt)}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
+          <CourseRelatedSessionsSection
+            events={course.events ?? []}
+            now={new Date()}
+            heading={t("detail.section.upcoming_sessions")}
+            upcomingSessionRegisterCta={t("detail.upcoming_session_register_cta")}
+            noUpcomingSessions={t("detail.section.no_upcoming_sessions")}
+            fallbackCtaLabel={t("detail.corporate_cta_label")}
+            upcomingSessionClosedLabel={t("detail.upcoming_session_closed")}
+            pastSessionsLabel={t("detail.section.past_sessions")}
+            formatLabels={{
+              online: te("detail.format.online"),
+              yuzYuze: te("detail.format.yuz-yuze"),
+              hibrit: te("detail.format.hibrit"),
+            }}
+          />
         </div>
       </Suspense>
     </ContentPageShell>

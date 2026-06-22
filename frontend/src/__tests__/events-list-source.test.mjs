@@ -19,7 +19,7 @@ test("EventList component maps items with summary and date", () => {
   );
   assert.match(
     source,
-    /formatEventDate\(event\.startsAt\)/,
+    /formatEventDateTime\(event\.startsAt\)/,
     "EventList should format event.startsAt for display"
   );
 });
@@ -28,7 +28,7 @@ test("EventList passes kicker from formatEventType before title", () => {
   const source = readSource("components/content/events.tsx");
   assert.match(
     source,
-    /kicker=\{formatEventType\(event\.eventType\)\}/,
+    /kicker=\{getEventTypeLabel\(tx, event\.eventType\)\}/,
     "EventList should pass event type as kicker"
   );
 });
@@ -42,17 +42,17 @@ test("EventList includes topicArea in EventListItem type", () => {
   );
 });
 
-test("getEvents query includes details field", () => {
+test("getEventBySlug query includes details field", () => {
   const source = readSource("lib/strapi-events.ts");
   assert.match(
     source,
-    /fields\[9\]=details/,
-    "getEvents query should request the details field"
+    /fields\[8\]=details/,
+    "getEventBySlug query should request the details field"
   );
 });
 
 test("Etkinlikler page passes topicArea to EventList items", () => {
-  const source = readSource("app/etkinlikler/page.tsx");
+  const source = readSource("app/[locale]/etkinlikler/page.tsx");
   assert.match(
     source,
     /topicArea:\s*event\.topicArea/,
