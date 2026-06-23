@@ -135,7 +135,7 @@ const EmailComposePanel: React.FC<EmailComposePanelProps> = ({ documentId }) => 
               <Checkbox
                 key={status.value}
                 checked={selectedStatuses.includes(status.value)}
-                onChange={() => toggleStatus(status.value)}
+                onCheckedChange={() => toggleStatus(status.value)}
               >
                 {status.label}
               </Checkbox>

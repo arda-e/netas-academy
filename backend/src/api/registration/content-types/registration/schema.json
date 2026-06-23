@@ -11,7 +11,7 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "status": {
+    "registrationStatus": {
       "type": "enumeration",
       "enum": ["pending", "confirmed", "cancelled", "waitlisted", "attended"],
       "default": "pending",

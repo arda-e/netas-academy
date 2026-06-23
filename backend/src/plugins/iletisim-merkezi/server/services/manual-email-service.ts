@@ -3,7 +3,7 @@ import type { EmailSender } from '../../../../services/email';
 
 type RegistrationWithStudent = {
   id: number;
-  status: string;
+  registrationStatus: string;
   lastEmailSentAt?: string | null;
   student?: {
     id: number;
@@ -45,7 +45,7 @@ const manualEmailService = ({ strapi, emailSender }: { strapi: Core.Strapi; emai
     }
 
     const registrations = ((event.registrations ?? []) as RegistrationWithStudent[]).filter(
-      (r) => filterStatuses.includes(r.status) && r.student?.email
+      (r) => filterStatuses.includes(r.registrationStatus) && r.student?.email
     );
 
     if (registrations.length === 0) {

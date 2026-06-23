@@ -115,7 +115,7 @@ export default factories.createCoreService('api::registration.registration' as a
 
       return strapi.db.query('api::registration.registration').create({
         data: {
-          status: input.status ?? 'pending',
+          registrationStatus: input.status ?? 'pending',
           notes: input.notes ?? null,
           event: event.id,
           student: student.id,
@@ -133,7 +133,7 @@ export default factories.createCoreService('api::registration.registration' as a
         key: 'event_registration',
         payload: {
           registrationId: registration.id,
-          status: registration.status,
+          status: registration.registrationStatus,
           notes: registration.notes,
           event: {
             documentId: registration.event.documentId,
@@ -161,7 +161,7 @@ export default factories.createCoreService('api::registration.registration' as a
     // Return sanitized response — no student PII
     return {
       id: registration.id,
-      status: registration.status,
+      status: registration.registrationStatus,
       event: {
         documentId: registration.event.documentId,
         title: registration.event.title,

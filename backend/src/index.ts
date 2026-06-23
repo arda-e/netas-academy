@@ -11,6 +11,8 @@ const PUBLIC_READ_ACTIONS = [
   'api::blog-post.blog-post.findOne',
   'api::blog-author.blog-author.find',
   'api::blog-author.blog-author.findOne',
+  'api::news-post.news-post.find',
+  'api::news-post.news-post.findOne',
   'api::site-setting.site-setting.find',
   'plugin::upload.content-api.find',
   'plugin::upload.content-api.findOne',
@@ -59,6 +61,24 @@ const ensurePublicReadPermissions = async (strapi: Core.Strapi) => {
   });
 };
 
+const ensureLegacyRegistrationUniqueIndex = async (strapi: Core.Strapi) => {
+  const hasLegacyRelationColumns = await Promise.all(
+    ['student_id', 'event_id'].map((columnName) => strapi.db.connection.schema.hasColumn('registrations', columnName))
+  );
+
+  if (!hasLegacyRelationColumns.every(Boolean)) {
+    return;
+  }
+
+  try {
+    await strapi.db.connection.raw(
+      'CREATE UNIQUE INDEX IF NOT EXISTS idx_registration_student_event ON registrations (student_id, event_id)'
+    );
+  } catch (error) {
+    strapi.log.warn('Could not create unique index on registrations(student_id, event_id)', { error });
+  }
+};
+
 export default {
   /**
    * An asynchronous register function that runs before
@@ -77,15 +97,6 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await ensurePublicReadPermissions(strapi);
-
-    // Safety net: unique constraint on (student_id, event_id) to prevent
-    // duplicate registrations at the database level.
-    try {
-      await strapi.db.connection.raw(
-        'CREATE UNIQUE INDEX IF NOT EXISTS idx_registration_student_event ON registrations (student_id, event_id)'
-      );
-    } catch (error) {
-      strapi.log.warn('Could not create unique index on registrations(student_id, event_id)', { error });
-    }
+    await ensureLegacyRegistrationUniqueIndex(strapi);
   },
 };

@@ -778,11 +778,13 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    dailySchedule: Schema.Attribute.String;
     details: Schema.Attribute.RichText;
     endsAt: Schema.Attribute.DateTime;
     eventType: Schema.Attribute.Enumeration<['etkinlik', 'egitim', 'kurs']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'etkinlik'>;
+    format: Schema.Attribute.Enumeration<['online', 'yuz-yuze', 'hibrit']>;
     keepRegistrationsOpen: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -790,6 +792,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     location: Schema.Attribute.String;
     meetingLink: Schema.Attribute.String;
+    price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     registrations: Schema.Attribute.Relation<
       'oneToMany',
@@ -810,6 +813,42 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
         'yapay-zeka',
       ]
     >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiNewsPostNewsPost extends Struct.CollectionTypeSchema {
+  collectionName: 'news_posts';
+  info: {
+    description: 'Kurumsal haberler ve duyurular';
+    displayName: 'Haber';
+    pluralName: 'news-posts';
+    singularName: 'news-post';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    content: Schema.Attribute.RichText;
+    coverImage: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    excerpt: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::news-post.news-post'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    publishedDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    source: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -935,7 +974,7 @@ export interface ApiRegistrationRegistration
       Schema.Attribute.Private;
     notes: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
-    status: Schema.Attribute.Enumeration<
+    registrationStatus: Schema.Attribute.Enumeration<
       ['pending', 'confirmed', 'cancelled', 'waitlisted', 'attended']
     > &
       Schema.Attribute.Required &
@@ -1616,6 +1655,7 @@ declare module '@strapi/strapi' {
       'api::course-application.course-application': ApiCourseApplicationCourseApplication;
       'api::course.course': ApiCourseCourse;
       'api::event.event': ApiEventEvent;
+      'api::news-post.news-post': ApiNewsPostNewsPost;
       'api::newsletter-subscription.newsletter-subscription': ApiNewsletterSubscriptionNewsletterSubscription;
       'api::notification-routing.notification-routing': ApiNotificationRoutingNotificationRouting;
       'api::registration.registration': ApiRegistrationRegistration;

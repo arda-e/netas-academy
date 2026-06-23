@@ -10,6 +10,7 @@ const createSummary = () => ({
   events: { created: 0, updated: 0 },
   blogPosts: { created: 0, updated: 0 },
   blogAuthors: { created: 0, updated: 0 },
+  newsPosts: { created: 0, updated: 0 },
   students: { created: 0, updated: 0 },
   registrations: { created: 0, updated: 0 },
 });
@@ -196,6 +197,9 @@ const demoEvents = [
     endsAt: '2026-04-22T12:30:00.000Z',
     location: 'Istanbul Campus / Lab 2',
     topicArea: 'veri-bilimi',
+    format: 'yuz-yuze',
+    price: 8500,
+    dailySchedule: '09:00 - 12:30',
     courseSlug: 'demo-data-platform-fundamentals',
   },
   {
@@ -232,6 +236,9 @@ const demoEvents = [
     meetingLink: 'https://zoom.us/j/demo-ai-evaluation-clinic',
     autoConfirmationEnabled: true,
     topicArea: 'yapay-zeka',
+    format: 'online',
+    price: 14000,
+    dailySchedule: '10:00 - 12:00',
     courseSlug: 'demo-applied-ai-for-product-teams',
   },
   {
@@ -249,6 +256,9 @@ const demoEvents = [
     location: 'Ankara Office / Operations Room',
     keepRegistrationsOpen: true,
     topicArea: 'bulut-altyapi',
+    format: 'yuz-yuze',
+    price: 12000,
+    dailySchedule: '09:00 - 12:00',
     courseSlug: 'demo-cloud-operations-bootcamp',
   },
   {
@@ -265,6 +275,9 @@ const demoEvents = [
     endsAt: '2026-05-21T12:00:00.000Z',
     location: 'Ankara Office / Lab 1',
     topicArea: 'bulut-altyapi',
+    format: 'yuz-yuze',
+    price: 12000,
+    dailySchedule: '09:00 - 12:00',
     courseSlug: 'demo-cloud-operations-bootcamp',
   },
   {
@@ -383,6 +396,35 @@ const demoBlogPosts = [
   },
 ];
 
+const demoNewsPosts = [
+  {
+    slug: 'demo-ic-holding-siber-guvenlik-webinari',
+    title: 'Demo: IC Holding Ekiplerine Siber Güvenlik Webinarı',
+    excerpt: 'IC Holding bünyesindeki teknik ve yönetici ekiplere yönelik siber güvenlik farkındalık webinarı başarıyla tamamlandı.',
+    content:
+      'Netas Academy olarak IC Holding\'in davetlisi olarak düzenlediğimiz bu webinarda, kurumsal ağ güvenliği, kimlik avı saldırılarına karşı korunma ve olay müdahale süreçleri ele alındı.\n\n' +
+      'Webinara IC Holding\'in farklı birimlerinden 60\'ı aşkın katılımcı iştirak etti. Oturum, teorik sunum ve canlı senaryo canlandırmalarının ardından soru-cevap bölümüyle sona erdi.\n\n' +
+      'Bir sonraki etkinliğimizde uygulamalı pentest atölyesiyle devam etmeyi planlıyoruz.',
+    source: 'IC Holding',
+    publishedDate: '2026-03-12T10:00:00.000Z',
+    coverImageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
+    coverImageAlt: 'Siber güvenlik webinarı ekran görünümü',
+  },
+  {
+    slug: 'demo-ic-holding-devops-workshop',
+    title: 'Demo: IC Holding için DevOps & CI/CD Workshop\'u',
+    excerpt: 'IC Holding yazılım geliştirme ekipleriyle yürütülen iki günlük DevOps workshop\'unda CI/CD pipeline kurulumu ve container yönetimi uygulamalı olarak çalışıldı.',
+    content:
+      'Netas Academy eğitmenleri liderliğinde gerçekleştirilen iki günlük workshop, IC Holding\'in yazılım geliştirme süreçlerini modernize etme hedefine yönelik kapsamlı bir adım oldu.\n\n' +
+      'İlk gün Docker ve container orkestrasyonu temel kavramları işlenirken ikinci gün GitHub Actions kullanılarak uçtan uca bir CI/CD pipeline canlı olarak kuruldu. Katılımcılar kendi uygulamaları üzerinde doğrudan pratik yaptı.\n\n' +
+      'Workshop sonrasında ekipler, mevcut projelerinden birini pipeline\'a entegre ederek süreci kendi ortamlarında hayata geçirdi. Netas Academy ve IC Holding iş birliği kapsamında ilerleyen aylarda ileri seviye Kubernetes eğitimi de planlanmaktadır.',
+    source: 'IC Holding',
+    publishedDate: '2026-04-28T09:00:00.000Z',
+    coverImageUrl: 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?auto=format&fit=crop&w=800&q=80',
+    coverImageAlt: 'DevOps workshop katılımcıları',
+  },
+];
+
 const demoStudents = [
   { firstName: 'Ada', lastName: 'Kaya', email: 'demo.ada.kaya@example.com', phone: '+90 555 000 1001' },
   { firstName: 'Mert', lastName: 'Arslan', email: 'demo.mert.arslan@example.com', phone: '+90 555 000 1002' },
@@ -427,6 +469,18 @@ async function uploadImageFromUrl(strapi, imageUrl, fileName, altText) {
   let tmpPath = null;
 
   try {
+    const rawExt = imageUrl.split('?')[0].split('.').pop() || '';
+    const ext = rawExt && !rawExt.includes('/') && rawExt.length <= 5 ? rawExt : 'jpg';
+    const storedFileName = `${fileName}.${ext}`;
+    const existingFile = await strapi.db.query('plugin::upload.file').findOne({
+      where: { name: storedFileName },
+      select: ['id'],
+    });
+
+    if (existingFile?.id) {
+      return existingFile.id;
+    }
+
     const imageResponse = await fetch(imageUrl);
     if (!imageResponse.ok) {
       console.warn(`Failed to fetch image ${imageUrl}: ${imageResponse.status}`);
@@ -434,26 +488,23 @@ async function uploadImageFromUrl(strapi, imageUrl, fileName, altText) {
     }
 
     const buffer = Buffer.from(await imageResponse.arrayBuffer());
-    const ext = imageUrl.split('?')[0].split('.').pop() || 'jpg';
 
-    tmpPath = path.join(os.tmpdir(), `${fileName}.${ext}`);
+    tmpPath = path.join(os.tmpdir(), storedFileName);
     fs.writeFileSync(tmpPath, buffer);
 
     const uploadResult = await strapi.plugin('upload').service('upload').upload({
       data: {
         fileInfo: {
-          name: `${fileName}.${ext}`,
+          name: storedFileName,
           alternativeText: altText || fileName,
           caption: altText || null,
         },
       },
       files: {
-        file: {
-          path: tmpPath,
-          name: `${fileName}.${ext}`,
-          type: imageResponse.headers.get('content-type') || `image/${ext}`,
-          size: buffer.length,
-        },
+        filepath: tmpPath,
+        originalFilename: storedFileName,
+        mimetype: imageResponse.headers.get('content-type') || `image/${ext}`,
+        size: buffer.length,
       },
     });
 
@@ -462,7 +513,7 @@ async function uploadImageFromUrl(strapi, imageUrl, fileName, altText) {
       return null;
     }
 
-    return uploadResult[0].documentId;
+    return uploadResult[0].id;
   } catch (error) {
     console.warn(`Error uploading image ${imageUrl}:`, error.message);
     return null;
@@ -538,7 +589,7 @@ async function upsertRegistration(strapi, registration, studentIdByEmail, eventI
     await strapi.db.query('api::registration.registration').update({
       where: { id: existing.id },
       data: {
-        status: registration.status,
+        registrationStatus: registration.status,
         notes: registration.notes || null,
         student: studentId,
         event: eventId,
@@ -709,7 +760,7 @@ async function main() {
           post.coverImageAlt || post.title
         );
         if (coverImageDocumentId) {
-          console.log(`  -> uploaded (documentId: ${coverImageDocumentId})`);
+          console.log(`  -> media ready (id: ${coverImageDocumentId})`);
         }
       }
 
@@ -729,6 +780,40 @@ async function main() {
         },
         result,
         'blogPosts'
+      );
+    }
+
+    for (const post of demoNewsPosts) {
+      let coverImageDocumentId = null;
+      if (post.coverImageUrl) {
+        console.log(`Uploading cover image for news post "${post.slug}"...`);
+        coverImageDocumentId = await uploadImageFromUrl(
+          app,
+          post.coverImageUrl,
+          post.slug,
+          post.coverImageAlt || post.title
+        );
+        if (coverImageDocumentId) {
+          console.log(`  -> media ready (id: ${coverImageDocumentId})`);
+        }
+      }
+
+      await upsertPublishedDocument(
+        app,
+        'api::news-post.news-post',
+        'slug',
+        post.slug,
+        {
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.excerpt,
+          content: post.content,
+          source: post.source || null,
+          publishedDate: post.publishedDate,
+          coverImage: coverImageDocumentId || null,
+        },
+        result,
+        'newsPosts'
       );
     }
 

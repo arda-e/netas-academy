@@ -67,6 +67,19 @@
         "yapay-zeka"
       ]
     },
+    "format": {
+      "type": "enumeration",
+      "enum": ["online", "yuz-yuze", "hibrit"],
+      "description": "Eğitim formatı: Online, Yüz Yüze veya Hibrit"
+    },
+    "price": {
+      "type": "decimal",
+      "description": "Eğitim ücreti (TL, KDV hariç)"
+    },
+    "dailySchedule": {
+      "type": "string",
+      "description": "Günlük saat aralığı, örn. '09:00 - 16:00'"
+    },
     "seo": {
       "type": "component",
       "repeatable": false,
