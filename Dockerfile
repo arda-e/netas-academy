@@ -23,7 +23,20 @@ COPY emails ./emails
 
 ENV STRAPI_URL=http://127.0.0.1:1337
 
-RUN npm run build --prefix backend
+ARG STRAPI_BUILD_DUMMY_1=ci-build-admin-jwt-secret
+ARG STRAPI_BUILD_DUMMY_2=ci-build-api-token-salt
+ARG STRAPI_BUILD_DUMMY_3=ci-build-transfer-token-salt
+ARG STRAPI_BUILD_DUMMY_4=ci-build-encryption-key
+ARG STRAPI_BUILD_SMTP_USER=ci-build-smtp-user
+ARG STRAPI_BUILD_SMTP_PASS=ci-build-smtp-pass
+
+RUN ADMIN_JWT_SECRET="$STRAPI_BUILD_DUMMY_1" \
+  API_TOKEN_SALT="$STRAPI_BUILD_DUMMY_2" \
+  TRANSFER_TOKEN_SALT="$STRAPI_BUILD_DUMMY_3" \
+  ENCRYPTION_KEY="$STRAPI_BUILD_DUMMY_4" \
+  EMAIL_SMTP_USER="$STRAPI_BUILD_SMTP_USER" \
+  EMAIL_SMTP_PASS="$STRAPI_BUILD_SMTP_PASS" \
+  npm run build --prefix backend
 RUN npm run build --prefix frontend
 
 FROM node:22-bookworm-slim AS runner

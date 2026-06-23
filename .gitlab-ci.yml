@@ -86,7 +86,17 @@ build_image:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE:production" -f Dockerfile .
+    - >
+      docker build --pull
+      --build-arg STRAPI_BUILD_DUMMY_1=ci-build-admin-jwt-secret
+      --build-arg STRAPI_BUILD_DUMMY_2=ci-build-api-token-salt
+      --build-arg STRAPI_BUILD_DUMMY_3=ci-build-transfer-token-salt
+      --build-arg STRAPI_BUILD_DUMMY_4=ci-build-encryption-key
+      --build-arg STRAPI_BUILD_SMTP_USER=ci-build-smtp-user
+      --build-arg STRAPI_BUILD_SMTP_PASS=ci-build-smtp-pass
+      -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+      -t "$CI_REGISTRY_IMAGE:production"
+      -f Dockerfile .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
     - docker push "$CI_REGISTRY_IMAGE:production"
 
