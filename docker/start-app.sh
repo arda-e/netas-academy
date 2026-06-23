@@ -5,6 +5,21 @@ set -euo pipefail
 backend_pid=""
 frontend_pid=""
 
+wait_for_tcp() {
+  local host="${1:?host is required}"
+  local port="${2:?port is required}"
+
+  for attempt in {1..60}; do
+    if (echo >"/dev/tcp/${host}/${port}") >/dev/null 2>&1; then
+      return 0
+    fi
+
+    sleep 2
+  done
+
+  return 1
+}
+
 cleanup() {
   for pid in "$frontend_pid" "$backend_pid"; do
     if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
@@ -18,6 +33,16 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 cd /app
+
+if [[ "${DATABASE_CLIENT:-sqlite}" == "postgres" ]]; then
+  db_host="${DATABASE_HOST:-postgres}"
+  db_port="${DATABASE_PORT:-5432}"
+
+  if ! wait_for_tcp "$db_host" "$db_port"; then
+    echo "Timed out waiting for Postgres on ${db_host}:${db_port}." >&2
+    exit 1
+  fi
+fi
 
 npm --prefix backend run start &
 backend_pid=$!

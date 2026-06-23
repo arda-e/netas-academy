@@ -17,8 +17,13 @@ services:
       TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:-change-transfer-token-salt}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:-change-encryption-key}
       JWT_SECRET: ${JWT_SECRET:-change-jwt-secret}
-      DATABASE_CLIENT: sqlite
-      DATABASE_FILENAME: .tmp/data.db
+      UPLOAD_PROVIDER: ${UPLOAD_PROVIDER:-local}
+      DATABASE_CLIENT: ${DATABASE_CLIENT:-sqlite}
+      DATABASE_URL: ${DATABASE_URL:-}
+      DATABASE_HOST: ${DATABASE_HOST:-postgres}
+      DATABASE_PORT: ${DATABASE_PORT:-5432}
+      DATABASE_FILENAME: ${DATABASE_FILENAME:-.tmp/data.db}
+      DATABASE_POOL_MIN: ${DATABASE_POOL_MIN:-0}
       EMAIL_PROVIDER: nodemailer
       EMAIL_SMTP_HOST: smtp-relay.brevo.com
       EMAIL_SMTP_PORT: "587"
@@ -28,15 +33,16 @@ services:
       EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM:-Netas Academy <no-reply@netasacademy.com>}
       EMAIL_DEFAULT_REPLY_TO: ${EMAIL_DEFAULT_REPLY_TO:-support@netasacademy.com}
       EMAIL_TEST_ADDRESS: ${EMAIL_TEST_ADDRESS:-test@netasacademy.com}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-      AWS_ACCESS_SECRET: ${AWS_ACCESS_SECRET:-}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-      AWS_REGION: ${AWS_REGION:-}
-      AWS_BUCKET: ${AWS_BUCKET:-}
-      AWS_ACL: ${AWS_ACL:-public-read}
-      AWS_CACHE_CONTROL: ${AWS_CACHE_CONTROL:-public, max-age=31536000, immutable}
-      MEDIA_PUBLIC_URL: ${MEDIA_PUBLIC_URL:-}
-      MEDIA_ROOT_PATH: ${MEDIA_ROOT_PATH:-uploads}
+      B2_APPLICATION_KEY_ID: ${B2_APPLICATION_KEY_ID:-}
+      B2_APPLICATION_KEY: ${B2_APPLICATION_KEY:-}
+      B2_REGION: ${B2_REGION:-us-west-004}
+      B2_ENDPOINT: ${B2_ENDPOINT:-https://s3.us-west-004.backblazeb2.com}
+      B2_PUBLIC_URL: ${B2_PUBLIC_URL:-}
+      B2_BUCKET: ${B2_BUCKET:-}
+      B2_ROOT_PATH: ${B2_ROOT_PATH:-uploads}
+      B2_ACL: ${B2_ACL:-public-read}
+      B2_FORCE_PATH_STYLE: ${B2_FORCE_PATH_STYLE:-true}
+      B2_SIGNED_URL_EXPIRES: ${B2_SIGNED_URL_EXPIRES:-900}
     volumes:
       - ./.docker-data/strapi:/app/backend/.tmp
       - ./.docker-data/uploads:/app/backend/public/uploads
@@ -49,3 +55,47 @@ services:
       timeout: 5s
       retries: 6
       start_period: 45s
+
+  postgres:
+    image: postgres:17-alpine
+    profiles:
+      - postgres
+      - backups
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-netas_academy}
+      POSTGRES_USER: ${POSTGRES_USER:-netas_academy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app}
+    volumes:
+      - ./.docker-data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-netas_academy} -d ${POSTGRES_DB:-netas_academy}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  postgres-backup:
+    build:
+      context: ./docker/postgres-backup
+    profiles:
+      - backups
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-}
+      B2_BACKUP_BUCKET: ${B2_BACKUP_BUCKET:-}
+      B2_APPLICATION_KEY_ID: ${B2_BACKUP_APPLICATION_KEY_ID:-}
+      B2_APPLICATION_KEY: ${B2_BACKUP_APPLICATION_KEY:-}
+      B2_BACKUP_PREFIX: ${B2_BACKUP_PREFIX:-postgres}
+      BACKUP_CRON_SCHEDULE: ${BACKUP_CRON_SCHEDULE:-0 2 * * *}
+      BACKUP_RUN_ON_START: ${BACKUP_RUN_ON_START:-true}
+
+volumes:
+  pgdata:

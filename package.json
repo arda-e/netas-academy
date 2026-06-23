@@ -10,7 +10,11 @@
     "build:frontend": "npm run build --prefix frontend",
     "build:backend": "npm run build --prefix backend",
     "lint": "npm run lint --prefix frontend",
-    "seed:demo": "npm run seed:demo --prefix backend"
+    "seed:demo": "npm run seed:demo --prefix backend",
+    "seed:demo:docker": "docker compose exec -T app npm --prefix backend run seed:demo",
+    "backup:postgres:docker": "docker compose --profile backups run --rm postgres-backup /usr/local/bin/backup.sh",
+    "backup:postgres:start-cron": "docker compose --profile backups up -d --build postgres-backup",
+    "backup:postgres:logs": "docker compose --profile backups logs -f postgres-backup"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
