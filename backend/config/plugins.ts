@@ -1,34 +1,15 @@
 import type { Core } from '@strapi/strapi';
+import { BackendConfigManager } from '../src/config/env';
 
-const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => {
+const config = (): Core.Config.Plugin => {
+  const configManager = BackendConfigManager.process();
+
   return {
     upload: {
-      config: {
-        provider: 'local',
-        actionOptions: {
-          upload: {},
-          uploadStream: {},
-          delete: {},
-        },
-      },
+      config: configManager.getUploadConfig(),
     },
     email: {
-      config: {
-        provider: env('EMAIL_PROVIDER', 'nodemailer'),
-        providerOptions: {
-          host: env('EMAIL_SMTP_HOST', 'smtp-relay.brevo.com'),
-          port: env.int('EMAIL_SMTP_PORT', 587),
-          secure: env.bool('EMAIL_SMTP_SECURE', false),
-          auth: {
-            user: env('EMAIL_SMTP_USER'),
-            pass: env('EMAIL_SMTP_PASS'),
-          },
-        },
-        settings: {
-          defaultFrom: env('EMAIL_DEFAULT_FROM', 'Netas Academy <no-reply@netas-academy.local>'),
-          defaultReplyTo: env('EMAIL_DEFAULT_REPLY_TO', 'support@netas-academy.local'),
-        },
-      },
+      config: configManager.getEmailConfig(),
     },
     'csv-exporter': {
       enabled: true,

@@ -4,16 +4,17 @@
  *
  * Called from lifecycle hooks (afterCreate, afterUpdate, afterDelete).
  */
+import { BackendConfigManager } from '../config/env';
 
-const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://127.0.0.1:3000";
-const REVALIDATION_SECRET = process.env.REVALIDATION_SECRET ?? "";
+const { frontendUrl: FRONTEND_URL, revalidationSecret: REVALIDATION_SECRET } =
+  BackendConfigManager.process().getRevalidationConfig();
 
 const TAG_MAP: Record<string, string> = {
-  "api::course.course": "strapi-courses",
-  "api::event.event": "strapi-events",
-  "api::blog-post.blog-post": "strapi-blog-posts",
-  "api::blog-author.blog-author": "strapi-blog-posts",
-  "api::teacher.teacher": "strapi-teachers",
+  'api::course.course': 'strapi-courses',
+  'api::event.event': 'strapi-events',
+  'api::blog-post.blog-post': 'strapi-blog-posts',
+  'api::blog-author.blog-author': 'strapi-blog-posts',
+  'api::teacher.teacher': 'strapi-teachers',
 };
 
 async function revalidateTag(uid: string) {
@@ -24,10 +25,10 @@ async function revalidateTag(uid: string) {
 
   try {
     const response = await fetch(`${FRONTEND_URL}/api/revalidate`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "x-revalidate-secret": REVALIDATION_SECRET,
+        'Content-Type': 'application/json',
+        'x-revalidate-secret': REVALIDATION_SECRET,
       },
       body: JSON.stringify({ tag }),
     });
