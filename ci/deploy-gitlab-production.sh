@@ -31,7 +31,9 @@ for required_var in "${required_vars[@]}"; do
 done
 
 ssh_target="${PRODUCTION_USER}@${PRODUCTION_HOST}"
-ssh_opts=(-i ~/.ssh/production_deploy_key -o StrictHostKeyChecking=yes)
+ssh_port="${PRODUCTION_SSH_PORT:-22}"
+ssh_opts=(-i ~/.ssh/production_deploy_key -p "$ssh_port" -o StrictHostKeyChecking=yes)
+scp_opts=(-i ~/.ssh/production_deploy_key -P "$ssh_port" -o StrictHostKeyChecking=yes)
 compose_file="deploy/ubuntu/docker-compose.production.yml"
 
 umask 077
@@ -77,11 +79,11 @@ write_env BACKUP_CRON_SCHEDULE "${BACKUP_CRON_SCHEDULE:-0 2 * * *}"
 write_env BACKUP_RUN_ON_START "${BACKUP_RUN_ON_START:-true}"
 
 ssh "${ssh_opts[@]}" "$ssh_target" "mkdir -p '${PRODUCTION_APP_DIR}/deploy/ubuntu/nginx' '${PRODUCTION_APP_DIR}/docker/postgres-backup' '${PRODUCTION_APP_DIR}/scripts'"
-scp "${ssh_opts[@]}" "$compose_file" "$ssh_target:${PRODUCTION_APP_DIR}/${compose_file}"
-scp "${ssh_opts[@]}" deploy/ubuntu/nginx/new.netasacademy.com.conf "$ssh_target:${PRODUCTION_APP_DIR}/deploy/ubuntu/nginx/new.netasacademy.com.conf"
-scp "${ssh_opts[@]}" docker/postgres-backup/* "$ssh_target:${PRODUCTION_APP_DIR}/docker/postgres-backup/"
-scp "${ssh_opts[@]}" scripts/restore-production-db.sh "$ssh_target:${PRODUCTION_APP_DIR}/scripts/restore-production-db.sh"
-scp "${ssh_opts[@]}" "$production_env" "$ssh_target:${PRODUCTION_APP_DIR}/.env"
+scp "${scp_opts[@]}" "$compose_file" "$ssh_target:${PRODUCTION_APP_DIR}/${compose_file}"
+scp "${scp_opts[@]}" deploy/ubuntu/nginx/new.netasacademy.com.conf "$ssh_target:${PRODUCTION_APP_DIR}/deploy/ubuntu/nginx/new.netasacademy.com.conf"
+scp "${scp_opts[@]}" docker/postgres-backup/* "$ssh_target:${PRODUCTION_APP_DIR}/docker/postgres-backup/"
+scp "${scp_opts[@]}" scripts/restore-production-db.sh "$ssh_target:${PRODUCTION_APP_DIR}/scripts/restore-production-db.sh"
+scp "${scp_opts[@]}" "$production_env" "$ssh_target:${PRODUCTION_APP_DIR}/.env"
 rm -f "$production_env"
 
 ssh "${ssh_opts[@]}" "$ssh_target" "PRODUCTION_APP_DIR='${PRODUCTION_APP_DIR}' bash -s" <<'REMOTE'

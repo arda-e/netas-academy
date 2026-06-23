@@ -9,6 +9,7 @@ variables:
   NODE_VERSION: "22"
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
+  DOCKER_BUILDKIT: "1"
 
 .node_job:
   image: node:22-bookworm
@@ -85,9 +86,12 @@ build_image:
     - if: '$CI_PIPELINE_SOURCE == "web"'
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+    - docker buildx create --use --name netas-academy-builder
   script:
     - >
-      docker build --pull
+      docker buildx build --pull --push
+      --cache-from type=registry,ref="$CI_REGISTRY_IMAGE:buildcache"
+      --cache-to type=registry,ref="$CI_REGISTRY_IMAGE:buildcache",mode=max
       --build-arg STRAPI_BUILD_DUMMY_1=ci-build-admin-jwt-secret
       --build-arg STRAPI_BUILD_DUMMY_2=ci-build-api-token-salt
       --build-arg STRAPI_BUILD_DUMMY_3=ci-build-transfer-token-salt
@@ -97,8 +101,6 @@ build_image:
       -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
       -t "$CI_REGISTRY_IMAGE:production"
       -f Dockerfile .
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
-    - docker push "$CI_REGISTRY_IMAGE:production"
 
 .deploy_template:
   image: alpine:3.22
@@ -107,11 +109,15 @@ build_image:
     - build_image
   before_script:
     - apk add --no-cache bash openssh-client
+    - test -n "$PRODUCTION_HOST"
+    - test -n "$PRODUCTION_USER"
+    - test -n "$PRODUCTION_APP_DIR"
+    - test -n "$PRODUCTION_SSH_PRIVATE_KEY"
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - printf '%s\n' "$PRODUCTION_SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/production_deploy_key
     - chmod 600 ~/.ssh/production_deploy_key
-    - ssh-keyscan -H "$PRODUCTION_HOST" >> ~/.ssh/known_hosts
+    - ssh-keyscan -T 20 -p "${PRODUCTION_SSH_PORT:-22}" -H "$PRODUCTION_HOST" >> ~/.ssh/known_hosts
   script:
     - bash ci/deploy-gitlab-production.sh
 

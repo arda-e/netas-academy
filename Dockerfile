@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.7
+
 FROM node:22-bookworm AS deps
 
 WORKDIR /app
@@ -9,8 +11,10 @@ RUN apt-get update \
 COPY frontend/package*.json ./frontend/
 COPY backend/package*.json ./backend/
 
-RUN npm ci --prefix frontend
-RUN npm ci --prefix backend
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
+  npm ci --prefix frontend --cache /root/.npm --prefer-offline
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
+  npm ci --prefix backend --cache /root/.npm --prefer-offline
 
 FROM deps AS builder
 
