@@ -53,6 +53,7 @@ backend_tests:
 
 playwright_e2e:
   extends: .node_job
+  image: mcr.microsoft.com/playwright:v1.60.0-noble
   stage: e2e
   allow_failure: true
   needs:
@@ -62,7 +63,6 @@ playwright_e2e:
     - npm ci --prefix frontend --cache frontend/.npm --prefer-offline
     - npm ci --prefix backend --cache backend/.npm --prefer-offline
     - npm ci --prefix e2e --cache e2e/.npm --prefer-offline
-    - npx --prefix e2e playwright install --with-deps chromium
   script:
     - npm run seed:demo --prefix backend
     - npm run test --prefix e2e
