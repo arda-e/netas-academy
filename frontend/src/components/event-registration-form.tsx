@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useEventRegistrationForm } from "@/hooks/use-event-registration-form";
 import type { StrapiEventType } from "@/lib/strapi-types";
 
@@ -29,6 +29,7 @@ export function EventRegistrationForm({
   eventType,
 }: EventRegistrationFormProps) {
   const t = useTranslations('event_reg');
+  const pathname = usePathname();
   const {
     values,
     isSubmitting,
@@ -171,7 +172,7 @@ export function EventRegistrationForm({
             <span className="space-y-1">
               <span className="block font-medium text-foreground">
                 {t('kvkk.law_reference')}{" "}
-                <Link href="/kvkk" className="font-semibold text-primary transition-colors hover:text-primary/80" data-testid="event-registration.link.kvkk-disclosure">
+                <Link href={{ pathname: "/kvkk", query: { returnTo: pathname } }} className="font-semibold text-primary transition-colors hover:text-primary/80" data-testid="event-registration.link.kvkk-disclosure">
                   {t('kvkk.link')}
                 </Link>{" "}
                 {t('kvkk.suffix')}

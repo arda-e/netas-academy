@@ -21,7 +21,7 @@ export async function getCourseSlugs() {
   }
 }
 
-export const getCourseBySlug = cache(async (slug: string) => {
+export const getCourseBySlug = cache(async (slug: string, isDraft = false) => {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiCourse>>(
       `/api/courses?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1` +
@@ -39,8 +39,9 @@ export const getCourseBySlug = cache(async (slug: string) => {
       '&populate[events][fields][0]=title&populate[events][fields][1]=slug' +
       '&populate[events][fields][2]=summary&populate[events][fields][3]=startsAt' +
       '&populate[events][fields][4]=eventType&populate[events][fields][5]=topicArea' +
+      '&populate[events][fields][6]=format&populate[events][fields][7]=price' +
       '&populate[events][sort][0]=startsAt:asc',
-      { next: { tags: [COURSES_TAG] } }
+      isDraft ? { isDraft: true } : { next: { tags: [COURSES_TAG] } }
     );
 
     return response.data[0] ?? null;

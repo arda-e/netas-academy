@@ -48,11 +48,11 @@ export async function getBlogPostSlugs() {
   }
 }
 
-export const getBlogPostBySlug = cache(async (slug: string) => {
+export const getBlogPostBySlug = cache(async (slug: string, isDraft = false) => {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiBlogPost>>(
       `/api/blog-posts?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=excerpt&fields[3]=content&fields[4]=publishedDate&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex&populate[seo][fields][4]=ogImageAlt&populate[seo][fields][5]=ogTitle&populate[seo][fields][6]=ogDescription&populate[seo][populate][ogImage][fields][0]=url&populate[seo][populate][ogImage][fields][1]=alternativeText&populate[seo][populate][ogImage][fields][2]=width&populate[seo][populate][ogImage][fields][3]=height&populate[seo][populate][ogImage][fields][4]=mime&populate[seo][populate][ogImage][fields][5]=formats&populate[author][fields][0]=displayName&populate[author][fields][1]=slug&populate[author][fields][2]=role&populate[author][fields][3]=shortBio&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=alternativeText&populate[coverImage][fields][2]=width&populate[coverImage][fields][3]=height&populate[coverImage][fields][4]=mime&populate[coverImage][fields][5]=formats`,
-      { next: { tags: [BLOG_TAG] } }
+      isDraft ? { isDraft: true } : { next: { tags: [BLOG_TAG] } }
     );
 
     return response.data[0] ?? null;

@@ -42,7 +42,7 @@ export async function getEvents(
       : "";
 
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=topicArea&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex&populate[seo][fields][4]=ogImageAlt&populate[seo][fields][5]=ogTitle&populate[seo][fields][6]=ogDescription&populate[seo][populate][ogImage][fields][0]=url&populate[seo][populate][ogImage][fields][1]=alternativeText&populate[seo][populate][ogImage][fields][2]=width&populate[seo][populate][ogImage][fields][3]=height&populate[seo][populate][ogImage][fields][4]=mime&populate[seo][populate][ogImage][fields][5]=formats&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea${eventTypeFilter}`,
+      `/api/events?pagination[pageSize]=100&sort[0]=${eventSort}&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=topicArea&fields[9]=format&fields[10]=price&fields[11]=dailySchedule&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex&populate[seo][fields][4]=ogImageAlt&populate[seo][fields][5]=ogTitle&populate[seo][fields][6]=ogDescription&populate[seo][populate][ogImage][fields][0]=url&populate[seo][populate][ogImage][fields][1]=alternativeText&populate[seo][populate][ogImage][fields][2]=width&populate[seo][populate][ogImage][fields][3]=height&populate[seo][populate][ogImage][fields][4]=mime&populate[seo][populate][ogImage][fields][5]=formats&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea${eventTypeFilter}`,
       { next: { tags: [EVENTS_TAG] } }
     );
 
@@ -75,11 +75,11 @@ export async function getEventSlugs() {
   }
 }
 
-export const getEventBySlug = cache(async (slug: string) => {
+export const getEventBySlug = cache(async (slug: string, isDraft = false) => {
   try {
     const response = await fetchStrapi<StrapiListResponse<StrapiEvent>>(
-      `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=details&fields[9]=topicArea&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex&populate[seo][fields][4]=ogImageAlt&populate[seo][fields][5]=ogTitle&populate[seo][fields][6]=ogDescription&populate[seo][populate][ogImage][fields][0]=url&populate[seo][populate][ogImage][fields][1]=alternativeText&populate[seo][populate][ogImage][fields][2]=width&populate[seo][populate][ogImage][fields][3]=height&populate[seo][populate][ogImage][fields][4]=mime&populate[seo][populate][ogImage][fields][5]=formats&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea`,
-      { next: { tags: [EVENTS_TAG] } }
+      `/api/events?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=startsAt&fields[4]=eventType&fields[5]=endsAt&fields[6]=keepRegistrationsOpen&fields[7]=location&fields[8]=details&fields[9]=topicArea&fields[10]=format&fields[11]=price&fields[12]=dailySchedule&populate[seo][fields][0]=metaTitle&populate[seo][fields][1]=metaDescription&populate[seo][fields][2]=canonicalPath&populate[seo][fields][3]=noIndex&populate[seo][fields][4]=ogImageAlt&populate[seo][fields][5]=ogTitle&populate[seo][fields][6]=ogDescription&populate[seo][populate][ogImage][fields][0]=url&populate[seo][populate][ogImage][fields][1]=alternativeText&populate[seo][populate][ogImage][fields][2]=width&populate[seo][populate][ogImage][fields][3]=height&populate[seo][populate][ogImage][fields][4]=mime&populate[seo][populate][ogImage][fields][5]=formats&populate[course][fields][0]=title&populate[course][fields][1]=slug&populate[course][fields][2]=topicArea`,
+      isDraft ? { isDraft: true } : { next: { tags: [EVENTS_TAG] } }
     );
 
     return response.data[0] ?? null;

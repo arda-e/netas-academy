@@ -67,6 +67,9 @@ async function fetchStrapi<T>(path: string, options?: FetchStrapiOptions): Promi
 
       const headers = new Headers(options?.headers);
       headers.set("strapi-encode-source-maps", isDraftMode ? "true" : "false");
+      if (isDraftMode && process.env.STRAPI_PREVIEW_TOKEN) {
+        headers.set("Authorization", `Bearer ${process.env.STRAPI_PREVIEW_TOKEN}`);
+      }
       fetchOptions.headers = headers;
 
       if (isDraftMode) {

@@ -51,11 +51,15 @@ export type StrapiCourse = {
     startsAt: string;
     eventType: string;
     topicArea?: string | null;
+    format?: string | null;
+    price?: number | null;
   }> | null;
 };
 
 export type StrapiEventType = "etkinlik" | "egitim" | "kurs";
 export type StrapiEventSortOrder = "asc" | "desc";
+
+export type StrapiEventFormat = "online" | "yuz-yuze" | "hibrit";
 
 export type StrapiEvent = {
   id: number;
@@ -70,6 +74,9 @@ export type StrapiEvent = {
   keepRegistrationsOpen?: boolean | null;
   location?: string | null;
   topicArea?: string | null;
+  format?: StrapiEventFormat | null;
+  price?: number | null;
+  dailySchedule?: string | null;
   seo?: StrapiSeo | null;
   course?: {
     id: number;
@@ -119,6 +126,19 @@ export type StrapiBlogPost = {
   coverImage?: StrapiMedia | null;
   seo?: StrapiSeo | null;
 };
+export type StrapiNewsPost = {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  content?: string | null;
+  source?: string | null;
+  publishedDate?: string | null;
+  coverImage?: StrapiMedia | null;
+  seo?: StrapiSeo | null;
+};
+
 export type StrapiTeacher = {
   id: number;
   documentId: string;
