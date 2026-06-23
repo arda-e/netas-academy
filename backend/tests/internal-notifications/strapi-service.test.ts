@@ -41,7 +41,7 @@ function makeStrapi(emailSendFn: ReturnType<typeof vi.fn>) {
     plugin: vi.fn().mockReturnValue({
       service: vi.fn().mockReturnValue({ send: emailSendFn }),
     }),
-    log: { warn: vi.fn(), error: vi.fn() },
+    log: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
   };
 }
 

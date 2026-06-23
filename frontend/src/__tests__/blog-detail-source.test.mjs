@@ -11,7 +11,7 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test("blog detail page shows author displayName", () => {
-  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/[slug]/page.tsx");
 
   assert.match(
     source,
@@ -21,7 +21,7 @@ test("blog detail page shows author displayName", () => {
 });
 
 test("blog detail page shows author role", () => {
-  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/[slug]/page.tsx");
 
   assert.match(
     source,
@@ -31,7 +31,7 @@ test("blog detail page shows author role", () => {
 });
 
 test("blog detail page shows author shortBio", () => {
-  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/[slug]/page.tsx");
 
   assert.match(
     source,
@@ -45,13 +45,13 @@ test("blog detail page has İlgili Yazılar section", () => {
 
   assert.match(
     source,
-    /İlgili Yazılar/,
-    "related posts section module should have 'İlgili Yazılar' heading"
+    /t\('related_posts\.heading'\)/,
+    "related posts section module should render the translated related posts heading"
   );
 });
 
 test("blog detail page imports the related posts section module", () => {
-  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
+  const source = readSource("app/[locale]/blog-yazilari/[slug]/page.tsx");
 
   assert.match(
     source,
@@ -61,21 +61,21 @@ test("blog detail page imports the related posts section module", () => {
 });
 
 test("blog detail page filters related posts excluding current post", () => {
-  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
+  const source = readSource("lib/strapi-blog.ts");
 
   assert.match(
     source,
-    /p\.documentId\s*!==\s*post\.documentId/,
-    "blog detail page should exclude current post from related posts"
+    /filters\[slug\]\[\$ne\]=\$\{encodeURIComponent\(excludeSlug\)\}/,
+    "related blog helper should exclude the current slug in the Strapi query"
   );
 });
 
-test("blog detail page fetches all posts for related section", () => {
-  const source = readSource("app/blog-yazilari/[slug]/page.tsx");
+test("blog detail page fetches related posts through the dedicated helper", () => {
+  const source = readSource("app/[locale]/blog-yazilari/[slug]/page.tsx");
 
   assert.match(
     source,
-    /getBlogPosts\(\)/,
-    "blog detail page should call getBlogPosts for related posts"
+    /getRelatedBlogPosts\(slug,\s*3\)/,
+    "blog detail page should call getRelatedBlogPosts for related posts"
   );
 });

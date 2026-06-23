@@ -31,6 +31,7 @@ describe("contact-submission service", () => {
         query: vi.fn().mockReturnValue({ create }),
       },
       log: {
+        info: vi.fn(),
         error: vi.fn(),
       },
       create,
@@ -85,7 +86,6 @@ describe("contact-submission service", () => {
         message: "Kurumsal egitim hakkinda bilgi almak istiyorum.",
         interestTopic: "Veri Bilimi",
         expertiseAreas: null,
-        companySize: null,
         partnershipDetails: null,
         submittedAt: expect.any(String),
         status: "new",
@@ -237,25 +237,47 @@ describe("contact-submission service", () => {
     ).rejects.toThrow("expertiseAreas is required for instructor applications");
   });
 
-  it("rejects solution partner application without companySize", async () => {
-    const strapi = createStrapiMock({});
+  it("persists solution partner application without legacy companySize", async () => {
+    const submission = {
+      id: 5,
+      leadType: "solution_partner_application",
+      fullName: "Ada Kaya",
+      email: "ada@example.com",
+      phone: "+90 555 111 2233",
+      company: null,
+      message: "Merhaba",
+      interestTopic: null,
+      expertiseAreas: null,
+      partnershipDetails: null,
+      submittedAt: "2026-04-27T13:00:00.000Z",
+      status: "new",
+    };
+    const strapi = createStrapiMock(submission);
+    deliverFn.mockResolvedValue(undefined);
     vi.stubGlobal("strapi", strapi);
 
     const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
     const service = serviceModule.default as {
-      createSubmission: (input: Record<string, string>) => Promise<unknown>;
+      createSubmission: (input: Record<string, string>) => Promise<typeof submission>;
     };
 
-    await expect(
-      service.createSubmission({
-        leadType: "solution_partner_application",
-        fullName: "Ada Kaya",
-        email: "ada@example.com",
-        phone: "+90 555 111 2233",
-        message: "Merhaba",
-        kvkkConsent: true,
+    await expect(service.createSubmission({
+      leadType: "solution_partner_application",
+      fullName: "Ada Kaya",
+      email: "ada@example.com",
+      phone: "+90 555 111 2233",
+      message: "Merhaba",
+      kvkkConsent: true,
+    })).resolves.toEqual(submission);
+
+    expect(deliverFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        key: "lead_solution_partner",
+        payload: expect.objectContaining({
+          partnershipDetails: null,
+        }),
       }),
-    ).rejects.toThrow("companySize is required for solution partner applications");
+    );
   });
 
   it("rejects whitespace-only type-specific required fields after normalization", async () => {

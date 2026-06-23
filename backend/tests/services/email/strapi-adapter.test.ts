@@ -7,6 +7,9 @@ function makeStrapiMock() {
     plugin: vi.fn(() => ({
       service: vi.fn(() => ({ send })),
     })),
+    log: {
+      info: vi.fn(),
+    },
   };
   return { strapi, send };
 }

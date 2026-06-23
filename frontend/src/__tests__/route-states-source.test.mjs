@@ -24,8 +24,8 @@ function assertFileExists(relativePath, label) {
 }
 
 // --- error.tsx ---
-assertFileExists("app/error.tsx", "error.tsx");
-const errorPage = readSource("app/error.tsx");
+assertFileExists("app/[locale]/error.tsx", "error.tsx");
+const errorPage = readSource("app/[locale]/error.tsx");
 assert.ok(errorPage.includes('"use client"'), "error.tsx should be a client component");
 assert.ok(errorPage.includes("error: Error"), "error.tsx should accept error prop");
 assert.ok(errorPage.includes("reset: () => void"), "error.tsx should accept reset prop");
@@ -46,15 +46,14 @@ assert.ok(routeLoading.includes("TeacherListLoading"), "route-loading.tsx should
 
 // --- loading.tsx files ---
 const loadingRoutes = [
-  { route: "app/egitimler/loading.tsx", testId: "loading.egitimler", staticHero: true },
-  { route: "app/egitimler/[slug]/loading.tsx", testId: "loading.course-detail", staticHero: false },
-  { route: "app/etkinlikler/loading.tsx", testId: "loading.etkinlikler", staticHero: true },
-  { route: "app/etkinlikler/[slug]/loading.tsx", testId: "loading.event-detail", staticHero: false },
-  { route: "app/blog-yazilari/loading.tsx", testId: "loading.blog", staticHero: true },
-  { route: "app/blog-yazilari/[slug]/loading.tsx", testId: "loading.blog-detail", staticHero: false },
-  { route: "app/egitmenler/loading.tsx", testId: "loading.egitmenler", staticHero: true },
-  { route: "app/egitmenler/[slug]/loading.tsx", testId: "loading.teacher-detail", staticHero: false },
-  { route: "app/hakkimizda/loading.tsx", testId: "loading.hakkimizda", staticHero: true },
+  { route: "app/[locale]/egitimler/loading.tsx", testId: "loading.egitimler", staticHero: true },
+  { route: "app/[locale]/egitimler/[slug]/loading.tsx", testId: "loading.course-detail", staticHero: false },
+  { route: "app/[locale]/etkinlikler/loading.tsx", testId: "loading.etkinlikler", staticHero: true },
+  { route: "app/[locale]/etkinlikler/[slug]/loading.tsx", testId: "loading.event-detail", staticHero: false },
+  { route: "app/[locale]/blog-yazilari/loading.tsx", testId: "loading.blog", staticHero: true },
+  { route: "app/[locale]/blog-yazilari/[slug]/loading.tsx", testId: "loading.blog-detail", staticHero: false },
+  { route: "app/[locale]/egitmenler/loading.tsx", testId: "loading.egitmenler", staticHero: true },
+  { route: "app/[locale]/egitmenler/[slug]/loading.tsx", testId: "loading.teacher-detail", staticHero: false },
 ];
 
 for (const { route, testId, staticHero } of loadingRoutes) {
@@ -87,15 +86,14 @@ for (const { route, testId, staticHero } of loadingRoutes) {
 
 // --- Suspense wrapping in page files ---
 const pageRoutes = [
-  "app/egitimler/page.tsx",
-  "app/egitimler/[slug]/page.tsx",
-  "app/etkinlikler/page.tsx",
-  "app/etkinlikler/[slug]/page.tsx",
-  "app/blog-yazilari/page.tsx",
-  "app/blog-yazilari/[slug]/page.tsx",
-  "app/egitmenler/page.tsx",
-  "app/egitmenler/[slug]/page.tsx",
-  "app/hakkimizda/page.tsx",
+  "app/[locale]/egitimler/page.tsx",
+  "app/[locale]/egitimler/[slug]/page.tsx",
+  "app/[locale]/etkinlikler/page.tsx",
+  "app/[locale]/etkinlikler/[slug]/page.tsx",
+  "app/[locale]/blog-yazilari/page.tsx",
+  "app/[locale]/blog-yazilari/[slug]/page.tsx",
+  "app/[locale]/egitmenler/page.tsx",
+  "app/[locale]/egitmenler/[slug]/page.tsx",
 ];
 
 for (const route of pageRoutes) {
@@ -109,6 +107,12 @@ for (const route of pageRoutes) {
     `${route} should import a loading component for fallback`
   );
 }
+
+const aboutRedirectPage = readSource("app/[locale]/hakkimizda/page.tsx");
+assert.ok(
+  aboutRedirectPage.includes("redirect(\"/\")"),
+  "app/[locale]/hakkimizda/page.tsx should remain a redirect-only page"
+);
 
 // --- route-loading exported from content index ---
 const contentIndex = readSource("components/content/index.ts");

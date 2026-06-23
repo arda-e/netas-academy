@@ -152,7 +152,7 @@ describe("confirmationService.sendAutoConfirmation", () => {
     expect(html).not.toContain("{{ event.location }}");
     expect(html).not.toContain("{{ event.meetingLink }}");
     expect(html).toContain("Siber Güvenlik Webinar");
-    expect(html).toContain("Istanbul");
+    expect(html).toContain("Çevrimiçi");
     expect(html).toContain("https://zoom.us/j/999");
   });
 });

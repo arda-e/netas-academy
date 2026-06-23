@@ -70,7 +70,7 @@ describe("registration service", () => {
     };
     const createdRegistration = {
       id: 42,
-      status: "pending",
+      registrationStatus: "pending",
       notes: "Sertifika talebi var",
       event: eventRecord,
       student: studentRecord,
@@ -150,7 +150,7 @@ describe("registration service", () => {
 
     expect(registrationCreate).toHaveBeenCalledWith({
       data: {
-        status: "pending",
+        registrationStatus: "pending",
         notes: "Sertifika talebi var",
         event: 10,
         student: 20,
@@ -201,7 +201,7 @@ describe("registration service", () => {
     };
     const createdRegistration = {
       id: 43,
-      status: "pending",
+      registrationStatus: "pending",
       notes: null,
       event: eventRecord,
       student: studentRecord,
@@ -357,7 +357,7 @@ describe("registration service", () => {
     };
     const existingReg = {
       id: 99,
-      status: "confirmed",
+      registrationStatus: "confirmed",
       notes: null,
       event: eventRecord,
       student: { id: 20, firstName: "Ada", lastName: null, email: "ada@example.com", phone: null },
@@ -599,7 +599,7 @@ describe("registration service", () => {
     };
     const createdRegistration = {
       id: 44,
-      status: "pending",
+      registrationStatus: "pending",
       notes: null,
       event: eventRecord,
       student: studentRecord,

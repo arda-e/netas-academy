@@ -47,7 +47,7 @@ test("contact-submissions proxy catches JSON parse errors gracefully", () => {
 
   assert.match(
     source,
-    /response\.json\(\)\.catch/,
+    /\w+\.json\(\)\.catch/,
     "contact-submissions proxy should catch JSON parse errors from upstream"
   );
 });
@@ -180,7 +180,7 @@ test("all 4 proxy routes have try/catch and Turkish fallback", () => {
     const source = readSource(file);
     assert.match(
       source,
-      /catch\s*\{/,
+      /catch(?:\s*\([^)]*\))?\s*\{/,
       `${file} should have a catch block for error handling`
     );
   }

@@ -10,41 +10,41 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
-test("Page contains accordion heading 'Hangi Alanlarda Çözüm Ortaklığı Yapabiliriz'", () => {
-  const source = readSource("app/cozum-ortagi/page.tsx");
+test("Page renders translated accordion heading", () => {
+  const source = readSource("app/[locale]/cozum-ortagi/page.tsx");
   assert.match(
     source,
-    /Hangi Alanlarda Çözüm Ortaklığı Yapabiliriz/i,
-    "Page should contain the accordion section heading"
+    /heading=\{t\('accordion\.heading'\)\}/,
+    "Page should render the translated accordion section heading"
   );
 });
 
-test("Page shows all four collaboration areas", () => {
-  const source = readSource("app/cozum-ortagi/page.tsx");
+test("Page shows all four translated collaboration areas", () => {
+  const source = readSource("app/[locale]/cozum-ortagi/page.tsx");
   assert.match(
     source,
-    /Eğitim Programları/i,
-    "Should include Eğitim Programları"
+    /t\('accordion\.training\.title'\)/,
+    "Should include training collaboration area"
   );
   assert.match(
     source,
-    /Danışmanlık Hizmetleri/i,
-    "Should include Danışmanlık Hizmetleri"
+    /t\('accordion\.consulting\.title'\)/,
+    "Should include consulting collaboration area"
   );
   assert.match(
     source,
-    /Workshop ve Fasilitasyon/i,
-    "Should include Workshop ve Fasilitasyon"
+    /t\('accordion\.workshop\.title'\)/,
+    "Should include workshop collaboration area"
   );
   assert.match(
     source,
-    /Sektörel.*Konu Bazlı Uzmanlık/i,
-    "Should include Sektörel/Konu Bazlı Uzmanlık"
+    /t\('accordion\.expertise\.title'\)/,
+    "Should include expertise collaboration area"
   );
 });
 
 test("CTA uses buildIntentLeadUrl('solution_partner_application')", () => {
-  const source = readSource("app/cozum-ortagi/page.tsx");
+  const source = readSource("app/[locale]/cozum-ortagi/page.tsx");
   assert.match(
     source,
     /buildIntentLeadUrl\("solution_partner_application"\)/,
@@ -53,7 +53,7 @@ test("CTA uses buildIntentLeadUrl('solution_partner_application')", () => {
 });
 
 test("Page does NOT contain 'Kimler başvurabilir'", () => {
-  const source = readSource("app/cozum-ortagi/page.tsx");
+  const source = readSource("app/[locale]/cozum-ortagi/page.tsx");
   assert.doesNotMatch(
     source,
     /Kimler başvurabilir/i,
@@ -62,7 +62,7 @@ test("Page does NOT contain 'Kimler başvurabilir'", () => {
 });
 
 test("Page does NOT contain high-promise language (acceptance, response time, matching)", () => {
-  const source = readSource("app/cozum-ortagi/page.tsx");
+  const source = readSource("app/[locale]/cozum-ortagi/page.tsx");
   assert.doesNotMatch(
     source,
     /kabul edilir|cevap süresi|eşleştirme|onaylanma|garanti/i,

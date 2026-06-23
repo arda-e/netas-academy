@@ -20,7 +20,7 @@ function readSource(relativePath) {
 
 // --- layout.tsx ---
 
-const layout = readSource("app/layout.tsx");
+const layout = readSource("app/[locale]/layout.tsx");
 assert.ok(
   layout.includes(`data-testid="root-layout.content"`),
   "layout.tsx should contain data-testid=\"root-layout.content\""

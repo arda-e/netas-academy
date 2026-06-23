@@ -11,25 +11,30 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test("Haberler page renders with correct title 'Haberler'", () => {
-  const source = readSource("app/haberler/page.tsx");
+  const source = readSource("app/[locale]/haberler/page.tsx");
   assert.match(
     source,
-    /title="Haberler"/,
-    "Haberler page should have title 'Haberler'"
+    /title:\s*t\('hero\.title'\)/,
+    "Haberler page should use the translated hero title"
   );
 });
 
-test("Haberler page shows empty state with items={[]}", () => {
-  const source = readSource("app/haberler/page.tsx");
+test("Haberler page maps Strapi news posts into NewsList items", () => {
+  const source = readSource("app/[locale]/haberler/page.tsx");
   assert.match(
     source,
-    /items=\{\[\]\}/,
-    "Haberler page should render NewsList with empty items array"
+    /const items = posts\.map/,
+    "Haberler page should map fetched posts"
+  );
+  assert.match(
+    source,
+    /<NewsList items=\{items\} emptyMessage=\{t\('list\.empty'\)\}/,
+    "Haberler page should render NewsList with mapped items and translated empty message"
   );
 });
 
 test("Haberler page has root testId", () => {
-  const source = readSource("app/haberler/page.tsx");
+  const source = readSource("app/[locale]/haberler/page.tsx");
   assert.match(
     source,
     /testId="page\.haberler"/,
@@ -37,29 +42,29 @@ test("Haberler page has root testId", () => {
   );
 });
 
-test("Haberler page uses force-dynamic", () => {
-  const source = readSource("app/haberler/page.tsx");
+test("Haberler page fetches news posts from Strapi", () => {
+  const source = readSource("app/[locale]/haberler/page.tsx");
   assert.match(
     source,
-    /export const dynamic = "force-dynamic"/,
-    "Haberler page should export dynamic = 'force-dynamic'"
+    /getNewsPosts\(\)/,
+    "Haberler page should call getNewsPosts"
   );
 });
 
-test("Haberler page contains TODO comment for future Strapi wiring", () => {
-  const source = readSource("app/haberler/page.tsx");
-  assert.match(
+test("Haberler page is no longer hardcoded placeholder content", () => {
+  const source = readSource("app/[locale]/haberler/page.tsx");
+  assert.doesNotMatch(
     source,
-    /TODO: Replace hardcoded empty list with Strapi data fetch/,
-    "Haberler page should have TODO comment for Strapi wiring"
+    /TODO: Replace hardcoded empty list with Strapi data fetch|items=\{\[\]\}/,
+    "Haberler page should not contain the old placeholder wiring"
   );
 });
 
-test("Haberler page description mentions kurumsal haber", () => {
-  const source = readSource("app/haberler/page.tsx");
+test("Haberler page description comes from translations", () => {
+  const source = readSource("app/[locale]/haberler/page.tsx");
   assert.match(
     source,
-    /kurumsal haber/,
-    "Haberler page description should mention 'kurumsal haber'"
+    /description:\s*<p>\{t\('hero\.description'\)\}<\/p>/,
+    "Haberler page description should use translated copy"
   );
 });

@@ -42,7 +42,7 @@ assertOrdered(
   [
     "const { locale } = await params;",
     "setRequestLocale(locale);",
-    "const messages = await getMessages();",
+    "const messages = await getMessages({ locale });",
   ],
   "locale layout should set request locale before loading messages",
 );
@@ -73,7 +73,7 @@ assertOrdered(
   [
     "const { locale, slug } = await params;",
     "setRequestLocale(locale);",
-    "const teacher = await getTeacherBySlug(slug);",
+    "const teacher = await getTeacherBySlug(slug, isDraft);",
     "const t = await getTranslations('teachers');",
   ],
   "teacher detail page should set request locale before page-level translations",

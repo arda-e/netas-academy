@@ -513,8 +513,13 @@ test("strapi-client.ts defaults to force-cache instead of no-store", () => {
   const source = readSource("lib/strapi-client.ts");
   assert.doesNotMatch(
     source,
-    /"no-store"/,
-    "strapi-client should not contain no-store"
+    /fetchOptions\.cache\s*=\s*"no-store"/,
+    "strapi-client should not default every request to no-store"
+  );
+  assert.match(
+    source,
+    /fetchOptions\.cache\s*=\s*isDraftMode\s*\?\s*"no-store"\s*:\s*"force-cache"/,
+    "strapi-client should use force-cache by default and no-store only for draft mode"
   );
   assert.match(
     source,
@@ -597,7 +602,7 @@ test("getEvents does not use conflicting revalidate + force-cache", () => {
 });
 
 test("Egitions list page has no revalidate or dynamic export", () => {
-  const source = readSource("app/egitimler/page.tsx");
+  const source = readSource("app/[locale]/egitimler/page.tsx");
   assert.doesNotMatch(
     source,
     /export const (revalidate|dynamic)/,
@@ -606,7 +611,7 @@ test("Egitions list page has no revalidate or dynamic export", () => {
 });
 
 test("Teachers list page has no dynamic export (was force-dynamic)", () => {
-  const source = readSource("app/egitmenler/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/page.tsx");
   assert.doesNotMatch(
     source,
     /export const (revalidate|dynamic)/,

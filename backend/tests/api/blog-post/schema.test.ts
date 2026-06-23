@@ -29,13 +29,11 @@ describe("blog-post schema", () => {
     });
   });
 
-  it("has optional text fields (excerpt, sourceNotes)", () => {
+  it("has optional text field (excerpt) and no stale sourceNotes field", () => {
     expect(schema.attributes.excerpt).toEqual({
       type: "text",
     });
-    expect(schema.attributes.sourceNotes).toEqual({
-      type: "text",
-    });
+    expect(schema.attributes.sourceNotes).toBeUndefined();
   });
 
   it("has richtext field (content)", () => {

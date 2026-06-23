@@ -33,19 +33,19 @@ assert.ok(pageShell.includes("skeleton ?? children"), "content-page-shell.tsx sh
 assertFileExists("components/content/content-detail-shell.tsx", "content-detail-shell.tsx");
 const detailShell = readSource("components/content/content-detail-shell.tsx");
 assert.ok(detailShell.includes("skeleton?: ReactNode"), "content-detail-shell.tsx should have skeleton prop");
-assert.ok(detailShell.includes("skeleton ?"), "content-detail-shell.tsx should conditionally render skeleton");
+assert.ok(detailShell.includes("hasSkeleton ? slots?.skeleton : bodyContent"), "content-detail-shell.tsx should conditionally render skeleton");
 
 // --- content-grid.tsx ---
 assertFileExists("components/content/content-grid.tsx", "content-grid.tsx");
 const contentGrid = readSource("components/content/content-grid.tsx");
 assert.ok(contentGrid.includes("skeleton?: ReactNode"), "content-grid.tsx should have skeleton prop");
-assert.ok(contentGrid.includes("if (skeleton)"), "content-grid.tsx should check skeleton prop");
+assert.ok(contentGrid.includes("if (slots?.skeleton)"), "content-grid.tsx should check skeleton prop");
 
 // --- content-card-shell.tsx ---
 assertFileExists("components/content/content-card-shell.tsx", "content-card-shell.tsx");
 const cardShell = readSource("components/content/content-card-shell.tsx");
 assert.ok(cardShell.includes("skeleton?: ReactNode"), "content-card-shell.tsx should have skeleton prop");
-assert.ok(cardShell.includes("if (skeleton)"), "content-card-shell.tsx should check skeleton prop");
+assert.ok(cardShell.includes("if (slots?.skeleton)"), "content-card-shell.tsx should check skeleton prop");
 
 // Verify existing props are preserved
 assert.ok(pageShell.includes("testId?: string"), "content-page-shell.tsx should still have testId prop");

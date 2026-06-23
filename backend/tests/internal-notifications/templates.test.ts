@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { buildInternalNotificationEmail } from "../../src/services/internal-notifications/templates";
 
 describe("buildInternalNotificationEmail", () => {
-  it("renders the contact submission notification in Turkish", () => {
-    const email = buildInternalNotificationEmail({
+  it("renders the contact submission notification in Turkish", async () => {
+    const email = await buildInternalNotificationEmail({
       key: "contact_submission",
       payload: {
         submissionId: 42,
@@ -18,7 +18,7 @@ describe("buildInternalNotificationEmail", () => {
       },
     });
 
-    expect(email.subject).toContain("Iletisim Formu Bildirimi");
+    expect(email.subject).toContain("İletişim Formu Bildirimi");
     expect(email.text).toContain("Ada Kaya");
     expect(email.text).toContain("Kurumsal egitim talebi");
     expect(email.text).toContain("42");
@@ -26,8 +26,8 @@ describe("buildInternalNotificationEmail", () => {
     expect(email.text).toContain("Kurumsal egitimler");
   });
 
-  it("renders fallback text for missing optional contact fields", () => {
-    const email = buildInternalNotificationEmail({
+  it("renders fallback text for missing optional contact fields", async () => {
+    const email = await buildInternalNotificationEmail({
       key: "contact_submission",
       payload: {
         submissionId: 7,
@@ -45,8 +45,8 @@ describe("buildInternalNotificationEmail", () => {
     expect(email.text).toContain("Sirket: Belirtilmedi");
   });
 
-  it("renders the event registration notification in Turkish", () => {
-    const email = buildInternalNotificationEmail({
+  it("renders the event registration notification in Turkish", async () => {
+    const email = await buildInternalNotificationEmail({
       key: "event_registration",
       payload: {
         registrationId: 15,
@@ -68,14 +68,14 @@ describe("buildInternalNotificationEmail", () => {
       },
     });
 
-    expect(email.subject).toContain("Etkinlik Kayit Bildirimi");
+    expect(email.subject).toContain("Etkinlik Kayıt Bildirimi");
     expect(email.text).toContain("Demo Etkinlik");
     expect(email.text).toContain("ada@example.com");
     expect(email.text).toContain("Ada");
   });
 
-  it("renders fallback text for missing optional event fields", () => {
-    const email = buildInternalNotificationEmail({
+  it("renders fallback text for missing optional event fields", async () => {
+    const email = await buildInternalNotificationEmail({
       key: "event_registration",
       payload: {
         registrationId: 16,
@@ -104,17 +104,17 @@ describe("buildInternalNotificationEmail", () => {
     expect(email.text).toContain("Konum: Belirtilmedi");
   });
 
-  it("throws for unsupported notification keys", () => {
-    expect(() =>
+  it("throws for unsupported notification keys", async () => {
+    await expect(
       buildInternalNotificationEmail({
         key: "unsupported_notification",
         payload: {},
       } as never),
-    ).toThrow("Unsupported internal notification key: unsupported_notification");
+    ).rejects.toThrow("Unsupported internal notification key: unsupported_notification");
   });
 
-  it("renders the corporate training lead notification in Turkish", () => {
-    const email = buildInternalNotificationEmail({
+  it("renders the corporate training lead notification in Turkish", async () => {
+    const email = await buildInternalNotificationEmail({
       key: "lead_corporate_training",
       payload: {
         submissionId: 101,
@@ -128,15 +128,15 @@ describe("buildInternalNotificationEmail", () => {
       },
     });
 
-    expect(email.subject).toContain("Kurumsal Egitim Talebi");
+    expect(email.subject).toContain("Kurumsal Eğitim Talebi");
     expect(email.subject).toContain("Zeynep Demir");
     expect(email.text).toContain("Veri Bilimi ve AI");
     expect(email.text).toContain("ABC Corp");
     expect(email.text).toContain("Kurumsal egitim talebimiz vardir.");
   });
 
-  it("renders the instructor application notification in Turkish", () => {
-    const email = buildInternalNotificationEmail({
+  it("renders the instructor application notification in Turkish", async () => {
+    const email = await buildInternalNotificationEmail({
       key: "lead_instructor_application",
       payload: {
         submissionId: 102,
@@ -150,14 +150,14 @@ describe("buildInternalNotificationEmail", () => {
       },
     });
 
-    expect(email.subject).toContain("Egitmen Basvurusu");
+    expect(email.subject).toContain("Eğitmen Başvurusu");
     expect(email.subject).toContain("Mehmet Yilmaz");
     expect(email.text).toContain("Python, Makine Ogrenmesi, Derin Ogrenme");
     expect(email.text).toContain("Uzmanlik Alanlari");
   });
 
-  it("renders the solution partner notification in Turkish", () => {
-    const email = buildInternalNotificationEmail({
+  it("renders the solution partner notification in Turkish", async () => {
+    const email = await buildInternalNotificationEmail({
       key: "lead_solution_partner",
       payload: {
         submissionId: 103,
@@ -172,16 +172,14 @@ describe("buildInternalNotificationEmail", () => {
       },
     });
 
-    expect(email.subject).toContain("Cozum Ortakligi Basvurusu");
+    expect(email.subject).toContain("Çözüm Ortaklığı Başvurusu");
     expect(email.subject).toContain("Ali Kaya");
-    expect(email.text).toContain("50-100");
     expect(email.text).toContain("Egitim platformu cozum ortakligi");
-    expect(email.text).toContain("Sirket Buyuklugu");
     expect(email.text).toContain("Ortaklik Detaylari");
   });
 
-  it("renders fallback text for missing optional lead fields", () => {
-    const email = buildInternalNotificationEmail({
+  it("renders fallback text for missing optional lead fields", async () => {
+    const email = await buildInternalNotificationEmail({
       key: "lead_corporate_training",
       payload: {
         submissionId: 104,

@@ -10,7 +10,7 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
-const pageSource = readSource("app/page.tsx");
+const pageSource = readSource("app/[locale]/page.tsx");
 
 test("page.tsx imports the unified home section components", () => {
   assert.match(

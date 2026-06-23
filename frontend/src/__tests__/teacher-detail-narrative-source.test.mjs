@@ -10,10 +10,10 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
-test("Detail page renders expertiseAreas section before courses", () => {
-  const source = readSource("app/egitmenler/[slug]/page.tsx");
+test("Detail page renders expertiseAreas in the hero before courses", () => {
+  const source = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
 
-  const expertiseIdx = source.indexOf("Uzmanlık Alanları");
+  const expertiseIdx = source.indexOf("page.teacher-detail.section.expertise-areas");
   const coursesIdx = source.indexOf("Eğitimleri");
 
   assert.ok(
@@ -23,7 +23,7 @@ test("Detail page renders expertiseAreas section before courses", () => {
 });
 
 test("Detail page renders targetTeams section before courses", () => {
-  const source = readSource("app/egitmenler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
 
   const targetTeamsIdx = source.indexOf("Hedef Kitle");
   const coursesIdx = source.indexOf("Eğitimleri");
@@ -35,7 +35,7 @@ test("Detail page renders targetTeams section before courses", () => {
 });
 
 test("Detail page renders teachingApproach section before courses", () => {
-  const source = readSource("app/egitmenler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
 
   const approachIdx = source.indexOf("Eğitim Yaklaşımı");
   const coursesIdx = source.indexOf("Eğitimleri");
@@ -46,27 +46,27 @@ test("Detail page renders teachingApproach section before courses", () => {
   );
 });
 
-test("Detail page renders courses section before bio", () => {
-  const source = readSource("app/egitmenler/[slug]/page.tsx");
+test("Detail page renders bio section before courses", () => {
+  const source = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
 
   const coursesIdx = source.indexOf("Eğitimleri");
   const bioIdx = source.indexOf("Hakkında");
 
   assert.ok(
-    coursesIdx > -1 && bioIdx > -1 && coursesIdx < bioIdx,
-    "courses section should appear before bio section"
+    coursesIdx > -1 && bioIdx > -1 && bioIdx < coursesIdx,
+    "bio section should appear before courses section"
   );
 });
 
 test("Detail page has section labels in correct narrative order", () => {
-  const source = readSource("app/egitmenler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
 
   const labels = [
-    "Uzmanlık Alanları",
+    "page.teacher-detail.section.expertise-areas",
+    "Hakkında",
     "Hedef Kitle",
     "Eğitim Yaklaşımı",
     "Eğitimleri",
-    "Hakkında",
   ];
 
   let lastIdx = -1;
@@ -78,7 +78,7 @@ test("Detail page has section labels in correct narrative order", () => {
 });
 
 test("Detail page imports getStrapiMediaUrl", () => {
-  const source = readSource("app/egitmenler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
   assert.match(
     source,
     /getStrapiMediaUrl/,
@@ -87,7 +87,7 @@ test("Detail page imports getStrapiMediaUrl", () => {
 });
 
 test("Detail page imports getStrapiMediaAltText", () => {
-  const source = readSource("app/egitmenler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
   assert.match(
     source,
     /getStrapiMediaAltText/,
@@ -96,7 +96,7 @@ test("Detail page imports getStrapiMediaAltText", () => {
 });
 
 test("Detail page uses getStrapiMediaUrl for teacher.profilePhoto", () => {
-  const source = readSource("app/egitmenler/[slug]/page.tsx");
+  const source = readSource("app/[locale]/egitmenler/[slug]/page.tsx");
   assert.match(
     source,
     /getStrapiMediaUrl\(teacher\.profilePhoto(?:,\s*['"]small['"])?\)/,

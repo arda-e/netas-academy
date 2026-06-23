@@ -11,7 +11,7 @@ const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
 test('KVKK page renders with correct title "KVKK | Netas Academy"', () => {
-  const source = readSource("app/kvkk/page.tsx");
+  const source = readSource("app/[locale]/kvkk/page.tsx");
   assert.match(
     source,
     /title:\s*"KVKK \| Netas Academy"/,
@@ -20,7 +20,7 @@ test('KVKK page renders with correct title "KVKK | Netas Academy"', () => {
 });
 
 test("KVKK page contains key Turkish legal text phrase 'Kişisel verilerin korunmasına'", () => {
-  const source = readSource("app/kvkk/page.tsx");
+  const source = readSource("app/[locale]/kvkk/page.tsx");
   assert.match(
     source,
     /Kişisel verilerin korunmasına/,
@@ -29,7 +29,7 @@ test("KVKK page contains key Turkish legal text phrase 'Kişisel verilerin korun
 });
 
 test("KVKK page contains 'Veri Sorumlusu' section", () => {
-  const source = readSource("app/kvkk/page.tsx");
+  const source = readSource("app/[locale]/kvkk/page.tsx");
   assert.match(
     source,
     /Veri Sorumlusu/,
@@ -38,7 +38,7 @@ test("KVKK page contains 'Veri Sorumlusu' section", () => {
 });
 
 test("KVKK page references 6698 sayılı Kanun", () => {
-  const source = readSource("app/kvkk/page.tsx");
+  const source = readSource("app/[locale]/kvkk/page.tsx");
   assert.match(
     source,
     /6698 sayılı/,
@@ -47,7 +47,7 @@ test("KVKK page references 6698 sayılı Kanun", () => {
 });
 
 test("KVKK page has root data-testid", () => {
-  const source = readSource("app/kvkk/page.tsx");
+  const source = readSource("app/[locale]/kvkk/page.tsx");
   assert.match(
     source,
     /data-testid="page\.kvkk"/,
@@ -55,11 +55,11 @@ test("KVKK page has root data-testid", () => {
   );
 });
 
-test("KVKK page uses force-dynamic", () => {
-  const source = readSource("app/kvkk/page.tsx");
-  assert.match(
+test("KVKK page does not force dynamic rendering", () => {
+  const source = readSource("app/[locale]/kvkk/page.tsx");
+  assert.doesNotMatch(
     source,
     /export const dynamic = "force-dynamic"/,
-    "KVKK page should export dynamic = 'force-dynamic'"
+    "KVKK page should remain statically renderable"
   );
 });

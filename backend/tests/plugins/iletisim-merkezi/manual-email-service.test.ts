@@ -36,8 +36,8 @@ describe("manualEmailService", () => {
       startsAt: "2026-07-10T10:00:00.000Z",
       meetingLink: null,
       registrations: [
-        { id: 10, status: "confirmed", student: { id: 1, firstName: "Ada", email: "ada@example.com" } },
-        { id: 11, status: "confirmed", student: { id: 2, firstName: "Bora", email: "bora@example.com" } },
+        { id: 10, registrationStatus: "confirmed", student: { id: 1, firstName: "Ada", email: "ada@example.com" } },
+        { id: 11, registrationStatus: "confirmed", student: { id: 2, firstName: "Bora", email: "bora@example.com" } },
       ],
       ...overrides,
     };
@@ -72,8 +72,8 @@ describe("manualEmailService", () => {
     it("deduplicates by email and counts skipped", async () => {
       const event = makeEvent({
         registrations: [
-          { id: 10, status: "confirmed", student: { id: 1, email: "ada@example.com" } },
-          { id: 11, status: "confirmed", student: { id: 2, email: "ADA@EXAMPLE.COM" } },
+          { id: 10, registrationStatus: "confirmed", student: { id: 1, email: "ada@example.com" } },
+          { id: 11, registrationStatus: "confirmed", student: { id: 2, email: "ADA@EXAMPLE.COM" } },
         ],
       });
       const { service, emailSend, registrationUpdate } = makeContext({ event });
@@ -89,8 +89,8 @@ describe("manualEmailService", () => {
     it("excludes pending registrations when no status filter is provided", async () => {
       const event = makeEvent({
         registrations: [
-          { id: 10, status: "confirmed", student: { id: 1, email: "ada@example.com" } },
-          { id: 11, status: "pending", student: { id: 2, email: "bora@example.com" } },
+          { id: 10, registrationStatus: "confirmed", student: { id: 1, email: "ada@example.com" } },
+          { id: 11, registrationStatus: "pending", student: { id: 2, email: "bora@example.com" } },
         ],
       });
       const { service, emailSend } = makeContext({ event });
@@ -105,8 +105,8 @@ describe("manualEmailService", () => {
     it("includes pending registrations when custom status filter contains pending", async () => {
       const event = makeEvent({
         registrations: [
-          { id: 10, status: "confirmed", student: { id: 1, email: "ada@example.com" } },
-          { id: 11, status: "pending", student: { id: 2, email: "bora@example.com" } },
+          { id: 10, registrationStatus: "confirmed", student: { id: 1, email: "ada@example.com" } },
+          { id: 11, registrationStatus: "pending", student: { id: 2, email: "bora@example.com" } },
         ],
       });
       const { service, emailSend } = makeContext({ event });

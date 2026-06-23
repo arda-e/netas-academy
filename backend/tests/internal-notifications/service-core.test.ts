@@ -49,8 +49,9 @@ describe("deliverInternalNotification", () => {
     expect(loadRoutingByKey).toHaveBeenCalledWith("event_registration");
     expect(sendEmail).toHaveBeenCalledWith({
       to: ["etkinlikler@netas.com.tr", "ops@netas.com.tr"],
-      subject: "Etkinlik Kayit Bildirimi - Demo Etkinlik",
+      subject: "Etkinlik Kayıt Bildirimi - Demo Etkinlik",
       text: expect.stringContaining("Yeni bir etkinlik kayit talebi olusturuldu."),
+      html: expect.any(String),
     });
     expect(warn).not.toHaveBeenCalled();
     expect(error).not.toHaveBeenCalled();

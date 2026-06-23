@@ -83,14 +83,14 @@ test("search-field preserves Turkish accessible labels and placeholders", () => 
 
   assert.match(
     source,
-    /aria-label="Ara"/,
-    "Turkish aria-label 'Ara' should be preserved"
+    /aria-label=\{t\("search\.aria_label"\)\}/,
+    "search aria-label should come from translations"
   );
 
   assert.match(
     source,
-    /placeholder="Ara\.\.\."/,
-    "Turkish placeholder 'Ara...' should be preserved"
+    /placeholder=\{t\("search\.placeholder"\)\}/,
+    "search placeholder should come from translations"
   );
 });
 

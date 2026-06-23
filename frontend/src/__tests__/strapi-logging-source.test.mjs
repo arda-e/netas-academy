@@ -27,7 +27,7 @@ test("strapi-client logs network errors with category 'network'", () => {
 
   assert.match(
     source,
-    /errorCategory.*'network'/s,
+    /errorCategory.*["']network["']/s,
     "strapi-client should log network fetch failures with errorCategory 'network'"
   );
 });
@@ -37,7 +37,7 @@ test("strapi-client logs HTTP 4xx errors with category 'http-4xx'", () => {
 
   assert.match(
     source,
-    /errorCategory.*'http-4xx'/s,
+    /errorCategory.*["']http-4xx["']/s,
     "strapi-client should log HTTP 4xx errors with errorCategory 'http-4xx'"
   );
 });
@@ -47,7 +47,7 @@ test("strapi-client logs HTTP 5xx errors with category 'http-5xx'", () => {
 
   assert.match(
     source,
-    /errorCategory.*'http-5xx'/s,
+    /errorCategory.*["']http-5xx["']/s,
     "strapi-client should log HTTP 5xx errors with errorCategory 'http-5xx'"
   );
 });
@@ -57,18 +57,18 @@ test("strapi-client logs JSON parse errors with category 'parse'", () => {
 
   assert.match(
     source,
-    /errorCategory.*'parse'/s,
+    /errorCategory.*["']parse["']/s,
     "strapi-client should log JSON parse errors with errorCategory 'parse'"
   );
 });
 
-test("strapi-client logs validation errors with category 'validation'", () => {
+test("strapi-client does not define a stale validation logging category", () => {
   const source = readSource("lib/strapi-client.ts");
 
-  assert.match(
+  assert.doesNotMatch(
     source,
-    /errorCategory.*'validation'/s,
-    "strapi-client should log validation errors with errorCategory 'validation'"
+    /["']validation["']/,
+    "strapi-client should not log removed validation category"
   );
 });
 
@@ -171,15 +171,15 @@ test("strapi-events getEventRegistrationStatus logs on failure", () => {
   );
 });
 
-test("strapi-blog logs errors in all 3 functions", () => {
+test("strapi-blog logs errors in all 4 functions", () => {
   const source = readSource("lib/strapi-blog.ts");
 
   const catchLogs = source.match(/console\.error\(JSON\.stringify/g);
   assert.ok(catchLogs, "strapi-blog should contain console.error calls");
   assert.equal(
     catchLogs.length,
-    3,
-    "strapi-blog should log errors in all 3 functions"
+    4,
+    "strapi-blog should log errors in all 4 functions"
   );
 });
 

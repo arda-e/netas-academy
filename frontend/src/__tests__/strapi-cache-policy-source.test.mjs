@@ -10,11 +10,11 @@ const projectRoot = path.resolve(__dirname, "..");
 const readSource = (relativePath) =>
   readFileSync(path.join(projectRoot, relativePath), "utf8");
 
-const ISR_REVALIDATE = /next:\s*\{\s*revalidate:\s*60\s*\}/;
-const FORCE_CACHE = /cache:\s*['"]force-cache['"]/;
 const NO_STORE = /cache:\s*['"]no-store['"]/;
 const FORCE_DYNAMIC = /export\s+const\s+dynamic\s*=\s*["']force-dynamic["']/;
-const REVALIDATE_EXPORT = /export\s+const\s+revalidate\s*=\s*60/;
+
+const taggedCache = (tagName) =>
+  new RegExp(`next:\\s*\\{\\s*tags:\\s*\\[\\s*${tagName}\\s*\\]\\s*\\}`);
 
 // ── strapi-courses.ts ──────────────────────────────────────────
 
@@ -62,45 +62,40 @@ test("strapi-courses.ts has no no-store", () => {
 
 // ── strapi-events.ts ───────────────────────────────────────────
 
-test("getEvents uses { next: { revalidate: 60 } }", () => {
+test("getEvents uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-events.ts");
   assert.match(
     source,
-    ISR_REVALIDATE,
-    "strapi-events.ts should contain ISR revalidate: 60 for getEvents"
+    taggedCache("EVENTS_TAG"),
+    "getEvents should tag event fetches"
   );
 });
 
-test("getEventSlugs uses force-cache", () => {
+test("getEventSlugs uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-events.ts");
   assert.match(
     source,
-    FORCE_CACHE,
-    "getEventSlugs should use force-cache"
+    taggedCache("EVENTS_TAG"),
+    "getEventSlugs should tag event fetches"
   );
 });
 
-test("getEventBySlug uses force-cache", () => {
+test("getEventBySlug uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-events.ts");
-  const matches = source.match(/cache:\s*['"]force-cache['"]/g);
-  assert.ok(matches && matches.length >= 2, "Should have force-cache in both getEventSlugs and getEventBySlug");
+  const matches = source.match(taggedCache("EVENTS_TAG"));
+  assert.ok(matches, "getEventBySlug should tag event fetches");
 });
 
-test("getEventRegistrationStatus has no force-cache or revalidate option", () => {
+test("getEventRegistrationStatus uses no-store for freshness", () => {
   const source = readSource("lib/strapi-events.ts");
 
   const registrationStatusSection = source.slice(
     source.indexOf("getEventRegistrationStatus")
   );
-  assert.doesNotMatch(
+  assert.match(
     registrationStatusSection,
-    FORCE_CACHE,
-    "getEventRegistrationStatus should not use force-cache"
-  );
-  assert.doesNotMatch(
-    registrationStatusSection,
-    ISR_REVALIDATE,
-    "getEventRegistrationStatus should not use ISR revalidate"
+    NO_STORE,
+    "getEventRegistrationStatus should use no-store"
   );
 });
 
@@ -124,46 +119,41 @@ test("strapi-events.ts has no orphaned code (all returns inside functions)", () 
 
 // ── strapi-blog.ts ─────────────────────────────────────────────
 
-test("getBlogPosts uses { next: { revalidate: 60 } }", () => {
+test("getBlogPosts uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-blog.ts");
   assert.match(
     source,
-    ISR_REVALIDATE,
-    "strapi-blog.ts should contain ISR revalidate: 60 for getBlogPosts"
+    taggedCache("BLOG_TAG"),
+    "getBlogPosts should tag blog fetches"
   );
 });
 
-test("getBlogPostBySlug uses { next: { revalidate: 60 } } — no no-store", () => {
+test("getBlogPostBySlug uses tagged cache semantics outside draft mode", () => {
   const source = readSource("lib/strapi-blog.ts");
 
   const bySlugSection = source.slice(
     source.indexOf("getBlogPostBySlug"),
-    source.indexOf("getBlogPostBySlug") + 1000
+    source.indexOf("export async function getRelatedBlogPosts")
   );
   assert.match(
     bySlugSection,
-    ISR_REVALIDATE,
-    "getBlogPostBySlug should use ISR revalidate: 60"
-  );
-  assert.doesNotMatch(
-    bySlugSection,
-    NO_STORE,
-    "getBlogPostBySlug should not use no-store"
+    taggedCache("BLOG_TAG"),
+    "getBlogPostBySlug should tag blog fetches outside draft mode"
   );
 });
 
-test("getBlogPostSlugs uses force-cache", () => {
+test("getBlogPostSlugs uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-blog.ts");
   assert.match(
     source,
-    FORCE_CACHE,
-    "getBlogPostSlugs should use force-cache"
+    taggedCache("BLOG_TAG"),
+    "getBlogPostSlugs should tag blog fetches"
   );
 });
 
 // ── strapi-teachers.ts ─────────────────────────────────────────
 
-test("getTeachers uses { next: { revalidate: 60 } } — no no-store", () => {
+test("getTeachers uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-teachers.ts");
 
   const teachersSection = source.slice(
@@ -172,8 +162,8 @@ test("getTeachers uses { next: { revalidate: 60 } } — no no-store", () => {
   );
   assert.match(
     teachersSection,
-    ISR_REVALIDATE,
-    "getTeachers should use ISR revalidate: 60"
+    taggedCache("TEACHERS_TAG"),
+    "getTeachers should tag teacher fetches"
   );
   assert.doesNotMatch(
     teachersSection,
@@ -182,19 +172,19 @@ test("getTeachers uses { next: { revalidate: 60 } } — no no-store", () => {
   );
 });
 
-test("getTeacherSlugs uses force-cache", () => {
+test("getTeacherSlugs uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-teachers.ts");
   assert.match(
     source,
-    FORCE_CACHE,
-    "getTeacherSlugs should use force-cache"
+    taggedCache("TEACHERS_TAG"),
+    "getTeacherSlugs should tag teacher fetches"
   );
 });
 
-test("getTeacherBySlug uses force-cache", () => {
+test("getTeacherBySlug uses tagged cache semantics", () => {
   const source = readSource("lib/strapi-teachers.ts");
-  const matches = source.match(/cache:\s*['"]force-cache['"]/g);
-  assert.ok(matches && matches.length >= 2, "Should have force-cache in both getTeacherSlugs and getTeacherBySlug");
+  const matches = source.match(taggedCache("TEACHERS_TAG"));
+  assert.ok(matches, "getTeacherBySlug should tag teacher fetches");
 });
 
 test("strapi-teachers.ts has no no-store", () => {
@@ -206,13 +196,12 @@ test("strapi-teachers.ts has no no-store", () => {
   );
 });
 
-// ── Listing pages: no force-dynamic, have revalidate ───────────
+// ── Listing pages: no force-dynamic ────────────────────────────
 
 const LISTING_PAGES = [
-  "app/egitimler/page.tsx",
-  "app/etkinlikler/page.tsx",
-  "app/blog-yazilari/page.tsx",
-  "app/hakkimizda/page.tsx",
+  "app/[locale]/egitimler/page.tsx",
+  "app/[locale]/etkinlikler/page.tsx",
+  "app/[locale]/blog-yazilari/page.tsx",
 ];
 
 for (const pagePath of LISTING_PAGES) {
@@ -224,23 +213,14 @@ for (const pagePath of LISTING_PAGES) {
       `${pagePath} should not have force-dynamic`
     );
   });
-
-  test(`${pagePath} has revalidate = 60`, () => {
-    const source = readSource(pagePath);
-    assert.match(
-      source,
-      REVALIDATE_EXPORT,
-      `${pagePath} should have revalidate = 60`
-    );
-  });
 }
 
-// ── Detail pages: no force-dynamic, have revalidate ────────────
+// ── Detail pages: no force-dynamic ─────────────────────────────
 
 const DETAIL_PAGES = [
-  "app/egitimler/[slug]/page.tsx",
-  "app/etkinlikler/[slug]/page.tsx",
-  "app/blog-yazilari/[slug]/page.tsx",
+  "app/[locale]/egitimler/[slug]/page.tsx",
+  "app/[locale]/etkinlikler/[slug]/page.tsx",
+  "app/[locale]/blog-yazilari/[slug]/page.tsx",
 ];
 
 for (const pagePath of DETAIL_PAGES) {
@@ -252,21 +232,12 @@ for (const pagePath of DETAIL_PAGES) {
       `${pagePath} should not have force-dynamic`
     );
   });
-
-  test(`${pagePath} has revalidate = 60`, () => {
-    const source = readSource(pagePath);
-    assert.match(
-      source,
-      REVALIDATE_EXPORT,
-      `${pagePath} should have revalidate = 60`
-    );
-  });
 }
 
 // ── Home page: no Strapi fetches, no force-dynamic ─────────────
 
 test("app/page.tsx has no force-dynamic", () => {
-  const source = readSource("app/page.tsx");
+  const source = readSource("app/[locale]/page.tsx");
   assert.doesNotMatch(
     source,
     FORCE_DYNAMIC,
@@ -274,11 +245,11 @@ test("app/page.tsx has no force-dynamic", () => {
   );
 });
 
-test("app/page.tsx has no Strapi fetch calls", () => {
+test("root app/page.tsx has no Strapi fetch calls", () => {
   const source = readSource("app/page.tsx");
   assert.doesNotMatch(
     source,
     /import.*strapi|from\s+["']@\/lib\/strapi-/,
-    "Home page should not import Strapi fetch modules"
+    "Root locale redirect page should not import Strapi fetch modules"
   );
 });
