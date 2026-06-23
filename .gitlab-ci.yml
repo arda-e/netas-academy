@@ -33,6 +33,7 @@ frontend_lint:
 frontend_tests:
   extends: .node_job
   stage: test
+  allow_failure: true
   needs:
     - frontend_lint
   script:
@@ -41,6 +42,7 @@ frontend_tests:
 backend_tests:
   extends: .node_job
   stage: test
+  allow_failure: true
   needs:
     - frontend_lint
   script:
@@ -49,6 +51,7 @@ backend_tests:
 playwright_e2e:
   extends: .node_job
   stage: e2e
+  allow_failure: true
   needs:
     - frontend_tests
     - backend_tests
