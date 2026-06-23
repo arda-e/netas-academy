@@ -1,5 +1,10 @@
 # EC2 Nginx Certbot Deployment
 
+> Historical EC2/GitHub Actions runbook. The GitLab Ubuntu migration uses
+> [`gitlab-ubuntu-runbook.md`](/Users/arda/Desktop/development/netas_academy/docs/deployment/gitlab-ubuntu-runbook.md)
+> with host Nginx, host Certbot, GitLab Container Registry, and
+> `deploy/ubuntu/docker-compose.production.yml`.
+
 This runbook is for the `new.netasacademy.com` EC2 deployment that runs Docker Compose with Nginx in front of the combined Next.js and Strapi app.
 
 ## AWS Prerequisites

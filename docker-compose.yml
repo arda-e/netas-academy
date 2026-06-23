@@ -96,6 +96,3 @@ services:
       B2_BACKUP_PREFIX: ${B2_BACKUP_PREFIX:-postgres}
       BACKUP_CRON_SCHEDULE: ${BACKUP_CRON_SCHEDULE:-0 2 * * *}
       BACKUP_RUN_ON_START: ${BACKUP_RUN_ON_START:-true}
-
-volumes:
-  pgdata:

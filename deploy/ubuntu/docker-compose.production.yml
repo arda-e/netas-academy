@@ -1,0 +1,95 @@
+name: netas_academy
+
+services:
+  app:
+    image: ${APP_IMAGE:?Set APP_IMAGE to the GitLab registry image tag}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      FRONTEND_PORT: 3000
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://new.netasacademy.com}
+      STRAPI_URL: ${STRAPI_URL:-http://127.0.0.1:1337}
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-https://new.netasacademy.com:1337}
+      CLIENT_URL: ${CLIENT_URL:-https://new.netasacademy.com}
+      FRONTEND_URL: ${FRONTEND_URL:-http://127.0.0.1:3000}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://new.netasacademy.com:1337}
+      GIT_COMMIT_SHA: ${GIT_COMMIT_SHA:?Set GIT_COMMIT_SHA to the deployed commit}
+      HOST: 0.0.0.0
+      PORT: 1337
+      APP_KEYS: ${APP_KEYS:?Set APP_KEYS in the deployment environment}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:?Set ADMIN_JWT_SECRET in the deployment environment}
+      API_TOKEN_SALT: ${API_TOKEN_SALT:?Set API_TOKEN_SALT in the deployment environment}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:?Set TRANSFER_TOKEN_SALT in the deployment environment}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY in the deployment environment}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in the deployment environment}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-}
+      DATABASE_CLIENT: postgres
+      DATABASE_URL: postgres://netas_academy:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the deployment environment}@postgres:5432/netas_academy
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: netas_academy
+      DATABASE_USERNAME: netas_academy
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the deployment environment}
+      DATABASE_POOL_MIN: ${DATABASE_POOL_MIN:-0}
+      EMAIL_PROVIDER: nodemailer
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST:-smtp-relay.brevo.com}
+      EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT:-587}
+      EMAIL_SMTP_SECURE: ${EMAIL_SMTP_SECURE:-false}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USER:?Set EMAIL_SMTP_USER in the deployment environment}
+      EMAIL_SMTP_PASS: ${EMAIL_SMTP_PASS:?Set EMAIL_SMTP_PASS in the deployment environment}
+      EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM:-Netas Academy <aeren@netas.com.tr>}
+      EMAIL_DEFAULT_REPLY_TO: ${EMAIL_DEFAULT_REPLY_TO:-aeren@netas.com.tr}
+      EMAIL_TEST_ADDRESS: ${EMAIL_TEST_ADDRESS:-test@netasacademy.com}
+    volumes:
+      - app-uploads:/app/public/uploads
+      - app-uploads:/app/backend/public/uploads
+    ports:
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:1337:1337"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --globoff --fail --silent http://127.0.0.1:3000/ >/dev/null && curl --globoff --fail --silent 'http://127.0.0.1:1337/api/events?pagination[pageSize]=1' >/dev/null"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 45s
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: netas_academy
+      POSTGRES_USER: netas_academy
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the deployment environment}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U netas_academy -d netas_academy"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  postgres-backup:
+    build:
+      context: ../../docker/postgres-backup
+    profiles:
+      - backups
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://netas_academy:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the deployment environment}@postgres:5432/netas_academy
+      B2_BACKUP_BUCKET: ${B2_BACKUP_BUCKET:-}
+      B2_APPLICATION_KEY_ID: ${B2_BACKUP_APPLICATION_KEY_ID:-}
+      B2_APPLICATION_KEY: ${B2_BACKUP_APPLICATION_KEY:-}
+      B2_BACKUP_PREFIX: ${B2_BACKUP_PREFIX:-postgres}
+      BACKUP_CRON_SCHEDULE: ${BACKUP_CRON_SCHEDULE:-0 2 * * *}
+      BACKUP_RUN_ON_START: ${BACKUP_RUN_ON_START:-true}
+
+volumes:
+  postgres-data:
+  app-uploads:
