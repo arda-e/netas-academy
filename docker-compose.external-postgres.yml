@@ -1,0 +1,6 @@
+services:
+  app:
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL for the external Postgres container}
+      DATABASE_POOL_MIN: ${DATABASE_POOL_MIN:-0}
