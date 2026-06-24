@@ -20,6 +20,28 @@ wait_for_tcp() {
   return 1
 }
 
+wait_for_postgres() {
+  local host="${1:?host is required}"
+  local port="${2:?port is required}"
+  local database="${3:?database is required}"
+  local username="${4:?username is required}"
+
+  if command -v pg_isready >/dev/null 2>&1; then
+    for attempt in {1..60}; do
+      if pg_isready -h "$host" -p "$port" -d "$database" -U "$username" >/dev/null 2>&1; then
+        return 0
+      fi
+
+      sleep 2
+    done
+
+    pg_isready -h "$host" -p "$port" -d "$database" -U "$username" >&2 || true
+    return 1
+  fi
+
+  wait_for_tcp "$host" "$port"
+}
+
 cleanup() {
   for pid in "$frontend_pid" "$backend_pid"; do
     if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
@@ -37,9 +59,11 @@ cd /app
 if [[ "${DATABASE_CLIENT:-sqlite}" == "postgres" ]]; then
   db_host="${DATABASE_HOST:-postgres}"
   db_port="${DATABASE_PORT:-5432}"
+  db_name="${DATABASE_NAME:-strapi}"
+  db_user="${DATABASE_USERNAME:-strapi}"
 
-  if ! wait_for_tcp "$db_host" "$db_port"; then
-    echo "Timed out waiting for Postgres on ${db_host}:${db_port}." >&2
+  if ! wait_for_postgres "$db_host" "$db_port" "$db_name" "$db_user"; then
+    echo "Timed out waiting for Postgres on ${db_host}:${db_port}/${db_name} as ${db_user}." >&2
     exit 1
   fi
 fi
