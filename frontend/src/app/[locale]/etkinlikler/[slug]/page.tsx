@@ -9,6 +9,7 @@ import { RouteLoading } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { EventInformationPanel } from "@/components/events/event-information-panel";
 import { RegistrationStatusButton } from "@/components/events/registration-status-button";
+import { HeroGradientBackground } from "@/components/hero-gradient-background";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
@@ -80,7 +81,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.event-detail">
-      <section className="relative border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
+      <section className="relative isolate overflow-hidden border-b border-white/8 bg-slate-950">
+        <HeroGradientBackground variant="events" testId="page.event-detail.hero-gradient" />
         <div className="relative mx-auto flex min-h-[360px] w-full max-w-7xl items-end px-6 py-10 sm:min-h-[400px] md:px-10 lg:px-12">
           <div className="absolute left-6 right-6 top-10 md:left-10 md:right-10 lg:left-12 lg:right-12">
             <SiteBreadcrumbs

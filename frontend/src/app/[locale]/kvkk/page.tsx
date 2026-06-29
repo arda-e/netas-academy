@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 // TODO: legal translation requires separate review — legal body prose below is not yet extracted to i18n
 import kvkkData from "@/data/kvkk.json";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
+import { HeroGradientBackground } from "@/components/hero-gradient-background";
 import { KvkkBackButton } from "@/components/kvkk-back-button";
 import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
 
@@ -44,16 +45,14 @@ export default function KvkkPage() {
 
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.kvkk">
-      <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
+      <section className="relative isolate overflow-hidden border-b border-white/8 bg-slate-950">
+        <HeroGradientBackground variant="legal" testId="page.kvkk.hero-gradient" />
         <div className="page-container relative flex min-h-[260px] w-full items-end py-8 sm:min-h-[320px] sm:py-12">
           <div className="absolute left-4 right-4 top-8 flex items-start justify-between sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
             <SiteBreadcrumbs items={[{ label: "KVKK" }]} />
             <KvkkBackButton />
           </div>
           <div className="max-w-4xl space-y-4 sm:space-y-5">
-            <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
-              KVKK
-            </p>
             <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl">
               Kişisel verilerin korunmasına ilişkin aydınlatma metni
             </h1>

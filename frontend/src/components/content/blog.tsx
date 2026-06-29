@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
 
 import { SiteBreadcrumbs, type BreadcrumbItem } from "@/components/breadcrumbs";
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
+import { HeroGradientBackground } from "@/components/hero-gradient-background";
 import { responsiveLayoutClasses } from "@/components/content/responsive-layout";
-import { getImagePlaceholderProps, type ImageSource } from "@/lib/image-sources";
-import { cn } from "@/lib/utils";
+import type { ImageSource } from "@/lib/image-sources";
 import { join } from "@/lib/testids";
 import { formatLongDate } from "@/lib/date-formatting";
 
@@ -100,33 +99,10 @@ export function BlogDetail({
   content,
   slots,
 }: BlogDetailProps) {
-  const hasCoverImage = Boolean(hero.coverImageUrl);
-
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="blog-yazilari.detail">
-      <section
-        className={cn(
-          "relative isolate overflow-hidden border-b border-white/10",
-          hasCoverImage
-            ? "bg-slate-950"
-            : "bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]"
-        )}
-      >
-        {hasCoverImage && hero.coverImageUrl ? (
-          <>
-            <div className="absolute inset-0" data-testid="blog-yazilari.detail.cover-image">
-              <Image
-                src={hero.coverImageUrl}
-                alt={hero.coverImageAlt ?? hero.title}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover"
-                {...getImagePlaceholderProps(hero.coverImageUrl, hero.coverImageBlurDataURL)}
-              />
-            </div>
-          </>
-        ) : null}
+      <section className="relative isolate overflow-hidden border-b border-white/10 bg-slate-950">
+        <HeroGradientBackground variant="blog" testId="blog-yazilari.detail.hero-gradient" />
 
         <div className="page-container relative z-10 flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">
           <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">

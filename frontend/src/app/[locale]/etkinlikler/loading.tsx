@@ -4,6 +4,7 @@ export default function EtkinliklerLoading() {
   return (
     <ContentPageShell
       hero={{
+        gradientVariant: "events",
         title: "Etkinlikler",
         description: (
           <p>

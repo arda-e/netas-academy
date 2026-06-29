@@ -50,6 +50,7 @@ export default async function HaberlerPage() {
     <ContentPageShell
       testId="page.haberler"
       hero={{
+        gradientVariant: "news",
         title: t('hero.title'),
         description: <p>{t('hero.description')}</p>,
       }}

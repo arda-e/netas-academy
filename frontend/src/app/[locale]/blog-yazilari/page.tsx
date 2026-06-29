@@ -70,6 +70,7 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
   return (
     <ContentPageShell
       hero={{
+        gradientVariant: "blog",
         title: t('hero.title'),
         description: <p>{t('hero.description')}</p>,
       }}

@@ -5,6 +5,7 @@ export default function EgitmenlerLoading() {
     <ContentPageShell
       testId="page.egitmenler"
       hero={{
+        gradientVariant: "teachers",
         title: "Eğitmenler",
         descriptionClassName: "max-w-3xl text-balance",
       }}

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import cookieNoticeData from "@/data/cerez-aydinlatma-metni.json";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { CookieNoticeBackButton } from "@/components/cookie-notice-back-button";
+import { HeroGradientBackground } from "@/components/hero-gradient-background";
 import { Link } from "@/i18n/navigation";
 import { buildLocaleAlternates, buildLocalePath } from "@/lib/seo-utils";
 
@@ -56,16 +57,14 @@ export async function generateMetadata({
 export default function CookieNoticePage() {
   return (
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.cookie-notice">
-      <section className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(18,24,34,0.94)_0%,rgba(13,18,27,0.98)_100%)]">
+      <section className="relative isolate overflow-hidden border-b border-white/8 bg-slate-950">
+        <HeroGradientBackground variant="legal" testId="page.cookie-notice.hero-gradient" />
         <div className="page-container relative flex min-h-[260px] w-full items-end py-8 sm:min-h-[320px] sm:py-12">
           <div className="absolute left-4 right-4 top-8 flex items-start justify-between sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
             <SiteBreadcrumbs items={[{ label: cookieNotice.hero.title }]} />
             <CookieNoticeBackButton />
           </div>
           <div className="max-w-4xl space-y-4 sm:space-y-5">
-            <p className="text-sm font-medium uppercase tracking-[0.28em] text-primary/72">
-              {cookieNotice.hero.eyebrow}
-            </p>
             <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-6xl">
               {cookieNotice.hero.title}
             </h1>

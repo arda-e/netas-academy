@@ -1,12 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import heroImage from '@/assets/images/hero-events.webp';
+import { HeroGradientBackground } from "@/components/hero-gradient-background";
 import { Link } from '@/i18n/navigation';
-import { getImagePlaceholderProps, type ImageSource } from '@/lib/image-sources';
 import { buildIntentLeadUrl } from '@/lib/lead-intents';
-import { cn } from '@/lib/utils';
 
 type HomeHeroSlide = {
   headline: string;
@@ -18,7 +15,6 @@ type HomeHeroSectionProps = {
   primaryCtaLabel?: string;
   secondaryCtaLabel?: string;
   slideNavLabels?: string[];
-  imageUrl?: ImageSource | null;
 };
 
 const defaultSlides = [
@@ -44,10 +40,8 @@ export function HomeHeroSection({
   primaryCtaLabel = 'Kurumsal Eğitim Talep Et',
   secondaryCtaLabel = 'Eğitimleri İncele',
   slideNavLabels = [],
-  imageUrl = heroImage,
 }: HomeHeroSectionProps = {}) {
   const [current, setCurrent] = useState(0);
-  const hasImage = Boolean(imageUrl);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -58,31 +52,8 @@ export function HomeHeroSection({
   }, [slides.length]);
 
   return (
-    <section
-      className={cn(
-        "relative flex min-h-[clamp(300px,44svh,680px)] items-center justify-center overflow-hidden",
-        hasImage ? "bg-slate-950" : "bg-[linear-gradient(135deg,#009ca6_0%,#0f4c81_100%)]",
-      )}
-    >
-      {imageUrl && (
-        <Image
-          src={imageUrl}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-          {...getImagePlaceholderProps(imageUrl)}
-        />
-      )}
-      {hasImage ? (
-        <div className="absolute inset-0 bg-slate-950/8" />
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,oklch(0.65_0.12_205.25/0.25),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,oklch(0.65_0.12_205.25/0.12),transparent_50%)]" />
-        </>
-      )}
+    <section className="relative flex min-h-[clamp(300px,44svh,680px)] items-center justify-center overflow-hidden bg-slate-950">
+      <HeroGradientBackground variant="home" testId="page.home.hero-gradient" />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-10 xl:px-12">
         <div className="relative w-full min-h-[8rem]">

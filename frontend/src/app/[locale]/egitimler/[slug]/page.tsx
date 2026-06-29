@@ -115,6 +115,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     <ContentPageShell
       testId="page.course-detail"
       hero={{
+        gradientVariant: "courses",
         breadcrumbItems: [
           { label: t("detail.breadcrumb"), href: "/egitimler" },
           { label: course.title },

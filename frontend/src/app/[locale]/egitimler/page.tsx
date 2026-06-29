@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Download, Filter } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import trainingHeroImage from "@/assets/images/hero-events.webp";
 import { ContentPageShell, CourseListLoading, SearchField } from "@/components/content";
 import { CourseCatalogList } from "@/components/courses/course-catalog-list";
 import { Link } from "@/i18n/navigation";
@@ -85,6 +84,7 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
     <ContentPageShell
       testId="page.egitimler"
       hero={{
+        gradientVariant: "courses",
         title: t("hero.title"),
         description: (
           <>
@@ -113,10 +113,6 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
             </span>
           </div>
         ),
-      }}
-      media={{
-        heroImageUrl: trainingHeroImage,
-        heroImageAlt: "",
       }}
     >
       <div className="space-y-10 sm:space-y-12">

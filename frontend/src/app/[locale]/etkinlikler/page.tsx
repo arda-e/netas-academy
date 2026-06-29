@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { Filter } from "lucide-react";
 import { SortAscending, SortDescending } from "@phosphor-icons/react/dist/ssr";
 import { getTranslations } from "next-intl/server";
-import eventsHeroImage from "@/assets/images/hero-events.webp";
 
 import { ContentPageShell, EventList, EventListLoading } from "@/components/content";
 import { Link } from "@/i18n/navigation";
@@ -134,6 +133,7 @@ export default async function EtkinliklerPage({
   return (
     <ContentPageShell
       hero={{
+        gradientVariant: "events",
         title: t("hero.title"),
         description: (
           <p>
@@ -143,10 +143,6 @@ export default async function EtkinliklerPage({
             {t("hero.description_rest")}
           </p>
         ),
-      }}
-      media={{
-        heroImageUrl: eventsHeroImage,
-        heroImageAlt: "",
       }}
       testId="page.etkinlikler"
     >

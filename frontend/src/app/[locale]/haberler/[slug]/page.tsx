@@ -7,11 +7,6 @@ import { ContentPageShell } from "@/components/content";
 import { RichTextContent } from "@/components/content/rich-text-content";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getNewsPostBySlug, getNewsPostSlugs } from "@/lib/strapi-news";
-import {
-  getStrapiMediaAltText,
-  getStrapiMediaBlurDataUrl,
-  getStrapiMediaUrl,
-} from "@/lib/strapi-media";
 import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 import { formatLongDate } from "@/lib/date-formatting";
@@ -87,13 +82,9 @@ export default async function HaberDetailPage({ params }: HaberDetailPageProps) 
       <ContentPageShell
         testId="page.haber-detail"
         hero={{
+          gradientVariant: "news",
           breadcrumbItems,
           title: post.title,
-        }}
-        media={{
-          heroImageUrl: getStrapiMediaUrl(post.coverImage, "large"),
-          heroImageAlt: getStrapiMediaAltText(post.coverImage) ?? post.title,
-          heroImageBlurDataURL: getStrapiMediaBlurDataUrl(post.coverImage) ?? undefined,
         }}
       >
         <div className="mb-8 max-w-3xl space-y-4 sm:mb-10 sm:space-y-5">

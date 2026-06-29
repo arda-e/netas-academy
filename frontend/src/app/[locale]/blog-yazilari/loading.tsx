@@ -4,6 +4,7 @@ export default function BlogYazilariLoading() {
   return (
     <ContentPageShell
       hero={{
+        gradientVariant: "blog",
         title: "Blog",
         description: (
           <p>

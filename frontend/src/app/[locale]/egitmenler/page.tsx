@@ -84,6 +84,7 @@ export default async function EgitmenlerPage({ searchParams }: EgitmenlerPagePro
     <ContentPageShell
       testId="page.egitmenler"
       hero={{
+        gradientVariant: "teachers",
         title: t('hero.title'),
         descriptionClassName: "max-w-3xl text-balance",
         description: (

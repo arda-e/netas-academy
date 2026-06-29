@@ -5,6 +5,7 @@ export default function EgitimlerLoading() {
     <ContentPageShell
       testId="page.egitimler"
       hero={{
+        gradientVariant: "courses",
         title: "Eğitim Kataloğu",
         description: (
           <>

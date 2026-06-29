@@ -14,7 +14,7 @@ function isNavigationItemActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-const navigationLinkActiveClassName = "text-[#0f4c81]";
+const navigationLinkActiveClassName = "text-[#009ca6]";
 
 const desktopNavigationLinkClassName =
   "flex items-center border-x px-4 text-sm font-medium transition-all";
@@ -98,7 +98,7 @@ export function SiteHeader() {
             className={cn(
               "rounded-l-sm px-2 py-1 text-sm font-medium transition-colors",
               locale === 'tr'
-                ? "bg-primary/10 text-[#0f4c81]"
+                ? "bg-primary/10 text-[#009ca6]"
                 : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
             )}
           >
@@ -112,7 +112,7 @@ export function SiteHeader() {
             className={cn(
               "rounded-r-sm px-2 py-1 text-sm font-medium transition-colors",
               locale === 'en'
-                ? "bg-primary/10 text-[#0f4c81]"
+                ? "bg-primary/10 text-[#009ca6]"
                 : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
             )}
           >

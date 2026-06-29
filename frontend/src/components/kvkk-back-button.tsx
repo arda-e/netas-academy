@@ -35,7 +35,7 @@ export function KvkkBackButton() {
       type="button"
       variant="outline"
       onClick={handleBack}
-      className="h-10 rounded-sm px-5 text-sm font-medium"
+      className="h-10 rounded-sm px-5 text-sm font-medium hover:cursor-pointer"
       data-testid="kvkk.back-button"
     >
       {t('back_button')}

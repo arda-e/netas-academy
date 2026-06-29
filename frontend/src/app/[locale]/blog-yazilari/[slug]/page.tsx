@@ -12,11 +12,6 @@ import {
   getBlogPostBySlug,
   getRelatedBlogPosts,
 } from "@/lib/strapi-blog";
-import {
-  getStrapiMediaAltText,
-  getStrapiMediaBlurDataUrl,
-  getStrapiMediaUrl,
-} from "@/lib/strapi-media";
 import type { StrapiBlogPost } from "@/lib/strapi-types";
 import { buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
@@ -133,13 +128,9 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         <ContentPageShell
           testId="page.blog-detail"
           hero={{
+            gradientVariant: "blog",
             breadcrumbItems,
             title: post.title,
-          }}
-          media={{
-            heroImageUrl: getStrapiMediaUrl(post.coverImage, "large"),
-            heroImageAlt: getStrapiMediaAltText(post.coverImage) ?? post.title,
-            heroImageBlurDataURL: getStrapiMediaBlurDataUrl(post.coverImage) ?? undefined,
           }}
         >
           <div className="mb-8 max-w-3xl space-y-4 sm:mb-10 sm:space-y-5">
