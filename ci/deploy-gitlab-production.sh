@@ -116,20 +116,6 @@ ln -sfn /etc/nginx/sites-available/new.netasacademy.com /etc/nginx/sites-enabled
 nginx -t
 nginx -s reload
 
-for attempt in 1 2 3 4 5; do
-  if ! ss -ltn "sport = :1337" | grep -q ':1337'; then
-    break
-  fi
-
-  if [ "$attempt" -eq 5 ]; then
-    echo "Port 1337 is still occupied after nginx reload." >&2
-    ss -ltnp "sport = :1337" >&2 || true
-    exit 1
-  fi
-
-  sleep 2
-done
-
 echo "$REGISTRY_DEPLOY_PASSWORD" | docker login "$CI_REGISTRY" -u "$REGISTRY_DEPLOY_USER" --password-stdin
 
 for attempt in 1 2 3 4 5; do
