@@ -59,7 +59,35 @@ test("NewsletterSubscriptionForm includes source in payload", () => {
   const source = readSource("components/newsletter-subscription-form.tsx");
   assert.match(
     source,
-    /source/,
+    /sourceContentType:\s*source\s*\?\?\s*null/,
     "NewsletterSubscriptionForm should include source in request body"
+  );
+});
+
+test("NewsletterSubscriptionForm submits backend-required consent", () => {
+  const source = readSource("components/newsletter-subscription-form.tsx");
+  assert.match(
+    source,
+    /consentAccepted:\s*true/,
+    "NewsletterSubscriptionForm should satisfy the backend consent validation contract"
+  );
+  assert.match(
+    source,
+    /consentTextSnapshot:\s*t\('consent\.disclaimer'\)/,
+    "NewsletterSubscriptionForm should store the displayed consent text snapshot"
+  );
+});
+
+test("NewsletterSubscriptionForm shows consent disclaimer under the email input", () => {
+  const source = readSource("components/newsletter-subscription-form.tsx");
+  assert.match(
+    source,
+    /data-testid="newsletter\.consent-disclaimer"/,
+    "NewsletterSubscriptionForm should render a visible consent disclaimer"
+  );
+  assert.match(
+    source,
+    /t\('consent\.disclaimer'\)/,
+    "NewsletterSubscriptionForm should use translated consent disclaimer copy"
   );
 });

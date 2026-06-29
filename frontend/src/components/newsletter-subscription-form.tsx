@@ -31,7 +31,13 @@ export function NewsletterSubscriptionForm({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, source: source ?? null }),
+          body: JSON.stringify({
+            email: email.trim(),
+            consentAccepted: true,
+            consentTextSnapshot: t('consent.disclaimer'),
+            sourcePage: window.location.pathname,
+            sourceContentType: source ?? null,
+          }),
         }
       );
 
@@ -59,29 +65,34 @@ export function NewsletterSubscriptionForm({
           {t('success')}
         </p>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row" data-testid="newsletter.form">
+        <form onSubmit={handleSubmit} className="space-y-3" data-testid="newsletter.form">
           <label htmlFor="newsletter-email" className="sr-only">
             {t('field.email.label')}
           </label>
-          <Input
-            id="newsletter-email"
-            type="email"
-            placeholder={t('field.email.placeholder')}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={state === "loading"}
-            className="flex-1"
-            data-testid="newsletter.field.email"
-          />
-          <Button
-            type="submit"
-            disabled={state === "loading"}
-            className="shrink-0"
-            data-testid="newsletter.submit"
-          >
-            {state === "loading" ? t('submit.pending') : t('submit.idle')}
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Input
+              id="newsletter-email"
+              type="email"
+              placeholder={t('field.email.placeholder')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={state === "loading"}
+              className="flex-1"
+              data-testid="newsletter.field.email"
+            />
+            <Button
+              type="submit"
+              disabled={state === "loading"}
+              className="shrink-0"
+              data-testid="newsletter.submit"
+            >
+              {state === "loading" ? t('submit.pending') : t('submit.idle')}
+            </Button>
+          </div>
+          <p className="text-xs leading-5 text-foreground/56" data-testid="newsletter.consent-disclaimer">
+            {t('consent.disclaimer')}
+          </p>
         </form>
       )}
       {state === "error" ? (

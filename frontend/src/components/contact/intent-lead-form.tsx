@@ -222,7 +222,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         <Button
           type="submit"
           disabled={isPending}
-          className="h-12 w-full rounded-md px-7 text-base font-semibold sm:w-auto md:text-lg"
+          className="h-12 w-full rounded-md px-7 text-base font-semibold hover:cursor-pointer sm:w-auto md:text-lg"
           data-testid="contact-lead.submit"
         >
           {isPending ? t("submit.pending") : t("submit.idle")}

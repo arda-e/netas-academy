@@ -547,6 +547,9 @@
       "idle": "Subscribe",
       "pending": "Submitting..."
     },
+    "consent": {
+      "disclaimer": "By subscribing, you consent to Netaş Academy processing your email address to send event and academy updates."
+    },
     "success": "Your subscription has been received. Thank you!",
     "error": {
       "generic": "An error occurred during subscription.",

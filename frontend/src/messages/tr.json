@@ -547,6 +547,9 @@
       "idle": "Abone Ol",
       "pending": "Gönderiliyor..."
     },
+    "consent": {
+      "disclaimer": "Abone olarak, Netaş Academy'nin etkinlik ve akademi duyurularını göndermek için e-posta adresinizi işlemesine izin vermiş olursunuz."
+    },
     "success": "Aboneliğiniz başarıyla alındı. Teşekkür ederiz!",
     "error": {
       "generic": "Abonelik sırasında bir hata oluştu.",
