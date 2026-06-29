@@ -1,8 +1,9 @@
 stages:
   - lint
   - test
-  - e2e
   - build
+  - e2e
+  - image
   - deploy
 
 variables:
@@ -13,12 +14,11 @@ variables:
   NPM_CONFIG_AUDIT: "false"
   NPM_CONFIG_FUND: "false"
   NPM_CONFIG_PROGRESS: "false"
-  PRODUCTION_HOST: "185.48.181.248"
-  PRODUCTION_USER: "root"
   PRODUCTION_APP_DIR: "/opt/netas_academy"
 
 .node_job:
-  image: node:22-bookworm-slim
+  image: node:22-bookworm
+  interruptible: true
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
@@ -26,6 +26,20 @@ variables:
       - frontend/.npm/
       - backend/.npm/
       - e2e/.npm/
+
+.backend_ci_env:
+  variables:
+    APP_KEYS: "ci-app-key-1,ci-app-key-2"
+    ADMIN_JWT_SECRET: "ci-admin-jwt-secret"
+    API_TOKEN_SALT: "ci-api-token-salt"
+    TRANSFER_TOKEN_SALT: "ci-transfer-token-salt"
+    ENCRYPTION_KEY: "ci-encryption-key"
+    JWT_SECRET: "ci-jwt-secret"
+    EMAIL_SMTP_USER: "ci-smtp-user"
+    EMAIL_SMTP_PASS: "ci-smtp-pass"
+    STRAPI_URL: "http://127.0.0.1:1337"
+    NEXT_PUBLIC_SITE_URL: "http://localhost:3000"
+    NEXT_PUBLIC_API_URL: "http://127.0.0.1:1337"
 
 frontend_lint:
   extends: .node_job
@@ -38,7 +52,6 @@ frontend_lint:
 frontend_tests:
   extends: .node_job
   stage: test
-  allow_failure: true
   needs:
     - frontend_lint
   before_script:
@@ -47,9 +60,10 @@ frontend_tests:
     - npm run test:coverage --prefix frontend
 
 backend_tests:
-  extends: .node_job
+  extends:
+    - .node_job
+    - .backend_ci_env
   stage: test
-  allow_failure: true
   needs:
     - frontend_lint
   before_script:
@@ -57,14 +71,40 @@ backend_tests:
   script:
     - npm run test --prefix backend
 
+frontend_build:
+  extends:
+    - .node_job
+    - .backend_ci_env
+  stage: build
+  needs:
+    - frontend_tests
+  before_script:
+    - npm ci --prefix frontend --cache frontend/.npm --prefer-offline
+  script:
+    - npm run build --prefix frontend
+
+backend_build:
+  extends:
+    - .node_job
+    - .backend_ci_env
+  stage: build
+  needs:
+    - backend_tests
+  before_script:
+    - npm ci --prefix backend --cache backend/.npm --prefer-offline
+  script:
+    - npm run build --prefix backend
+
 playwright_e2e:
-  extends: .node_job
+  extends:
+    - .node_job
+    - .backend_ci_env
   image: mcr.microsoft.com/playwright:v1.60.0-noble
   stage: e2e
   allow_failure: true
   needs:
-    - frontend_tests
-    - backend_tests
+    - frontend_build
+    - backend_build
   before_script:
     - npm ci --prefix frontend --cache frontend/.npm --prefer-offline
     - npm ci --prefix backend --cache backend/.npm --prefer-offline
@@ -81,11 +121,13 @@ playwright_e2e:
 
 build_image:
   image: docker:29-cli
-  stage: build
+  stage: image
   services:
     - name: docker:29-dind
       command: ["--tls=false"]
   needs:
+    - frontend_build
+    - backend_build
     - playwright_e2e
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
@@ -133,7 +175,7 @@ deploy_production:
     name: production
     url: https://new.netasacademy.com
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main" && $PRODUCTION_HOST && $PRODUCTION_SSH_PRIVATE_KEY && $REGISTRY_DEPLOY_USER && $REGISTRY_DEPLOY_PASSWORD'
 
 deploy_production_manual:
   extends: .deploy_template
@@ -143,4 +185,4 @@ deploy_production_manual:
   when: manual
   allow_failure: false
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "web" && $PRODUCTION_HOST && $PRODUCTION_SSH_PRIVATE_KEY && $REGISTRY_DEPLOY_USER && $REGISTRY_DEPLOY_PASSWORD'
