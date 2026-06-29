@@ -12,10 +12,10 @@ services:
       FRONTEND_PORT: 3000
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://new.netasacademy.com}
       STRAPI_URL: ${STRAPI_URL:-http://127.0.0.1:1337}
-      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-https://new.netasacademy.com:1337}
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-https://api.netasacademy.com}
       CLIENT_URL: ${CLIENT_URL:-https://new.netasacademy.com}
       FRONTEND_URL: ${FRONTEND_URL:-http://127.0.0.1:3000}
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://new.netasacademy.com:1337}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.netasacademy.com}
       GIT_COMMIT_SHA: ${GIT_COMMIT_SHA:?Set GIT_COMMIT_SHA to the deployed commit}
       HOST: 0.0.0.0
       PORT: 1337
@@ -48,7 +48,7 @@ services:
       - app-uploads:/app/backend/public/uploads
     ports:
       - "127.0.0.1:3000:3000"
-      - "127.0.0.1:1338:1337"
+      - "127.0.0.1:1337:1337"
     healthcheck:
       test: ["CMD-SHELL", "curl --globoff --fail --silent http://127.0.0.1:3000/ >/dev/null && curl --globoff --fail --silent 'http://127.0.0.1:1337/api/events?pagination[pageSize]=1' >/dev/null"]
       interval: 15s
