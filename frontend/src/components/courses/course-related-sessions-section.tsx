@@ -100,7 +100,7 @@ export function CourseRelatedSessionsSection({
           })}
         </ul>
       ) : (
-        <div className="mt-4 rounded-sm border border-border/40 bg-card/30 px-5 py-6 text-sm text-foreground/60">
+        <div className="mt-4 rounded-sm border border-border/40 bg-white px-5 py-6 text-sm text-foreground/60">
           <p>{noUpcomingSessions}</p>
           <Link
             href={buildIntentLeadUrl("general_contact")}
