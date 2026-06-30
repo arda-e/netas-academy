@@ -2,6 +2,8 @@ export {
   BlogListLoading,
   CourseListLoading,
   EventListLoading,
+  HeroDescriptionLoading,
+  HeroDescriptionWithTrailingLoading,
   FilterPillsLoading,
   RouteLoading,
   SearchFieldLoading,

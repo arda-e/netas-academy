@@ -13,6 +13,15 @@ function SkeletonBox({ className }: SkeletonBoxProps) {
   );
 }
 
+function HeroLoadingBar({ className }: SkeletonBoxProps) {
+  return (
+    <div
+      className={`animate-pulse rounded-full bg-white/16 ${className ?? ""}`}
+      role="presentation"
+    />
+  );
+}
+
 type RouteLoadingProps = {
   testId?: string;
   children?: ReactNode;
@@ -33,6 +42,40 @@ export function RouteLoading({ testId, children }: RouteLoadingProps) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+export function HeroDescriptionLoading({
+  testId,
+}: {
+  testId?: string;
+}) {
+  return (
+    <div className="max-w-2xl space-y-3 sm:space-y-4" data-testid={testId}>
+      <HeroLoadingBar className="h-4 w-full max-w-[34rem]" />
+      <HeroLoadingBar className="h-4 w-5/6 max-w-[28rem]" />
+    </div>
+  );
+}
+
+export function HeroDescriptionWithTrailingLoading({
+  descriptionTestId,
+}: {
+  descriptionTestId?: string;
+}) {
+  return (
+    <div className="flex w-full flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+      <HeroDescriptionLoading testId={descriptionTestId} />
+      <div className="flex shrink-0 justify-end lg:pb-1" aria-hidden="true">
+        <div className="inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
+          <HeroLoadingBar className="size-10 bg-white/12" />
+          <div className="flex flex-col items-start gap-2">
+            <HeroLoadingBar className="h-4 w-32" />
+            <HeroLoadingBar className="h-3 w-24" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
