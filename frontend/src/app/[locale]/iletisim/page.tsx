@@ -74,7 +74,7 @@ export default async function IletisimPage({ searchParams }: IletisimPageProps) 
       </section>
 
       <section className="mx-auto w-full max-w-7xl px-4 py-14 md:px-10 md:py-18 lg:px-12">
-        <div className="panel-surface rounded-sm p-6 md:p-8 lg:p-10">
+        <div>
           <div data-testid="page.iletisim.form">
             <IntentLeadForm initialLeadType={initialLeadType} prefilledTopic={prefilledTopic} />
           </div>

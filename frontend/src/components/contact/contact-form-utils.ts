@@ -70,6 +70,12 @@ export function getErrorMessage(payload: unknown, t: (key: string) => string): s
     if (message === "kvkkConsent must be true") {
       return t("error.kvkk_consent");
     }
+    if (message === "turnstileToken is required") {
+      return t("error.human_check_required");
+    }
+    if (message === "turnstile verification failed") {
+      return t("error.human_check_failed");
+    }
     return message;
   }
   return t("error.submit_failed");

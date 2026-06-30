@@ -1,6 +1,8 @@
 "use client";
 
+import Script from "next/script";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,19 +19,98 @@ import { IntentFieldSections } from "./intent-field-sections";
 export type { IntentLeadFormValues } from "./contact-form-utils";
 
 const fieldClassName =
-  "h-11 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-12 md:px-5 md:text-base";
+  "h-11 rounded-lg border-transparent bg-white px-3 py-2 text-base text-foreground shadow-xs ring-1 ring-border/80 ring-inset transition-shadow duration-100 ease-linear placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/80 md:h-12 md:px-3 md:text-base";
 
 const selectClassName =
-  "h-11 w-full min-w-0 rounded-sm border-3 border-border/80 bg-card/68 px-4 text-base appearance-none cursor-pointer pr-10 outline-none focus-visible:border-ring md:h-12 md:px-5 md:text-base";
+  "h-11 w-full min-w-0 appearance-none rounded-lg border border-transparent bg-white px-3 py-2 pr-10 text-base text-foreground shadow-xs ring-1 ring-border/80 ring-inset transition-shadow duration-100 ease-linear outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/80 md:h-12 md:text-base";
 
-const labelClassName = "text-md font-medium text-foreground";
+const labelClassName = "flex cursor-default items-center gap-0.5 text-sm font-medium text-muted-foreground";
 
 const fieldWrapperClassName = "space-y-2 md:space-y-3";
+
+const turnstileSiteKey =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY
+    : undefined;
+
+type TurnstileRenderOptions = {
+  sitekey: string;
+  callback: (token: string) => void;
+  "expired-callback": () => void;
+  "error-callback": () => void;
+  theme: "light";
+};
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, options: TurnstileRenderOptions) => string;
+      reset: (widgetId: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
 
 type IntentLeadFormProps = {
   initialLeadType: LeadType;
   prefilledTopic?: string;
 };
+
+type TurnstileHumanCheckProps = {
+  resetKey: number;
+  onVerify: (token: string) => void;
+  onExpire: () => void;
+};
+
+function TurnstileHumanCheck({ resetKey, onVerify, onExpire }: TurnstileHumanCheckProps) {
+  const t = useTranslations("contact");
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const [isScriptReady, setIsScriptReady] = useState(false);
+
+  useEffect(() => {
+    if (!turnstileSiteKey || !isScriptReady || !containerRef.current || !window.turnstile || widgetIdRef.current) {
+      return;
+    }
+
+    widgetIdRef.current = window.turnstile.render(containerRef.current, {
+      sitekey: turnstileSiteKey,
+      callback: onVerify,
+      "expired-callback": onExpire,
+      "error-callback": onExpire,
+      theme: "light",
+    });
+
+    return () => {
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
+    };
+  }, [isScriptReady, onExpire, onVerify]);
+
+  useEffect(() => {
+    if (widgetIdRef.current && window.turnstile) {
+      window.turnstile.reset(widgetIdRef.current);
+    }
+  }, [resetKey]);
+
+  if (!turnstileSiteKey) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-2" data-testid="contact-lead.human-check">
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        strategy="afterInteractive"
+        onReady={() => setIsScriptReady(true)}
+      />
+      <div ref={containerRef} className="min-h-[65px]" />
+      <p className="text-xs leading-5 text-muted-foreground">{t("human_check.notice")}</p>
+    </div>
+  );
+}
 
 export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFormProps) {
   const t = useTranslations("contact");
@@ -42,12 +123,15 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     isPending,
     kvkkReturnTo,
     formKey,
+    turnstileResetKey,
     register,
     handleIntentChange,
     handleFieldInteraction,
     handleFormSubmit,
     handleNewSubmission,
     persistCurrentValues,
+    handleTurnstileVerify,
+    handleTurnstileExpire,
   } = useIntentLeadForm({ initialLeadType, prefilledTopic });
 
   if (success) {
@@ -175,7 +259,7 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         </label>
         <Textarea
           id="message"
-          className="min-h-[10rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[12rem] md:px-5 md:text-base"
+          className="min-h-[10rem] rounded-lg border-transparent bg-white px-3 py-2 text-base text-foreground shadow-xs ring-1 ring-border/80 ring-inset transition-shadow duration-100 ease-linear placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/80 md:min-h-[12rem] md:text-base"
           {...register("message")}
           onFocus={handleFieldInteraction}
           data-testid="contact-lead.field.message"
@@ -199,16 +283,18 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             data-testid="contact-lead.field.kvkk-consent"
           />
           <label htmlFor="kvkkConsent" className="cursor-pointer text-sm leading-6 text-muted-foreground">
-            {t("kvkk.text")}{" "}
-            <Link
-              href={`/kvkk?returnTo=${encodeURIComponent(kvkkReturnTo)}`}
-              onClick={persistCurrentValues}
-              className="text-primary transition-colors hover:text-primary/80"
-              data-testid="contact-lead.link.kvkk-disclosure"
-            >
-              {t("kvkk.link")}
-            </Link>
-            {t("kvkk.suffix")}
+            <span className="block">{t("kvkk.text")}</span>
+            <span className="block">
+              <Link
+                href={`/kvkk?returnTo=${encodeURIComponent(kvkkReturnTo)}`}
+                onClick={persistCurrentValues}
+                className="text-primary transition-colors hover:text-primary/80"
+                data-testid="contact-lead.link.kvkk-disclosure"
+              >
+                {t("kvkk.link")}
+              </Link>
+              {t("kvkk.suffix")}
+            </span>
           </label>
         </div>
         {fieldErrors.kvkkConsent ? (
@@ -216,13 +302,19 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
         ) : null}
       </div>
 
+      <TurnstileHumanCheck
+        resetKey={turnstileResetKey}
+        onVerify={handleTurnstileVerify}
+        onExpire={handleTurnstileExpire}
+      />
+
       {/* Submit Button */}
       <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
         <div className="flex-1" />
         <Button
           type="submit"
           disabled={isPending}
-          className="h-12 w-full rounded-md px-7 text-base font-semibold hover:cursor-pointer sm:w-auto md:text-lg"
+          className="h-10 w-full rounded-md px-5 text-sm font-semibold hover:cursor-pointer sm:w-auto md:text-base"
           data-testid="contact-lead.submit"
         >
           {isPending ? t("submit.pending") : t("submit.idle")}

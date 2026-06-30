@@ -8,9 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import type { IntentLeadFormValues } from "./contact-form-utils";
 
 const fieldClassName =
-  "h-11 rounded-sm border-border/80 bg-card/68 px-4 text-base focus-visible:border-ring md:h-12 md:px-5 md:text-base";
+  "h-11 rounded-lg border-transparent bg-white px-3 py-2 text-base text-foreground shadow-xs ring-1 ring-border/80 ring-inset transition-shadow duration-100 ease-linear placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/80 md:h-12 md:px-3 md:text-base";
 
-const labelClassName = "text-md font-medium text-foreground";
+const labelClassName = "flex cursor-default items-center gap-0.5 text-sm font-medium text-muted-foreground";
 
 const fieldWrapperClassName = "space-y-2 md:space-y-3";
 
@@ -53,7 +53,7 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
           <Textarea
             id="expertiseAreas"
             placeholder={t("field.expertise_areas.placeholder")}
-            className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
+            className="min-h-[7rem] rounded-lg border-transparent bg-white px-3 py-2 text-base text-foreground shadow-xs ring-1 ring-border/80 ring-inset transition-shadow duration-100 ease-linear placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/80 md:min-h-[9rem] md:text-base"
             {...register("expertiseAreas")}
             onFocus={onFieldFocus}
             data-testid="contact-lead.field.expertise-areas"
@@ -74,7 +74,7 @@ export function IntentFieldSections({ leadType, register, errors, onFieldFocus }
             <Textarea
               id="partnershipDetails"
               placeholder={t("field.partnership_details.placeholder")}
-              className="min-h-[7rem] rounded-sm border-border/80 bg-card/68 px-4 py-4 text-base focus-visible:border-ring md:min-h-[9rem] md:px-5 md:text-base"
+              className="min-h-[7rem] rounded-lg border-transparent bg-white px-3 py-2 text-base text-foreground shadow-xs ring-1 ring-border/80 ring-inset transition-shadow duration-100 ease-linear placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/80 md:min-h-[9rem] md:text-base"
               {...register("partnershipDetails")}
               onFocus={onFieldFocus}
               data-testid="contact-lead.field.partnership-details"

@@ -469,6 +469,9 @@
       "link": "Privacy Notice",
       "suffix": "I have read and agree.*"
     },
+    "human_check": {
+      "notice": "Cloudflare human verification is used for your security."
+    },
     "submit": {
       "idle": "Submit",
       "pending": "Submitting..."
@@ -490,6 +493,8 @@
       "invalid_lead_type": "Invalid submission type. Please refresh the page and try again.",
       "required_fields": "Please fill in all required fields.",
       "kvkk_consent": "You must accept the privacy notice.",
+      "human_check_required": "Please complete the human verification.",
+      "human_check_failed": "Human verification could not be completed. Please try again.",
       "submit_failed": "Form could not be submitted. Please try again."
     }
   },

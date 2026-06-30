@@ -30,6 +30,10 @@ import {
 import type { FieldErrors, FormValues } from "./contact-form-utils";
 import { getErrorMessage, normalizeFormValues } from "./contact-form-utils";
 
+const isTurnstileEnabled =
+  process.env.NODE_ENV === "production" &&
+  Boolean(process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY);
+
 type UseIntentLeadFormProps = {
   initialLeadType: LeadType;
   prefilledTopic?: string;
@@ -46,6 +50,8 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
   const [formKey, setFormKey] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [isPending, startTransition] = useTransition();
   const hasEmittedStartRef = useRef(false);
   const previousLeadTypeRef = useRef<LeadType>(leadType);
@@ -126,6 +132,8 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
     });
     hasEmittedStartRef.current = false;
     new FormStorage(`contact-form-${previousLeadType}`).clear();
+    setTurnstileToken(null);
+    setTurnstileResetKey((key) => key + 1);
   }, [leadType, reset, prefilledTopic]);
 
   // Persist only after real form changes so the first render cannot overwrite
@@ -171,14 +179,37 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
     emitLeadRelatedContentClick(leadType);
     hasEmittedStartRef.current = false;
     clearStorage();
+    setTurnstileToken(null);
+    setTurnstileResetKey((key) => key + 1);
     setFormKey((k) => k + 1);
     setSuccess(false);
   }, [leadType, clearStorage]);
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+    setErrorMessage((current) => (current === t("error.human_check_required") ? null : current));
+  }, [t]);
+
+  const handleTurnstileExpire = useCallback(() => {
+    setTurnstileToken(null);
+  }, []);
+
+  const resetTurnstile = useCallback(() => {
+    setTurnstileToken(null);
+    setTurnstileResetKey((key) => key + 1);
+  }, []);
 
   const onSubmit = useCallback(
     (data: FormValues) => {
       setErrorMessage(null);
       hasEmittedStartRef.current = true;
+
+      if (isTurnstileEnabled && !turnstileToken) {
+        const reason = t("error.human_check_required");
+        setErrorMessage(reason);
+        emitLeadSubmitFail(leadType, reason);
+        return;
+      }
 
       const payload = {
         leadType,
@@ -191,6 +222,7 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
         expertiseAreas: data.expertiseAreas?.trim() || undefined,
         partnershipDetails: data.partnershipDetails?.trim() || undefined,
         kvkkConsent: data.kvkkConsent,
+        turnstileToken: turnstileToken ?? undefined,
       };
 
       startTransition(async () => {
@@ -207,21 +239,24 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
             const reason = getErrorMessage(result, t);
             setErrorMessage(reason);
             emitLeadSubmitFail(leadType, reason);
+            resetTurnstile();
             return;
           }
 
           setSuccess(true);
           emitLeadSubmitSuccess(leadType);
           clearStorage();
+          resetTurnstile();
           reset();
         } catch {
           const reason = t("error.submit_failed");
           setErrorMessage(reason);
           emitLeadSubmitFail(leadType, reason);
+          resetTurnstile();
         }
       });
     },
-    [leadType, reset, clearStorage, t]
+    [leadType, reset, clearStorage, t, turnstileToken, resetTurnstile]
   );
 
   const handleFormSubmit = useCallback(
@@ -258,11 +293,14 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
     isPending,
     kvkkReturnTo,
     formKey,
+    turnstileResetKey,
     register,
     handleIntentChange,
     handleFieldInteraction,
     handleFormSubmit,
     handleNewSubmission,
     persistCurrentValues,
+    handleTurnstileVerify,
+    handleTurnstileExpire,
   };
 }

@@ -28,7 +28,7 @@ test("contact and event registration pages stack panels before large screens", (
   const contactPage = readSource("app/[locale]/iletisim/page.tsx");
   const registrationPage = readSource("app/[locale]/etkinlikler/[slug]/kayit/page.tsx");
 
-  assert.match(contactPage, /panel-surface rounded-sm p-6 md:p-8 lg:p-10/);
+  assert.doesNotMatch(contactPage, /panel-surface rounded-sm p-6 md:p-8 lg:p-10/);
   assert.match(contactPage, /<IntentLeadForm initialLeadType=\{initialLeadType\} prefilledTopic=\{prefilledTopic\} \/>/);
   assert.match(registrationPage, /grid gap-6 xl:grid-cols-\[minmax\(0,0\.72fr\)_minmax\(300px,0\.42fr\)\]/);
   assert.doesNotMatch(registrationPage, /lg:grid-cols-\[minmax\(0,0\.72fr\)_minmax\(320px,0\.46fr\)\]/);

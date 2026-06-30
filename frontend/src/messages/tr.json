@@ -469,6 +469,9 @@
       "link": "Aydınlatma Metni",
       "suffix": "'ni okudum, onaylıyorum.*"
     },
+    "human_check": {
+      "notice": "Güvenliğiniz için Cloudflare insan doğrulaması kullanılır."
+    },
     "submit": {
       "idle": "Gönder",
       "pending": "Gönderiliyor..."
@@ -490,6 +493,8 @@
       "invalid_lead_type": "Geçersiz başvuru türü. Lütfen sayfayı yenileyip tekrar deneyin.",
       "required_fields": "Lütfen zorunlu alanların tamamını doldurun.",
       "kvkk_consent": "KVKK metnini onaylamanız gerekmektedir.",
+      "human_check_required": "Lütfen insan doğrulamasını tamamlayın.",
+      "human_check_failed": "İnsan doğrulaması tamamlanamadı. Lütfen tekrar deneyin.",
       "submit_failed": "Form gönderilemedi. Lütfen tekrar deneyin."
     }
   },
