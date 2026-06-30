@@ -1,4 +1,9 @@
-import { ContentPageShell, CourseListLoading } from "@/components/content";
+import {
+  ContentPageShell,
+  CourseListLoading,
+  FilterPillsLoading,
+  SearchFieldLoading,
+} from "@/components/content";
 
 export default function EgitimlerLoading() {
   return (
@@ -30,8 +35,15 @@ export default function EgitimlerLoading() {
         ),
       }}
     >
-      <div data-testid="loading.egitimler">
-        <CourseListLoading />
+      <div className="space-y-10 sm:space-y-12">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+          <SearchFieldLoading testId="loading.egitimler.search" />
+          <FilterPillsLoading count={6} testId="loading.egitimler.filters" />
+        </div>
+
+        <div data-testid="loading.egitimler">
+          <CourseListLoading />
+        </div>
       </div>
     </ContentPageShell>
   );

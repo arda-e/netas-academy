@@ -92,6 +92,40 @@ export function SearchFieldLoading({
   );
 }
 
+export function FilterPillsLoading({
+  count,
+  testId,
+  includeIcon = true,
+}: {
+  count: number;
+  testId?: string;
+  includeIcon?: boolean;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2" data-testid={testId}>
+      {includeIcon ? <SkeletonBox className="size-4 rounded-full" /> : null}
+      {Array.from({ length: count }).map((_, index) => (
+        <SkeletonBox
+          key={index}
+          className={index % 2 === 0 ? "h-8 w-24 rounded-full" : "h-8 w-32 rounded-full"}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function SortButtonLoading({ testId }: { testId?: string }) {
+  return (
+    <div
+      className="inline-flex h-10 w-36 self-start items-center justify-center gap-2 rounded-full border border-border/70 bg-white px-4 md:self-auto"
+      data-testid={testId}
+    >
+      <SkeletonBox className="size-4 rounded-full" />
+      <SkeletonBox className="h-3 w-20" />
+    </div>
+  );
+}
+
 export function TeacherListLoading({ testId }: { testId?: string }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-6" data-testid={testId}>

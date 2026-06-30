@@ -1,4 +1,8 @@
-import { ContentPageShell, TeacherListLoading } from "@/components/content";
+import {
+  ContentPageShell,
+  SearchFieldLoading,
+  TeacherListLoading,
+} from "@/components/content";
 
 export default function EgitmenlerLoading() {
   return (
@@ -10,8 +14,14 @@ export default function EgitmenlerLoading() {
         descriptionClassName: "max-w-3xl text-balance",
       }}
     >
-      <div data-testid="loading.egitmenler">
-        <TeacherListLoading />
+      <div className="space-y-4 sm:space-y-8">
+        <SearchFieldLoading
+          expandedWidthClassName="lg:w-[560px]"
+          testId="loading.egitmenler.search"
+        />
+        <div data-testid="loading.egitmenler">
+          <TeacherListLoading />
+        </div>
       </div>
     </ContentPageShell>
   );

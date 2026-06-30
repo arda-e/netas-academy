@@ -1,4 +1,9 @@
-import { ContentPageShell, EventListLoading } from "@/components/content";
+import {
+  ContentPageShell,
+  EventListLoading,
+  FilterPillsLoading,
+  SortButtonLoading,
+} from "@/components/content";
 
 export default function EtkinliklerLoading() {
   return (
@@ -18,6 +23,11 @@ export default function EtkinliklerLoading() {
       }}
       testId="page.etkinlikler"
     >
+      <div className="mt-2 mb-6 flex flex-col gap-3 sm:mt-4 sm:mb-8 sm:gap-4 md:flex-row md:items-center md:justify-between">
+        <FilterPillsLoading count={3} testId="loading.etkinlikler.filters" />
+        <SortButtonLoading testId="loading.etkinlikler.sort" />
+      </div>
+
       <div data-testid="loading.etkinlikler">
         <EventListLoading />
       </div>

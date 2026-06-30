@@ -2,8 +2,10 @@ export {
   BlogListLoading,
   CourseListLoading,
   EventListLoading,
+  FilterPillsLoading,
   RouteLoading,
   SearchFieldLoading,
+  SortButtonLoading,
   TeacherListLoading,
 } from "./route-loading";
 export { ContentPageShell } from "./content-page-shell";
