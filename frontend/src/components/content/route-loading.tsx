@@ -72,6 +72,26 @@ export function BlogListLoading({ testId }: { testId?: string }) {
   );
 }
 
+export function SearchFieldLoading({
+  testId,
+  expandedWidthClassName = "lg:w-[420px]",
+}: {
+  testId?: string;
+  expandedWidthClassName?: string;
+}) {
+  return (
+    <div
+      className={`h-9 w-full max-w-full rounded-sm border border-border/70 bg-white/70 ${expandedWidthClassName}`}
+      data-testid={testId}
+    >
+      <div className="flex h-full items-center px-3">
+        <SkeletonBox className="size-4 rounded-full" />
+        <SkeletonBox className="ml-3 h-3 w-36 max-w-[65%]" />
+      </div>
+    </div>
+  );
+}
+
 export function TeacherListLoading({ testId }: { testId?: string }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-6" data-testid={testId}>

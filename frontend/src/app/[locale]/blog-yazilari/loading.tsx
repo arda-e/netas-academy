@@ -1,4 +1,8 @@
-import { BlogListLoading, ContentPageShell } from "@/components/content";
+import {
+  BlogListLoading,
+  ContentPageShell,
+  SearchFieldLoading,
+} from "@/components/content";
 
 export default function BlogYazilariLoading() {
   return (
@@ -16,6 +20,10 @@ export default function BlogYazilariLoading() {
       testId="page.blog"
     >
       <div className="space-y-4 sm:space-y-8">
+        <SearchFieldLoading
+          expandedWidthClassName="lg:w-[560px]"
+          testId="loading.blog.search"
+        />
         <div data-testid="loading.blog">
           <BlogListLoading />
         </div>

@@ -3,6 +3,7 @@ export {
   CourseListLoading,
   EventListLoading,
   RouteLoading,
+  SearchFieldLoading,
   TeacherListLoading,
 } from "./route-loading";
 export { ContentPageShell } from "./content-page-shell";
