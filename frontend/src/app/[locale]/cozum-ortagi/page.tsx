@@ -4,11 +4,9 @@ import { getTranslations } from "next-intl/server";
 
 import solutionPartnerHeroImage from "@/assets/images/hero-cozum.webp";
 import { SiteBreadcrumbs } from "@/components/breadcrumbs";
+import { HomeContactCTASection } from "@/components/home/HomeContactCTASection";
 import { AccordionSection } from "@/components/uncode/AccordionSection";
 import { IntroSection } from "@/components/uncode/IntroSection";
-import { Link } from "@/i18n/navigation";
-import { buildIntentLeadUrl } from "@/lib/lead-intents";
-import { join } from "@/lib/testids";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 
@@ -75,7 +73,7 @@ export default async function CozumOrtagiPage() {
           className="absolute inset-0 object-cover object-center"
           placeholder="blur"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/0" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/42 to-slate-950/20" />
         <div className="page-container relative flex min-h-[280px] items-end py-8 sm:min-h-[340px] sm:py-12 lg:min-h-[400px]">
           <div className="absolute left-4 right-4 top-8 sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
             <SiteBreadcrumbs items={[{ label: t('hero.breadcrumb') }]} />
@@ -100,26 +98,11 @@ export default async function CozumOrtagiPage() {
         items={collaborationAreas.map((a) => ({ q: a.title, a: a.body }))}
         className="bg-background"
       />
-      {/* CTA */}
-      <section className="page-section">
-        <div data-testid="page.cozum-ortagi.content">
-          <div className="space-y-4 sm:space-y-5">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-              {t('cta.heading')}
-            </h2>
-            <p className="max-w-3xl text-[15px] leading-7 text-foreground/72 sm:text-lg sm:leading-8">
-              {t('cta.body')}
-            </p>
-            <Link
-              href={buildIntentLeadUrl("solution_partner_application")}
-              className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/18"
-              data-testid={join("page", "cozum-ortagi", "cta", "apply")}
-            >
-              {t('cta.button')}
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HomeContactCTASection
+        heading={t('cta.heading')}
+        body={t('cta.body')}
+        buttonLabel={t('cta.button')}
+      />
     </main>
   );
 }
