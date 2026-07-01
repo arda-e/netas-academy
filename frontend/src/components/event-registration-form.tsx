@@ -5,6 +5,9 @@ import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { IyzicoCheckoutForm } from "@/components/payments/iyzico-checkout-form";
+import { PaymentStatusPanel } from "@/components/payments/payment-status-panel";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useEventRegistrationForm } from "@/hooks/use-event-registration-form";
 import type { StrapiEventType } from "@/lib/strapi-types";
@@ -32,11 +35,17 @@ export function EventRegistrationForm({
   const pathname = usePathname();
   const {
     values,
+    fieldErrors,
     isSubmitting,
+    isRetryingPayment,
     errorMessage,
     successMessage,
+    payment,
     handleChange,
+    handleFieldBlur,
+    handleKvkkConsentChange,
     handleSubmit,
+    handleRetryPayment,
     requiresKvkkConsent,
     requiresTckn,
   } = useEventRegistrationForm({ eventDocumentId, eventTitle, eventType });
@@ -46,6 +55,32 @@ export function EventRegistrationForm({
       <div className="rounded-sm border border-border/70 bg-card/55 px-5 py-4 text-base text-foreground" data-testid="event-registration.success">
         {successMessage}
       </div>
+    );
+  }
+
+  if (payment?.presentation?.kind === "iyzico_checkout_form") {
+    return (
+      <div className="space-y-5" data-testid="event-registration.payment">
+        <PaymentStatusPanel title={t("payment.heading")} body={t("payment.body")} />
+        {errorMessage ? (
+          <div className="rounded-sm border border-destructive/40 bg-destructive/10 px-5 py-4 text-base text-destructive" data-testid="event-registration.error">
+            {errorMessage}
+          </div>
+        ) : null}
+        <IyzicoCheckoutForm checkoutFormContent={payment.presentation.checkoutFormContent} />
+      </div>
+    );
+  }
+
+  if (payment?.status === "payment_unavailable") {
+    return (
+      <PaymentStatusPanel
+        title={t("payment.retry_heading")}
+        body={errorMessage ?? t("payment.error_unavailable")}
+        actionLabel={t("payment.retry")}
+        isRetrying={isRetryingPayment}
+        onRetry={handleRetryPayment}
+      />
     );
   }
 
@@ -67,10 +102,18 @@ export function EventRegistrationForm({
             name="firstName"
             value={values.firstName}
             onChange={handleChange}
+            onBlur={handleFieldBlur}
             className={fieldClassName}
             required
+            aria-invalid={Boolean(fieldErrors.firstName)}
+            aria-describedby={fieldErrors.firstName ? "event-registration-error-first-name" : undefined}
             data-testid="event-registration.field.first-name"
           />
+          {fieldErrors.firstName ? (
+            <p id="event-registration-error-first-name" className="text-sm text-destructive" data-testid="event-registration.error.first-name">
+              {fieldErrors.firstName}
+            </p>
+          ) : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -82,10 +125,19 @@ export function EventRegistrationForm({
             name="lastName"
             value={values.lastName}
             onChange={handleChange}
+            onBlur={handleFieldBlur}
             className={fieldClassName}
             required
+            maxLength={20}
+            aria-invalid={Boolean(fieldErrors.lastName)}
+            aria-describedby={fieldErrors.lastName ? "event-registration-error-last-name" : undefined}
             data-testid="event-registration.field.last-name"
           />
+          {fieldErrors.lastName ? (
+            <p id="event-registration-error-last-name" className="text-sm text-destructive" data-testid="event-registration.error.last-name">
+              {fieldErrors.lastName}
+            </p>
+          ) : null}
         </div>
 
         <div className={fieldWrapperClassName}>
@@ -111,12 +163,22 @@ export function EventRegistrationForm({
           <Input
             id="phone"
             name="phone"
-            type="tel"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={values.phone}
             onChange={handleChange}
+            onBlur={handleFieldBlur}
             className={fieldClassName}
+            aria-invalid={Boolean(fieldErrors.phone)}
+            aria-describedby={fieldErrors.phone ? "event-registration-error-phone" : undefined}
             data-testid="event-registration.field.phone"
           />
+          {fieldErrors.phone ? (
+            <p id="event-registration-error-phone" className="text-sm text-destructive" data-testid="event-registration.error.phone">
+              {fieldErrors.phone}
+            </p>
+          ) : null}
         </div>
 
         {requiresTckn ? (
@@ -129,15 +191,24 @@ export function EventRegistrationForm({
               name="tckn"
               type="text"
               inputMode="numeric"
+              pattern="[0-9]*"
               autoComplete="off"
               maxLength={11}
               value={values.tckn}
               onChange={handleChange}
+              onBlur={handleFieldBlur}
               className={fieldClassName}
               required
+              aria-invalid={Boolean(fieldErrors.tckn)}
+              aria-describedby={fieldErrors.tckn ? "event-registration-error-tckn" : undefined}
               placeholder={t('field.tckn.placeholder')}
               data-testid="event-registration.field.tckn"
             />
+            {fieldErrors.tckn ? (
+              <p id="event-registration-error-tckn" className="text-sm text-destructive" data-testid="event-registration.error.tckn">
+                {fieldErrors.tckn}
+              </p>
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -158,28 +229,30 @@ export function EventRegistrationForm({
       </div>
 
       {requiresKvkkConsent ? (
-        <label className="rounded-sm border border-border/70 bg-card/55 p-4 text-sm leading-7 text-foreground/78 md:p-5 md:text-base">
-          <span className="flex items-start gap-3 md:gap-4">
-            <input
-              id="kvkkConsent"
-              name="kvkkConsent"
-              type="checkbox"
-              checked={values.kvkkConsent}
-              onChange={handleChange}
-              className="mt-1 size-5 shrink-0 rounded-sm border-2 border-gray-300 text-primary focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 md:size-6"
-              data-testid="event-registration.field.kvkk-consent"
-            />
-            <span className="space-y-1">
-              <span className="block font-medium text-foreground">
+        <div className="rounded-sm border border-border/70 bg-card/55 p-4 md:p-5">
+          <Checkbox
+            name="kvkkConsent"
+            size="md"
+            isSelected={values.kvkkConsent}
+            onChange={handleKvkkConsentChange}
+            data-testid="event-registration.field.kvkk-consent"
+            label={
+              <>
                 {t('kvkk.law_reference')}{" "}
-                <Link href={{ pathname: "/kvkk", query: { returnTo: pathname } }} className="font-semibold text-primary transition-colors hover:text-primary/80" data-testid="event-registration.link.kvkk-disclosure">
+                <Link
+                  href={{ pathname: "/kvkk", query: { returnTo: pathname } }}
+                  className="font-semibold text-primary transition-colors hover:text-primary/80"
+                  data-testid="event-registration.link.kvkk-disclosure"
+                  onClick={(event) => event.stopPropagation()}
+                >
                   {t('kvkk.link')}
                 </Link>{" "}
                 {t('kvkk.suffix')}
-              </span>
-            </span>
-          </span>
-        </label>
+              </>
+            }
+            className="md:gap-4"
+          />
+        </div>
       ) : null}
 
       <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-center md:justify-between">

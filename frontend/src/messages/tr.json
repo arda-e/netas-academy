@@ -349,13 +349,26 @@
       "first_name_min_5": "Ad alani en az 5 karakter olmalidir.",
       "last_name_required": "Soyad alani zorunludur.",
       "last_name_min_5": "Soyad alani en az 5 karakter olmalidir.",
+      "last_name_max_20": "Soyad alani en fazla 20 karakter olabilir.",
       "phone_required": "Telefon numarasi zorunludur.",
-      "phone_invalid": "Telefon numarasi yalnizca rakam, bosluk ve +, -, ( ) karakterlerini icerebilir.",
+      "phone_invalid": "Telefon numarasi yalnizca rakamlardan olusabilir.",
       "kvkk_required": "Lutfen KVKK aydinlatma metnini okudugunuzu onaylayin."
     },
     "submit": {
       "idle": "Kaydi Tamamla",
       "pending": "Kayit Gonderiliyor..."
+    },
+    "payment": {
+      "heading": "Odeme Adimi",
+      "body": "Kaydiniz alindi. Odeme adimini bu sayfadan guvenli sekilde tamamlayabilirsiniz.",
+      "retry_heading": "Odeme Baslatilamadi",
+      "error_unavailable": "Odeme adimi su anda baslatilamadi. Lutfen tekrar deneyin.",
+      "retry": "Odemeyi Tekrar Baslat",
+      "sales_agreement": {
+        "label": "Mesafeli Satis Sozlesmesi ve on bilgilendirme kosullarini okudum, onayliyorum.",
+        "description": "Odeme alanini acmadan once sozlesme onayiniz gereklidir.",
+        "required": "Odeme formunu goruntulemek icin Mesafeli Satis Sozlesmesi onayini isaretleyin."
+      }
     },
     "success": {
       "with_title": "{title} etkinligi icin kaydiniz alindi. Ekibimiz kisa sure icinde sizinle iletisime gececek."
