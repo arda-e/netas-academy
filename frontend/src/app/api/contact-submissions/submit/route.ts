@@ -6,6 +6,8 @@ const ROUTE = "contact-submissions";
 const FALLBACK_MESSAGE = "Mesaj istegi islenemedi.";
 const HUMAN_CHECK_REQUIRED_MESSAGE = "turnstileToken is required";
 const HUMAN_CHECK_FAILED_MESSAGE = "turnstile verification failed";
+const HUMAN_CHECK_UNAVAILABLE_MESSAGE =
+  "İletişim formu şu anda güvenlik doğrulamasını başlatamıyor. Lütfen daha sonra tekrar deneyin.";
 
 type ContactSubmissionBody = Record<string, unknown> & {
   turnstileToken?: unknown;
@@ -31,7 +33,7 @@ async function verifyTurnstileToken(token: unknown, request: Request) {
       errorCategory: "configuration",
       message: "CLOUDFLARE_TURNSTILE_SECRET_KEY is not configured",
     }));
-    return { ok: false, status: 503, message: FALLBACK_MESSAGE };
+    return { ok: false, status: 503, message: HUMAN_CHECK_UNAVAILABLE_MESSAGE };
   }
 
   if (typeof token !== "string" || token.trim().length === 0) {

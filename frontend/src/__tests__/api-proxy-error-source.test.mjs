@@ -32,6 +32,16 @@ test("contact-submissions proxy contains Turkish error fallback message", () => 
   );
 });
 
+test("contact-submissions proxy returns a helpful human-check configuration message", () => {
+  const source = readSource("app/api/contact-submissions/submit/route.ts");
+
+  assert.match(
+    source,
+    /güvenlik doğrulamasını başlatamıyor/,
+    "contact-submissions proxy should explain when human-check configuration is unavailable"
+  );
+});
+
 test("contact-submissions proxy uses no-store cache directive", () => {
   const source = readSource("app/api/contact-submissions/submit/route.ts");
 
