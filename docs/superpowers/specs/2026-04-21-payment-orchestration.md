@@ -32,30 +32,36 @@ Frontend'e su ikisinden biri donulmeli:
 
 ## Suggested Backend Contract
 
-`POST /api/course-applications/:id/create-payment-session`
+Shared payment handoff creation is owned by backend parent flows. Course application and paid event registration both call the shared orchestration service and return the same frontend-safe shape:
 
 Response:
 
 ```json
 {
-  "data": {
-    "applicationId": 123,
-    "paymentStatus": "pending",
-    "paymentUrl": "https://...",
-    "provider": "legacy_link"
+  "nextAction": "render_checkout",
+  "payment": {
+    "attemptReference": "pay_...",
+    "status": "checkout_created",
+    "provider": "iyzico",
+    "presentation": {
+      "kind": "iyzico_checkout_form",
+      "token": "checkout-token",
+      "checkoutFormContent": "<provider-created-content>"
+    }
   }
 }
 ```
+
+The frontend renders only this backend-created presentation. API-based card collection and frontend provider selection are out of scope for the current phase.
 
 ## Suggested Source of Truth
 
 Payment linkler Strapi icinde veya backend config tablosunda tutulmali.
 
-Olası kaynaklar:
+Attempt and provider event history live in shared Strapi content types:
 
-- `course` bazli field
-- ayri `payment-link` content type
-- provider bazli config table
+- `payment-attempt`: parent descriptor, amount, status, retry link, provider token, and sanitized frontend/provider snapshots
+- `payment-provider-event`: callback/webhook idempotency key, signature acceptance state, provider token, and sanitized payload snapshot
 
 ## Legacy Mapping
 
@@ -75,5 +81,5 @@ Asagidaki legacy yaklasimlar tasinmamalidir:
 
 ## Notes
 
-- Payment feature, event registration'dan ayri tutulmali.
-- Odeme linki secimi application state ile bagli bir domain karari oldugu icin backend'te kalmalidir.
+- Payment orchestration is shared, while event registration and course application remain distinct parent flows.
+- Odeme gerekliligi application/event state ile bagli bir domain karari oldugu icin backend parent servislerinde kalmalidir.

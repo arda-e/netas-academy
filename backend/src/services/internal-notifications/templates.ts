@@ -324,7 +324,7 @@ const buildCourseApplicationEmail = async (
     `E-posta: ${payload.student.email}`,
     `Telefon: ${fmt(payload.student.phone)}`,
     `TCKN: ${payload.student.tckn}`,
-    `Odeme Linki: ${fmt(payload.paymentUrl ?? null)}`,
+    payload.paymentUrl ? `Odeme Linki: ${payload.paymentUrl}` : "Odeme: Sayfa ici iyzico CheckoutForm ile alinacak.",
   ].join("\n");
 
   const rows = [

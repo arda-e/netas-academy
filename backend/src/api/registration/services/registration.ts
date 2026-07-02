@@ -2,6 +2,7 @@ import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
 import { deliverInternalNotificationViaStrapi } from '../../../services/internal-notifications/strapi-service';
+import { createCheckoutHandoff } from '../../../services/payment-orchestration/service';
 import { runSplCheck } from '../../../services/spl-check/service';
 
 import { isEventRegistrationOpen } from '../../../utils/event-registration';
@@ -19,7 +20,7 @@ type RegisterStudentInput = {
     phone?: string;
     tckn?: string;
   };
-  status?: 'pending' | 'confirmed' | 'cancelled' | 'waitlisted' | 'attended';
+  status?: 'pending' | 'payment_pending' | 'blocked' | 'confirmed' | 'cancelled' | 'waitlisted' | 'attended';
   notes?: string;
   kvkkConsent?: boolean;
 };
@@ -27,10 +28,25 @@ type RegisterStudentInput = {
 type SanitizedRegistration = {
   id: number;
   status: string;
+  nextAction?: 'registration_received' | 'render_checkout' | 'payment_retry';
+  payment?: Awaited<ReturnType<typeof createCheckoutHandoff>>;
   event: {
     documentId: string;
     title: string;
   };
+};
+
+const toAmountMinor = (value: unknown) => {
+  if (value === null || value === undefined || value === '') {
+    return 0;
+  }
+
+  const numeric = typeof value === 'number' ? value : Number(String(value).replace(',', '.'));
+  if (!Number.isFinite(numeric) || numeric <= 0) {
+    return 0;
+  }
+
+  return Math.round(numeric * 100);
 };
 
 export default factories.createCoreService('api::registration.registration' as any, () => ({
@@ -39,7 +55,7 @@ export default factories.createCoreService('api::registration.registration' as a
 
     const event = await strapi.db.query('api::event.event').findOne({
       where: { documentId: input.eventDocumentId },
-      select: ['id', 'documentId', 'title', 'slug', 'startsAt', 'keepRegistrationsOpen', 'eventType'],
+      select: ['id', 'documentId', 'title', 'slug', 'startsAt', 'keepRegistrationsOpen', 'eventType', 'price', 'location'],
     });
 
     if (!event) {
@@ -67,8 +83,8 @@ export default factories.createCoreService('api::registration.registration' as a
       throw new ValidationError('kvkkConsent must be true');
     }
 
-    // SPL sanctions check — runs before any DB writes.
-    // blocked (status 30) = hard reject. manual_review (status 20 or unconfigured) = proceed, staff sees it.
+    // SPL sanctions check runs before writes. Blocked results are stored silently
+    // so the public response does not reveal sanctions-screening details.
     const splResult = await runSplCheck({
       applicationNumber: `EVT-${event.documentId}`,
       firstName: input.student.firstName,
@@ -77,10 +93,6 @@ export default factories.createCoreService('api::registration.registration' as a
       phone: input.student.phone ?? null,
       tckn: normalizedTckn || null,
     });
-
-    if (splResult.decision === 'blocked') {
-      throw new ValidationError('Registration blocked by sanctions check');
-    }
 
     if (splResult.decision === 'manual_review') {
       strapi.log.warn('[registration] SPL check returned manual_review — registration will proceed for staff review', {
@@ -94,6 +106,10 @@ export default factories.createCoreService('api::registration.registration' as a
 
     // Wrap the entire registration flow in a transaction to prevent race conditions.
     // Notification delivery is moved outside the transaction (fire-and-forget).
+    const eventAmountMinor = toAmountMinor(event.price);
+    const registrationStatus =
+      splResult.decision === 'blocked' ? 'blocked' : eventAmountMinor > 0 ? 'payment_pending' : input.status ?? 'pending';
+
     const registration = await strapi.db.transaction(async () => {
       const student = await strapi.service('api::student.student').upsertByEmail(input.student);
 
@@ -115,7 +131,7 @@ export default factories.createCoreService('api::registration.registration' as a
 
       return strapi.db.query('api::registration.registration').create({
         data: {
-          registrationStatus: input.status ?? 'pending',
+          registrationStatus,
           notes: input.notes ?? null,
           event: event.id,
           student: student.id,
@@ -126,6 +142,28 @@ export default factories.createCoreService('api::registration.registration' as a
         },
       });
     });
+
+    let payment: SanitizedRegistration['payment'] | undefined;
+    if (registration.registrationStatus === 'payment_pending') {
+      payment = await createCheckoutHandoff({
+        parent: {
+          parentType: 'registration',
+          parentEntityId: registration.id,
+          parentDocumentId: registration.documentId ?? null,
+        },
+        amountMinor: eventAmountMinor,
+        currency: 'TRY',
+        payer: {
+          firstName: registration.student.firstName,
+          lastName: registration.student.lastName,
+          email: registration.student.email,
+          phone: registration.student.phone,
+          identityNumber: normalizedTckn || null,
+        },
+        title: registration.event.title,
+        idempotencyKey: `registration:${registration.id}`,
+      });
+    }
 
     // Fire-and-forget notification (outside transaction)
     try {
@@ -159,7 +197,7 @@ export default factories.createCoreService('api::registration.registration' as a
     }
 
     // Return sanitized response — no student PII
-    return {
+    const response: SanitizedRegistration = {
       id: registration.id,
       status: registration.registrationStatus,
       event: {
@@ -167,5 +205,44 @@ export default factories.createCoreService('api::registration.registration' as a
         title: registration.event.title,
       },
     };
+
+    if (registration.registrationStatus === 'blocked' || registration.registrationStatus === 'payment_pending') {
+      response.nextAction =
+        payment?.status === 'checkout_created'
+          ? 'render_checkout'
+          : registration.registrationStatus === 'payment_pending'
+            ? 'payment_retry'
+            : 'registration_received';
+      if (payment) {
+        response.payment = payment;
+      }
+    }
+
+    return response;
+  },
+
+  async completePaidRegistration(input: { registrationId: number }) {
+    const registration = await strapi.db.query('api::registration.registration').findOne({
+      where: { id: input.registrationId },
+      populate: {
+        event: true,
+        student: true,
+      },
+    });
+
+    if (!registration) {
+      throw new NotFoundError('Registration not found');
+    }
+
+    if (registration.registrationStatus === 'confirmed') {
+      return { completed: false, parentStatus: 'confirmed' };
+    }
+
+    await strapi.db.query('api::registration.registration').update({
+      where: { id: input.registrationId },
+      data: { registrationStatus: 'confirmed' },
+    });
+
+    return { completed: true, parentStatus: 'confirmed' };
   },
 }));

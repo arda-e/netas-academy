@@ -13,7 +13,7 @@
   "attributes": {
     "registrationStatus": {
       "type": "enumeration",
-      "enum": ["pending", "confirmed", "cancelled", "waitlisted", "attended"],
+      "enum": ["pending", "payment_pending", "blocked", "confirmed", "cancelled", "waitlisted", "attended"],
       "default": "pending",
       "required": true
     },

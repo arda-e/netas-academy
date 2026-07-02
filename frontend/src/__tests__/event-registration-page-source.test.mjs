@@ -29,6 +29,11 @@ test("Registration page provides the shared panel with page-owned body and actio
   assert.match(source, /page\.event-registration\.back-to-detail/);
 });
 
+test("Registration page passes event price into the registration form", () => {
+  const source = readSource("app/[locale]/etkinlikler/[slug]/kayit/page.tsx");
+  assert.match(source, /eventPrice=\{event\.price\}/);
+});
+
 test("Registration page includes registration state text in the shared panel", () => {
   const source = readSource("app/[locale]/etkinlikler/[slug]/kayit/page.tsx");
   assert.match(source, /registrationState:\s*\{/);

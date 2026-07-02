@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payment_provider_events",
+  "info": {
+    "singularName": "payment-provider-event",
+    "pluralName": "payment-provider-events",
+    "displayName": "Payment Provider Event",
+    "description": "Idempotency ledger for accepted and rejected provider callbacks/webhooks"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "provider": {
+      "type": "enumeration",
+      "enum": ["iyzico"],
+      "required": true
+    },
+    "eventIdentity": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "eventType": {
+      "type": "enumeration",
+      "enum": ["callback", "webhook"],
+      "required": true
+    },
+    "attemptReference": {
+      "type": "string"
+    },
+    "providerToken": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["accepted", "rejected", "duplicate"],
+      "required": true
+    },
+    "signatureValid": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "signatureMetadata": {
+      "type": "json"
+    },
+    "providerSafePayload": {
+      "type": "json"
+    },
+    "processedAt": {
+      "type": "datetime"
+    },
+    "failureReason": {
+      "type": "text"
+    }
+  }
+}

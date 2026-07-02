@@ -1,7 +1,8 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const runSplCheck = vi.fn();
 const deliverFn = vi.fn();
+const createCheckoutHandoff = vi.fn();
 
 vi.mock("@strapi/strapi", () => ({
   factories: {
@@ -24,10 +25,27 @@ vi.mock("../../../src/services/internal-notifications/strapi-service", () => ({
   deliverInternalNotificationViaStrapi: (_strapi: unknown, envelope: unknown) => deliverFn(envelope),
 }));
 
+vi.mock("../../../src/services/payment-orchestration/service", () => ({
+  createCheckoutHandoff: (...args: unknown[]) => createCheckoutHandoff(...args),
+}));
+
 describe("course-application service", () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllGlobals();
+  });
+
+  beforeEach(() => {
+    createCheckoutHandoff.mockResolvedValue({
+      attemptReference: "pay_course",
+      status: "checkout_created",
+      provider: "iyzico",
+      presentation: {
+        kind: "iyzico_checkout_form",
+        token: "checkout-token",
+        checkoutFormContent: "<script>checkout</script>",
+      },
+    });
   });
 
   function createStrapiMock(overrides: Record<string, unknown> = {}) {
@@ -182,8 +200,12 @@ describe("course-application service", () => {
         statusCode: "10",
         decision: "clear",
       },
-      nextAction: "redirect_to_payment",
+      nextAction: "render_checkout",
       paymentUrl: "https://pay.example.com/matematik",
+      payment: expect.objectContaining({
+        status: "checkout_created",
+        provider: "iyzico",
+      }),
     });
 
     expect(create).toHaveBeenCalledWith(
@@ -212,7 +234,7 @@ describe("course-application service", () => {
         payload: expect.objectContaining({
           applicationNumber: expect.stringMatching(/^CA-/),
           status: "pending_payment",
-          nextAction: "redirect_to_payment",
+          nextAction: "render_checkout",
           student: expect.objectContaining({
             tckn: "****",
           }),
@@ -321,7 +343,7 @@ describe("course-application service", () => {
       ),
     ).resolves.toMatchObject({
       status: "pending_payment",
-      nextAction: "redirect_to_payment",
+      nextAction: "render_checkout",
     });
 
     expect(update).not.toHaveBeenCalledWith(

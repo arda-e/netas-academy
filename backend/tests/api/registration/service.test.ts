@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const deliverFn = vi.fn();
 const splCheckFn = vi.fn();
+const createCheckoutHandoffFn = vi.fn();
 
 vi.mock("@strapi/strapi", () => ({
   factories: {
@@ -24,11 +25,25 @@ vi.mock("../../../src/services/spl-check/service", () => ({
   runSplCheck: (...args: unknown[]) => splCheckFn(...args),
 }));
 
+vi.mock("../../../src/services/payment-orchestration/service", () => ({
+  createCheckoutHandoff: (...args: unknown[]) => createCheckoutHandoffFn(...args),
+}));
+
 const CLEAR_SPL = { provider: "sap_soap", decision: "clear", statusCode: "10", rawResponse: "<Status>10</Status>" };
 
 describe("registration service", () => {
   beforeEach(() => {
     splCheckFn.mockResolvedValue(CLEAR_SPL);
+    createCheckoutHandoffFn.mockResolvedValue({
+      attemptReference: "pay_test",
+      status: "checkout_created",
+      provider: "iyzico",
+      presentation: {
+        kind: "iyzico_checkout_form",
+        token: "checkout-token",
+        checkoutFormContent: "<script>checkout</script>",
+      },
+    });
   });
 
   afterEach(() => {
@@ -498,7 +513,7 @@ describe("registration service", () => {
     expect(deliverFn).not.toHaveBeenCalled();
   });
 
-  it("rejects registration when SPL check returns blocked (Status 30) and does not create or notify", async () => {
+  it("stores blocked registration when SPL check returns blocked (Status 30) and does not create a payment handoff", async () => {
     const eventRecord = {
       id: 10,
       documentId: "evt_123",
@@ -510,9 +525,17 @@ describe("registration service", () => {
       eventType: "etkinlik",
     };
     const eventFindOne = vi.fn().mockResolvedValue(eventRecord);
-    const registrationFindOne = vi.fn();
-    const registrationCreate = vi.fn();
-    const upsertByEmail = vi.fn();
+    const studentRecord = { id: 20, firstName: "Sinan", lastName: "İnan", email: "sinan.inan@example.com", phone: null };
+    const createdRegistration = {
+      id: 45,
+      registrationStatus: "blocked",
+      notes: null,
+      event: eventRecord,
+      student: studentRecord,
+    };
+    const registrationFindOne = vi.fn().mockResolvedValue(null);
+    const registrationCreate = vi.fn().mockResolvedValue(createdRegistration);
+    const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
 
     const strapi = createStrapiMock({
       db: {
@@ -566,7 +589,11 @@ describe("registration service", () => {
           email: "sinan.inan@example.com",
         },
       }),
-    ).rejects.toThrow("Registration blocked by sanctions check");
+    ).resolves.toMatchObject({
+      id: 45,
+      status: "blocked",
+      nextAction: "registration_received",
+    });
 
     expect(splCheckFn).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -574,9 +601,23 @@ describe("registration service", () => {
         lastName: "İnan",
       }),
     );
-    expect(upsertByEmail).not.toHaveBeenCalled();
-    expect(registrationCreate).not.toHaveBeenCalled();
-    expect(deliverFn).not.toHaveBeenCalled();
+    expect(upsertByEmail).toHaveBeenCalled();
+    expect(registrationCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          registrationStatus: "blocked",
+        }),
+      }),
+    );
+    expect(createCheckoutHandoffFn).not.toHaveBeenCalled();
+    expect(deliverFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        key: "event_registration",
+        payload: expect.objectContaining({
+          status: "blocked",
+        }),
+      }),
+    );
   });
 
   it("proceeds with registration when SPL check returns manual_review (Status 20) and logs a warning", async () => {

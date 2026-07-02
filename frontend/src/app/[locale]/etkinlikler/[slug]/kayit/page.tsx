@@ -126,6 +126,7 @@ export default async function EventRegistrationPage({
                   eventDocumentId={event.documentId}
                   eventTitle={event.title}
                   eventType={event.eventType}
+                  eventPrice={event.price}
                 />
               </div>
             ) : (

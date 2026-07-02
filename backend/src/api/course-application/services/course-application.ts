@@ -8,6 +8,7 @@ import { runSplCheck } from "../../../services/spl-check/service";
 import { resolveCourseApplicationOutcomeFromSplResult } from "../../../services/course-application/domain/course-application-status";
 import type { CourseApplicationNotificationPayload } from "../../../services/internal-notifications/types";
 import { deliverInternalNotificationViaStrapi } from "../../../services/internal-notifications/strapi-service";
+import { createCheckoutHandoff } from "../../../services/payment-orchestration/service";
 
 const { NotFoundError, ValidationError } = errors;
 
@@ -31,6 +32,7 @@ type CourseApplicationSubmitInput = {
 
 type CourseApplicationRecord = {
   id: number;
+  documentId?: string | null;
   applicationNumber: string;
   status: string;
   applicantSnapshot?: {
@@ -75,6 +77,8 @@ const resolvePaymentUrl = (courseSlug: string, template?: string | null) => {
 
   return resolvedTemplate.split("{courseSlug}").join(courseSlug);
 };
+
+const COURSE_PAYMENT_AMOUNT_MINOR = Number(process.env.COURSE_APPLICATION_PAYMENT_AMOUNT_MINOR || "0");
 
 const toApplicationNotificationPayload = (
   application: CourseApplicationRecord,
@@ -298,7 +302,7 @@ export default factories.createCoreService("api::course-application.course-appli
         integrationStatusCode: splResult.statusCode,
         integrationReference: splResult.errorReason ?? null,
         paymentStatus: outcome.paymentStatus,
-        paymentProvider: outcome.status === "pending_payment" ? "local_payment_link" : null,
+        paymentProvider: outcome.status === "pending_payment" ? "iyzico" : null,
         paymentUrlSnapshot: paymentUrl,
       },
       populate: {
@@ -307,7 +311,31 @@ export default factories.createCoreService("api::course-application.course-appli
       },
     });
 
-    const notificationSent = await notifyApplicationResult(finalApplication, outcome.nextAction, paymentUrl);
+    const payment =
+      outcome.status === "pending_payment"
+        ? await createCheckoutHandoff({
+            parent: {
+              parentType: "course_application",
+              parentEntityId: finalApplication.id,
+              parentDocumentId: finalApplication.documentId ?? null,
+            },
+            amountMinor: COURSE_PAYMENT_AMOUNT_MINOR > 0 ? COURSE_PAYMENT_AMOUNT_MINOR : 100,
+            currency: "TRY",
+            payer: {
+              firstName,
+              lastName,
+              email,
+              phone,
+              identityNumber: tckn,
+              registrationAddress: address || null,
+            },
+            title: course.title,
+            idempotencyKey: `course_application:${finalApplication.id}`,
+          })
+        : null;
+
+    const nextAction = payment?.status === "checkout_created" ? "render_checkout" : outcome.nextAction;
+    const notificationSent = await notifyApplicationResult(finalApplication, nextAction, paymentUrl);
 
     if (notificationSent) {
       await strapi.db.query(COURSE_APPLICATION_UID).update({
@@ -328,8 +356,35 @@ export default factories.createCoreService("api::course-application.course-appli
         statusCode: finalApplication.integrationStatusCode,
         decision: finalApplication.integrationDecision,
       },
-      nextAction: outcome.nextAction,
+      nextAction,
       paymentUrl,
+      payment,
     };
+  },
+
+  async completePaidCourseApplication(input: { applicationId: number }) {
+    const application = await strapi.db.query(COURSE_APPLICATION_UID).findOne({
+      where: { id: input.applicationId },
+    });
+
+    if (!application) {
+      throw new NotFoundError("Course application not found");
+    }
+
+    if (application.status === "completed" && application.paymentStatus === "paid") {
+      return { completed: false, parentStatus: "completed" };
+    }
+
+    await strapi.db.query(COURSE_APPLICATION_UID).update({
+      where: { id: input.applicationId },
+      data: {
+        status: "completed",
+        activeApplicationKey: null,
+        paymentStatus: "paid",
+        completedAt: new Date().toISOString(),
+      },
+    });
+
+    return { completed: true, parentStatus: "completed" };
   },
 }));

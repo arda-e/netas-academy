@@ -8,6 +8,8 @@ const PATH_LIMITS: Record<string, RateLimitConfig> = {
   '/api/contact-submissions/submit': { max: 5, interval: 60_000 },
   '/api/newsletter-subscriptions/subscribe': { max: 10, interval: 60_000 },
   '/api/course-applications/submit': { max: 5, interval: 60_000 },
+  '/api/payments/iyzico/callback': { max: 20, interval: 60_000 },
+  '/api/payments/iyzico/webhook': { max: 60, interval: 60_000 },
   '/api/analytics-events/capture': { max: 30, interval: 60_000 },
 };
 

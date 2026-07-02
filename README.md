@@ -33,6 +33,7 @@ npm run seed:demo
 ```
 
 The demo seed is safe to rerun and populates `teachers`, `courses`, `events`, `blog-posts`, `students`, and `registrations` with published editorial content for local testing.
+It also keeps paid CheckoutForm fixtures (`e2e-test-paid-checkoutform` and `e2e-test-paid-course-checkoutform`) so sandbox payment handoffs can be tested locally without editing CMS data.
 
 The root scripts use the active shell Node runtime. Keep it on Node 22 to avoid native module mismatches in Strapi's SQLite dependency.
 
@@ -46,6 +47,24 @@ npm run dev:backend
 Frontend default URL: `http://localhost:3000`
 
 Strapi admin default URL: `http://localhost:1337/admin`
+
+## iyzico CheckoutForm
+
+Paid event registration and course application payment steps use the shared backend payment orchestration service. The backend creates iyzico CheckoutForm handoffs and stores retry history in `payment-attempt` plus provider event idempotency in `payment-provider-event`; frontend code only renders the backend-created checkout content.
+
+Server-only env vars:
+
+```bash
+IYZICO_ENVIRONMENT=sandbox
+IYZICO_API_KEY=
+IYZICO_SECRET_KEY=
+IYZICO_BASE_URL=https://sandbox-api.iyzipay.com
+IYZICO_CALLBACK_URL=https://api.netasacademy.com/api/payments/iyzico/callback
+IYZICO_WEBHOOK_SECRET=
+COURSE_APPLICATION_PAYMENT_AMOUNT_MINOR=12500
+```
+
+Keep all iyzico keys out of `NEXT_PUBLIC_*` variables. Use sandbox credentials first, then switch `IYZICO_ENVIRONMENT=live` and the live base URL only for production.
 
 ## Docker
 

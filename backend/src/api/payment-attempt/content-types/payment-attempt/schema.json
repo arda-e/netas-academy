@@ -1,0 +1,77 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payment_attempts",
+  "info": {
+    "singularName": "payment-attempt",
+    "pluralName": "payment-attempts",
+    "displayName": "Payment Attempt",
+    "description": "Provider-neutral checkout attempts linked to parent flows"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "attemptReference": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "parentType": {
+      "type": "enumeration",
+      "enum": ["registration", "course_application"],
+      "required": true
+    },
+    "parentEntityId": {
+      "type": "integer",
+      "required": true
+    },
+    "parentDocumentId": {
+      "type": "string"
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "required": true
+    },
+    "provider": {
+      "type": "enumeration",
+      "enum": ["iyzico"],
+      "required": true
+    },
+    "providerToken": {
+      "type": "string"
+    },
+    "providerConversationId": {
+      "type": "string"
+    },
+    "amountMinor": {
+      "type": "integer",
+      "required": true
+    },
+    "currency": {
+      "type": "string",
+      "required": true,
+      "default": "TRY"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["created", "checkout_created", "pending", "paid", "failed", "cancelled"],
+      "required": true,
+      "default": "created"
+    },
+    "retryOfAttemptReference": {
+      "type": "string"
+    },
+    "frontendPresentationSnapshot": {
+      "type": "json"
+    },
+    "providerSafeSnapshot": {
+      "type": "json"
+    },
+    "completedAt": {
+      "type": "datetime"
+    },
+    "failureReason": {
+      "type": "text"
+    }
+  }
+}

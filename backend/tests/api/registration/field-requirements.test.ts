@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const deliverFn = vi.fn();
+const createCheckoutHandoffFn = vi.fn();
 
 vi.mock("@strapi/strapi", () => ({
   factories: {
@@ -26,6 +27,10 @@ vi.mock("../../../src/services/spl-check/service", () => ({
     statusCode: "10",
     rawResponse: "<Status>10</Status>",
   }),
+}));
+
+vi.mock("../../../src/services/payment-orchestration/service", () => ({
+  createCheckoutHandoff: (...args: unknown[]) => createCheckoutHandoffFn(...args),
 }));
 
 describe("registration service — event-type field-requirement matrix", () => {

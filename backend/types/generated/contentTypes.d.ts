@@ -947,6 +947,112 @@ export interface ApiNotificationRoutingNotificationRouting
   };
 }
 
+export interface ApiPaymentAttemptPaymentAttempt
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'payment_attempts';
+  info: {
+    description: 'Provider-neutral checkout attempts linked to parent flows';
+    displayName: 'Payment Attempt';
+    pluralName: 'payment-attempts';
+    singularName: 'payment-attempt';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    amountMinor: Schema.Attribute.Integer & Schema.Attribute.Required;
+    attemptReference: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    completedAt: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'TRY'>;
+    failureReason: Schema.Attribute.Text;
+    frontendPresentationSnapshot: Schema.Attribute.JSON;
+    idempotencyKey: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::payment-attempt.payment-attempt'
+    > &
+      Schema.Attribute.Private;
+    parentDocumentId: Schema.Attribute.String;
+    parentEntityId: Schema.Attribute.Integer & Schema.Attribute.Required;
+    parentType: Schema.Attribute.Enumeration<
+      ['registration', 'course_application']
+    > &
+      Schema.Attribute.Required;
+    provider: Schema.Attribute.Enumeration<['iyzico']> &
+      Schema.Attribute.Required;
+    providerConversationId: Schema.Attribute.String;
+    providerSafeSnapshot: Schema.Attribute.JSON;
+    providerToken: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    retryOfAttemptReference: Schema.Attribute.String;
+    status: Schema.Attribute.Enumeration<
+      ['created', 'checkout_created', 'pending', 'paid', 'failed', 'cancelled']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'created'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPaymentProviderEventPaymentProviderEvent
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'payment_provider_events';
+  info: {
+    description: 'Idempotency ledger for accepted and rejected provider callbacks/webhooks';
+    displayName: 'Payment Provider Event';
+    pluralName: 'payment-provider-events';
+    singularName: 'payment-provider-event';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    attemptReference: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    eventIdentity: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    eventType: Schema.Attribute.Enumeration<['callback', 'webhook']> &
+      Schema.Attribute.Required;
+    failureReason: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::payment-provider-event.payment-provider-event'
+    > &
+      Schema.Attribute.Private;
+    processedAt: Schema.Attribute.DateTime;
+    provider: Schema.Attribute.Enumeration<['iyzico']> &
+      Schema.Attribute.Required;
+    providerSafePayload: Schema.Attribute.JSON;
+    providerToken: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    signatureMetadata: Schema.Attribute.JSON;
+    signatureValid: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    status: Schema.Attribute.Enumeration<
+      ['accepted', 'rejected', 'duplicate']
+    > &
+      Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiRegistrationRegistration
   extends Struct.CollectionTypeSchema {
   collectionName: 'registrations';
@@ -975,7 +1081,15 @@ export interface ApiRegistrationRegistration
     notes: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
     registrationStatus: Schema.Attribute.Enumeration<
-      ['pending', 'confirmed', 'cancelled', 'waitlisted', 'attended']
+      [
+        'pending',
+        'payment_pending',
+        'blocked',
+        'confirmed',
+        'cancelled',
+        'waitlisted',
+        'attended',
+      ]
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'pending'>;
@@ -1658,6 +1772,8 @@ declare module '@strapi/strapi' {
       'api::news-post.news-post': ApiNewsPostNewsPost;
       'api::newsletter-subscription.newsletter-subscription': ApiNewsletterSubscriptionNewsletterSubscription;
       'api::notification-routing.notification-routing': ApiNotificationRoutingNotificationRouting;
+      'api::payment-attempt.payment-attempt': ApiPaymentAttemptPaymentAttempt;
+      'api::payment-provider-event.payment-provider-event': ApiPaymentProviderEventPaymentProviderEvent;
       'api::registration.registration': ApiRegistrationRegistration;
       'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'api::student.student': ApiStudentStudent;
