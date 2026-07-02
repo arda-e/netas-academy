@@ -5,7 +5,7 @@ import { join } from "@/lib/testids";
 import { footerSitePlanItems } from "@/config/navigation";
 
 const footerLinkClassName =
-  "rounded-sm border border-transparent text-left transition-colors hover:border-border hover:bg-muted/70 hover:text-foreground";
+  "rounded-sm border border-transparent text-left transition-all hover:ml-2 hover:font-semibold hover:text-[#009ca6]";
 
 export async function SiteFooter() {
   const t = await getTranslations('footer');
