@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { IyzicoCheckoutForm } from "@/components/payments/iyzico-checkout-form";
 import { PaymentStatusPanel } from "@/components/payments/payment-status-panel";
-import { Link, usePathname } from "@/i18n/navigation";
 import { useEventRegistrationForm } from "@/hooks/use-event-registration-form";
 import type { StrapiEventType } from "@/lib/strapi-types";
 
@@ -16,6 +15,7 @@ type EventRegistrationFormProps = {
   eventDocumentId: string;
   eventTitle: string;
   eventType: StrapiEventType;
+  eventPrice?: number | null;
 };
 
 const fieldClassName =
@@ -30,9 +30,9 @@ export function EventRegistrationForm({
   eventDocumentId,
   eventTitle,
   eventType,
+  eventPrice,
 }: EventRegistrationFormProps) {
   const t = useTranslations('event_reg');
-  const pathname = usePathname();
   const {
     values,
     fieldErrors,
@@ -44,11 +44,13 @@ export function EventRegistrationForm({
     handleChange,
     handleFieldBlur,
     handleKvkkConsentChange,
+    handleSalesAgreementChange,
     handleSubmit,
     handleRetryPayment,
     requiresKvkkConsent,
+    requiresSalesAgreement,
     requiresTckn,
-  } = useEventRegistrationForm({ eventDocumentId, eventTitle, eventType });
+  } = useEventRegistrationForm({ eventDocumentId, eventTitle, eventType, eventPrice });
 
   if (successMessage) {
     return (
@@ -67,7 +69,10 @@ export function EventRegistrationForm({
             {errorMessage}
           </div>
         ) : null}
-        <IyzicoCheckoutForm checkoutFormContent={payment.presentation.checkoutFormContent} />
+        <IyzicoCheckoutForm
+          checkoutFormContent={payment.presentation.checkoutFormContent}
+          providerPageUrl={payment.presentation.providerPageUrl}
+        />
       </div>
     );
   }
@@ -236,22 +241,29 @@ export function EventRegistrationForm({
             isSelected={values.kvkkConsent}
             onChange={handleKvkkConsentChange}
             data-testid="event-registration.field.kvkk-consent"
-            label={
-              <>
-                {t('kvkk.law_reference')}{" "}
-                <Link
-                  href={{ pathname: "/kvkk", query: { returnTo: pathname } }}
-                  className="font-semibold text-primary transition-colors hover:text-primary/80"
-                  data-testid="event-registration.link.kvkk-disclosure"
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  {t('kvkk.link')}
-                </Link>{" "}
-                {t('kvkk.suffix')}
-              </>
-            }
+            label={t('kvkk.text')}
             className="md:gap-4"
           />
+        </div>
+      ) : null}
+
+      {requiresSalesAgreement ? (
+        <div className="rounded-sm border border-border/70 bg-card/55 p-4 md:p-5">
+          <Checkbox
+            name="salesAgreementAccepted"
+            size="md"
+            isSelected={values.salesAgreementAccepted}
+            onChange={handleSalesAgreementChange}
+            data-testid="event-registration.field.sales-agreement"
+            label={t("payment.sales_agreement.label")}
+            hint={t("payment.sales_agreement.description")}
+            className="flex items-start gap-3 md:gap-4"
+          />
+          {fieldErrors.salesAgreement ? (
+            <p className="pl-7 text-sm text-destructive" data-testid="event-registration.error.sales-agreement">
+              {fieldErrors.salesAgreement}
+            </p>
+          ) : null}
         </div>
       ) : null}
 
