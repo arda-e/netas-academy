@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { ContentCardShell } from "@/components/content/content-card-shell";
 import { ContentGrid } from "@/components/content/content-grid";
@@ -17,6 +17,7 @@ type EventListItem = {
   startsAt: string;
   endsAt?: string | null;
   location?: string | null;
+  price?: number | null;
 };
 
 type EventListProps = {
@@ -28,8 +29,11 @@ export async function EventList({
   items,
   emptyMessage,
 }: EventListProps) {
+  const locale = await getLocale();
   const t = await getTranslations("events");
   const tx = await getTranslations("taxonomy");
+  const priceLocale = locale.startsWith("en") ? "en-US" : "tr-TR";
+  const priceSuffix = locale.startsWith("en") ? "VAT" : "KDV";
 
   const effectiveEmptyMessage = emptyMessage ?? t("list.empty");
 
@@ -57,6 +61,11 @@ export async function EventList({
                 <p className="font-bold text-gray-700">{formatEventDateTime(event.startsAt)}</p>
                 {event.endsAt ? (
                   <p className="font-bold text-gray-700">{formatEventDateTime(event.endsAt)}</p>
+                ) : null}
+                {event.price != null && event.price > 0 ? (
+                  <p className="font-bold text-gray-700">
+                    {t("detail.price_label")}: {new Intl.NumberFormat(priceLocale).format(event.price)} TL + {priceSuffix}
+                  </p>
                 ) : null}
                 {event.location ? <p>{event.location}</p> : null}
               </div>

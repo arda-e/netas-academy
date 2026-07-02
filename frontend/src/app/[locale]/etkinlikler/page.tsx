@@ -109,6 +109,7 @@ async function EventResults({
         startsAt: event.startsAt,
         endsAt: event.endsAt,
         location: event.location,
+        price: event.price,
         topicArea: event.topicArea,
       }))}
     />
