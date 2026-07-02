@@ -30,7 +30,7 @@ const mobileNavigationLinkInactiveClassName =
 
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const t = useTranslations('nav');
   const ht = useTranslations('header');
   const locale = useLocale();

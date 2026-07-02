@@ -79,6 +79,26 @@ const ensureLegacyRegistrationUniqueIndex = async (strapi: Core.Strapi) => {
   }
 };
 
+const ensureDefaultSiteSetting = async (strapi: Core.Strapi) => {
+  const siteSettingQuery = strapi.db.query('api::site-setting.site-setting');
+  const existing = await siteSettingQuery.findOne({
+    select: ['id'],
+  });
+
+  if (existing?.id) {
+    return;
+  }
+
+  await siteSettingQuery.create({
+    data: {
+      siteName: 'Netas Academy',
+      defaultMetaTitle: 'Netas Academy',
+      defaultMetaDescription: 'Netas Academy eğitim, etkinlik ve kurumsal gelişim içerikleri.',
+      defaultOgImageAlt: 'Netas Academy',
+    },
+  });
+};
+
 export default {
   /**
    * An asynchronous register function that runs before
@@ -97,6 +117,7 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await ensurePublicReadPermissions(strapi);
+    await ensureDefaultSiteSetting(strapi);
     await ensureLegacyRegistrationUniqueIndex(strapi);
   },
 };
