@@ -24,8 +24,7 @@ const fieldClassName =
 const textareaClassName =
   "min-h-[10rem] rounded-lg border-transparent bg-white px-3 py-2 text-base text-foreground shadow-xs ring-1 ring-border/80 ring-inset transition-shadow duration-100 ease-linear placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/80 md:min-h-[12rem] md:text-base";
 
-const labelClassName =
-  "text-lg font-semibold tracking-tight text-foreground md:text-xl";
+const labelClassName = "flex cursor-default items-center gap-0.5 text-sm font-medium text-muted-foreground";
 
 const fieldWrapperClassName = "space-y-2 md:space-y-3";
 
@@ -270,7 +269,7 @@ export function EventRegistrationForm({
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
         <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
           {t('footer_note')}
         </p>
@@ -278,7 +277,7 @@ export function EventRegistrationForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="h-12 w-full rounded-sm px-7 text-base font-semibold sm:w-auto md:h-14 md:text-lg"
+          className="h-10 w-full rounded-md px-5 text-sm font-semibold hover:cursor-pointer sm:w-auto md:text-base"
           data-testid="event-registration.submit"
         >
           {isSubmitting ? t('submit.pending') : t('submit.idle')}
