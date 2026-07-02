@@ -8,6 +8,7 @@ type HomeContactCTASectionProps = {
   heading?: string;
   body?: string;
   buttonLabel?: string;
+  buttonHref?: string;
   imageUrl?: ImageSource | null;
   imageAlt?: string;
 };
@@ -16,6 +17,7 @@ export function HomeContactCTASection({
   heading = 'İhtiyacınıza uygun eğitim yolculuğunu birlikte kuralım',
   body = 'Ekibinizin hedeflerini ve gelişim önceliklerini paylaşın; size özel bir kurumsal eğitim programı tasarlayalım.',
   buttonLabel = 'Kurumsal Eğitim Talep Et',
+  buttonHref = buildIntentLeadUrl("corporate_training_request"),
   imageUrl = heroCtaImage,
   imageAlt = '',
 }: HomeContactCTASectionProps = {}) {
@@ -43,7 +45,7 @@ export function HomeContactCTASection({
             {body}
           </p>
           <Link
-            href={buildIntentLeadUrl("corporate_training_request")}
+            href={buttonHref}
             data-measurement-id="home_contact_cta"
             data-testid="page.home.cta.contact"
             className="mt-6 inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-white/90"

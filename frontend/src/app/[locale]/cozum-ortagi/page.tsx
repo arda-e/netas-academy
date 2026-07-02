@@ -7,6 +7,7 @@ import { SiteBreadcrumbs } from "@/components/breadcrumbs";
 import { HomeContactCTASection } from "@/components/home/HomeContactCTASection";
 import { AccordionSection } from "@/components/uncode/AccordionSection";
 import { IntroSection } from "@/components/uncode/IntroSection";
+import { buildIntentLeadUrl } from "@/lib/lead-intents";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
 
@@ -102,6 +103,7 @@ export default async function CozumOrtagiPage() {
         heading={t('cta.heading')}
         body={t('cta.body')}
         buttonLabel={t('cta.button')}
+        buttonHref={buildIntentLeadUrl("solution_partner_application")}
       />
     </main>
   );
