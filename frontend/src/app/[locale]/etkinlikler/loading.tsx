@@ -1,6 +1,6 @@
 import {
+  CardListLoading,
   ContentPageShell,
-  EventListLoading,
   FilterPillsLoading,
   SortButtonLoading,
 } from "@/components/content";
@@ -29,7 +29,7 @@ export default function EtkinliklerLoading() {
       </div>
 
       <div data-testid="loading.etkinlikler">
-        <EventListLoading />
+        <CardListLoading columns={2} />
       </div>
     </ContentPageShell>
   );

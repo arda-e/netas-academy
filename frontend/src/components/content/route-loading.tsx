@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 type SkeletonBoxProps = {
   className?: string;
@@ -81,29 +81,35 @@ export function HeroDescriptionWithTrailingLoading({
 }
 
 export function CourseListLoading({ testId }: { testId?: string }) {
-  return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6" data-testid={testId}>
-      {Array.from({ length: 6 }).map((_, index) => (
-        <SkeletonBox key={index} className="h-72" />
-      ))}
-    </div>
-  );
+  return <CardListLoading columns={3} testId={testId} />;
 }
 
 export function EventListLoading({ testId }: { testId?: string }) {
-  return (
-    <div className="space-y-4" data-testid={testId}>
-      {Array.from({ length: 4 }).map((_, index) => (
-        <SkeletonBox key={index} className="h-40" />
-      ))}
-    </div>
-  );
+  return <CardListLoading columns={2} testId={testId} />;
 }
 
-export function BlogListLoading({ testId }: { testId?: string }) {
+type CardListLoadingProps = {
+  columns?: number;
+  count?: number;
+  testId?: string;
+};
+
+export function CardListLoading({
+  columns = 3,
+  count = columns * 2,
+  testId,
+}: CardListLoadingProps) {
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-testid={testId}>
-      {Array.from({ length: 6 }).map((_, index) => (
+    <div
+      className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:[grid-template-columns:repeat(var(--card-list-columns),minmax(0,1fr))]"
+      data-testid={testId}
+      style={
+        {
+          "--card-list-columns": String(columns),
+        } as CSSProperties
+      }
+    >
+      {Array.from({ length: count }).map((_, index) => (
         <div key={index} className="space-y-3">
           <SkeletonBox className="aspect-[16/9]" />
           <SkeletonBox className="h-6 w-3/4" />
@@ -113,6 +119,10 @@ export function BlogListLoading({ testId }: { testId?: string }) {
       ))}
     </div>
   );
+}
+
+export function BlogListLoading(props: Omit<CardListLoadingProps, "columns">) {
+  return <CardListLoading columns={3} {...props} />;
 }
 
 export function SearchFieldLoading({
@@ -170,17 +180,5 @@ export function SortButtonLoading({ testId }: { testId?: string }) {
 }
 
 export function TeacherListLoading({ testId }: { testId?: string }) {
-  return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-6" data-testid={testId}>
-      {Array.from({ length: 8 }).map((_, index) => (
-        <div key={index} className="space-y-4 rounded-sm bg-slate-50 p-5 sm:p-6">
-          <SkeletonBox className="mx-auto h-24 w-24 rounded-full sm:h-28 sm:w-28" />
-          <div className="space-y-2 text-center">
-            <SkeletonBox className="mx-auto h-5 w-2/3" />
-            <SkeletonBox className="mx-auto h-4 w-1/2" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  return <CardListLoading columns={4} testId={testId} />;
 }

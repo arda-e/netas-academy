@@ -4,7 +4,7 @@ import { Filter } from "lucide-react";
 import { SortAscending, SortDescending } from "@phosphor-icons/react/dist/ssr";
 import { getTranslations } from "next-intl/server";
 
-import { ContentPageShell, EventList, EventListLoading } from "@/components/content";
+import { CardListLoading, ContentPageShell, EventList } from "@/components/content";
 import { Link } from "@/i18n/navigation";
 import { join } from "@/lib/testids";
 import { cn } from "@/lib/utils";
@@ -203,7 +203,7 @@ export default async function EtkinliklerPage({
         </Link>
       </div>
 
-      <Suspense fallback={<EventListLoading testId="loading.etkinlikler" />}>
+      <Suspense fallback={<CardListLoading columns={2} testId="loading.etkinlikler" />}>
         <EventResults selectedType={selectedType} selectedSort={selectedSort} />
       </Suspense>
     </ContentPageShell>

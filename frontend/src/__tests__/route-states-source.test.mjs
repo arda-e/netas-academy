@@ -41,7 +41,7 @@ assert.ok(routeLoading.includes("animate-pulse"), "route-loading.tsx should use 
 assert.ok(routeLoading.includes("testId"), "route-loading.tsx should accept testId prop");
 assert.ok(routeLoading.includes("CourseListLoading"), "route-loading.tsx should export list-level course skeletons");
 assert.ok(routeLoading.includes("EventListLoading"), "route-loading.tsx should export list-level event skeletons");
-assert.ok(routeLoading.includes("BlogListLoading"), "route-loading.tsx should export list-level blog skeletons");
+assert.ok(routeLoading.includes("CardListLoading"), "route-loading.tsx should export reusable card list skeletons");
 assert.ok(routeLoading.includes("TeacherListLoading"), "route-loading.tsx should export list-level teacher skeletons");
 
 // --- loading.tsx files ---
@@ -52,6 +52,7 @@ const loadingRoutes = [
   { route: "app/[locale]/etkinlikler/[slug]/loading.tsx", testId: "loading.event-detail", staticHero: false },
   { route: "app/[locale]/blog-yazilari/loading.tsx", testId: "loading.blog", staticHero: true },
   { route: "app/[locale]/blog-yazilari/[slug]/loading.tsx", testId: "loading.blog-detail", staticHero: false },
+  { route: "app/[locale]/haberler/loading.tsx", testId: "loading.haberler", staticHero: true },
   { route: "app/[locale]/egitmenler/loading.tsx", testId: "loading.egitmenler", staticHero: true },
   { route: "app/[locale]/egitmenler/[slug]/loading.tsx", testId: "loading.teacher-detail", staticHero: false },
 ];
@@ -123,6 +124,10 @@ assert.ok(
 assert.ok(
   contentIndex.includes("ListLoading"),
   "content/index.ts should export list loading components"
+);
+assert.ok(
+  contentIndex.includes("CardListLoading"),
+  "content/index.ts should export CardListLoading"
 );
 
 console.log("✅ All route states tests passed.");

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { ContentPageShell, BlogList, BlogListLoading, SearchField } from "@/components/content";
+import { BlogList, CardListLoading, ContentPageShell, SearchField } from "@/components/content";
 import { getBlogPosts } from "@/lib/strapi-blog";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
@@ -81,7 +81,7 @@ export default async function BlogYazilariPage({ searchParams }: BlogYazilariPag
           initialValue={search}
           expandedWidthClassName="lg:w-[560px]"
         />
-        <Suspense fallback={<BlogListLoading testId="loading.blog" />}>
+        <Suspense fallback={<CardListLoading columns={3} testId="loading.blog" />}>
           <BlogResults search={search} emptyMessage={t('list.empty')} />
         </Suspense>
       </div>

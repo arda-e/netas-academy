@@ -1,6 +1,6 @@
 import {
+  CardListLoading,
   ContentPageShell,
-  CourseListLoading,
   FilterPillsLoading,
   HeroDescriptionWithTrailingLoading,
   SearchFieldLoading,
@@ -23,7 +23,7 @@ export default function EgitimlerLoading() {
         </div>
 
         <div data-testid="loading.egitimler">
-          <CourseListLoading />
+          <CardListLoading columns={3} />
         </div>
       </div>
     </ContentPageShell>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Download, Filter } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { ContentPageShell, CourseListLoading, SearchField } from "@/components/content";
+import { CardListLoading, ContentPageShell, SearchField } from "@/components/content";
 import { CourseCatalogList } from "@/components/courses/course-catalog-list";
 import { Link } from "@/i18n/navigation";
 import { getCourseList } from "@/lib/course-service";
@@ -148,7 +148,7 @@ export default async function EgitimlerPage({ searchParams }: EgitimlerPageProps
           </div>
         </div>
 
-        <Suspense fallback={<CourseListLoading testId="loading.egitimler" />}>
+        <Suspense fallback={<CardListLoading columns={3} testId="loading.egitimler" />}>
           <CourseCatalogResults activeTopic={activeTopic} search={search} />
         </Suspense>
       </div>

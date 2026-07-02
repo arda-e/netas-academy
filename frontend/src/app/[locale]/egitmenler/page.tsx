@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { ContentPageShell, ContentGrid, TeacherListLoading, SearchField } from "@/components/content";
+import { CardListLoading, ContentPageShell, ContentGrid, SearchField } from "@/components/content";
 import { TeacherCard } from "@/components/teacher-card";
 import { buildLocaleAlternates, buildLocalePath, buildMetadata } from "@/lib/seo-utils";
 import { getSiteSettings } from "@/lib/strapi-site-settings";
@@ -100,7 +100,7 @@ export default async function EgitmenlerPage({ searchParams }: EgitmenlerPagePro
           initialValue={search}
           expandedWidthClassName="lg:w-[560px]"
         />
-        <Suspense fallback={<TeacherListLoading testId="loading.egitmenler" />}>
+        <Suspense fallback={<CardListLoading columns={4} testId="loading.egitmenler" />}>
           <TeacherResults search={search} emptyMessage={t('list.empty')} />
         </Suspense>
       </div>

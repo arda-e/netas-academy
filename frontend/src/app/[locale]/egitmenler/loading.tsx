@@ -1,8 +1,8 @@
 import {
+  CardListLoading,
   ContentPageShell,
   HeroDescriptionLoading,
   SearchFieldLoading,
-  TeacherListLoading,
 } from "@/components/content";
 
 export default function EgitmenlerLoading() {
@@ -22,7 +22,7 @@ export default function EgitmenlerLoading() {
           testId="loading.egitmenler.search"
         />
         <div data-testid="loading.egitmenler">
-          <TeacherListLoading />
+          <CardListLoading columns={4} />
         </div>
       </div>
     </ContentPageShell>

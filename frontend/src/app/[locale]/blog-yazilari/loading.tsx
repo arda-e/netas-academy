@@ -1,5 +1,5 @@
 import {
-  BlogListLoading,
+  CardListLoading,
   ContentPageShell,
   SearchFieldLoading,
 } from "@/components/content";
@@ -25,7 +25,7 @@ export default function BlogYazilariLoading() {
           testId="loading.blog.search"
         />
         <div data-testid="loading.blog">
-          <BlogListLoading />
+          <CardListLoading columns={3} />
         </div>
       </div>
     </ContentPageShell>
