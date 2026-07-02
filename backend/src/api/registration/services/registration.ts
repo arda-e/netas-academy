@@ -112,8 +112,9 @@ export default factories.createCoreService('api::registration.registration' as a
 
     const registration = await strapi.db.transaction(async () => {
       const student = await strapi.service('api::student.student').upsertByEmail(input.student);
+      const registrationQuery = strapi.db.query('api::registration.registration');
 
-      const existingRegistration = await strapi.db.query('api::registration.registration').findOne({
+      const existingRegistration = await registrationQuery.findOne({
         where: {
           event: { id: event.id },
           student: { id: student.id },
@@ -126,10 +127,21 @@ export default factories.createCoreService('api::registration.registration' as a
 
       // Idempotent: if already registered, return success with sanitized data
       if (existingRegistration) {
+        if (eventAmountMinor > 0 && existingRegistration.registrationStatus === 'pending') {
+          return registrationQuery.update({
+            where: { id: existingRegistration.id },
+            data: { registrationStatus: 'payment_pending' },
+            populate: {
+              event: true,
+              student: true,
+            },
+          });
+        }
+
         return existingRegistration;
       }
 
-      return strapi.db.query('api::registration.registration').create({
+      return registrationQuery.create({
         data: {
           registrationStatus,
           notes: input.notes ?? null,
