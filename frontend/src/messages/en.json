@@ -331,9 +331,7 @@
       }
     },
     "kvkk": {
-      "law_reference": "Pursuant to Law No. 6698 on the Protection of Personal Data",
-      "link": "Privacy Notice",
-      "suffix": "I have read and understood."
+      "text": "I have read and understood the disclosure text under the Personal Data Protection Law No. 6698."
     },
     "footer_note": "Once your registration is complete, the status information will be displayed on this form. When necessary, we may contact you through the contact details you shared.",
     "error": {
@@ -348,11 +346,12 @@
       "first_name_required": "First name is required.",
       "first_name_min_5": "First name must be at least 5 characters.",
       "last_name_required": "Last name is required.",
-      "last_name_min_5": "Last name must be at least 5 characters.",
+      "last_name_min_2": "Last name must be at least 2 characters.",
       "last_name_max_20": "Last name can be at most 20 characters.",
       "phone_required": "Phone number is required.",
       "phone_invalid": "Phone number may contain digits only.",
-      "kvkk_required": "Please confirm that you have read the KVKK disclosure statement."
+      "kvkk_required": "Please confirm that you have read the KVKK disclosure statement.",
+      "sales_agreement_required": "Please approve the Distance Sales Agreement to continue."
     },
     "submit": {
       "idle": "Complete Registration",
@@ -366,8 +365,8 @@
       "retry": "Retry Payment",
       "sales_agreement": {
         "label": "I have read and approve the Distance Sales Agreement and preliminary information terms.",
-        "description": "Your agreement approval is required before the payment area opens.",
-        "required": "Confirm the Distance Sales Agreement approval to view the payment form."
+        "description": "Your agreement approval is required to continue with payment.",
+        "required": "Approve the Distance Sales Agreement to continue."
       }
     },
     "success": {

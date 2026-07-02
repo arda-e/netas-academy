@@ -39,14 +39,16 @@ type EventRegistrationValues = {
   tckn: string;
   notes: string;
   kvkkConsent: boolean;
+  salesAgreementAccepted: boolean;
 };
 
-type FieldErrors = Partial<Record<"firstName" | "lastName" | "phone" | "tckn", string>>;
+type FieldErrors = Partial<Record<"firstName" | "lastName" | "phone" | "tckn" | "salesAgreement", string>>;
 
 type UseEventRegistrationFormOptions = {
   eventDocumentId: string;
   eventTitle: string;
   eventType?: StrapiEventType;
+  eventPrice?: number | null;
 };
 
 const initialValues: EventRegistrationValues = {
@@ -57,6 +59,7 @@ const initialValues: EventRegistrationValues = {
   tckn: "",
   notes: "",
   kvkkConsent: false,
+  salesAgreementAccepted: false,
 };
 
 const digitsOnly = (value: string) => value.replace(/\D/g, "");
@@ -66,12 +69,14 @@ const sanitizeStoredValues = (values: EventRegistrationValues): EventRegistratio
   lastName: values.lastName.slice(0, 20),
   phone: digitsOnly(values.phone),
   tckn: digitsOnly(values.tckn).slice(0, 11),
+  salesAgreementAccepted: values.salesAgreementAccepted ?? false,
 });
 
 export function useEventRegistrationForm({
   eventDocumentId,
   eventTitle,
   eventType,
+  eventPrice,
 }: UseEventRegistrationFormOptions) {
   const t = useTranslations('event_reg');
 
@@ -121,6 +126,7 @@ export function useEventRegistrationForm({
   // TCKN is required only for egitim/kurs events, not etkinlik
   // Positive matching so undefined eventType (event not yet loaded) defaults to no TCKN required
   const requiresTckn = eventType === "egitim" || eventType === "kurs";
+  const requiresSalesAgreement = Number(eventPrice ?? 0) > 0;
   const [values, setValues] = useState<EventRegistrationValues>(() => {
     const saved = load();
     return saved ? sanitizeStoredValues(saved) : initialValues;
@@ -142,7 +148,7 @@ export function useEventRegistrationForm({
     lastName: z
       .string()
       .trim()
-      .min(5, t("validation.last_name_min_5"))
+      .min(2, t("validation.last_name_min_2"))
       .max(20, t("validation.last_name_max_20")),
     phone: z.string().trim().regex(/^\d*$/, t("validation.phone_invalid")),
   };
@@ -199,6 +205,29 @@ export function useEventRegistrationForm({
       ...currentValues,
       kvkkConsent: isSelected,
     }));
+    if (isSelected) {
+      setErrorMessage((currentMessage) =>
+        currentMessage === t("validation.kvkk_required") ? null : currentMessage
+      );
+    }
+  };
+
+  const handleSalesAgreementChange = (isSelected: boolean) => {
+    setValues((currentValues) => ({
+      ...currentValues,
+      salesAgreementAccepted: isSelected,
+    }));
+    if (isSelected) {
+      setFieldErrors((currentErrors) => {
+        if (!currentErrors.salesAgreement) {
+          return currentErrors;
+        }
+
+        const nextErrors = { ...currentErrors };
+        delete nextErrors.salesAgreement;
+        return nextErrors;
+      });
+    }
   };
 
   const handleFieldBlur = (
@@ -252,6 +281,16 @@ export function useEventRegistrationForm({
 
     if (requiresKvkkConsent && !values.kvkkConsent) {
       setErrorMessage(t('validation.kvkk_required'));
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (requiresSalesAgreement && !values.salesAgreementAccepted) {
+      nextFieldErrors.salesAgreement = t("validation.sales_agreement_required");
+    }
+
+    if (Object.keys(nextFieldErrors).length > 0) {
+      setFieldErrors(nextFieldErrors);
       setIsSubmitting(false);
       return;
     }
@@ -353,10 +392,12 @@ export function useEventRegistrationForm({
     payment,
     handleChange,
     handleKvkkConsentChange,
+    handleSalesAgreementChange,
     handleFieldBlur,
     handleSubmit,
     handleRetryPayment,
     requiresKvkkConsent,
+    requiresSalesAgreement,
     requiresTckn,
   };
 }
