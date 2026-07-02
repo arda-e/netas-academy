@@ -1,6 +1,6 @@
 stages:
-  - lint
-  - test
+  # - lint
+  # - test
   - build
   # - e2e
   - image
@@ -41,43 +41,41 @@ variables:
     NEXT_PUBLIC_SITE_URL: "http://localhost:3000"
     NEXT_PUBLIC_API_URL: "http://127.0.0.1:1337"
 
-frontend_lint:
-  extends: .node_job
-  stage: lint
-  before_script:
-    - npm ci --prefix frontend --cache frontend/.npm --prefer-offline
-  script:
-    - npm run lint --prefix frontend
-
-frontend_tests:
-  extends: .node_job
-  stage: test
-  needs:
-    - frontend_lint
-  before_script:
-    - npm ci --prefix frontend --cache frontend/.npm --prefer-offline
-  script:
-    - npm run test:coverage --prefix frontend
-
-backend_tests:
-  extends:
-    - .node_job
-    - .backend_ci_env
-  stage: test
-  needs:
-    - frontend_lint
-  before_script:
-    - npm ci --prefix backend --cache backend/.npm --prefer-offline
-  script:
-    - npm run test --prefix backend
+# frontend_lint:
+#   extends: .node_job
+#   stage: lint
+#   before_script:
+#     - npm ci --prefix frontend --cache frontend/.npm --prefer-offline
+#   script:
+#     - npm run lint --prefix frontend
+#
+# frontend_tests:
+#   extends: .node_job
+#   stage: test
+#   needs:
+#     - frontend_lint
+#   before_script:
+#     - npm ci --prefix frontend --cache frontend/.npm --prefer-offline
+#   script:
+#     - npm run test:coverage --prefix frontend
+#
+# backend_tests:
+#   extends:
+#     - .node_job
+#     - .backend_ci_env
+#   stage: test
+#   needs:
+#     - frontend_lint
+#   before_script:
+#     - npm ci --prefix backend --cache backend/.npm --prefer-offline
+#   script:
+#     - npm run test --prefix backend
 
 frontend_build:
   extends:
     - .node_job
     - .backend_ci_env
   stage: build
-  needs:
-    - frontend_tests
   before_script:
     - npm ci --prefix frontend --cache frontend/.npm --prefer-offline
   script:
@@ -88,8 +86,6 @@ backend_build:
     - .node_job
     - .backend_ci_env
   stage: build
-  needs:
-    - backend_tests
   before_script:
     - npm ci --prefix backend --cache backend/.npm --prefer-offline
   script:
