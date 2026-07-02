@@ -97,6 +97,66 @@ describe("payment orchestration service", () => {
     );
   });
 
+  it("creates a fresh checkout token instead of replaying a previous checkout presentation", async () => {
+    const strapiInstance = makeStrapi();
+    strapiInstance.__queries.paymentAttempt.findOne.mockResolvedValue({
+      id: 9,
+      attemptReference: "pay_old",
+      status: "checkout_created",
+      frontendPresentationSnapshot: {
+        kind: "iyzico_checkout_form",
+        token: "old-token",
+        checkoutFormContent: "<script>old checkout</script>",
+      },
+    });
+    const checkoutClient = {
+      initializeCheckoutForm: vi.fn().mockResolvedValue({
+        token: "fresh-token",
+        presentation: {
+          kind: "iyzico_checkout_form",
+          token: "fresh-token",
+          checkoutFormContent: "<script>fresh checkout</script>",
+        },
+        providerSafeSnapshot: { status: "success" },
+      }),
+      retrieveCheckoutFormResult: vi.fn(),
+    };
+
+    await expect(
+      createCheckoutHandoff(baseInput, {
+        strapiInstance,
+        checkoutClient,
+        randomId: () => "fresh-random-id-000000000000",
+        loadConfig: () => ({
+          environment: "sandbox",
+          apiKey: "key",
+          secretKey: "secret",
+          baseUrl: "https://sandbox-api.iyzipay.com",
+          callbackUrl: "https://example.com/callback",
+          webhookSecret: "webhook-secret",
+        }),
+      }),
+    ).resolves.toMatchObject({
+      attemptReference: "pay_freshrandomid00000000000",
+      status: "checkout_created",
+      presentation: {
+        token: "fresh-token",
+        checkoutFormContent: "<script>fresh checkout</script>",
+      },
+    });
+
+    expect(checkoutClient.initializeCheckoutForm).toHaveBeenCalledTimes(1);
+    expect(strapiInstance.__queries.paymentAttempt.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          attemptReference: "pay_freshrandomid00000000000",
+          idempotencyKey: "registration:42",
+          status: "created",
+        }),
+      }),
+    );
+  });
+
   it("marks the attempt failed and returns payment_unavailable when provider initialization fails", async () => {
     const strapiInstance = makeStrapi();
     const checkoutClient = {

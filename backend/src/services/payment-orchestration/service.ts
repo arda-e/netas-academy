@@ -101,18 +101,6 @@ export async function createCheckoutHandoff(
   const currency = input.currency ?? "TRY";
   const attemptQuery = strapiRef.db.query("api::payment-attempt.payment-attempt");
 
-  const existing = await attemptQuery.findOne?.({
-    where: { idempotencyKey: input.idempotencyKey, retryOfAttemptReference: input.retryOfAttemptReference ?? null },
-  });
-  if (existing?.status === "checkout_created" && existing.frontendPresentationSnapshot) {
-    return {
-      attemptReference: existing.attemptReference,
-      status: "checkout_created",
-      provider: "iyzico",
-      presentation: existing.frontendPresentationSnapshot,
-    };
-  }
-
   const attempt = await attemptQuery.create({
     data: {
       attemptReference,
