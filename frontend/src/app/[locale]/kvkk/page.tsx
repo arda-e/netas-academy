@@ -278,9 +278,6 @@ export default function KvkkPage() {
             </p>
           </article>
 
-          <div className="flex justify-start pt-2">
-            <KvkkBackButton />
-          </div>
         </div>
       </section>
     </main>
