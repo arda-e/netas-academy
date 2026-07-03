@@ -52,6 +52,12 @@ function makeAttemptReference(randomId: () => string = randomUUID) {
   return `pay_${randomId().replace(/-/g, "").slice(0, 24)}`;
 }
 
+export function buildAttemptCallbackUrl(callbackUrl: string, attemptReference: string) {
+  const url = new URL(callbackUrl);
+  url.searchParams.set("attemptReference", attemptReference);
+  return url.toString();
+}
+
 function toAttemptParent(attempt: AttemptRecord): PaymentParentDescriptor {
   return {
     parentType: attempt.parentType,
@@ -127,7 +133,7 @@ export async function createCheckoutHandoff(
       currency,
       basketId: `${input.parent.parentType}:${input.parent.parentEntityId}`,
       title: input.title,
-      callbackUrl: input.callbackUrl ?? config.callbackUrl,
+      callbackUrl: buildAttemptCallbackUrl(input.callbackUrl ?? config.callbackUrl, attemptReference),
       payer: input.payer,
     };
     const initialized = await checkoutClient.initializeCheckoutForm(checkoutRequest);

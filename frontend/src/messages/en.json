@@ -372,6 +372,47 @@
       "with_title": "Your registration for {title} has been received. Our team will contact you shortly."
     }
   },
+  "payment_result": {
+    "meta": {
+      "title": "Payment Result | Netas Academy",
+      "description": "View the result of your Netas Academy payment."
+    },
+    "breadcrumbs": {
+      "current": "Payment Result"
+    },
+    "hero": {
+      "eyebrow": "Secure Payment",
+      "title": "Payment Result",
+      "body": "Your payment is finalized in our system after the bank and iyzico response is received."
+    },
+    "status": {
+      "paid": {
+        "title": "Payment completed",
+        "body": "Your registration has been completed with payment. Our team will send any required follow-up information."
+      },
+      "failed": {
+        "title": "Payment could not be completed",
+        "body": "The payment was not successful. Your registration remains pending payment; you can try again or contact our team."
+      },
+      "cancelled": {
+        "title": "Payment cancelled",
+        "body": "The payment was cancelled. You can restart the payment step from the event page."
+      },
+      "pending": {
+        "title": "Payment result is being checked",
+        "body": "The payment result has not been finalized yet. Please check again shortly or contact our team."
+      }
+    },
+    "details": {
+      "attempt_reference": "Payment reference:",
+      "duplicate": "This result came from a payment response that was already processed."
+    },
+    "actions": {
+      "events": "Back to Events",
+      "contact": "Contact Us",
+      "retry": "Try Again"
+    }
+  },
   "teachers": {
     "meta": {
       "not_found": "Teacher Not Found"

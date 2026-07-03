@@ -61,8 +61,11 @@ IYZICO_SECRET_KEY=
 IYZICO_BASE_URL=https://sandbox-api.iyzipay.com
 IYZICO_CALLBACK_URL=https://api.netasacademy.com/api/payments/iyzico/callback
 IYZICO_WEBHOOK_SECRET=
+PAYMENT_RESULT_BASE_URL=https://netasacademy.com
 COURSE_APPLICATION_PAYMENT_AMOUNT_MINOR=12500
 ```
+
+Use `IYZICO_CALLBACK_URL` as the callback URL in the iyzico panel. For each CheckoutForm handoff, the backend sends iyzico a payment-specific callback URL by appending `attemptReference` to this base endpoint. The backend finalizes the CheckoutForm result at that route, then redirects the browser to `${PAYMENT_RESULT_BASE_URL}/odeme-sonucu` with the finalized attempt reference and status.
 
 Keep all iyzico keys out of `NEXT_PUBLIC_*` variables. Use sandbox credentials first, then switch `IYZICO_ENVIRONMENT=live` and the live base URL only for production.
 

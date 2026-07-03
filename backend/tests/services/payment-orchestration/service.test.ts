@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  buildAttemptCallbackUrl,
   createCheckoutHandoff,
   finalizeAttemptFromProviderResult,
   retryCheckoutHandoff,
@@ -40,6 +41,16 @@ describe("payment orchestration service", () => {
     title: "Paid event",
     idempotencyKey: "registration:42",
   };
+
+  it("adds the payment attempt reference to the iyzico callback URL", () => {
+    expect(
+      buildAttemptCallbackUrl("https://api.netasacademy.com/api/payments/iyzico/callback", "pay_123"),
+    ).toBe("https://api.netasacademy.com/api/payments/iyzico/callback?attemptReference=pay_123");
+
+    expect(
+      buildAttemptCallbackUrl("https://api.netasacademy.com/api/payments/iyzico/callback?source=checkout", "pay_456"),
+    ).toBe("https://api.netasacademy.com/api/payments/iyzico/callback?source=checkout&attemptReference=pay_456");
+  });
 
   it("persists an attempt before provider initialization and returns a neutral handoff", async () => {
     const strapiInstance = makeStrapi();
@@ -93,6 +104,12 @@ describe("payment orchestration service", () => {
           status: "checkout_created",
           providerToken: "checkout-token",
         }),
+      }),
+    );
+    expect(checkoutClient.initializeCheckoutForm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        callbackUrl:
+          "https://example.com/callback?attemptReference=pay_fixedrandomid00000000000",
       }),
     );
   });

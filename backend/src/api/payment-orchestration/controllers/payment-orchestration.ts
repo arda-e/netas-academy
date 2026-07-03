@@ -1,5 +1,27 @@
 import { handleCallbackResult, handleWebhookEvent, retryCheckoutHandoff } from "../../../services/payment-orchestration/service";
 
+const DEFAULT_PAYMENT_RESULT_BASE_URL = "http://localhost:3000";
+const DEFAULT_PAYMENT_RESULT_PATH = "/odeme-sonucu";
+
+type CallbackResult = Awaited<ReturnType<typeof handleCallbackResult>>;
+
+function normalizeBaseUrl(value?: string | null) {
+  return (value?.trim() || DEFAULT_PAYMENT_RESULT_BASE_URL).replace(/\/+$/, "");
+}
+
+export function buildPaymentResultRedirectUrl(result: CallbackResult, env: NodeJS.ProcessEnv = process.env) {
+  const url = new URL(DEFAULT_PAYMENT_RESULT_PATH, normalizeBaseUrl(env.PAYMENT_RESULT_BASE_URL ?? env.FRONTEND_URL ?? env.NEXT_PUBLIC_SITE_URL));
+
+  url.searchParams.set("attemptReference", result.attemptReference);
+  url.searchParams.set("status", result.status);
+
+  if (result.duplicate) {
+    url.searchParams.set("duplicate", "true");
+  }
+
+  return url.toString();
+}
+
 export default {
   async retry(ctx) {
     const attemptReference = ctx.params?.attemptReference;
@@ -20,7 +42,16 @@ export default {
       return;
     }
 
-    ctx.body = await handleCallbackResult(token);
+    const result = await handleCallbackResult(token);
+    const redirectUrl = buildPaymentResultRedirectUrl(result);
+
+    ctx.status = 303;
+    ctx.set?.("Location", redirectUrl);
+    if (typeof ctx.redirect === "function") {
+      ctx.redirect(redirectUrl);
+      ctx.status = 303;
+    }
+    ctx.body = { ...result, redirectUrl };
   },
 
   async iyzicoWebhook(ctx) {

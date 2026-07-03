@@ -41,6 +41,53 @@ describe("payment orchestration controller", () => {
     expect(handleCallbackResult).not.toHaveBeenCalled();
   });
 
+  it("redirects callback requests to the frontend result page after finalization", async () => {
+    handleCallbackResult.mockResolvedValue({
+      attemptReference: "pay_123",
+      status: "paid",
+      duplicate: false,
+    });
+    const controller = await loadController();
+    const ctx = {
+      request: { body: { token: "checkout-token" } },
+      query: {},
+      status: 200,
+      body: null,
+      set: vi.fn(),
+      redirect: vi.fn(),
+    };
+
+    await controller.iyzicoCallback(ctx);
+
+    expect(handleCallbackResult).toHaveBeenCalledWith("checkout-token");
+    expect(ctx.status).toBe(303);
+    expect(ctx.redirect).toHaveBeenCalledWith(
+      "http://localhost:3000/odeme-sonucu?attemptReference=pay_123&status=paid",
+    );
+    expect(ctx.set).toHaveBeenCalledWith(
+      "Location",
+      "http://localhost:3000/odeme-sonucu?attemptReference=pay_123&status=paid",
+    );
+    expect(ctx.body).toMatchObject({
+      attemptReference: "pay_123",
+      status: "paid",
+      redirectUrl: "http://localhost:3000/odeme-sonucu?attemptReference=pay_123&status=paid",
+    });
+  });
+
+  it("builds callback result redirects from deployment env", async () => {
+    const mod = await import("../../../src/api/payment-orchestration/controllers/payment-orchestration");
+
+    expect(
+      mod.buildPaymentResultRedirectUrl(
+        { attemptReference: "pay_456", status: "failed", duplicate: true },
+        {
+          PAYMENT_RESULT_BASE_URL: "https://netasacademy.com/",
+        } as NodeJS.ProcessEnv,
+      ),
+    ).toBe("https://netasacademy.com/odeme-sonucu?attemptReference=pay_456&status=failed&duplicate=true");
+  });
+
   it("uses the webhook signature header and sets status from service acceptance", async () => {
     handleWebhookEvent.mockResolvedValue({ accepted: false, reason: "invalid_signature" });
     const controller = await loadController();

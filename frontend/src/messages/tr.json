@@ -372,6 +372,47 @@
       "with_title": "{title} etkinligi icin kaydiniz alindi. Ekibimiz kisa sure icinde sizinle iletisime gececek."
     }
   },
+  "payment_result": {
+    "meta": {
+      "title": "Odeme Sonucu | Netas Academy",
+      "description": "Netas Academy odeme isleminizin sonucunu goruntuleyin."
+    },
+    "breadcrumbs": {
+      "current": "Odeme Sonucu"
+    },
+    "hero": {
+      "eyebrow": "Guvenli Odeme",
+      "title": "Odeme Sonucu",
+      "body": "Odeme isleminiz banka ve iyzico yanitindan sonra sistemimizde sonuclandirilir."
+    },
+    "status": {
+      "paid": {
+        "title": "Odeme tamamlandi",
+        "body": "Kaydiniz odeme ile birlikte tamamlandi. Gerekli bilgilendirme ekibimiz tarafindan iletilecektir."
+      },
+      "failed": {
+        "title": "Odeme tamamlanamadi",
+        "body": "Odeme basarili olmadi. Kaydiniz odeme bekleyen durumda kalir; tekrar deneyebilir veya ekibimizle iletisime gecebilirsiniz."
+      },
+      "cancelled": {
+        "title": "Odeme iptal edildi",
+        "body": "Odeme islemi iptal edildi. Dilerseniz etkinlik sayfasindan tekrar odeme adimini baslatabilirsiniz."
+      },
+      "pending": {
+        "title": "Odeme sonucu kontrol ediliyor",
+        "body": "Odeme sonucu henuz kesinlesmedi. Kisa sure sonra tekrar kontrol edebilir veya ekibimizle iletisime gecebilirsiniz."
+      }
+    },
+    "details": {
+      "attempt_reference": "Odeme referansi:",
+      "duplicate": "Bu sonuc daha once islenmis bir odeme yanitindan geldi."
+    },
+    "actions": {
+      "events": "Etkinliklere Don",
+      "contact": "Iletisime Gec",
+      "retry": "Tekrar Dene"
+    }
+  },
   "teachers": {
     "meta": {
       "not_found": "Eğitmen Bulunamadı"
