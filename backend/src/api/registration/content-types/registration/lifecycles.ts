@@ -5,6 +5,12 @@
  * at the application layer, complementing the DB unique index and
  * transaction-level checks in the registration service.
  */
+import { errors } from '@strapi/utils';
+
+const { ValidationError } = errors;
+
+const DUPLICATE_REGISTRATION_MESSAGE = 'Student already registered for this event';
+
 export default {
   async beforeCreate(lifecycleEvent: { params: { data: { student?: number; event?: number } } }) {
     const { student, event } = lifecycleEvent.params.data;
@@ -22,7 +28,7 @@ export default {
     });
 
     if (existing) {
-      throw new Error('Duplicate registration detected in lifecycle hook');
+      throw new ValidationError(DUPLICATE_REGISTRATION_MESSAGE);
     }
   },
 };

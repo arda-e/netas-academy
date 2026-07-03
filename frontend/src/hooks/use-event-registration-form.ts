@@ -115,6 +115,10 @@ export function useEventRegistrationForm({
         return t('error.kvkk_not_approved');
       }
 
+      if (message === "Student already registered for this event") {
+        return t('error.student_already_registered');
+      }
+
       return message;
     }
 

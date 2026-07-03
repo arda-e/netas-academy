@@ -359,7 +359,7 @@ describe("registration service", () => {
     expect(deliverFn).not.toHaveBeenCalled();
   });
 
-  it("keeps duplicate-registration behavior and returns idempotent success without creating", async () => {
+  it("rejects duplicate registration for the same student and event", async () => {
     const eventRecord = {
       id: 10,
       documentId: "evt_123",
@@ -427,28 +427,13 @@ describe("registration service", () => {
           tckn: "12345678901",
         },
       }),
-    ).resolves.toEqual({
-      id: 99,
-      status: "confirmed",
-      event: {
-        documentId: "evt_123",
-        title: "Demo Etkinlik",
-      },
-    });
+    ).rejects.toThrow("Student already registered for this event");
 
     expect(registrationCreate).not.toHaveBeenCalled();
-    expect(deliverFn).toHaveBeenCalledWith(
-      expect.objectContaining({
-        key: "event_registration",
-        payload: expect.objectContaining({
-          registrationId: 99,
-          status: "confirmed",
-        }),
-      }),
-    );
+    expect(deliverFn).not.toHaveBeenCalled();
   });
 
-  it("moves an existing pending registration on a paid event into the checkout flow", async () => {
+  it("rejects duplicate paid-event registration before starting checkout", async () => {
     const eventRecord = {
       id: 10,
       documentId: "evt_paid",
@@ -474,14 +459,10 @@ describe("registration service", () => {
       event: eventRecord,
       student: studentRecord,
     };
-    const paymentPendingReg = {
-      ...existingReg,
-      registrationStatus: "payment_pending",
-    };
     const eventFindOne = vi.fn().mockResolvedValue(eventRecord);
     const registrationFindOne = vi.fn().mockResolvedValue(existingReg);
     const registrationCreate = vi.fn();
-    const registrationUpdate = vi.fn().mockResolvedValue(paymentPendingReg);
+    const registrationUpdate = vi.fn();
     const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
 
     const strapi = createStrapiMock({
@@ -542,38 +523,110 @@ describe("registration service", () => {
         },
         kvkkConsent: true,
       }),
-    ).resolves.toMatchObject({
-      id: 99,
-      status: "payment_pending",
-      nextAction: "render_checkout",
-      payment: {
-        status: "checkout_created",
-      },
-      event: {
-        documentId: "evt_paid",
-        title: "Paid Demo Etkinlik",
-      },
-    });
+    ).rejects.toThrow("Student already registered for this event");
 
     expect(registrationCreate).not.toHaveBeenCalled();
-    expect(registrationUpdate).toHaveBeenCalledWith({
-      where: { id: 99 },
-      data: { registrationStatus: "payment_pending" },
-      populate: {
-        event: true,
-        student: true,
-      },
-    });
-    expect(createCheckoutHandoffFn).toHaveBeenCalledWith(
-      expect.objectContaining({
-        parent: expect.objectContaining({
-          parentType: "registration",
-          parentEntityId: 99,
+    expect(registrationUpdate).not.toHaveBeenCalled();
+    expect(createCheckoutHandoffFn).not.toHaveBeenCalled();
+    expect(deliverFn).not.toHaveBeenCalled();
+  });
+
+  it("rejects duplicate confirmed paid-event registration even when payment already exists", async () => {
+    const eventRecord = {
+      id: 10,
+      documentId: "evt_paid",
+      title: "Paid Demo Etkinlik",
+      slug: "paid-demo-etkinlik",
+      startsAt: "2026-04-22T09:00:00.000Z",
+      keepRegistrationsOpen: true,
+      location: "Istanbul Campus",
+      eventType: "egitim",
+      price: 4800,
+    };
+    const studentRecord = {
+      id: 20,
+      firstName: "Ada",
+      lastName: "Kaya",
+      email: "ada@example.com",
+      phone: "+90 555 111 2233",
+    };
+    const existingReg = {
+      id: 99,
+      registrationStatus: "confirmed",
+      notes: null,
+      event: eventRecord,
+      student: studentRecord,
+    };
+    const eventFindOne = vi.fn().mockResolvedValue(eventRecord);
+    const registrationFindOne = vi.fn().mockResolvedValue(existingReg);
+    const registrationCreate = vi.fn();
+    const registrationUpdate = vi.fn();
+    const upsertByEmail = vi.fn().mockResolvedValue(studentRecord);
+
+    const strapi = createStrapiMock({
+      db: {
+        query: vi.fn((uid: string) => {
+          if (uid === "api::event.event") {
+            return { findOne: eventFindOne };
+          }
+
+          if (uid === "api::registration.registration") {
+            return {
+              findOne: registrationFindOne,
+              create: registrationCreate,
+              update: registrationUpdate,
+            };
+          }
+
+          throw new Error(`Unexpected query uid: ${uid}`);
         }),
-        amountMinor: 480000,
-        idempotencyKey: "registration:99",
+        transaction: vi.fn((fn: () => unknown) => fn()),
+      },
+      service: vi.fn().mockReturnValue({ upsertByEmail }),
+    });
+
+    deliverFn.mockResolvedValue(undefined);
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/registration/services/registration");
+    const service = serviceModule.default as unknown as {
+      registerStudentForEvent: (input: {
+        eventDocumentId: string;
+        student: {
+          firstName: string;
+          lastName?: string;
+          email: string;
+          phone?: string;
+          tckn: string;
+        };
+        kvkkConsent?: boolean;
+      }) => Promise<{
+        id: number;
+        status: string;
+        nextAction?: string;
+        payment?: { status: string };
+        event: { documentId: string; title: string };
+      }>;
+    };
+
+    await expect(
+      service.registerStudentForEvent({
+        eventDocumentId: "evt_paid",
+        student: {
+          firstName: "Ada",
+          lastName: "Kaya",
+          email: "ada@example.com",
+          phone: "+90 555 111 2233",
+          tckn: "10000000146",
+        },
+        kvkkConsent: true,
       }),
-    );
+    ).rejects.toThrow("Student already registered for this event");
+
+    expect(registrationCreate).not.toHaveBeenCalled();
+    expect(registrationUpdate).not.toHaveBeenCalled();
+    expect(createCheckoutHandoffFn).not.toHaveBeenCalled();
+    expect(deliverFn).not.toHaveBeenCalled();
   });
 
   it("keeps closed-registration behavior and does not upsert, create, or notify", async () => {

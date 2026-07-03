@@ -338,6 +338,7 @@
       "event_not_found": "Etkinlik bulunamadi.",
       "invalid_tckn": "Gecerli bir TCKN girin.",
       "kvkk_not_approved": "KVKK aydinlatma metnini onaylamaniz gerekmektedir.",
+      "student_already_registered": "Bu e-posta adresiyle bu etkinlige zaten kayit yapilmis.",
       "unexpected": "Kayit sirasinda beklenmeyen bir sorun olustu.",
       "request_failed": "Kayit istegi gonderilemedi. Lutfen tekrar deneyin."
     },

@@ -36,6 +36,8 @@ type SanitizedRegistration = {
   };
 };
 
+const DUPLICATE_REGISTRATION_MESSAGE = 'Student already registered for this event';
+
 const toAmountMinor = (value: unknown) => {
   if (value === null || value === undefined || value === '') {
     return 0;
@@ -125,20 +127,8 @@ export default factories.createCoreService('api::registration.registration' as a
         },
       });
 
-      // Idempotent: if already registered, return success with sanitized data
       if (existingRegistration) {
-        if (eventAmountMinor > 0 && existingRegistration.registrationStatus === 'pending') {
-          return registrationQuery.update({
-            where: { id: existingRegistration.id },
-            data: { registrationStatus: 'payment_pending' },
-            populate: {
-              event: true,
-              student: true,
-            },
-          });
-        }
-
-        return existingRegistration;
+        throw new ValidationError(DUPLICATE_REGISTRATION_MESSAGE);
       }
 
       return registrationQuery.create({

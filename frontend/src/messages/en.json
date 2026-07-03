@@ -338,6 +338,7 @@
       "event_not_found": "Event not found.",
       "invalid_tckn": "Please enter a valid TCKN.",
       "kvkk_not_approved": "You must approve the KVKK disclosure statement.",
+      "student_already_registered": "This email address is already registered for this event.",
       "unexpected": "An unexpected error occurred during registration.",
       "request_failed": "Registration request could not be sent. Please try again."
     },

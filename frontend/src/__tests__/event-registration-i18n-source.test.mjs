@@ -40,3 +40,14 @@ test("Registration page hero and closed-state copy are translation-driven", () =
   assert.match(source, /closed\.body_2/);
   assert.match(source, /panel\.summary_fallback/);
 });
+
+test("Registration duplicate email error is localized", () => {
+  const hookSource = readSource("hooks/use-event-registration-form.ts");
+  const trMessages = readSource("messages/tr.json");
+  const enMessages = readSource("messages/en.json");
+
+  assert.match(hookSource, /Student already registered for this event/);
+  assert.match(hookSource, /error\.student_already_registered/);
+  assert.match(trMessages, /"student_already_registered"/);
+  assert.match(enMessages, /"student_already_registered"/);
+});
