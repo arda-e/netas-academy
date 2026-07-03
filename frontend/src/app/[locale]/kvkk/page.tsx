@@ -47,8 +47,8 @@ export default function KvkkPage() {
     <main className="page-shell min-h-[calc(100vh-81px)]" data-testid="page.kvkk">
       <section className="relative isolate overflow-hidden border-b border-white/8 bg-slate-950">
         <HeroGradientBackground variant="legal" testId="page.kvkk.hero-gradient" />
-        <div className="page-container relative flex min-h-[260px] w-full items-end py-8 sm:min-h-[320px] sm:py-12">
-          <div className="absolute left-4 right-4 top-8 flex items-start justify-between sm:left-6 sm:right-6 sm:top-12 lg:left-10 lg:right-10 xl:left-12 xl:right-12">
+        <div className="page-container relative flex min-h-[300px] w-full flex-col justify-end gap-6 py-8 sm:min-h-[360px] sm:py-12">
+          <div className="flex w-full items-start justify-between gap-4">
             <SiteBreadcrumbs items={[{ label: "KVKK" }]} />
             <KvkkBackButton />
           </div>
