@@ -46,6 +46,9 @@ test("iyzico component renders provider markup without an extra consent gate", (
   assert.match(source, /iframe/);
   assert.match(source, /checkoutContainerRef/);
   assert.match(source, /toInlineCheckoutFormContent/);
+  assert.match(source, /hasCheckoutFormContent/);
+  assert.match(source, /if \(!hasCheckoutFormContent && providerPageUrl\)/);
+  assert.doesNotMatch(source, /if \(providerPageUrl\)/);
   assert.match(source, /iyzipay-checkout-form/);
   assert.match(source, /\\bpopup\\b/);
   assert.match(source, /responsive/);

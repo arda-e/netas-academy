@@ -16,11 +16,12 @@ function toInlineCheckoutFormContent(checkoutFormContent: string) {
 
 export function IyzicoCheckoutForm({ checkoutFormContent, providerPageUrl }: IyzicoCheckoutFormProps) {
   const checkoutContainerRef = useRef<HTMLDivElement | null>(null);
+  const hasCheckoutFormContent = checkoutFormContent.trim().length > 0;
 
   useEffect(() => {
     const container = checkoutContainerRef.current;
 
-    if (!container || providerPageUrl) {
+    if (!container || !hasCheckoutFormContent) {
       return;
     }
 
@@ -41,9 +42,9 @@ export function IyzicoCheckoutForm({ checkoutFormContent, providerPageUrl }: Iyz
     return () => {
       container.innerHTML = "";
     };
-  }, [checkoutFormContent, providerPageUrl]);
+  }, [checkoutFormContent, hasCheckoutFormContent]);
 
-  if (providerPageUrl) {
+  if (!hasCheckoutFormContent && providerPageUrl) {
     return (
       <div className="space-y-5" data-testid="payment.iyzico-checkout-form">
         <div
