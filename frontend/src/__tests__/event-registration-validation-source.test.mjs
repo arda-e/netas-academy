@@ -50,3 +50,33 @@ test("event registration validation copy includes surname minimum and numeric ph
   assert.match(enMessages, /"last_name_max_20":\s*"Last name can be at most 20 characters\."/);
   assert.match(enMessages, /"phone_invalid":\s*"Phone number may contain digits only\."/);
 });
+
+test("event registration restores legacy saved form values without assuming new fields exist", () => {
+  const hookSource = readSource("hooks/use-event-registration-form.ts");
+
+  assert.match(
+    hookSource,
+    /Partial<Record<keyof EventRegistrationValues,\s*unknown>>/,
+    "saved sessionStorage payloads should be treated as partial untrusted values"
+  );
+  assert.match(
+    hookSource,
+    /const stringValue = \(value: unknown\) => \(typeof value === "string" \? value : ""\);/,
+    "missing or non-string persisted fields should normalize to an empty string"
+  );
+  assert.match(
+    hookSource,
+    /phone:\s*digitsOnly\(stringValue\(values\.phone\)\)/,
+    "legacy payloads without phone should not call replace on undefined"
+  );
+  assert.match(
+    hookSource,
+    /tckn:\s*digitsOnly\(stringValue\(values\.tckn\)\)\.slice\(0,\s*11\)/,
+    "legacy payloads saved before TCKN existed should not crash paid event pages"
+  );
+  assert.match(
+    hookSource,
+    /salesAgreementAccepted:\s*values\.salesAgreementAccepted === true/,
+    "missing sales agreement state should default to false"
+  );
+});

@@ -62,14 +62,21 @@ const initialValues: EventRegistrationValues = {
   salesAgreementAccepted: false,
 };
 
+const stringValue = (value: unknown) => (typeof value === "string" ? value : "");
+
 const digitsOnly = (value: string) => value.replace(/\D/g, "");
 
-const sanitizeStoredValues = (values: EventRegistrationValues): EventRegistrationValues => ({
-  ...values,
-  lastName: values.lastName.slice(0, 20),
-  phone: digitsOnly(values.phone),
-  tckn: digitsOnly(values.tckn).slice(0, 11),
-  salesAgreementAccepted: values.salesAgreementAccepted ?? false,
+const sanitizeStoredValues = (
+  values: Partial<Record<keyof EventRegistrationValues, unknown>>
+): EventRegistrationValues => ({
+  firstName: stringValue(values.firstName),
+  lastName: stringValue(values.lastName).slice(0, 20),
+  email: stringValue(values.email),
+  phone: digitsOnly(stringValue(values.phone)),
+  tckn: digitsOnly(stringValue(values.tckn)).slice(0, 11),
+  notes: stringValue(values.notes),
+  kvkkConsent: values.kvkkConsent === true,
+  salesAgreementAccepted: values.salesAgreementAccepted === true,
 });
 
 export function useEventRegistrationForm({
