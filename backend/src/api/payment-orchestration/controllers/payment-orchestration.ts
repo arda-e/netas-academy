@@ -1,16 +1,19 @@
 import { handleCallbackResult, handleWebhookEvent, retryCheckoutHandoff } from "../../../services/payment-orchestration/service";
 
-const DEFAULT_PAYMENT_RESULT_BASE_URL = "http://localhost:3000";
+const DEFAULT_FRONTEND_BASE_URL = "http://localhost:3000";
 const DEFAULT_PAYMENT_RESULT_PATH = "/odeme-sonucu";
 
 type CallbackResult = Awaited<ReturnType<typeof handleCallbackResult>>;
 
 function normalizeBaseUrl(value?: string | null) {
-  return (value?.trim() || DEFAULT_PAYMENT_RESULT_BASE_URL).replace(/\/+$/, "");
+  return (value?.trim() || DEFAULT_FRONTEND_BASE_URL).replace(/\/+$/, "");
 }
 
 export function buildPaymentResultRedirectUrl(result: CallbackResult, env: NodeJS.ProcessEnv = process.env) {
-  const url = new URL(DEFAULT_PAYMENT_RESULT_PATH, normalizeBaseUrl(env.PAYMENT_RESULT_BASE_URL ?? env.FRONTEND_URL ?? env.NEXT_PUBLIC_SITE_URL));
+  const url = new URL(
+    DEFAULT_PAYMENT_RESULT_PATH,
+    normalizeBaseUrl(env.NEXT_PUBLIC_SITE_URL ?? env.CLIENT_URL ?? env.FRONTEND_URL),
+  );
 
   url.searchParams.set("attemptReference", result.attemptReference);
   url.searchParams.set("status", result.status);

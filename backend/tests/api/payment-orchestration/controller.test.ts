@@ -75,17 +75,32 @@ describe("payment orchestration controller", () => {
     });
   });
 
-  it("builds callback result redirects from deployment env", async () => {
+  it("builds callback result redirects from the public frontend URL", async () => {
     const mod = await import("../../../src/api/payment-orchestration/controllers/payment-orchestration");
 
     expect(
       mod.buildPaymentResultRedirectUrl(
         { attemptReference: "pay_456", status: "failed", duplicate: true },
         {
-          PAYMENT_RESULT_BASE_URL: "https://netasacademy.com/",
+          NEXT_PUBLIC_SITE_URL: "https://netasacademy.com/",
+          FRONTEND_URL: "http://127.0.0.1:3000",
         } as NodeJS.ProcessEnv,
       ),
     ).toBe("https://netasacademy.com/odeme-sonucu?attemptReference=pay_456&status=failed&duplicate=true");
+  });
+
+  it("falls back to CLIENT_URL before the internal frontend URL", async () => {
+    const mod = await import("../../../src/api/payment-orchestration/controllers/payment-orchestration");
+
+    expect(
+      mod.buildPaymentResultRedirectUrl(
+        { attemptReference: "pay_789", status: "paid", duplicate: false },
+        {
+          CLIENT_URL: "https://new.netasacademy.com",
+          FRONTEND_URL: "http://127.0.0.1:3000",
+        } as NodeJS.ProcessEnv,
+      ),
+    ).toBe("https://new.netasacademy.com/odeme-sonucu?attemptReference=pay_789&status=paid");
   });
 
   it("uses the webhook signature header and sets status from service acceptance", async () => {
