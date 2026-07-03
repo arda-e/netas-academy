@@ -333,7 +333,6 @@
     "kvkk": {
       "text": "I have read and understood the disclosure text under the Personal Data Protection Law No. 6698."
     },
-    "footer_note": "Once your registration is complete, the status information will be displayed on this form. When necessary, we may contact you through the contact details you shared.",
     "error": {
       "event_closed": "Registration for this event is closed. Registration closes automatically 24 hours before the event starts.",
       "event_not_found": "Event not found.",

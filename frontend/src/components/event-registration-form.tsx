@@ -270,10 +270,6 @@ export function EventRegistrationForm({
       ) : null}
 
       <div className="flex flex-col gap-4 sm:items-start md:flex-row md:items-end md:justify-between">
-        <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-          {t('footer_note')}
-        </p>
-
         <Button
           type="submit"
           disabled={isSubmitting}
