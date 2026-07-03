@@ -18,6 +18,8 @@ const CONTACT_SUBMISSION_FIELD_LIMITS = {
   partnershipDetails: 4000,
 } as const;
 
+const PHONE_FORMAT_REGEX = /^(?=.*\d)[\d\s()+\-]+$/;
+
 type CreateContactSubmissionInput = {
   leadType: 'corporate_training_request' | 'instructor_application' | 'solution_partner_application' | 'general_contact';
   fullName: string;
@@ -78,6 +80,10 @@ export default factories.createCoreService(
 
       if (!input.kvkkConsent) {
         throw new ValidationError('kvkkConsent must be true');
+      }
+
+      if (!PHONE_FORMAT_REGEX.test(phone)) {
+        throw new ValidationError('phone has invalid format');
       }
 
       // Type-specific field validation

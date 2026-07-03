@@ -16,10 +16,11 @@ type TFunc = (key: string) => string;
 /* ─── Zod schemas per lead type (factored to accept t for dynamic locale) ─── */
 
 export function getIntentSchemas(t: TFunc): Record<LeadType, z.ZodType> {
+  const phoneRegex = /^(?=.*\d)[\d\s()+\-]+$/;
   const baseSchema = z.object({
       fullName: z.string().min(5, t("validation.full_name_min_5")),
       email: z.string().email(t("validation.email_invalid")),
-      phone: z.string().min(1, t("validation.phone_required")).regex(/^[\d\s()+\-]+$/, t("validation.phone_invalid")),
+      phone: z.string().min(1, t("validation.phone_required")).regex(phoneRegex, t("validation.phone_invalid")),
       company: z.string().optional(),
       message: z.string().min(1, t("validation.message_required")),
       kvkkConsent: z.boolean().refine((val) => val === true, {

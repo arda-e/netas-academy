@@ -483,7 +483,8 @@
     },
     "field": {
       "request_type": {
-        "label": "Request Type"
+        "label": "Request Type",
+        "placeholder": "Select"
       },
       "full_name": {
         "label": "Full Name*"
@@ -531,11 +532,12 @@
     },
     "new_submission": "New Submission",
     "validation": {
+      "request_type_required": "Please select a request type",
       "full_name_required": "Full name is required",
       "full_name_min_5": "Full name must be at least 5 characters",
       "email_invalid": "Please enter a valid email address",
       "phone_required": "Phone number is required",
-      "phone_invalid": "Phone number may only contain digits, spaces, and +, -, ( ) characters",
+      "phone_invalid": "Phone number must be in a valid format",
       "message_required": "Message is required",
       "kvkk_required": "You must accept the privacy notice",
       "interest_topic_required": "Course/topic of interest is required",

@@ -79,6 +79,11 @@ test("baseSchema requires fullName, email, phone, message", () => {
   );
   assert.match(
     source,
+    /phoneRegex\s*=\s*\/\^\(\?\=\.\*\\d\)\[\\d\\s\(\)\+\\-\]\+\$\/;/,
+    "baseSchema should require at least one digit in phone numbers"
+  );
+  assert.match(
+    source,
     /message:\s*z\.string\(\)\.min\(1/,
     "baseSchema should require message"
   );
@@ -126,6 +131,11 @@ test("intent selector is a select element with correct testid", () => {
     /data-testid="contact-lead\.intent-select"/,
     "should have a select with data-testid contact-lead.intent-select"
   );
+  assert.match(
+    source,
+    /field\.request_type\.placeholder/,
+    "select should include a placeholder option"
+  );
   assert.doesNotMatch(
     source,
     /data-testid="contact-lead\.tabs"/,
@@ -138,8 +148,8 @@ test("intent select value is controlled by leadType state", () => {
 
   assert.match(
     source,
-    /value=\{leadType\}/,
-    "select should be controlled by leadType"
+    /value=\{leadType\s*\?\?\s*""\}/,
+    "select should be controlled by leadType with an empty fallback"
   );
 });
 
@@ -158,7 +168,7 @@ test("intent select onChange calls router.replace with new intent", () => {
   );
 });
 
-test("preselection path unchanged — initialLeadType prop and useState still present", () => {
+test("preselection path unchanged — initialLeadType prop and nullable state still present", () => {
   const formSource = readSource("components/contact/intent-lead-form.tsx");
   const hookSource = readSource("components/contact/use-intent-lead-form.ts");
 
@@ -169,7 +179,7 @@ test("preselection path unchanged — initialLeadType prop and useState still pr
   );
   assert.match(
     hookSource,
-    /useState<LeadType>\(initialLeadType\)/,
+    /useState<LeadType \| null>\(initialLeadType\)/,
     "useState should still be initialised from initialLeadType in the hook"
   );
 });
@@ -253,7 +263,7 @@ test("contact form only clears storage on real lead type changes", () => {
 
   assert.match(
     source,
-    /previousLeadTypeRef\s*=\s*useRef<LeadType>\(leadType\)/,
+    /previousLeadTypeRef\s*=\s*useRef<LeadType \| null>\(leadType\)/,
     "form should track the previous lead type"
   );
   assert.match(

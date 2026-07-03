@@ -22,13 +22,21 @@ describe("newsletter-subscription service", () => {
     const findOne = vi.fn().mockResolvedValue(findOneResult);
     const create = vi.fn().mockResolvedValue(createResult ?? { id: 1 });
     const update = vi.fn().mockResolvedValue({ id: 1 });
+    const sendEmail = vi.fn().mockResolvedValue(undefined);
     return {
       db: {
         query: vi.fn().mockReturnValue({ findOne, create, update }),
       },
+      plugin: vi.fn().mockReturnValue({
+        service: vi.fn().mockReturnValue({ send: sendEmail }),
+      }),
+      log: {
+        error: vi.fn(),
+      },
       findOne,
       create,
       update,
+      sendEmail,
     };
   }
 
@@ -65,6 +73,15 @@ describe("newsletter-subscription service", () => {
         lastSeenAt: expect.any(String),
       }),
     });
+
+    expect(strapi.sendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: "ada@example.com",
+        subject: expect.stringContaining("E-bulten aboneliginiz"),
+        text: expect.stringContaining("Aboneliginiz basariyla alindi"),
+        html: expect.stringContaining("Aboneliginiz basariyla alindi"),
+      }),
+    );
   });
 
   it("refreshes lastSeenAt and source for existing active subscription", async () => {
@@ -100,6 +117,7 @@ describe("newsletter-subscription service", () => {
     });
 
     expect(strapi.create).not.toHaveBeenCalled();
+    expect(strapi.sendEmail).not.toHaveBeenCalled();
   });
 
   it("reactivates passive subscription", async () => {
@@ -132,6 +150,13 @@ describe("newsletter-subscription service", () => {
         lastSeenAt: expect.any(String),
       }),
     });
+
+    expect(strapi.sendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: "passive@example.com",
+        subject: expect.stringContaining("E-bulten aboneliginiz"),
+      }),
+    );
   });
 
   it("reactivates unsubscribed subscription", async () => {
@@ -221,5 +246,36 @@ describe("newsletter-subscription service", () => {
         consentAccepted: false,
       }),
     ).rejects.toThrow("consentAccepted must be true");
+  });
+
+  it("keeps subscription successful when confirmation email delivery fails", async () => {
+    const strapi = createStrapiMock(null);
+    strapi.sendEmail.mockRejectedValueOnce(new Error("SMTP rejected"));
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import(
+      "../../../src/api/newsletter-subscription/services/newsletter-subscription"
+    );
+    const service = serviceModule.default as {
+      subscribe: (input: Record<string, unknown>) => Promise<unknown>;
+    };
+
+    await expect(
+      service.subscribe({
+        email: "ada@example.com",
+        consentAccepted: true,
+      }),
+    ).resolves.toEqual({
+      success: true,
+      message: "Aboneliginiz basariyla olusturuldu.",
+      alreadySubscribed: false,
+    });
+
+    expect(strapi.log.error).toHaveBeenCalledWith(
+      "Newsletter confirmation email delivery failed",
+      expect.objectContaining({
+        error: expect.any(Error),
+      }),
+    );
   });
 });

@@ -14,12 +14,18 @@ export type FormValues = {
 
 export type IntentLeadFormValues = FormValues;
 
-export type FieldErrors = Partial<Record<keyof FormValues, string>>;
+export type FieldErrors = Partial<Record<keyof FormValues, string>> & {
+  leadType?: string;
+};
 
 export function getSectionErrors(
   errors: FieldErrors,
-  leadType: LeadType
+  leadType: LeadType | null
 ): Record<string, string | undefined> {
+  if (!leadType) {
+    return {};
+  }
+
   const result: Record<string, string | undefined> = {};
   const fieldMap: Record<LeadType, Array<keyof FormValues>> = {
     corporate_training_request: ["interestTopic"],
@@ -66,6 +72,9 @@ export function getErrorMessage(payload: unknown, t: (key: string) => string): s
     }
     if (message === "fullName, email, phone, and message are required") {
       return t("error.required_fields");
+    }
+    if (message === "phone has invalid format") {
+      return t("validation.phone_invalid");
     }
     if (message === "kvkkConsent must be true") {
       return t("error.kvkk_consent");

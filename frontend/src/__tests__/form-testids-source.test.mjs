@@ -33,6 +33,18 @@ assert.ok(
   eventRegForm.includes(`htmlFor="firstName"`),
   "event-registration-form.tsx should still contain htmlFor=\"firstName\" (preserved)"
 );
+assert.ok(
+  eventRegForm.includes(`label={t('kvkk.text')}`),
+  "event-registration-form.tsx should render the KVKK consent directly in the form"
+);
+assert.ok(
+  !eventRegForm.includes("event-registration.link.kvkk-disclosure"),
+  "event-registration-form.tsx should not link the KVKK consent to a separate page"
+);
+assert.ok(
+  eventRegForm.includes(`data-testid="event-registration.field.sales-agreement"`),
+  "event-registration-form.tsx should contain the sales agreement consent before payment"
+);
 
 // --- newsletter-subscription-form.tsx ---
 

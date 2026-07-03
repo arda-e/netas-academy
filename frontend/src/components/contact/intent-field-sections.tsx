@@ -15,7 +15,7 @@ const labelClassName = "flex cursor-default items-center gap-0.5 text-sm font-me
 const fieldWrapperClassName = "space-y-2 md:space-y-3";
 
 type IntentFieldSectionsProps = {
-  leadType: LeadType;
+  leadType: LeadType | null;
   register: UseFormRegister<IntentLeadFormValues>;
   errors: Record<string, string | undefined>;
   onFieldFocus?: () => void;

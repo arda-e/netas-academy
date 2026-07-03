@@ -35,7 +35,7 @@ const isTurnstileEnabled =
   Boolean(process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY);
 
 type UseIntentLeadFormProps = {
-  initialLeadType: LeadType;
+  initialLeadType: LeadType | null;
   prefilledTopic?: string;
 };
 
@@ -45,7 +45,7 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
   const router = useRouter();
   const pathname = usePathname();
 
-  const [leadType, setLeadType] = useState<LeadType>(initialLeadType);
+  const [leadType, setLeadType] = useState<LeadType | null>(initialLeadType);
   const [success, setSuccess] = useState(false);
   const [formKey, setFormKey] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -54,25 +54,27 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [isPending, startTransition] = useTransition();
   const hasEmittedStartRef = useRef(false);
-  const previousLeadTypeRef = useRef<LeadType>(leadType);
+  const previousLeadTypeRef = useRef<LeadType | null>(leadType);
+  const storageKey = `contact-form-${leadType ?? "unselected"}`;
 
   const { save: persistValues, clear: clearStorage } = useFormPersistence<FormValues>(
-    `contact-form-${leadType}`,
+    storageKey,
     { sensitiveFields: [] }
   );
 
   useEffect(() => {
-    emitLeadTabView(leadType);
+    if (leadType) {
+      emitLeadTabView(leadType);
+    }
   }, [leadType]);
 
   useEffect(() => {
-    if (initialLeadType !== "general_contact") {
+    if (initialLeadType && initialLeadType !== "general_contact") {
       emitLeadContextualEntry(initialLeadType);
     }
   }, [initialLeadType]);
 
-  const schema = getSchemaForLeadType(t, leadType);
-  const { register, getValues, reset, watch } = useForm<FormValues>({
+  const { register, getValues, reset, setValue, watch } = useForm<FormValues>({
     shouldUnregister: true,
     defaultValues: {
       fullName: "",
@@ -93,7 +95,7 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
   // Uses a direct FormStorage call with initialLeadType to avoid hook complication
   // when leadType may have already changed on re-render.
   useEffect(() => {
-    const saved = new FormStorage(`contact-form-${initialLeadType}`).load<FormValues>();
+    const saved = new FormStorage(`contact-form-${initialLeadType ?? "unselected"}`).load<FormValues>();
     if (saved) {
       reset({
         fullName: saved.fullName ?? "",
@@ -131,7 +133,7 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
       kvkkConsent: false,
     });
     hasEmittedStartRef.current = false;
-    new FormStorage(`contact-form-${previousLeadType}`).clear();
+    new FormStorage(`contact-form-${previousLeadType ?? "unselected"}`).clear();
     setTurnstileToken(null);
     setTurnstileResetKey((key) => key + 1);
   }, [leadType, reset, prefilledTopic]);
@@ -145,30 +147,52 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
     return () => subscription.unsubscribe();
   }, [watch, persistValues]);
 
-  const kvkkReturnTo = buildIntentLeadUrl(
-    leadType,
-    prefilledTopic ? { topic: prefilledTopic } : undefined
-  );
+  const kvkkReturnTo = leadType
+    ? buildIntentLeadUrl(leadType, prefilledTopic ? { topic: prefilledTopic } : undefined)
+    : "/iletisim";
 
   const handleFieldInteraction = useCallback(() => {
-    if (!hasEmittedStartRef.current) {
-      hasEmittedStartRef.current = true;
-      emitLeadFormStart(leadType);
+    if (!leadType || hasEmittedStartRef.current) {
+      return;
     }
+    hasEmittedStartRef.current = true;
+    emitLeadFormStart(leadType);
   }, [leadType]);
+
+  const handleKvkkConsentChange = useCallback(
+    (isSelected: boolean) => {
+      setValue("kvkkConsent", isSelected, { shouldDirty: true });
+      handleFieldInteraction();
+    },
+    [handleFieldInteraction, setValue]
+  );
 
   const handleIntentChange = useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
-      const type = e.target.value as LeadType;
-      if (type !== leadType) {
-        emitLeadTabChange(leadType, type);
+      const nextLeadType = (e.target.value || null) as LeadType | null;
+      if (nextLeadType !== leadType) {
+        if (leadType && nextLeadType) {
+          emitLeadTabChange(leadType, nextLeadType);
+        }
+        if (nextLeadType && !hasEmittedStartRef.current) {
+          hasEmittedStartRef.current = true;
+          emitLeadFormStart(nextLeadType);
+        }
         setErrorMessage(null);
         setFieldErrors({});
-        setLeadType(type);
-        router.replace(`${pathname}?intent=${type}`);
+        setLeadType(nextLeadType);
+        if (nextLeadType) {
+          const params = new URLSearchParams({ intent: nextLeadType });
+          if (prefilledTopic) {
+            params.set("topic", prefilledTopic);
+          }
+          router.replace(`${pathname}?${params.toString()}`);
+        } else {
+          router.replace(pathname);
+        }
       }
     },
-    [leadType, pathname, router]
+    [leadType, pathname, prefilledTopic, router]
   );
 
   const persistCurrentValues = useCallback(() => {
@@ -176,7 +200,9 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
   }, [getValues, persistValues]);
 
   const handleNewSubmission = useCallback(() => {
-    emitLeadRelatedContentClick(leadType);
+    if (leadType) {
+      emitLeadRelatedContentClick(leadType);
+    }
     hasEmittedStartRef.current = false;
     clearStorage();
     setTurnstileToken(null);
@@ -203,6 +229,13 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
     (data: FormValues) => {
       setErrorMessage(null);
       hasEmittedStartRef.current = true;
+
+      if (!leadType) {
+        setFieldErrors({
+          leadType: t("validation.request_type_required"),
+        });
+        return;
+      }
 
       if (isTurnstileEnabled && !turnstileToken) {
         const reason = t("error.human_check_required");
@@ -262,6 +295,14 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
   const handleFormSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      if (!leadType) {
+        setFieldErrors({
+          leadType: t("validation.request_type_required"),
+        });
+        setErrorMessage(null);
+        return;
+      }
+      const schema = getSchemaForLeadType(t, leadType);
       const values = getValues();
       const parsed = schema.safeParse(values);
 
@@ -281,7 +322,7 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
       setFieldErrors({});
       onSubmit(parsed.data as FormValues);
     },
-    [getValues, onSubmit, schema]
+    [getValues, leadType, onSubmit, t]
   );
 
   return {
@@ -295,8 +336,10 @@ export function useIntentLeadForm({ initialLeadType, prefilledTopic }: UseIntent
     formKey,
     turnstileResetKey,
     register,
+    kvkkConsent: watch("kvkkConsent"),
     handleIntentChange,
     handleFieldInteraction,
+    handleKvkkConsentChange,
     handleFormSubmit,
     handleNewSubmission,
     persistCurrentValues,

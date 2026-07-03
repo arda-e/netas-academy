@@ -483,7 +483,8 @@
     },
     "field": {
       "request_type": {
-        "label": "Başvuru Türü"
+        "label": "Başvuru Türü",
+        "placeholder": "SEÇİNİZ"
       },
       "full_name": {
         "label": "Ad Soyad*"
@@ -531,11 +532,12 @@
     },
     "new_submission": "Yeni Başvuru Yap",
     "validation": {
+      "request_type_required": "Lütfen başvuru türü seçin",
       "full_name_required": "Ad Soyad zorunludur",
       "full_name_min_5": "Ad Soyad en az 5 karakter olmalıdır",
       "email_invalid": "Geçerli bir e-posta adresi girin",
       "phone_required": "Telefon numarası zorunludur",
-      "phone_invalid": "Telefon numarası yalnızca rakam, boşluk ve +, -, ( ) karakterlerini içerebilir",
+      "phone_invalid": "Telefon numarası geçerli bir formatta olmalıdır",
       "message_required": "Mesaj alanı zorunludur",
       "kvkk_required": "KVKK metnini onaylamanız gerekmektedir",
       "interest_topic_required": "İlgi duyulan eğitim/konu zorunludur",

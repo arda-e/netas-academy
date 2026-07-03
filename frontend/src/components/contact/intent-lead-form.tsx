@@ -52,7 +52,7 @@ declare global {
 }
 
 type IntentLeadFormProps = {
-  initialLeadType: LeadType;
+  initialLeadType: LeadType | null;
   prefilledTopic?: string;
 };
 
@@ -133,9 +133,10 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
     handleTurnstileVerify,
     handleTurnstileExpire,
   } = useIntentLeadForm({ initialLeadType, prefilledTopic });
+  const selectedLeadType = leadType ?? "general_contact";
 
   if (success) {
-    return <LeadFormSuccess leadType={leadType} onNewSubmission={handleNewSubmission} />;
+    return <LeadFormSuccess leadType={selectedLeadType} onNewSubmission={handleNewSubmission} />;
   }
 
   return (
@@ -177,11 +178,14 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
           <div className="relative">
             <select
               id="intentSelect"
-              value={leadType}
+              value={leadType ?? ""}
               data-testid="contact-lead.intent-select"
               onChange={handleIntentChange}
               className={selectClassName}
             >
+              <option value="" disabled>
+                {t("field.request_type.placeholder")}
+              </option>
               {LEAD_TYPES.map((type) => (
                 <option key={type} value={type}>
                   {leadIntents[type].label}
@@ -190,6 +194,11 @@ export function IntentLeadForm({ initialLeadType, prefilledTopic }: IntentLeadFo
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           </div>
+          {fieldErrors.leadType ? (
+            <p className="text-sm text-destructive" data-testid={join("contact-lead", "error", "leadType")}>
+              {fieldErrors.leadType}
+            </p>
+          ) : null}
         </div>
 
         <div className={fieldWrapperClassName}>

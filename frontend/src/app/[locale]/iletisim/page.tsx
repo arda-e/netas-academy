@@ -49,7 +49,7 @@ export async function generateMetadata({
 export default async function IletisimPage({ searchParams }: IletisimPageProps) {
   const params = await searchParams;
   const resolvedIntent = resolveLeadTypeFromQuery(params.intent ?? null);
-  const initialLeadType: LeadType = resolvedIntent ?? "corporate_training_request";
+  const initialLeadType: LeadType | null = resolvedIntent ?? (params.topic ? "corporate_training_request" : null);
   const prefilledTopic = params.topic ?? undefined;
   const t = await getTranslations('contact');
 

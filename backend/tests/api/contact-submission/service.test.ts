@@ -237,6 +237,30 @@ describe("contact-submission service", () => {
     ).rejects.toThrow("expertiseAreas is required for instructor applications");
   });
 
+  it("rejects phone numbers without digits before persistence", async () => {
+    const strapi = createStrapiMock({});
+    vi.stubGlobal("strapi", strapi);
+
+    const serviceModule = await import("../../../src/api/contact-submission/services/contact-submission");
+    const service = serviceModule.default as {
+      createSubmission: (input: Record<string, string>) => Promise<unknown>;
+    };
+
+    await expect(
+      service.createSubmission({
+        leadType: "general_contact",
+        fullName: "Ada Kaya",
+        email: "ada@example.com",
+        phone: " +-- ",
+        message: "Merhaba",
+        kvkkConsent: true,
+      }),
+    ).rejects.toThrow("phone has invalid format");
+
+    expect(strapi.create).not.toHaveBeenCalled();
+    expect(deliverFn).not.toHaveBeenCalled();
+  });
+
   it("persists solution partner application without legacy companySize", async () => {
     const submission = {
       id: 5,

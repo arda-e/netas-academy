@@ -14,6 +14,44 @@ type SubscribeInput = {
   sourceContentSlug?: string;
 };
 
+const escapeHtml = (value: string) =>
+  value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const buildConfirmationEmail = (email: string) => {
+  const subject = 'Netas Academy E-bulten aboneliginiz alindi';
+  const text = [
+    'Merhaba,',
+    '',
+    'Aboneliginiz basariyla alindi. Netas Academy etkinlikleri, egitimleri ve duyurulari hakkinda sizi bilgilendirecegiz.',
+    '',
+    `Abone e-posta adresi: ${email}`,
+    '',
+    'Tesekkur ederiz,',
+    'Netas Academy',
+  ].join('\n');
+  const html = [
+    '<div style="font-family:Arial,Helvetica,sans-serif;color:#0f172a;line-height:1.6">',
+    '<p>Merhaba,</p>',
+    '<p>Aboneliginiz basariyla alindi. Netas Academy etkinlikleri, egitimleri ve duyurulari hakkinda sizi bilgilendirecegiz.</p>',
+    `<p><strong>Abone e-posta adresi:</strong> ${escapeHtml(email)}</p>`,
+    '<p>Tesekkur ederiz,<br />Netas Academy</p>',
+    '</div>',
+  ].join('');
+
+  return { subject, text, html };
+};
+
+const sendConfirmationEmail = async (email: string) => {
+  try {
+    await strapi.plugin('email').service('email').send({
+      to: email,
+      ...buildConfirmationEmail(email),
+    });
+  } catch (error) {
+    strapi.log.error('Newsletter confirmation email delivery failed', { error });
+  }
+};
+
 export default factories.createCoreService(
   'api::newsletter-subscription.newsletter-subscription' as any,
   () => ({
@@ -78,6 +116,8 @@ export default factories.createCoreService(
             },
           });
 
+        await sendConfirmationEmail(email);
+
         return {
           success: true,
           message: 'Aboneliginiz basariyla yeniden aktiflestirildi.',
@@ -101,6 +141,8 @@ export default factories.createCoreService(
             lastSeenAt: now,
           },
         });
+
+      await sendConfirmationEmail(email);
 
       return {
         success: true,
